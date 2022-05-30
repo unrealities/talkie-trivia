@@ -5,9 +5,14 @@ import Constants from 'expo-constants';
 
 export default function App() {
   useEffect(() => {
-    getMoviesFromApi(5)
+    // let movies = require('./data/popular_movies_05_24_2022.json');
+    // for (var id in movies.id) {
+    //   getMoviesFromApi(id)
+    // }
+    
+    getMoviesFromApi("5")
   
-    function getMoviesFromApi(id:number) {
+    function getMoviesFromApi(id:string) {
       const movieURL = new URL('https://example.com')
       movieURL.protocol = 'https'
       movieURL.hostname = 'api.themoviedb.org'
@@ -17,7 +22,7 @@ export default function App() {
       fetch(movieURL.href)
             .then(response => response.json())
             .then((responseJson) => {
-                console.log('getting data from fetch', responseJson)
+              console.log(responseJson)
             })
             .catch(error => console.log(error))
     }
