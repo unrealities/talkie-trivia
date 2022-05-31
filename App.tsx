@@ -1,7 +1,8 @@
 import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, Text, View } from 'react-native'
-import React, { useEffect } from 'react';
-import Constants from 'expo-constants';
+import React, { useEffect } from 'react'
+import Constants from 'expo-constants'
+import fs from 'browserify-fs'
 
 export default function App() {
   useEffect(() => {
@@ -10,8 +11,8 @@ export default function App() {
     //   getMoviesFromApi(id)
     // }
     
-    getMoviesFromApi("5")
-  
+    getMoviesFromApi('5')
+
     function getMoviesFromApi(id:string) {
       const movieURL = new URL('https://example.com')
       movieURL.protocol = 'https'
@@ -22,7 +23,13 @@ export default function App() {
       fetch(movieURL.href)
             .then(response => response.json())
             .then((responseJson) => {
-              console.log(responseJson)
+              const data = JSON.stringify(responseJson)
+              fs.writeFile('detailed_movies.json', data, (err) => {
+                if (err) {
+                    throw err;
+                }
+                console.log("JSON data is saved.");
+            });
             })
             .catch(error => console.log(error))
     }
