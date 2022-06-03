@@ -16,3 +16,4 @@ web-build/
 # config
 .env
 app.config.js
+data/secrets.json

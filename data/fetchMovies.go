@@ -17,8 +17,24 @@ type PopularMovie struct {
 	Video         bool    `json:"video"`
 }
 
+type Config struct {
+	TMDBKey string `json:"TMDBKey"`
+}
+
+func TMDBKey() string {
+	configFile, err := os.Open("secrets.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer configFile.Close()
+
+	secretsBytes, _ := ioutil.ReadAll(configFile)
+	var config Config
+	json.Unmarshal(secretsBytes, &config)
+	return config.TMDBKey
+}
+
 func URLS() []string {
-	const TMDB_KEY = ""
 	moviesFile, err := os.Open("popular_movies_05_24_2022.json")
 	if err != nil {
 		fmt.Println(err)
@@ -39,7 +55,7 @@ func URLS() []string {
 			Path:   path,
 		}
 		q := url.Query()
-		q.Set("api_key", TMDB_KEY)
+		q.Set("api_key", TMDBKey())
 		url.RawQuery = q.Encode()
 		urls = append(urls, url.String())
 	}
