@@ -64,4 +64,20 @@ func URLS() []string {
 
 func main() {
 	fmt.Println(URLS())
+	f, err := os.Create("data.txt")
+
+	if err != nil {
+		fmt.Printf(err.Error())
+	}
+
+	defer f.Close()
+
+	for _, url := range URLS() {
+		_, err = f.WriteString(url + "\n")
+		if err != nil {
+			fmt.Printf(err.Error())
+		}
+	}
+
+	fmt.Println("done")
 }
