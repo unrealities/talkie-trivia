@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"os"
 	"strconv"
+	"sync"
 )
 
 type PopularMovie struct {
@@ -62,22 +63,32 @@ func URLS() []string {
 	return urls
 }
 
-func main() {
-	fmt.Println(URLS())
-	f, err := os.Create("data.txt")
-
+func WriteToFile(file *os.File, data string) {
+	dataToWrite := data + "\n"
+	_, err := file.WriteString(dataToWrite)
 	if err != nil {
 		fmt.Printf(err.Error())
 	}
+}
 
+func main() {
+	fileName := "data.txt"
+	data := URLS()
+	f, err := os.Create(fileName)
+	if err != nil {
+		fmt.Printf(err.Error())
+	}
 	defer f.Close()
 
-	for _, url := range URLS() {
-		_, err = f.WriteString(url + "\n")
-		if err != nil {
-			fmt.Printf(err.Error())
+	var wg sync.WaitGroup
+	for i := 1; i <= 5; i++ {
+		for _, d := range data {
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				WriteToFile(f, d)
+			}()
 		}
 	}
-
-	fmt.Println("done")
+	wg.Wait()
 }
