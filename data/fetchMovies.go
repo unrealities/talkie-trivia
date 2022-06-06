@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"net/url"
 	"os"
 	"strconv"
-	"sync"
 )
 
 type PopularMovie struct {
@@ -20,6 +20,49 @@ type PopularMovie struct {
 
 type Config struct {
 	TMDBKey string `json:"TMDBKey"`
+}
+
+type TMDBResponse struct {
+	Adult               bool        `json:"adult"`
+	BackdropPath        string      `json:"backdrop_path"`
+	BelongsToCollection interface{} `json:"belongs_to_collection"`
+	Budget              int         `json:"budget"`
+	Genres              []struct {
+		ID   int    `json:"id"`
+		Name string `json:"name"`
+	} `json:"genres"`
+	Homepage            string  `json:"homepage"`
+	ID                  int     `json:"id"`
+	ImdbID              string  `json:"imdb_id"`
+	OriginalLanguage    string  `json:"original_language"`
+	OriginalTitle       string  `json:"original_title"`
+	Overview            string  `json:"overview"`
+	Popularity          float64 `json:"popularity"`
+	PosterPath          string  `json:"poster_path"`
+	ProductionCompanies []struct {
+		ID            int    `json:"id"`
+		LogoPath      string `json:"logo_path"`
+		Name          string `json:"name"`
+		OriginCountry string `json:"origin_country"`
+	} `json:"production_companies"`
+	ProductionCountries []struct {
+		Iso31661 string `json:"iso_3166_1"`
+		Name     string `json:"name"`
+	} `json:"production_countries"`
+	ReleaseDate     string `json:"release_date"`
+	Revenue         int    `json:"revenue"`
+	Runtime         int    `json:"runtime"`
+	SpokenLanguages []struct {
+		EnglishName string `json:"english_name"`
+		Iso6391     string `json:"iso_639_1"`
+		Name        string `json:"name"`
+	} `json:"spoken_languages"`
+	Status      string  `json:"status"`
+	Tagline     string  `json:"tagline"`
+	Title       string  `json:"title"`
+	Video       bool    `json:"video"`
+	VoteAverage float64 `json:"vote_average"`
+	VoteCount   int     `json:"vote_count"`
 }
 
 func TMDBKey() string {
@@ -73,22 +116,36 @@ func WriteToFile(file *os.File, data string) {
 
 func main() {
 	fileName := "data.txt"
-	data := URLS()
+	urls := URLS()
 	f, err := os.Create(fileName)
 	if err != nil {
 		fmt.Printf(err.Error())
 	}
 	defer f.Close()
 
-	var wg sync.WaitGroup
-	for i := 1; i <= 5; i++ {
-		for _, d := range data {
-			wg.Add(1)
-			go func() {
-				defer wg.Done()
-				WriteToFile(f, d)
-			}()
+	for _, url := range urls {
+		if url == "" {
+			continue
+		}
+		resp, err := http.Get(url)
+		if err != nil {
+			fmt.Printf(err.Error())
+		}
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Printf(err.Error())
+		}
+
+		// check for error response
+		data := (*json.RawMessage)(&body)
+		var validResponse TMDBResponse
+		err = json.Unmarshal(*data, &validResponse)
+		if err != nil {
+			fmt.Printf(err.Error())
+		}
+
+		if validResponse.OriginalTitle > "" {
+			WriteToFile(f, string(body))
 		}
 	}
-	wg.Wait()
 }
