@@ -1,2 +1,2 @@
 # talkie-trivia
-Guess the movie based on its description
+Use TMDB data to make a name-that-movie trivia game
