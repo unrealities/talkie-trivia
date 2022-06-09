@@ -1,7 +1,8 @@
-import React from "react";
-import movies from '../../data/movies.json'
+import React, { useEffect, useState } from 'react'
+import { Text, View } from 'react-native'
+import * as Movies from '../../data/movies.json'
 
-export interface Root {
+export interface Movie {
     adult: boolean
     backdrop_path: string
     belongs_to_collection: any
@@ -51,4 +52,21 @@ export interface Root {
     iso_639_1: string
     name: string
   }
+  
+  const MoviesContainer = () => {
+    let defaultMovie:Movie = Object.create({})
+    const [movie, setMovie] = useState(defaultMovie);
+  
+    useEffect(() => {
+      setMovie(Movies[0] as Movie)
+    }, [movie]);
+
+    return (
+      <View>
+        <Text>{movie.title}</Text>
+      </View>
+    )
+  }
+
+  export default MoviesContainer
   
