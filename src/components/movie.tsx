@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Text, View } from 'react-native'
-import * as Movies from '../../data/movies.json'
+import data from '../../data/movies.json'
 
 export interface Movie {
     adult: boolean
@@ -54,12 +54,9 @@ export interface Movie {
   }
   
   const MoviesContainer = () => {
-    let defaultMovie:Movie = Object.create({})
-    const [movie, setMovie] = useState(defaultMovie);
-  
-    useEffect(() => {
-      setMovie(Movies[0] as Movie)
-    }, [movie]);
+    const movies:Movie[] = data as Movie[];
+    let randomMovie:Movie = movies[Math.floor(Math.random()*movies.length)]
+    const [movie] = useState(randomMovie);
 
     return (
       <View>
