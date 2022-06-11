@@ -60,7 +60,8 @@ export interface Movie {
 
     return (
       <View>
-        <Text>{movie.title}</Text>
+        <Text>{movie.title} ({movie.id})</Text>
+        <Text>{movie.release_date}</Text>
       </View>
     )
   }
