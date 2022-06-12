@@ -62,6 +62,7 @@ export interface Movie {
       <View>
         <Text>{movie.title} ({movie.id})</Text>
         <Text>{movie.release_date}</Text>
+        <Text>IMDB Link: https://www.imdb.com/title/{movie.imdb_id}/</Text>
       </View>
     )
   }
