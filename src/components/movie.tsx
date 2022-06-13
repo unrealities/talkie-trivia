@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Text, View } from 'react-native'
+import * as Linking from 'expo-linking';
+
 import data from '../../data/movies.json'
 
 export interface Movie {
