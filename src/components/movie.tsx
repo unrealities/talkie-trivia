@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Text, View } from 'react-native'
+import React, { useState } from 'react'
+import { Text, TouchableOpacity, View } from 'react-native'
 import * as Linking from 'expo-linking';
 
 import data from '../../data/movies.json'
@@ -64,7 +64,9 @@ export interface Movie {
       <View>
         <Text>{movie.title} ({movie.id})</Text>
         <Text>{movie.release_date}</Text>
-        <Text>IMDB Link: https://www.imdb.com/title/{movie.imdb_id}/</Text>
+        <TouchableOpacity onPress={()=>{Linking.openURL("https://www.imdb.com/title/{movie.imdb_id}")}}>
+          <Text>IMDB Link: https://www.imdb.com/title/{movie.imdb_id}/</Text>
+        </TouchableOpacity>
       </View>
     )
   }
