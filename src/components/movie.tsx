@@ -64,7 +64,7 @@ export interface Movie {
       <View>
         <Text>{movie.title} ({movie.id})</Text>
         <Text>{movie.release_date}</Text>
-        <TouchableOpacity onPress={()=>{Linking.openURL("https://www.imdb.com/title/{movie.imdb_id}")}}>
+        <TouchableOpacity onPress={()=>{Linking.openURL(`https://www.imdb.com/title/${movie.imdb_id}`)}}>
           <Text>IMDB Link: https://www.imdb.com/title/{movie.imdb_id}/</Text>
         </TouchableOpacity>
       </View>
