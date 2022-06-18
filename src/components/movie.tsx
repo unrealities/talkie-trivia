@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import * as Linking from 'expo-linking';
 
 import data from '../../data/movies.json'
@@ -61,7 +61,7 @@ export interface Movie {
     const [movie] = useState(randomMovie);
 
     return (
-      <View>
+      <View style={styles.container}>
         <Text>{movie.title} ({movie.id})</Text>
         <Text>{movie.tagline}</Text>
         <Text>{movie.release_date}</Text>
@@ -72,6 +72,14 @@ export interface Movie {
       </View>
     )
   }
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 8,
+      justifyContent: 'center'
+    },
+  });
 
   export default MoviesContainer
   
