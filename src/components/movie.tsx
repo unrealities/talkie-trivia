@@ -69,6 +69,7 @@ export interface Movie {
           <Text>IMDB Link: https://www.imdb.com/title/{movie.imdb_id}/</Text>
         </TouchableOpacity>
         <Text>{movie.overview}</Text>
+        <Text>{movie.poster_path}</Text>
       </View>
     )
   }
