@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import * as Linking from 'expo-linking';
 
 import data from '../../data/movies.json'
@@ -69,7 +69,10 @@ export interface Movie {
           <Text>IMDB Link: https://www.imdb.com/title/{movie.imdb_id}/</Text>
         </TouchableOpacity>
         <Text>{movie.overview}</Text>
-        <Text>https://image.tmdb.org/t/p/original{movie.poster_path}</Text>
+        <Image 
+          source={{ uri: `https://image.tmdb.org/t/p/original${movie.poster_path}` }}
+          style={{ width: 100, height: '100%' }}
+        />
       </View>
     )
   }
