@@ -71,7 +71,7 @@ export interface Movie {
         <Text>{movie.overview}</Text>
         <Image 
           source={{ uri: `https://image.tmdb.org/t/p/original${movie.poster_path}` }}
-          style={{ width: 100, height: '100%' }}
+          style={{ width: '100%', height: '300px' }}
         />
       </View>
     )
