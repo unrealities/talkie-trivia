@@ -58,7 +58,9 @@ export interface Movie {
   const MoviesContainer = () => {
     const movies:Movie[] = data as Movie[];
     let randomMovie:Movie = movies[Math.floor(Math.random()*movies.length)]
-    const [movie] = useState(randomMovie);
+    const [movie] = useState(randomMovie)
+    let summarySplit = movie.overview.split(' ')
+    let summarySubLength = Math.floor(summarySplit.length / 5)
 
     return (
       <View style={styles.container}>
@@ -68,7 +70,7 @@ export interface Movie {
         <TouchableOpacity onPress={()=>{Linking.openURL(`https://www.imdb.com/title/${movie.imdb_id}`)}}>
           <Text>IMDB Link: https://www.imdb.com/title/{movie.imdb_id}/</Text>
         </TouchableOpacity>
-        <Text>{movie.overview}</Text>
+        <Text>({summarySplit.length}) ({summarySubLength}) {summarySplit}</Text>
         <Image 
           source={{ uri: `https://image.tmdb.org/t/p/original${movie.poster_path}` }}
           style={{ width: '100%', height: '300px' }}
