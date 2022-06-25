@@ -61,8 +61,16 @@ export interface Movie {
     const [movie] = useState(randomMovie)
     let imdbURI = 'https://www.imdb.com/title/'
     let imageURI = 'https://image.tmdb.org/t/p/original'
+    let splits = 5
     let summarySplit = movie.overview.split(' ')
-    let summarySubLength = Math.floor(summarySplit.length / 5)
+    let summarySubLength = Math.floor(summarySplit.length / splits)
+    let clues = []
+    let wordTrack = 0
+    for (let i = 0; i < splits; i++) {
+      for (let j = 0; j < summarySubLength; j++) {
+        clues[i]
+      }
+    }
 
     return (
       <View style={styles.container}>
