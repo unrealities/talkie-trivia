@@ -56,7 +56,7 @@ export interface Movie {
   }
   
   const MoviesContainer = () => {
-    const movies:Movie[] = data as Movie[];
+    const movies:Movie[] = data as Movie[]
     let randomMovie:Movie = movies[Math.floor(Math.random()*movies.length)]
     const [movie] = useState(randomMovie)
     let imdbURI = 'https://www.imdb.com/title/'
@@ -64,11 +64,12 @@ export interface Movie {
     let splits = 5
     let summarySplit = movie.overview.split(' ')
     let summarySubLength = Math.floor(summarySplit.length / splits)
-    let clues = []
+    let clues: string[] = []
     let wordTrack = 0
     for (let i = 0; i < splits; i++) {
       for (let j = 0; j < summarySubLength; j++) {
-        clues[i]
+        clues[i] = clues[i] + summarySplit[wordTrack] + " "
+        wordTrack++
       }
     }
 
@@ -81,6 +82,7 @@ export interface Movie {
           <Text>IMDB Link: https://www.imdb.com/title/{movie.imdb_id}/</Text>
         </TouchableOpacity>
         <Text>({summarySplit.length}) ({summarySubLength}) {summarySplit}</Text>
+        <Text>{clues}</Text>
         <Image 
           source={{ uri: `${imageURI}${movie.poster_path}` }}
           style={{ width: '100%', height: '300px' }}
