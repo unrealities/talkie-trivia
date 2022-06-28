@@ -13,6 +13,10 @@ const CluesContainer = (props: CluesProps) => {
     let wordTrack = 0
     for (let i = 0; i < splits; i++) {
         for (let j = 0; j <= summarySubLength; j++) {
+            // TODO: handle being near the end of a sentence or comma
+            if (j > summarySubLength - 2 && summarySplit[wordTrack].endsWith('.') ) {
+                continue
+            }
             if (wordTrack >= summarySplit.length) {
                 break
             }
