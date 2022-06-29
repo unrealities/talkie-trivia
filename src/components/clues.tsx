@@ -9,15 +9,19 @@ const CluesContainer = (props: CluesProps) => {
     let splits = 5
     let summarySplit = props.summary.split(' ')
     let summarySubLength = Math.floor(summarySplit.length / splits)
+    let clueLength = summarySubLength
     let clues: string[] = ["", "", "", "", ""]
     let wordTrack = 0
     for (let i = 0; i < splits; i++) {
-        for (let j = 0; j <= summarySubLength; j++) {
-            // TODO: handle being near the end of a sentence or comma
-            if (j > summarySubLength - 2 && summarySplit[wordTrack].endsWith('.') ) {
-                continue
-            }
+        for (let j = 0; j <= clueLength; j++) {
             if (wordTrack >= summarySplit.length) {
+                clueLength = summarySubLength
+                break
+            }
+            if (j > clueLength - 2 && (summarySplit[wordTrack].endsWith('.') || summarySplit[wordTrack].endsWith(',') )) {
+                clues[i] = clues[i] + summarySplit[wordTrack]
+                wordTrack++
+                clueLength += clueLength - j
                 break
             }
             clues[i] = clues[i] + summarySplit[wordTrack] + " "
