@@ -59,13 +59,16 @@ export interface SpokenLanguage {
 const MoviesContainer = () => {
   const movies: Movie[] = data as Movie[]
   let randomMovie: Movie = movies[Math.floor(Math.random() * movies.length)]
+  while (randomMovie.overview.length > 100 || randomMovie.overview.length < 16 ) {
+    randomMovie = movies[Math.floor(Math.random() * movies.length)]
+  }
   const [movie] = useState(randomMovie)
   let imdbURI = 'https://www.imdb.com/title/'
   let imageURI = 'https://image.tmdb.org/t/p/original'
 
   return (
     <View style={styles.container}>
-      <Text>{movie.title} ({movie.id})</Text>
+      <Text>{movie.title} ({movie.id}) ({movie.popularity})</Text>
       <Text>{movie.tagline}</Text>
       <Text>{movie.release_date}</Text>
       <TouchableOpacity onPress={() => { Linking.openURL(`${imdbURI}${movie.imdb_id}`) }}>
