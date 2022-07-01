@@ -59,7 +59,7 @@ export interface SpokenLanguage {
 const MoviesContainer = () => {
   const movies: Movie[] = data as Movie[]
   let randomMovie: Movie = movies[Math.floor(Math.random() * movies.length)]
-  while (randomMovie.overview.length > 100 || randomMovie.overview.length < 16 ) {
+  while (randomMovie.overview.length > 100 || randomMovie.overview.length < 12 ) {
     randomMovie = movies[Math.floor(Math.random() * movies.length)]
   }
   const [movie] = useState(randomMovie)

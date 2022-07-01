@@ -13,7 +13,7 @@ const CluesContainer = (props: CluesProps) => {
     let clues: string[] = ["", "", "", "", ""]
     let wordTrack = 0
     for (let i = 0; i < splits; i++) {
-        for (let j = 0; j <= clueLength; j++) {
+        for (let j = 0; j < clueLength; j++) {
             if (wordTrack >= summarySplit.length) {
                 clueLength = summarySubLength
                 break
@@ -27,6 +27,11 @@ const CluesContainer = (props: CluesProps) => {
             clues[i] = clues[i] + summarySplit[wordTrack] + " "
             wordTrack++
         }
+    }
+
+    while (wordTrack < summarySplit.length) {
+        clues[splits-1] = clues[splits-1] + summarySplit[wordTrack] + " "
+        wordTrack ++
     }
 
     return (
