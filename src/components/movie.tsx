@@ -59,9 +59,18 @@ export interface SpokenLanguage {
 const MoviesContainer = () => {
   const movies: Movie[] = data as Movie[]
   let randomMovie: Movie = movies[Math.floor(Math.random() * movies.length)]
-  while (randomMovie.overview.length > 100 || randomMovie.overview.length < 12 ) {
+  while (randomMovie.overview.length > 350 || 
+         randomMovie.overview.length < 60  ||
+         randomMovie.runtime < 80 ||
+         randomMovie.popularity < 40 ||
+         randomMovie.vote_count < 100) {
     randomMovie = movies[Math.floor(Math.random() * movies.length)]
+    console.log(`overview length: ${randomMovie.overview.length}`)
+    console.log(`runtime: ${randomMovie.runtime}`)
+    console.log(`popularity: ${randomMovie.popularity}`)
+    console.log(JSON.stringify(randomMovie))
   }
+  console.log(JSON.stringify(randomMovie))
   const [movie] = useState(randomMovie)
   let imdbURI = 'https://www.imdb.com/title/'
   let imageURI = 'https://image.tmdb.org/t/p/original'
