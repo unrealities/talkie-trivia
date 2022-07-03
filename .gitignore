@@ -17,3 +17,4 @@ web-build/
 .env
 app.config.js
 data/secrets.json
+data/credits_07_03_2022.json.gz
