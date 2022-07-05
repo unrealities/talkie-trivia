@@ -3,13 +3,15 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import * as Linking from 'expo-linking'
 import CluesContainer from './clues'
 
-import data from '../../data/movies.json'
+import moviesData from '../../data/movies.json'
+// import creditsData from '../../data/credits.json'
 
 export interface Movie {
   adult: boolean
   backdrop_path: string
   belongs_to_collection: any
   budget: number
+  credits: Credits
   genres: Genre[]
   homepage: string
   id: number
@@ -56,20 +58,61 @@ export interface SpokenLanguage {
   name: string
 }
 
+export interface Credits {
+  id: number
+  cast: Cast[]
+  crew: Crew[]
+}
+
+export interface Cast {
+  adult: boolean
+  gender: number
+  id: number
+  known_for_department: string
+  name: string
+  original_name: string
+  popularity: number
+  profile_path: string
+  cast_id: number
+  character: string
+  credit_id: string
+  order: number
+}
+
+export interface Crew {
+  adult: boolean
+  gender: number
+  id: number
+  known_for_department: string
+  name: string
+  original_name: string
+  popularity: number
+  profile_path?: string
+  credit_id: string
+  department: string
+  job: string
+}
+
+
 const MoviesContainer = () => {
-  const movies: Movie[] = data as Movie[]
-  let randomMovie: Movie = movies[Math.floor(Math.random() * movies.length)]
+  // TODO: Unnecessary to load all this data into memory
+  const movies: Movie[] = moviesData as Movie[]
+  // const credits: Credits[] = creditsData as Credits[]
+
+  let randomMovieID = Math.floor(Math.random() * movies.length)
+  let randomMovie: Movie = movies[randomMovieID]
   while (randomMovie.overview.length > 350 || 
          randomMovie.overview.length < 60  ||
          randomMovie.runtime < 80 ||
          randomMovie.popularity < 40 ||
          randomMovie.vote_count < 100) {
-    randomMovie = movies[Math.floor(Math.random() * movies.length)]
+    randomMovie = movies[randomMovieID]
     console.log(`overview length: ${randomMovie.overview.length}`)
     console.log(`runtime: ${randomMovie.runtime}`)
     console.log(`popularity: ${randomMovie.popularity}`)
     console.log(JSON.stringify(randomMovie))
   }
+  // randomMovie.credits = credits[randomMovieID]
   console.log(JSON.stringify(randomMovie))
   const [movie] = useState(randomMovie)
   let imdbURI = 'https://www.imdb.com/title/'
