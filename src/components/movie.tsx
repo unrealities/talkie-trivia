@@ -4,7 +4,7 @@ import * as Linking from 'expo-linking'
 import CluesContainer from './clues'
 
 import moviesData from '../../data/movies.json'
-// import creditsData from '../../data/credits.json'
+import creditsData from '../../data/credits.json'
 
 export interface Movie {
   adult: boolean
@@ -97,23 +97,31 @@ export interface Crew {
 const MoviesContainer = () => {
   // TODO: Unnecessary to load all this data into memory
   const movies: Movie[] = moviesData as Movie[]
-  // const credits: Credits[] = creditsData as Credits[]
+  const credits: Credits[] = creditsData as Credits[]
 
   let randomMovieID = Math.floor(Math.random() * movies.length)
   let randomMovie: Movie = movies[randomMovieID]
-  while (randomMovie.overview.length > 350 || 
-         randomMovie.overview.length < 60  ||
-         randomMovie.runtime < 80 ||
-         randomMovie.popularity < 40 ||
-         randomMovie.vote_count < 100) {
-    randomMovie = movies[randomMovieID]
-    console.log(`overview length: ${randomMovie.overview.length}`)
-    console.log(`runtime: ${randomMovie.runtime}`)
-    console.log(`popularity: ${randomMovie.popularity}`)
-    console.log(JSON.stringify(randomMovie))
-  }
-  // randomMovie.credits = credits[randomMovieID]
+  // while (randomMovie.overview.length > 350 || 
+  //        randomMovie.overview.length < 60  ||
+  //        randomMovie.runtime < 80 ||
+  //        randomMovie.popularity < 40 ||
+  //        randomMovie.vote_count < 100) {
+  //   randomMovie = movies[randomMovieID]
+  //   console.log(`overview length: ${randomMovie.overview.length}`)
+  //   console.log(`runtime: ${randomMovie.runtime}`)
+  //   console.log(`popularity: ${randomMovie.popularity}`)
+  //   console.log(JSON.stringify(randomMovie))
+  // }
+  randomMovie.credits = credits[randomMovieID]
   console.log(JSON.stringify(randomMovie))
+
+  let director = ""
+  randomMovie.credits.crew.forEach((crew) => {
+    if (crew.job == "Director") {
+      director = crew.original_name
+    }
+  })
+
   const [movie] = useState(randomMovie)
   let imdbURI = 'https://www.imdb.com/title/'
   let imageURI = 'https://image.tmdb.org/t/p/original'
@@ -123,6 +131,7 @@ const MoviesContainer = () => {
       <Text>{movie.title} ({movie.id}) ({movie.popularity})</Text>
       <Text>{movie.tagline}</Text>
       <Text>{movie.release_date}</Text>
+      <Text>Director: {director}</Text>
       <TouchableOpacity onPress={() => { Linking.openURL(`${imdbURI}${movie.imdb_id}`) }}>
         <Text>IMDB Link: https://www.imdb.com/title/{movie.imdb_id}/</Text>
       </TouchableOpacity>
