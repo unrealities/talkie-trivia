@@ -121,6 +121,14 @@ const MoviesContainer = () => {
       director = crew.original_name
     }
   })
+  let actors = [""]
+  randomMovie.credits.cast.forEach((cast) => {
+    actors[cast.order] = cast.original_name
+  })
+  let displayActors = ""
+  actors.forEach((actor) => {
+    displayActors = displayActors + " | " + actor
+  })
 
   const [movie] = useState(randomMovie)
   let imdbURI = 'https://www.imdb.com/title/'
@@ -132,6 +140,7 @@ const MoviesContainer = () => {
       <Text>{movie.tagline}</Text>
       <Text>{movie.release_date}</Text>
       <Text>Director: {director}</Text>
+      <Text>Actors: {displayActors}</Text>
       <TouchableOpacity onPress={() => { Linking.openURL(`${imdbURI}${movie.imdb_id}`) }}>
         <Text>IMDB Link: https://www.imdb.com/title/{movie.imdb_id}/</Text>
       </TouchableOpacity>
