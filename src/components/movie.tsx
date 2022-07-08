@@ -123,7 +123,7 @@ const MoviesContainer = () => {
   })
   let actors = [""]
   randomMovie.credits.cast.forEach((cast) => {
-    actors[cast.order] = cast.original_name
+    actors[cast.order] = cast.name + "(" + cast.popularity + ")"
   })
   let displayActors = ""
   actors.forEach((actor) => {
