@@ -39,10 +39,17 @@ type TMDBCreditsResponse struct {
 }
 
 type Actor struct {
-	ID          int     `json:"id"`
-	Name        string  `json:"name"`
-	Popularity  float64 `json:"popularity"`
-	ProfilePath string  `json:"profile_path"`
+	ID          int          `json:"id"`
+	MovieCount  int          `json:"movie_count"`
+	MovieOrders []MovieOrder `json:"movie_orders"`
+	Name        string       `json:"name"`
+	Popularity  float64      `json:"popularity"`
+	ProfilePath string       `json:"profile_path"`
+}
+
+type MovieOrder struct {
+	ID    int `json:"id"`
+	Order int `json:"order"`
 }
 
 func main() {
@@ -60,9 +67,20 @@ func main() {
 	actors := make(map[int]Actor)
 	for _, movie := range movies {
 		for _, cast := range movie.Cast {
-			if cast.Popularity > 20 || cast.Order < 3 {
+			movieOrder := MovieOrder{
+				ID:    movie.ID,
+				Order: cast.Order,
+			}
+			actor, exist := actors[cast.ID]
+			if exist {
+				actor.MovieOrders = append(actor.MovieOrders, movieOrder)
+				actor.MovieCount = len(actor.MovieOrders)
+				actors[cast.ID] = actor
+			} else {
 				actors[cast.ID] = Actor{
 					ID:          cast.ID,
+					MovieCount:  1,
+					MovieOrders: []MovieOrder{movieOrder},
 					Name:        cast.Name,
 					Popularity:  cast.Popularity,
 					ProfilePath: cast.ProfilePath,
@@ -71,8 +89,30 @@ func main() {
 		}
 	}
 
-	for _, actor := range actors {
-		fmt.Println(actor.Name)
+	popularActors := make(map[int]Actor)
+	for _, a := range actors {
+		if a.Popularity > 9.0 {
+			popularActors[a.ID] = a
+			continue
+		}
+		for _, m := range a.MovieOrders {
+			if m.Order == 0 {
+				popularActors[a.ID] = a
+				continue
+			}
+		}
 	}
-	fmt.Println(len(actors))
+
+	actorMostMovies := Actor{}
+	for _, pa := range popularActors {
+		if pa.MovieCount > actorMostMovies.MovieCount {
+			actorMostMovies = pa
+		}
+		fmt.Println(pa.Name)
+		fmt.Println(pa.MovieCount)
+		fmt.Println(pa.MovieOrders)
+	}
+	fmt.Println(actorMostMovies)
+	fmt.Println(actorMostMovies.MovieCount)
+	fmt.Println(len(popularActors))
 }
