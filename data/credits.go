@@ -47,6 +47,14 @@ type Actor struct {
 	ProfilePath string       `json:"profile_path"`
 }
 
+type Director struct {
+	ID          int     `json:"id"`
+	MovieCount  int     `json:"movie_count"`
+	Name        string  `json:"name"`
+	Popularity  float64 `json:"popularity"`
+	ProfilePath string  `json:"profile_path"`
+}
+
 type MovieOrder struct {
 	ID    int `json:"id"`
 	Order int `json:"order"`
@@ -65,6 +73,7 @@ func main() {
 	json.Unmarshal([]byte(byteValue), &movies)
 
 	actors := make(map[int]Actor)
+	directors := make(map[int]Director)
 	for _, movie := range movies {
 		for _, cast := range movie.Cast {
 			movieOrder := MovieOrder{
@@ -87,11 +96,26 @@ func main() {
 				}
 			}
 		}
+		for _, crew := range movie.Crew {
+			director, exist := directors[crew.ID]
+			if exist {
+				director.MovieCount++
+				directors[crew.ID] = director
+			} else {
+				directors[crew.ID] = Director{
+					ID:          crew.ID,
+					MovieCount:  1,
+					Name:        crew.Name,
+					Popularity:  crew.Popularity,
+					ProfilePath: crew.ProfilePath,
+				}
+			}
+		}
 	}
 
 	popularActors := make(map[int]Actor)
 	for _, a := range actors {
-		if a.Popularity > 9.0 {
+		if a.Popularity > 9.0 || a.MovieCount > 9 {
 			popularActors[a.ID] = a
 			continue
 		}
@@ -100,6 +124,14 @@ func main() {
 				popularActors[a.ID] = a
 				continue
 			}
+		}
+	}
+
+	popularDirectors := make(map[int]Director)
+	for _, d := range directors {
+		if d.Popularity > 9.0 || d.MovieCount > 9 {
+			popularDirectors[d.ID] = d
+			continue
 		}
 	}
 
@@ -112,7 +144,7 @@ func main() {
 		fmt.Println(pa.MovieCount)
 		fmt.Println(pa.MovieOrders)
 	}
-	fmt.Println(actorMostMovies)
-	fmt.Println(actorMostMovies.MovieCount)
 	fmt.Println(len(popularActors))
+	fmt.Println(popularDirectors)
+	fmt.Println(len(popularDirectors))
 }
