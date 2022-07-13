@@ -97,6 +97,9 @@ func main() {
 			}
 		}
 		for _, crew := range movie.Crew {
+			if crew.Job != "Director" {
+				continue
+			}
 			director, exist := directors[crew.ID]
 			if exist {
 				director.MovieCount++
