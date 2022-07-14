@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 )
 
@@ -143,11 +144,21 @@ func main() {
 		if pa.MovieCount > actorMostMovies.MovieCount {
 			actorMostMovies = pa
 		}
-		fmt.Println(pa.Name)
-		fmt.Println(pa.MovieCount)
-		fmt.Println(pa.MovieOrders)
 	}
-	fmt.Println(len(popularActors))
-	fmt.Println(popularDirectors)
-	fmt.Println(len(popularDirectors))
+
+	pd, err := json.MarshalIndent(popularDirectors, "", "  ")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	f, err := os.Create("popularDirectors.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+
+	_, err = f.WriteString(string(pd))
+	if err != nil {
+		log.Fatal(err)
+	}
 }
