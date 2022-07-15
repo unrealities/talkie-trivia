@@ -146,18 +146,34 @@ func main() {
 		}
 	}
 
-	pd, err := json.MarshalIndent(popularDirectors, "", "  ")
+	// pd, err := json.MarshalIndent(popularDirectors, "", "  ")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// f, err := os.Create("popularDirectors.json")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer f.Close()
+
+	// _, err = f.WriteString(string(pd))
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	pa, err := json.MarshalIndent(popularActors, "", "  ")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	f, err := os.Create("popularDirectors.json")
+	f, err := os.Create("popularActors.json")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer f.Close()
 
-	_, err = f.WriteString(string(pd))
+	_, err = f.WriteString(string(pa))
 	if err != nil {
 		log.Fatal(err)
 	}
