@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import * as Linking from 'expo-linking'
+import { Picker } from '@react-native-picker/picker';
 import CluesContainer from './clues'
 
 import moviesData from '../../data/movies.json'
@@ -95,6 +96,7 @@ export interface Crew {
 
 
 const MoviesContainer = () => {
+  const [selectedMovie, setSelectedMovie] = useState();
   // TODO: Unnecessary to load all this data into memory
   const movies: Movie[] = moviesData as Movie[]
   const credits: Credits[] = creditsData as Credits[]
@@ -134,8 +136,18 @@ const MoviesContainer = () => {
   let imdbURI = 'https://www.imdb.com/title/'
   let imageURI = 'https://image.tmdb.org/t/p/original'
 
+
+  // TODO: switch below hardcoded values to a list of movie titles populated from movies.json
   return (
     <View style={styles.container}>
+      <Picker
+        selectedValue={selectedMovie}
+        onValueChange={(itemValue, itemIndex) =>
+          setSelectedMovie(itemValue)
+        }>
+        <Picker.Item label="Office Space" value="1234" />
+        <Picker.Item label="Back to the Future" value="5678" />
+      </Picker>
       <Text>{movie.title} ({movie.id}) ({movie.popularity})</Text>
       <Text>{movie.tagline}</Text>
       <Text>{movie.release_date}</Text>
