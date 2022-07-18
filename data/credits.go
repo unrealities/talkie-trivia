@@ -56,6 +56,21 @@ type Director struct {
 	ProfilePath string  `json:"profile_path"`
 }
 
+type MovieActor struct {
+	ID          int     `json:"id"`
+	Order       int     `json:"order"`
+	Name        string  `json:"name"`
+	Popularity  float64 `json:"popularity"`
+	ProfilePath string  `json:"profile_path"`
+}
+
+type MovieDirector struct {
+	ID          int     `json:"id"`
+	Name        string  `json:"name"`
+	Popularity  float64 `json:"popularity"`
+	ProfilePath string  `json:"profile_path"`
+}
+
 type MovieOrder struct {
 	ID    int `json:"id"`
 	Order int `json:"order"`
@@ -75,6 +90,8 @@ func main() {
 
 	actors := make(map[int]Actor)
 	directors := make(map[int]Director)
+	movieActors := make(map[int][]MovieActor)
+	movieDirectors := make(map[int]MovieDirector)
 	for _, movie := range movies {
 		for _, cast := range movie.Cast {
 			movieOrder := MovieOrder{
@@ -113,6 +130,36 @@ func main() {
 					Popularity:  crew.Popularity,
 					ProfilePath: crew.ProfilePath,
 				}
+			}
+		}
+	}
+
+	for _, movie := range movies {
+		for _, cast := range movie.Cast {
+			movieActor := MovieActor{
+				ID:          cast.ID,
+				Name:        cast.Name,
+				Order:       cast.Order,
+				Popularity:  cast.Popularity,
+				ProfilePath: cast.ProfilePath,
+			}
+			ma, exist := movieActors[movie.ID]
+			if exist {
+				ma = append(ma, movieActor)
+				movieActors[movie.ID] = ma
+			} else {
+				movieActors[movie.ID] = []MovieActor{movieActor}
+			}
+		}
+		for _, crew := range movie.Crew {
+			if crew.Job != "Director" {
+				continue
+			}
+			movieDirectors[movie.ID] = MovieDirector{
+				ID:          crew.ID,
+				Name:        crew.Name,
+				Popularity:  crew.Popularity,
+				ProfilePath: crew.ProfilePath,
 			}
 		}
 	}
@@ -162,19 +209,51 @@ func main() {
 	// 	log.Fatal(err)
 	// }
 
-	pa, err := json.MarshalIndent(popularActors, "", "  ")
+	// pa, err := json.MarshalIndent(popularActors, "", "  ")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// f, err := os.Create("popularActors.json")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer f.Close()
+
+	// _, err = f.WriteString(string(pa))
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	md, err := json.MarshalIndent(movieDirectors, "", "  ")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	f, err := os.Create("popularActors.json")
+	f, err := os.Create("movieDirectors.json")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer f.Close()
 
-	_, err = f.WriteString(string(pa))
+	_, err = f.WriteString(string(md))
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// ma, err := json.MarshalIndent(movieActors, "", "  ")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// f, err := os.Create("movieActors.json")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer f.Close()
+
+	// _, err = f.WriteString(string(ma))
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 }
