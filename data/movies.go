@@ -52,15 +52,54 @@ type DetailedMovie struct {
 }
 
 type Movie struct {
-	ID          int    `json:"id"`
-	Overview    string `json:"overview"`
-	PosterPath  string `json:"poster_path"`
-	ReleaseDate string `json:"release_date"`
-	Tagline     string `json:"tagline"`
-	Title       string `json:"title"`
+	Actors      []MovieActor  `json:"actor"`
+	Director    MovieDirector `json:"director"`
+	ID          int           `json:"id"`
+	Overview    string        `json:"overview"`
+	PosterPath  string        `json:"poster_path"`
+	ReleaseDate string        `json:"release_date"`
+	Tagline     string        `json:"tagline"`
+	Title       string        `json:"title"`
+}
+
+type MovieActor struct {
+	ID          int     `json:"id"`
+	Order       int     `json:"order"`
+	Name        string  `json:"name"`
+	Popularity  float64 `json:"popularity"`
+	ProfilePath string  `json:"profile_path"`
+}
+
+type MovieDirector struct {
+	ID          int     `json:"id"`
+	Name        string  `json:"name"`
+	Popularity  float64 `json:"popularity"`
+	ProfilePath string  `json:"profile_path"`
 }
 
 func main() {
+	actorFile, err := os.Open("movieActors.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer actorFile.Close()
+
+	actorByteValue, _ := ioutil.ReadAll(actorFile)
+
+	var actors [][]MovieActor
+	json.Unmarshal([]byte(actorByteValue), &actors)
+
+	directorFile, err := os.Open("movieDirectors.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer actorFile.Close()
+
+	directorByteValue, _ := ioutil.ReadAll(directorFile)
+
+	var directors []MovieDirector
+	json.Unmarshal([]byte(directorByteValue), &directors)
+
 	jsonFile, err := os.Open("movies.json")
 	if err != nil {
 		fmt.Println(err)
@@ -80,6 +119,8 @@ func main() {
 			movie.Popularity < 40 ||
 			movie.VoteCount < 100 {
 			m := Movie{
+				Actors:      actors[movie.ID],
+				Director:    directors[movie.ID],
 				ID:          movie.ID,
 				Overview:    movie.Overview,
 				PosterPath:  movie.PosterPath,
