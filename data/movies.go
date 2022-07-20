@@ -52,8 +52,9 @@ type DetailedMovie struct {
 }
 
 type Movie struct {
-	Actors      []MovieActor  `json:"actor"`
+	Actors      []MovieActor  `json:"actors"`
 	Director    MovieDirector `json:"director"`
+	ImdbID      string        `json:"imdb_id"`
 	ID          int           `json:"id"`
 	Overview    string        `json:"overview"`
 	PosterPath  string        `json:"poster_path"`
@@ -86,7 +87,7 @@ func main() {
 
 	actorByteValue, _ := ioutil.ReadAll(actorFile)
 
-	var actors [][]MovieActor
+	var actors map[int][]MovieActor
 	json.Unmarshal([]byte(actorByteValue), &actors)
 
 	directorFile, err := os.Open("movieDirectors.json")
@@ -97,7 +98,7 @@ func main() {
 
 	directorByteValue, _ := ioutil.ReadAll(directorFile)
 
-	var directors []MovieDirector
+	var directors map[int]MovieDirector
 	json.Unmarshal([]byte(directorByteValue), &directors)
 
 	jsonFile, err := os.Open("movies.json")
@@ -121,6 +122,7 @@ func main() {
 			m := Movie{
 				Actors:      actors[movie.ID],
 				Director:    directors[movie.ID],
+				ImdbID:      movie.ImdbID,
 				ID:          movie.ID,
 				Overview:    movie.Overview,
 				PosterPath:  movie.PosterPath,
