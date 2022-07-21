@@ -4,16 +4,11 @@ import * as Linking from 'expo-linking'
 import { Picker } from '@react-native-picker/picker'
 import CluesContainer from './clues'
 
-import moviesData from '../../data/popularMovies.json'
-
-export interface Movies {
-  id: Movie
-}
-
 export interface Movie {
   actors: Actor[]
   director: Director
   id: number
+  imdb_id: number
   overview: string
   poster_path: string
   release_date: string
@@ -38,15 +33,17 @@ export interface Director {
 
 const MoviesContainer = () => {
   const [selectedMovie, setSelectedMovie] = useState()
-  // TODO: access moviesData
+  let movies = new Map<number, Movie>(require('../../data/popularMovies'))
+  
 
-  let randomMovieID = Math.floor(Math.random() * movies.length)
-  let randomMovie: Movie = movies[randomMovieID]
+  let randomMovieIndex = Math.floor(Math.random() * movies.size)
+  let randomMovieID = Array.from(movies.keys())[randomMovieIndex]
+  let randomMovie = movies.get(randomMovieID) as Movie
 
   console.log(JSON.stringify(randomMovie))
 
   let displayActors = ""
-  actors.forEach((actor) => {
+  randomMovie.actors.forEach((actor) => {
     displayActors = displayActors + " | " + actor
   })
 
@@ -66,10 +63,10 @@ const MoviesContainer = () => {
         <Picker.Item label="Office Space" value="1234" />
         <Picker.Item label="Back to the Future" value="5678" />
       </Picker>
-      <Text>{movie.title} ({movie.id}) ({movie.popularity})</Text>
+      <Text>{movie.title} ({movie.id})</Text>
       <Text>{movie.tagline}</Text>
       <Text>{movie.release_date}</Text>
-      <Text>Director: {director}</Text>
+      <Text>Director: {movie.director}</Text>
       <Text>Actors: {displayActors}</Text>
       <TouchableOpacity onPress={() => { Linking.openURL(`${imdbURI}${movie.imdb_id}`) }}>
         <Text>IMDB Link: https://www.imdb.com/title/{movie.imdb_id}/</Text>
