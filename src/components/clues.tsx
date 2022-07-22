@@ -36,9 +36,9 @@ const CluesContainer = (props: CluesProps) => {
 
     return (
         <View style={styles.container}>
-            {clues.map((clue) => {
+            {clues.map((clue, i) => {
                 return (
-                    <Text>{clue}</Text>
+                    <Text key={i}>{clue}</Text>
                 );
             })}
         </View>

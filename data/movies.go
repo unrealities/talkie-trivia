@@ -112,7 +112,7 @@ func main() {
 	var movies []DetailedMovie
 	json.Unmarshal([]byte(byteValue), &movies)
 
-	popularMovies := make(map[int]Movie)
+	popularMovies := []Movie{}
 	for _, movie := range movies {
 		if len(movie.Overview) > 350 ||
 			len(movie.Overview) < 60 ||
@@ -130,7 +130,7 @@ func main() {
 				Tagline:     movie.Tagline,
 				Title:       movie.Title,
 			}
-			popularMovies[m.ID] = m
+			popularMovies = append(popularMovies, m)
 		}
 
 	}

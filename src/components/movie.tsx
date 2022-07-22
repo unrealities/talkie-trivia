@@ -33,18 +33,13 @@ export interface Director {
 
 const MoviesContainer = () => {
   const [selectedMovie, setSelectedMovie] = useState()
-  let movies = new Map<number, Movie>(require('../../data/popularMovies'))
-  
-
-  let randomMovieIndex = Math.floor(Math.random() * movies.size)
-  let randomMovieID = Array.from(movies.keys())[randomMovieIndex]
-  let randomMovie = movies.get(randomMovieID) as Movie
-
-  console.log(JSON.stringify(randomMovie))
+  let movies: Movie[] = require('../../data/popularMovies.json')
+  let randomMovieIndex = Math.floor(Math.random() * movies.length)
+  let randomMovie = movies[randomMovieIndex] as Movie
 
   let displayActors = ""
   randomMovie.actors.forEach((actor) => {
-    displayActors = displayActors + " | " + actor
+    displayActors = displayActors + " | " + actor.name
   })
 
   const [movie] = useState(randomMovie)
@@ -66,7 +61,7 @@ const MoviesContainer = () => {
       <Text>{movie.title} ({movie.id})</Text>
       <Text>{movie.tagline}</Text>
       <Text>{movie.release_date}</Text>
-      <Text>Director: {movie.director}</Text>
+      <Text>Director: {movie.director.name}</Text>
       <Text>Actors: {displayActors}</Text>
       <TouchableOpacity onPress={() => { Linking.openURL(`${imdbURI}${movie.imdb_id}`) }}>
         <Text>IMDB Link: https://www.imdb.com/title/{movie.imdb_id}/</Text>
