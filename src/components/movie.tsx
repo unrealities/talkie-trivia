@@ -32,7 +32,6 @@ export interface Director {
 }
 
 const MoviesContainer = () => {
-  const [selectedMovie, setSelectedMovie] = useState()
   let movies: Movie[] = require('../../data/popularMovies.json')
   let randomMovieIndex = Math.floor(Math.random() * movies.length)
   let randomMovie = movies[randomMovieIndex] as Movie
@@ -50,14 +49,7 @@ const MoviesContainer = () => {
   // TODO: switch below hardcoded values to a list of movie titles populated from movies.json
   return (
     <View style={styles.container}>
-      <Picker
-        selectedValue={selectedMovie}
-        onValueChange={(itemValue, itemIndex) =>
-          setSelectedMovie(itemValue)
-        }>
-        <Picker.Item label="Office Space" value="1234" />
-        <Picker.Item label="Back to the Future" value="5678" />
-      </Picker>
+      <MoviesPicker />
       <Text>{movie.title} ({movie.id})</Text>
       <Text>{movie.tagline}</Text>
       <Text>{movie.release_date}</Text>
@@ -72,6 +64,26 @@ const MoviesContainer = () => {
         style={{ width: '100%', height: '300px' }}
       />
     </View>
+  )
+}
+
+const MoviesPicker = () => {
+  let movies: Movie[] = require('../../data/popularMovies.json')
+  const [selectedMovie, setSelectedMovie] = useState()
+  let sortedMovies = movies.sort( function( a, b ) {
+    return a.title < b.title ? -1 : a.title > b.title ? 1 : 0
+  })
+
+  return (
+    <Picker
+      selectedValue={selectedMovie}
+      onValueChange={(itemValue, itemIndex) =>
+        setSelectedMovie(itemValue)
+      }>
+      { sortedMovies.map((movie) => (
+        <Picker.Item label={movie.title} value={movie.id} />
+      ))}
+    </Picker>
   )
 }
 
