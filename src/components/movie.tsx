@@ -11,9 +11,12 @@ export interface Movie {
   imdb_id: number
   overview: string
   poster_path: string
+  popularity: number
   release_date: string
   tagline: string
   title: string
+  vote_average: number
+  vote_count: number
 }
 
 export interface Actor {
@@ -51,8 +54,11 @@ const MoviesContainer = () => {
     <View style={styles.container}>
       <MoviesPicker />
       <Text>{movie.title} ({movie.id})</Text>
-      <Text>{movie.tagline}</Text>
-      <Text>{movie.release_date}</Text>
+      <Text>Release Date: {movie.release_date}</Text>
+      <Text>Popularity: {movie.popularity}</Text>
+      <Text>Vote Average: {movie.vote_average}</Text>
+      <Text>Vote Count: {movie.vote_count}</Text>
+      <Text>Tagline: {movie.tagline}</Text>
       <Text>Director: {movie.director.name}</Text>
       <Text>Actors: {displayActors}</Text>
       <TouchableOpacity onPress={() => { Linking.openURL(`${imdbURI}${movie.imdb_id}`) }}>
@@ -81,7 +87,7 @@ const MoviesPicker = () => {
         setSelectedMovie(itemValue)
       }>
       { sortedMovies.map((movie) => (
-        <Picker.Item label={movie.title} value={movie.id} />
+        <Picker.Item label={movie.title + ' (' + movie.popularity + ')' + ' (' + movie.vote_average + ')' + ' (' + movie.vote_count + ')'}  value={movie.id} />
       ))}
     </Picker>
   )

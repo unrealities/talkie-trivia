@@ -57,10 +57,13 @@ type Movie struct {
 	ImdbID      string        `json:"imdb_id"`
 	ID          int           `json:"id"`
 	Overview    string        `json:"overview"`
+	Popularity  float64       `json:"popularity"`
 	PosterPath  string        `json:"poster_path"`
 	ReleaseDate string        `json:"release_date"`
 	Tagline     string        `json:"tagline"`
 	Title       string        `json:"title"`
+	VoteAverage float64       `json:"vote_average"`
+	VoteCount   int           `json:"vote_count"`
 }
 
 type MovieActor struct {
@@ -125,10 +128,13 @@ func main() {
 				ImdbID:      movie.ImdbID,
 				ID:          movie.ID,
 				Overview:    movie.Overview,
+				Popularity:  movie.Popularity,
 				PosterPath:  movie.PosterPath,
 				ReleaseDate: movie.ReleaseDate,
 				Tagline:     movie.Tagline,
 				Title:       movie.Title,
+				VoteAverage: movie.VoteAverage,
+				VoteCount:   movie.VoteCount,
 			}
 			popularMovies = append(popularMovies, m)
 		}
