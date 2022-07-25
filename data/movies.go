@@ -117,11 +117,12 @@ func main() {
 
 	popularMovies := []Movie{}
 	for _, movie := range movies {
-		if len(movie.Overview) > 350 ||
-			len(movie.Overview) < 60 ||
-			movie.Runtime < 80 ||
-			movie.Popularity < 40 ||
-			movie.VoteCount < 100 {
+		if len(movie.Overview) < 350 &&
+			len(movie.Overview) > 60 &&
+			movie.Runtime > 75 &&
+			movie.Popularity > 10 &&
+			movie.VoteAverage > 4.9 &&
+			movie.VoteCount > 400 {
 			m := Movie{
 				Actors:      actors[movie.ID],
 				Director:    directors[movie.ID],
