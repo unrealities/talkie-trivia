@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Button, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import * as Linking from 'expo-linking'
 import { Picker } from '@react-native-picker/picker'
 import CluesContainer from './clues'
@@ -81,15 +81,23 @@ const MoviesPicker = () => {
   })
 
   return (
-    <Picker
-      selectedValue={selectedMovie}
-      onValueChange={(itemValue, itemIndex) =>
-        setSelectedMovie(itemValue)
-      }>
-      { sortedMovies.map((movie) => (
-        <Picker.Item label={movie.title + ' (' + movie.popularity + ')' + ' (' + movie.vote_average + ')' + ' (' + movie.vote_count + ')'}  value={movie.id} />
-      ))}
-    </Picker>
+    <View>
+      <Picker
+        selectedValue={selectedMovie}
+        onValueChange={(itemValue, itemIndex) =>
+          setSelectedMovie(itemValue)
+        }>
+        { sortedMovies.map((movie) => (
+          <Picker.Item label={movie.title}  value={movie.id} />
+        ))}
+      </Picker>
+      <Button
+        onPress={() => Alert.alert('Movie', selectedMovie)}
+        title="Submit"
+        color="#841584"
+        accessibilityLabel="Submit your guess"
+      />
+    </View>
   )
 }
 
