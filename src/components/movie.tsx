@@ -75,28 +75,40 @@ const MoviesContainer = () => {
 
 const MoviesPicker = () => {
   let movies: Movie[] = require('../../data/popularMovies.json')
-  const [selectedMovie, setSelectedMovie] = useState()
+  const [selectedMovieTitle, setSelectedMovieTitle] = useState<string>('')
+  const [selectedMovieIndex, setSelectedMovieIndex] = useState<number>(0)
+  const [guesses, setGuesses] = useState<number[]>([])
   let sortedMovies = movies.sort( function( a, b ) {
     return a.title < b.title ? -1 : a.title > b.title ? 1 : 0
   })
 
+  let updateGuesses = () => {
+    setGuesses([...guesses, selectedMovieIndex] )
+    console.log(selectedMovieIndex)
+    console.log(guesses)
+  }
+
   return (
     <View>
       <Picker
-        selectedValue={selectedMovie}
-        onValueChange={(itemValue, itemIndex) =>
-          setSelectedMovie(itemValue)
-        }>
+        selectedValue={selectedMovieTitle}
+        onValueChange={(itemValue, itemIndex) => {
+          setSelectedMovieTitle(itemValue)
+          setSelectedMovieIndex(itemIndex)
+        }}>
         { sortedMovies.map((movie) => (
-          <Picker.Item label={movie.title}  value={movie.id} />
+          <Picker.Item label={movie.title} value={movie.id} />
         ))}
       </Picker>
       <Button
-        onPress={() => Alert.alert('Movie', selectedMovie)}
+        onPress={() => updateGuesses()}
         title="Submit"
         color="#841584"
         accessibilityLabel="Submit your guess"
       />
+      <Text>Selected Value: {selectedMovieTitle}</Text>
+      <Text>Selected Index: {selectedMovieIndex}</Text>
+      <Text>Guesses: {guesses}</Text>
     </View>
   )
 }
