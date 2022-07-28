@@ -52,7 +52,7 @@ const MoviesContainer = () => {
   // TODO: switch below hardcoded values to a list of movie titles populated from movies.json
   return (
     <View style={styles.container}>
-      <MoviesPicker />
+      <MoviesPicker movieID={randomMovie.id} />
       <Text>{movie.title} ({movie.id})</Text>
       <Text>Release Date: {movie.release_date}</Text>
       <Text>Popularity: {movie.popularity}</Text>
@@ -73,9 +73,13 @@ const MoviesContainer = () => {
   )
 }
 
-const MoviesPicker = () => {
+interface MoviePickerProps {
+  movieID: number
+}
+
+const MoviesPicker = (props:MoviePickerProps) => {
   let movies: Movie[] = require('../../data/popularMovies.json')
-  const [selectedMovieTitle, setSelectedMovieTitle] = useState<string>('')
+  const [selectedMovieID, setSelectedMovieID] = useState<number>(0)
   const [selectedMovieIndex, setSelectedMovieIndex] = useState<number>(0)
   const [guesses, setGuesses] = useState<number[]>([])
   let sortedMovies = movies.sort( function( a, b ) {
@@ -83,17 +87,15 @@ const MoviesPicker = () => {
   })
 
   let updateGuesses = () => {
-    setGuesses([...guesses, selectedMovieIndex] )
-    console.log(selectedMovieIndex)
-    console.log(guesses)
+    setGuesses([...guesses, selectedMovieID] )
   }
 
   return (
     <View>
       <Picker
-        selectedValue={selectedMovieTitle}
+        selectedValue={selectedMovieID}
         onValueChange={(itemValue, itemIndex) => {
-          setSelectedMovieTitle(itemValue)
+          setSelectedMovieID(itemValue)
           setSelectedMovieIndex(itemIndex)
         }}>
         { sortedMovies.map((movie) => (
@@ -106,9 +108,14 @@ const MoviesPicker = () => {
         color="#841584"
         accessibilityLabel="Submit your guess"
       />
-      <Text>Selected Value: {selectedMovieTitle}</Text>
+      <Text>Selected Value: {selectedMovieID}</Text>
       <Text>Selected Index: {selectedMovieIndex}</Text>
       <Text>Guesses: {guesses}</Text>
+      { guesses.forEach((guess) => {
+        if (guess == props.movieID) {
+          console.log("correct")
+        }
+      })}
     </View>
   )
 }
