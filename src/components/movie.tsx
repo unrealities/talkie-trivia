@@ -39,20 +39,80 @@ const MoviesContainer = () => {
   let randomMovieIndex = Math.floor(Math.random() * movies.length)
   let randomMovie = movies[randomMovieIndex] as Movie
 
-  let displayActors = ""
-  randomMovie.actors.forEach((actor) => {
-    displayActors = displayActors + " | " + actor.name
-  })
-
   const [movie] = useState(randomMovie)
-  let imdbURI = 'https://www.imdb.com/title/'
-  let imageURI = 'https://image.tmdb.org/t/p/original'
 
-
-  // TODO: switch below hardcoded values to a list of movie titles populated from movies.json
   return (
     <View style={styles.container}>
       <MoviesPicker movieID={randomMovie.id} />
+      <CluesContainer summary={movie.overview} />
+      <MovieFacts movie={randomMovie} />
+    </View>
+  )
+}
+
+interface MoviePickerProps {
+  movieID: number
+}
+
+interface MovieFactsProps {
+  movie: Movie
+}
+
+const MoviesPicker = (props: MoviePickerProps) => {
+  let movies: Movie[] = require('../../data/popularMovies.json')
+  const [selectedMovieID, setSelectedMovieID] = useState<number>(0)
+  const [selectedMovieIndex, setSelectedMovieIndex] = useState<number>(0)
+  const [guesses, setGuesses] = useState<number[]>([])
+  let sortedMovies = movies.sort(function (a, b) {
+    return a.title < b.title ? -1 : a.title > b.title ? 1 : 0
+  })
+
+  let updateGuesses = () => {
+    setGuesses([...guesses, selectedMovieID])
+  }
+
+  return (
+    <View>
+      <Picker
+        selectedValue={selectedMovieID}
+        onValueChange={(itemValue, itemIndex) => {
+          setSelectedMovieID(itemValue)
+          setSelectedMovieIndex(itemIndex)
+        }}>
+        {sortedMovies.map((movie) => (
+          <Picker.Item label={movie.title} value={movie.id} />
+        ))}
+      </Picker>
+      <Button
+        onPress={() => updateGuesses()}
+        title="Submit"
+        color="red"
+        accessibilityLabel="Submit your guess"
+      />
+      <Text>Selected Value: {selectedMovieID}</Text>
+      <Text>Selected Index: {selectedMovieIndex}</Text>
+      <Text>Guesses: {guesses}</Text>
+      {guesses.forEach((guess) => {
+        if (guess == props.movieID) {
+          console.log("correct")
+        }
+      })}
+    </View>
+  )
+}
+
+const MovieFacts = (props: MovieFactsProps) => {
+  let imdbURI = 'https://www.imdb.com/title/'
+  let imageURI = 'https://image.tmdb.org/t/p/original'
+  let movie = props.movie
+
+  let displayActors = ""
+  movie.actors.forEach((actor) => {
+    displayActors = displayActors + " | " + actor.name
+  })
+
+  return (
+    <View>
       <Text>{movie.title} ({movie.id})</Text>
       <Text>Release Date: {movie.release_date}</Text>
       <Text>Popularity: {movie.popularity}</Text>
@@ -64,58 +124,10 @@ const MoviesContainer = () => {
       <TouchableOpacity onPress={() => { Linking.openURL(`${imdbURI}${movie.imdb_id}`) }}>
         <Text>IMDB Link: https://www.imdb.com/title/{movie.imdb_id}/</Text>
       </TouchableOpacity>
-      <CluesContainer summary={movie.overview} />
       <Image
         source={{ uri: `${imageURI}${movie.poster_path}` }}
-        style={{ width: '100%', height: '300px' }}
+        style={{ width: '200px', height: '300px' }}
       />
-    </View>
-  )
-}
-
-interface MoviePickerProps {
-  movieID: number
-}
-
-const MoviesPicker = (props:MoviePickerProps) => {
-  let movies: Movie[] = require('../../data/popularMovies.json')
-  const [selectedMovieID, setSelectedMovieID] = useState<number>(0)
-  const [selectedMovieIndex, setSelectedMovieIndex] = useState<number>(0)
-  const [guesses, setGuesses] = useState<number[]>([])
-  let sortedMovies = movies.sort( function( a, b ) {
-    return a.title < b.title ? -1 : a.title > b.title ? 1 : 0
-  })
-
-  let updateGuesses = () => {
-    setGuesses([...guesses, selectedMovieID] )
-  }
-
-  return (
-    <View>
-      <Picker
-        selectedValue={selectedMovieID}
-        onValueChange={(itemValue, itemIndex) => {
-          setSelectedMovieID(itemValue)
-          setSelectedMovieIndex(itemIndex)
-        }}>
-        { sortedMovies.map((movie) => (
-          <Picker.Item label={movie.title} value={movie.id} />
-        ))}
-      </Picker>
-      <Button
-        onPress={() => updateGuesses()}
-        title="Submit"
-        color="#841584"
-        accessibilityLabel="Submit your guess"
-      />
-      <Text>Selected Value: {selectedMovieID}</Text>
-      <Text>Selected Index: {selectedMovieIndex}</Text>
-      <Text>Guesses: {guesses}</Text>
-      { guesses.forEach((guess) => {
-        if (guess == props.movieID) {
-          console.log("correct")
-        }
-      })}
     </View>
   )
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import AppLoading from 'expo-app-loading';
-import { useFonts, Arvo_400Regular, Arvo_400Regular_Italic } from '@expo-google-fonts/arvo'
+import { useFonts, Arvo_700Bold, Arvo_400Regular, Arvo_400Regular_Italic } from '@expo-google-fonts/arvo'
 
 const TitleHeader = () => {
     let [fontsLoaded] = useFonts({
@@ -14,7 +14,7 @@ const TitleHeader = () => {
         return (
             <View style={styles.container}>
                 <Text style={styles.header}>TALKIE-TRIVIA</Text>
-                <Text style={styles.subHeader}>text movie trivia</Text>
+                <Text style={styles.subHeader}>guess the movie given it's summary</Text>
             </View>
         )
     }
@@ -28,8 +28,9 @@ const styles = StyleSheet.create({
     },
     header: {
         color: 'red',
-        fontFamily: 'Arvo_400Regular',
+        fontFamily: 'Arvo_700Bold',
         fontSize: 24,
+        fontWeight: '700'
     },
     subHeader: {
         fontFamily: 'Arvo_400Regular_Italic',
