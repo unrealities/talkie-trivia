@@ -40,12 +40,13 @@ const MoviesContainer = () => {
   let randomMovie = movies[randomMovieIndex] as Movie
 
   const [movie] = useState(randomMovie)
+  const [guessNumber] = useState(0)
 
   return (
     <View style={styles.container}>
+      <CluesContainer summary={movie.overview} guessNumber={guessNumber} />
       <MoviesPicker movieID={randomMovie.id} />
-      <CluesContainer summary={movie.overview} />
-      <MovieFacts movie={randomMovie} />
+      {/*<MovieFacts movie={randomMovie} />*/}
     </View>
   )
 }

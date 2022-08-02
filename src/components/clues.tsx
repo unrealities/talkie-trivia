@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
 interface CluesProps {
+    guessNumber: number
     summary: string
 }
 
@@ -18,7 +19,7 @@ const CluesContainer = (props: CluesProps) => {
                 clueLength = summarySubLength
                 break
             }
-            if (j > clueLength - 2 && (summarySplit[wordTrack].endsWith('.') || summarySplit[wordTrack].endsWith(',') )) {
+            if (j > clueLength - 2 && (summarySplit[wordTrack].endsWith('.') || summarySplit[wordTrack].endsWith(','))) {
                 clues[i] = clues[i] + summarySplit[wordTrack]
                 wordTrack++
                 clueLength += clueLength - j
@@ -30,16 +31,18 @@ const CluesContainer = (props: CluesProps) => {
     }
 
     while (wordTrack < summarySplit.length) {
-        clues[splits-1] = clues[splits-1] + summarySplit[wordTrack] + " "
-        wordTrack ++
+        clues[splits - 1] = clues[splits - 1] + summarySplit[wordTrack] + " "
+        wordTrack++
     }
 
     return (
         <View style={styles.container}>
             {clues.map((clue, i) => {
-                return (
-                    <Text key={i}>{clue}</Text>
-                );
+                if (i <= props.guessNumber) {
+                    return (
+                        <Text key={i}>{clue}</Text>
+                    )
+                }
             })}
         </View>
     )
