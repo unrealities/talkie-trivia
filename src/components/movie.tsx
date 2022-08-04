@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Alert, Button, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Button, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import * as Linking from 'expo-linking'
 import { Picker } from '@react-native-picker/picker'
 import CluesContainer from './clues'
@@ -39,13 +39,19 @@ const MoviesContainer = () => {
   let randomMovieIndex = Math.floor(Math.random() * movies.length)
   let randomMovie = movies[randomMovieIndex] as Movie
 
+  const [guesses, setGuesses] = useState<number[]>([])
   const [movie] = useState(randomMovie)
-  const [guessNumber] = useState(0)
 
   return (
     <View style={styles.container}>
-      <CluesContainer summary={movie.overview} guessNumber={guessNumber} />
-      <MoviesPicker movieID={randomMovie.id} />
+      <CluesContainer summary={movie.overview} guesses={guesses} />
+      <MoviesPicker movieID={movie.id} updateGuesses={setGuesses}/>
+      <Text>Guesses: {guesses}</Text>
+      {guesses.forEach((guess) => {
+        if (guess == movie.id) {
+          console.log("correct")
+        }
+      })}
       {/*<MovieFacts movie={randomMovie} />*/}
     </View>
   )
@@ -53,6 +59,7 @@ const MoviesContainer = () => {
 
 interface MoviePickerProps {
   movieID: number
+  updateGuesses: Dispatch<SetStateAction<number[]>>
 }
 
 interface MovieFactsProps {
@@ -63,14 +70,9 @@ const MoviesPicker = (props: MoviePickerProps) => {
   let movies: Movie[] = require('../../data/popularMovies.json')
   const [selectedMovieID, setSelectedMovieID] = useState<number>(0)
   const [selectedMovieIndex, setSelectedMovieIndex] = useState<number>(0)
-  const [guesses, setGuesses] = useState<number[]>([])
   let sortedMovies = movies.sort(function (a, b) {
     return a.title < b.title ? -1 : a.title > b.title ? 1 : 0
   })
-
-  let updateGuesses = () => {
-    setGuesses([...guesses, selectedMovieID])
-  }
 
   return (
     <View>
@@ -85,19 +87,13 @@ const MoviesPicker = (props: MoviePickerProps) => {
         ))}
       </Picker>
       <Button
-        onPress={() => updateGuesses()}
+        onPress={() => props.updateGuesses()}
         title="Submit"
         color="red"
         accessibilityLabel="Submit your guess"
       />
       <Text>Selected Value: {selectedMovieID}</Text>
       <Text>Selected Index: {selectedMovieIndex}</Text>
-      <Text>Guesses: {guesses}</Text>
-      {guesses.forEach((guess) => {
-        if (guess == props.movieID) {
-          console.log("correct")
-        }
-      })}
     </View>
   )
 }

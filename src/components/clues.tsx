@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
 interface CluesProps {
-    guessNumber: number
+    guesses: number[]
     summary: string
 }
 
@@ -38,7 +38,7 @@ const CluesContainer = (props: CluesProps) => {
     return (
         <View style={styles.container}>
             {clues.map((clue, i) => {
-                if (i <= props.guessNumber) {
+                if (i <= props.guesses.length) {
                     return (
                         <Text key={i}>{clue}</Text>
                     )
