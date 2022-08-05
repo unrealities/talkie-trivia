@@ -45,7 +45,7 @@ const MoviesContainer = () => {
   return (
     <View style={styles.container}>
       <CluesContainer summary={movie.overview} guesses={guesses} />
-      <MoviesPicker movieID={movie.id} updateGuesses={setGuesses}/>
+      <MoviesPicker movieID={movie.id} guesses={guesses} updateGuesses={setGuesses}/>
       <Text>Guesses: {guesses}</Text>
       {guesses.forEach((guess) => {
         if (guess == movie.id) {
@@ -58,6 +58,7 @@ const MoviesContainer = () => {
 }
 
 interface MoviePickerProps {
+  guesses: number[]
   movieID: number
   updateGuesses: Dispatch<SetStateAction<number[]>>
 }
@@ -87,7 +88,7 @@ const MoviesPicker = (props: MoviePickerProps) => {
         ))}
       </Picker>
       <Button
-        onPress={() => props.updateGuesses()}
+        onPress={() => props.updateGuesses([...props.guesses, selectedMovieID])}
         title="Submit"
         color="red"
         accessibilityLabel="Submit your guess"
