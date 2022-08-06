@@ -46,15 +46,15 @@ const MoviesContainer = () => {
     <View style={styles.container}>
       <CluesContainer summary={movie.overview} guesses={guesses} />
       <MoviesPicker movieID={movie.id} guesses={guesses} updateGuesses={setGuesses}/>
-      <Text>Guesses: {guesses}</Text>
-      {guesses.forEach((guess) => {
-        if (guess == movie.id) {
-          console.log("correct")
-        }
-      })}
-      {/*<MovieFacts movie={randomMovie} />*/}
+      <GuessesDisplay guesses={guesses} movie={movie} movies={movies} />
     </View>
   )
+}
+
+interface GuessesDisplayProps {
+  guesses: number[]
+  movie: Movie
+  movies: Movie[]
 }
 
 interface MoviePickerProps {
@@ -67,10 +67,28 @@ interface MovieFactsProps {
   movie: Movie
 }
 
+const GuessesDisplay = (props: GuessesDisplayProps) => {
+  return (
+    <View>
+      {props.guesses.forEach((guess) => {
+        console.log("guess: " + props.movies.map((m) => {if (m.id == guess) {m.title}}))
+        if (guess == props.movie.id) {
+          console.log("correct. movie was: " + props.movie.title)
+        }
+        if (props.guesses.length >= 5) {
+          console.log("fail. movie was: " + props.movie.title)
+        }
+        if (props.guesses.length >= 5 || guess == props.movie.id) {
+          <MovieFacts movie={props.movie} />
+        }
+      })}
+    </View>
+  )
+}
+
 const MoviesPicker = (props: MoviePickerProps) => {
   let movies: Movie[] = require('../../data/popularMovies.json')
   const [selectedMovieID, setSelectedMovieID] = useState<number>(0)
-  const [selectedMovieIndex, setSelectedMovieIndex] = useState<number>(0)
   let sortedMovies = movies.sort(function (a, b) {
     return a.title < b.title ? -1 : a.title > b.title ? 1 : 0
   })
@@ -81,7 +99,6 @@ const MoviesPicker = (props: MoviePickerProps) => {
         selectedValue={selectedMovieID}
         onValueChange={(itemValue, itemIndex) => {
           setSelectedMovieID(itemValue)
-          setSelectedMovieIndex(itemIndex)
         }}>
         {sortedMovies.map((movie) => (
           <Picker.Item label={movie.title} value={movie.id} />
@@ -93,8 +110,6 @@ const MoviesPicker = (props: MoviePickerProps) => {
         color="red"
         accessibilityLabel="Submit your guess"
       />
-      <Text>Selected Value: {selectedMovieID}</Text>
-      <Text>Selected Index: {selectedMovieIndex}</Text>
     </View>
   )
 }
