@@ -68,10 +68,17 @@ interface MovieFactsProps {
 }
 
 const GuessesDisplay = (props: GuessesDisplayProps) => {
+  let getMovieTitle = (id:number) => {
+    let movie = props.movies.find(m => m.id == id) as Movie
+    return movie.title
+  }
+
   return (
     <View>
-      {props.guesses.forEach((guess) => {
-        console.log("guess: " + props.movies.map((m) => {if (m.id == guess) {m.title}}))
+      <>
+      <Text>Guesses</Text>
+      {props.guesses.forEach(guess => {
+        <Text key={guess}>guess: {getMovieTitle(guess)}</Text>
         if (guess == props.movie.id) {
           console.log("correct. movie was: " + props.movie.title)
         }
@@ -82,6 +89,7 @@ const GuessesDisplay = (props: GuessesDisplayProps) => {
           <MovieFacts movie={props.movie} />
         }
       })}
+      </>
     </View>
   )
 }
@@ -100,7 +108,8 @@ const MoviesPicker = (props: MoviePickerProps) => {
         onValueChange={(itemValue, itemIndex) => {
           setSelectedMovieID(itemValue)
         }}>
-        {sortedMovies.map((movie) => (
+        <Picker.Item label="" value={0} />
+        {sortedMovies.map((movie) => (  
           <Picker.Item label={movie.title} value={movie.id} />
         ))}
       </Picker>
