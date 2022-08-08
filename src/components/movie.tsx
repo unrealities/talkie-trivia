@@ -1,8 +1,11 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Button, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import * as Linking from 'expo-linking'
 import { Picker } from '@react-native-picker/picker'
+import ConfettiCannon from 'react-native-confetti-cannon'
+
 import CluesContainer from './clues'
+import Explosion from 'react-native-confetti-cannon'
 
 export interface Movie {
   actors: Actor[]
@@ -42,11 +45,19 @@ const MoviesContainer = () => {
   const [guesses, setGuesses] = useState<number[]>([])
   const [movie] = useState(randomMovie)
 
+  const ref = useRef<ConfettiCannon>(null);
+  guesses.forEach(guess => {
+    if (guess == movie.id) {
+      ref.current?.start()
+    }
+  })
+
   return (
     <View style={styles.container}>
       <CluesContainer summary={movie.overview} guesses={guesses} />
       <MoviesPicker movieID={movie.id} guesses={guesses} updateGuesses={setGuesses}/>
       <GuessesDisplay guesses={guesses} movie={movie} movies={movies} />
+      <ConfettiCannon autoStart={false} count={100} fallSpeed={2000} origin={{x: -10, y: 0}} ref={ref} />
     </View>
   )
 }
@@ -72,13 +83,16 @@ const GuessesDisplay = (props: GuessesDisplayProps) => {
     let movie = props.movies.find(m => m.id == id) as Movie
     return movie.title
   }
+  let GuessesText:Element[] = []
+  props.guesses.forEach((guess, i) => {
+    GuessesText.push(<Text key={i}>Guess {i+1}: {getMovieTitle(guess)}</Text>)
+  })
 
   return (
     <View>
       <>
-      <Text>Guesses</Text>
+      { GuessesText }
       {props.guesses.forEach(guess => {
-        <Text key={guess}>guess: {getMovieTitle(guess)}</Text>
         if (guess == props.movie.id) {
           console.log("correct. movie was: " + props.movie.title)
         }
@@ -108,9 +122,9 @@ const MoviesPicker = (props: MoviePickerProps) => {
         onValueChange={(itemValue, itemIndex) => {
           setSelectedMovieID(itemValue)
         }}>
-        <Picker.Item label="" value={0} />
+        <Picker.Item key="0" label="" value={0} />
         {sortedMovies.map((movie) => (  
-          <Picker.Item label={movie.title} value={movie.id} />
+          <Picker.Item key={movie.id} label={movie.title} value={movie.id} />
         ))}
       </Picker>
       <Button
