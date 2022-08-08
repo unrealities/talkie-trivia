@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { Button, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Button, Image, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import * as Linking from 'expo-linking'
 import { Picker } from '@react-native-picker/picker'
 import ConfettiCannon from 'react-native-confetti-cannon'
@@ -57,6 +57,7 @@ const MoviesContainer = () => {
       <CluesContainer summary={movie.overview} guesses={guesses} />
       <MoviesPicker movieID={movie.id} guesses={guesses} updateGuesses={setGuesses}/>
       <GuessesDisplay guesses={guesses} movie={movie} movies={movies} />
+      <MovieModal show={false} />
       <ConfettiCannon autoStart={false} count={100} fallSpeed={2000} origin={{x: -10, y: 0}} ref={ref} />
     </View>
   )
@@ -76,6 +77,10 @@ interface MoviePickerProps {
 
 interface MovieFactsProps {
   movie: Movie
+}
+
+interface MovieModalProps {
+  show: SetStateAction
 }
 
 const GuessesDisplay = (props: GuessesDisplayProps) => {
@@ -168,11 +173,81 @@ const MovieFacts = (props: MovieFactsProps) => {
   )
 }
 
+const MovieModal = (props: MovieModalProps) => {
+  const [modalVisible, setModalVisible] = useState(props.show);
+  return (
+    <View style={styles.centeredView}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(false);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Hello World!</Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalVisible(false)}>
+              <Text style={styles.textStyle}>Hide Modal</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+      <Pressable style={[styles.button, styles.buttonOpen]} onPress={() => setModalVisible(true)}>
+        <Text style={styles.textStyle}>Show Modal</Text>
+      </Pressable>
+    </View>
+  )
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 8,
     justifyContent: 'center'
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
   },
 });
 
