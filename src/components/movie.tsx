@@ -46,6 +46,7 @@ const MoviesContainer = () => {
   let basicMovies: BasicMovie[] = require('../../data/basicMovies.json')
   let movies: Movie[] = require('../../data/popularMovies.json')
 
+  const [correctGuess, setCorrectGuess] = useState<boolean>(false)
   const [guesses, setGuesses] = useState<number[]>([])
   const [showModal, setShowModal] = useState<boolean>(false)
   const [movie] = useState<Movie>(movies[Math.floor(Math.random() * movies.length)])
@@ -56,12 +57,13 @@ const MoviesContainer = () => {
       confetti.current?.start()
       // TODO: Infinite Loop
       // setShowModal(true)
+      setCorrectGuess(true)
     }
   })
 
   return (
     <View style={styles.container}>
-      <CluesContainer summary={movie.overview} guesses={guesses} />
+      <CluesContainer summary={movie.overview} correctGuess={correctGuess} guesses={guesses} />
       <PickerContainer movieID={movie.id} movies={basicMovies} guesses={guesses} updateGuesses={setGuesses}/>
       <GuessesContainer guesses={guesses} movie={movie} movies={basicMovies} />
       <MovieModal show={showModal} movie={movie}/>
