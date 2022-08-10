@@ -5,6 +5,7 @@ import { Picker } from '@react-native-picker/picker'
 import { BasicMovie } from './movie'
 
 interface PickerContainerProps {
+    correctGuess: boolean
     guesses: number[]
     movieID: number
     movies : BasicMovie[]
@@ -28,6 +29,7 @@ const PickerContainer = (props: PickerContainerProps) => {
             </Picker>
             <Button
                 onPress={() => { if (selectedMovieID > 0) { props.updateGuesses([...props.guesses, selectedMovieID]) } }}
+                disabled={props.correctGuess}
                 title="Submit"
                 color="red"
                 accessibilityLabel="Submit your guess"

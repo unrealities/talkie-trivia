@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import ConfettiCannon from 'react-native-confetti-cannon'
 
@@ -52,19 +52,21 @@ const MoviesContainer = () => {
   const [movie] = useState<Movie>(movies[Math.floor(Math.random() * movies.length)])
 
   const confetti = useRef<ConfettiCannon>(null);
-  guesses.forEach(guess => {
-    if (guess == movie.id) {
-      confetti.current?.start()
-      // TODO: Infinite Loop
-      // setShowModal(true)
-      setCorrectGuess(true)
-    }
+  
+  useEffect(() => {
+    guesses.forEach(guess => {
+      if (guess == movie.id) {
+        confetti.current?.start()
+        setShowModal(true)
+        setCorrectGuess(true)
+      }
+    })
   })
 
   return (
     <View style={styles.container}>
-      <CluesContainer summary={movie.overview} correctGuess={correctGuess} guesses={guesses} />
-      <PickerContainer movieID={movie.id} movies={basicMovies} guesses={guesses} updateGuesses={setGuesses}/>
+      <CluesContainer correctGuess={correctGuess} guesses={guesses} summary={movie.overview} />
+      <PickerContainer correctGuess={correctGuess} guesses={guesses} movieID={movie.id} movies={basicMovies} updateGuesses={setGuesses}/>
       <GuessesContainer guesses={guesses} movie={movie} movies={basicMovies} />
       <MovieModal show={showModal} movie={movie}/>
       <ConfettiCannon autoStart={false} count={100} fallSpeed={2000} origin={{x: -20, y: -20}} ref={confetti} />
