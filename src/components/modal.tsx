@@ -5,31 +5,31 @@ import Facts from './facts'
 interface MovieModalProps {
     movie: Movie
     show: SetStateAction
+    toggleModal: SetStateAction
 }
 
 const MovieModal = (props: MovieModalProps) => {
-    const [modalVisible, setModalVisible] = useState(props.show);
     return (
         <View style={styles.centeredView}>
             <Modal
                 animationType="slide"
                 transparent={true}
-                visible={modalVisible}
+                visible={props.show}
                 onRequestClose={() => {
-                    setModalVisible(false);
+                    props.toggleModal(false);
                 }}>
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <Facts movie={props.movie} />
                         <Pressable
                             style={[styles.button, styles.buttonClose]}
-                            onPress={() => setModalVisible(false)}>
+                            onPress={() => props.toggleModal(false)}>
                             <Text style={styles.textStyle}>Hide Modal</Text>
                         </Pressable>
                     </View>
                 </View>
             </Modal>
-            <Pressable style={[styles.button, styles.buttonOpen]} onPress={() => setModalVisible(true)}>
+            <Pressable style={[styles.button, styles.buttonOpen]} onPress={() => props.toggleModal(true)}>
                 <Text style={styles.textStyle}>Show Modal</Text>
             </Pressable>
         </View>

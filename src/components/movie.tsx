@@ -68,7 +68,7 @@ const MoviesContainer = () => {
       <CluesContainer correctGuess={correctGuess} guesses={guesses} summary={movie.overview} />
       <PickerContainer correctGuess={correctGuess} guesses={guesses} movieID={movie.id} movies={basicMovies} updateGuesses={setGuesses}/>
       <GuessesContainer guesses={guesses} movie={movie} movies={basicMovies} />
-      <MovieModal show={showModal} movie={movie}/>
+      <MovieModal movie={movie} show={showModal} toggleModal={setShowModal}/>
       <ConfettiCannon autoStart={false} count={100} fallSpeed={2000} origin={{x: -20, y: -20}} ref={confetti} />
     </View>
   )
