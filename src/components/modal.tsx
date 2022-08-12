@@ -29,9 +29,6 @@ const MovieModal = (props: MovieModalProps) => {
                     </View>
                 </View>
             </Modal>
-            <Pressable style={[styles.button, styles.buttonOpen]} onPress={() => props.toggleModal(true)}>
-                <Text style={styles.textStyle}>Show Modal</Text>
-            </Pressable>
         </View>
     )
 }
@@ -69,7 +66,7 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     buttonOpen: {
-        backgroundColor: '#F194FF',
+        backgroundColor: 'red',
     },
     buttonClose: {
         backgroundColor: '#2196F3',

@@ -47,29 +47,52 @@ const MoviesContainer = () => {
   let movies: Movie[] = require('../../data/popularMovies.json')
 
   const [correctGuess, setCorrectGuess] = useState<boolean>(false)
+  const [enableSubmit, setEnableSubmit] = useState<boolean>(false)
   const [guesses, setGuesses] = useState<number[]>([])
   const [showModal, setShowModal] = useState<boolean>(false)
   const [movie] = useState<Movie>(movies[Math.floor(Math.random() * movies.length)])
 
   const confetti = useRef<ConfettiCannon>(null);
-  
+
   useEffect(() => {
+    if (guesses.length > 4) {
+      setEnableSubmit(false)
+    }
     guesses.forEach(guess => {
       if (guess == movie.id) {
         confetti.current?.start()
-        setShowModal(true)
         setCorrectGuess(true)
+        setShowModal(true)
       }
     })
   })
 
   return (
     <View style={styles.container}>
-      <CluesContainer correctGuess={correctGuess} guesses={guesses} summary={movie.overview} />
-      <PickerContainer correctGuess={correctGuess} guesses={guesses} movieID={movie.id} movies={basicMovies} updateGuesses={setGuesses}/>
-      <GuessesContainer guesses={guesses} movie={movie} movies={basicMovies} />
-      <MovieModal movie={movie} show={showModal} toggleModal={setShowModal}/>
-      <ConfettiCannon autoStart={false} count={100} fallSpeed={2000} origin={{x: -20, y: -20}} ref={confetti} />
+      <CluesContainer
+        correctGuess={correctGuess}
+        guesses={guesses}
+        summary={movie.overview} />
+      <PickerContainer
+        enableSubmit={enableSubmit}
+        guesses={guesses}
+        movieID={movie.id}
+        movies={basicMovies}
+        updateGuesses={setGuesses} />
+      <GuessesContainer
+        guesses={guesses}
+        movie={movie}
+        movies={basicMovies} />
+      <MovieModal
+        movie={movie}
+        show={showModal}
+        toggleModal={setShowModal} />
+      <ConfettiCannon
+        autoStart={false}
+        count={100}
+        fallSpeed={2000}
+        origin={{ x: -20, y: -20 }}
+        ref={confetti} />
     </View>
   )
 }
