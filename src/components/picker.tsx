@@ -8,7 +8,9 @@ interface PickerContainerProps {
     enableSubmit: boolean
     guesses: number[]
     movieID: number
-    movies : BasicMovie[]
+    movies: BasicMovie[]
+    toggleModal: Dispatch<SetStateAction<boolean>>
+    updateCorrectGuess: Dispatch<SetStateAction<boolean>>
     updateGuesses: Dispatch<SetStateAction<number[]>>
   }
 
@@ -28,7 +30,15 @@ const PickerContainer = (props: PickerContainerProps) => {
                 ))}
             </Picker>
             <Button
-                onPress={() => { if (selectedMovieID > 0) { props.updateGuesses([...props.guesses, selectedMovieID]) } }}
+                onPress={() => { 
+                    if (selectedMovieID > 0) { 
+                        props.updateGuesses([...props.guesses, selectedMovieID])
+                    }
+                    if (props.movieID == selectedMovieID) {
+                        props.updateCorrectGuess(true)
+                        props.toggleModal(true)
+                    }
+                }}
                 disabled={props.enableSubmit}
                 title="Submit"
                 color="red"

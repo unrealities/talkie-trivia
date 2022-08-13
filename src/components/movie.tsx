@@ -58,13 +58,9 @@ const MoviesContainer = () => {
     if (guesses.length > 4) {
       setEnableSubmit(false)
     }
-    guesses.forEach(guess => {
-      if (guess == movie.id) {
-        confetti.current?.start()
-        setCorrectGuess(true)
-        setShowModal(true)
-      }
-    })
+    if (correctGuess) {
+      confetti.current?.start()
+    }
   })
 
   return (
@@ -78,6 +74,8 @@ const MoviesContainer = () => {
         guesses={guesses}
         movieID={movie.id}
         movies={basicMovies}
+        toggleModal={setShowModal}
+        updateCorrectGuess={setCorrectGuess}
         updateGuesses={setGuesses} />
       <GuessesContainer
         guesses={guesses}
