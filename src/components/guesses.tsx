@@ -24,7 +24,6 @@ const GuessesContainer = (props: GuessesContainerProps) => {
     if (!fontsLoaded) {
         return <AppLoading />;
     } else {
-
         return (
             <View style={styles.container}>
                 <>
