@@ -1,12 +1,10 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import AppLoading from 'expo-app-loading';
-import { useFonts, Arvo_700Bold, Arvo_400Regular, Arvo_400Regular_Italic } from '@expo-google-fonts/arvo'
+import { useFonts, Arvo_700Bold, Arvo_400Regular_Italic } from '@expo-google-fonts/arvo'
 
 const TitleHeader = () => {
-    let [fontsLoaded] = useFonts({
-        Arvo_400Regular,
-    })
+    let [fontsLoaded] = useFonts({ Arvo_700Bold, Arvo_400Regular_Italic })
 
     if (!fontsLoaded) {
         return <AppLoading />;

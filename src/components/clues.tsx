@@ -1,5 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import AppLoading from 'expo-app-loading';
+import { useFonts, Arvo_400Regular } from '@expo-google-fonts/arvo'
 
 interface CluesProps {
     correctGuess: boolean
@@ -8,6 +10,8 @@ interface CluesProps {
 }
 
 const CluesContainer = (props: CluesProps) => {
+    let [fontsLoaded] = useFonts({ Arvo_400Regular })
+
     let splits = 5
     let summarySplit = props.summary.split(' ')
     let summarySubLength = Math.floor(summarySplit.length / splits)
@@ -36,25 +40,34 @@ const CluesContainer = (props: CluesProps) => {
         wordTrack++
     }
 
-    return (
-        <View style={styles.container}>
-            {clues.map((clue, i) => {
-                if ((i <= props.guesses.length) || (props.correctGuess)) {
-                    return (
-                        <Text key={i}>{clue}</Text>
-                    )
-                }
-            })}
-        </View>
-    )
+    if (!fontsLoaded) {
+        return <AppLoading />;
+    } else {
+        return (
+            <View style={styles.container}>
+                {clues.map((clue, i) => {
+                    if ((i <= props.guesses.length) || (props.correctGuess)) {
+                        return (
+                            <Text key={i} style={styles.text}>{clue}</Text>
+                        )
+                    }
+                })}
+            </View>
+        )
+    }
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 8,
-        justifyContent: 'center'
+        justifyContent: 'center',
+        padding: 1
     },
+    text: {
+        fontFamily: 'Arvo_400Regular',
+        fontSize: 18
+    },
+
 });
 
 export default CluesContainer
