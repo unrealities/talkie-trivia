@@ -25,15 +25,21 @@ const styles = StyleSheet.create({
         padding: 1
     },
     header: {
+        borderTopColor: 'red',
+        borderTopWidth: 2,
         color: 'red',
         fontFamily: 'Arvo_700Bold',
         fontSize: 24,
-        fontWeight: '700'
+        fontWeight: '700',
+        paddingTop: 8,
     },
     subHeader: {
+        borderBottomColor: 'red',
+        borderBottomWidth: 2,
         fontFamily: 'Arvo_400Regular_Italic',
         fontSize: 18,
-        fontStyle: 'italic'
+        fontStyle: 'italic',
+        paddingBottom: 8
     }
 });
 

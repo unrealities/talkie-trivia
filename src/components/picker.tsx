@@ -5,6 +5,7 @@ import { Picker } from '@react-native-picker/picker'
 import { useFonts, Arvo_400Regular } from '@expo-google-fonts/arvo'
 
 import { BasicMovie } from './movie'
+import GuessesContainer from './guesses';
 
 interface PickerContainerProps {
     enableSubmit: boolean
@@ -45,8 +46,11 @@ const PickerContainer = (props: PickerContainerProps) => {
                             props.updateCorrectGuess(true)
                             props.toggleModal(true)
                         }
+                        if (props.guesses.length > 4) {
+                            props.toggleModal(true)
+                        }
                     }}
-                    disabled={props.enableSubmit}
+                    disabled={!props.enableSubmit}
                     title="Submit"
                     color="red"
                     accessibilityLabel="Submit your guess"

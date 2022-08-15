@@ -47,7 +47,7 @@ const MoviesContainer = () => {
   let movies: Movie[] = require('../../data/popularMovies.json')
 
   const [correctGuess, setCorrectGuess] = useState<boolean>(false)
-  const [enableSubmit, setEnableSubmit] = useState<boolean>(false)
+  const [enableSubmit, setEnableSubmit] = useState<boolean>(true)
   const [guesses, setGuesses] = useState<number[]>([])
   const [showModal, setShowModal] = useState<boolean>(false)
   const [movie] = useState<Movie>(movies[Math.floor(Math.random() * movies.length)])
@@ -60,6 +60,7 @@ const MoviesContainer = () => {
     }
     if (correctGuess) {
       confetti.current?.start()
+      setEnableSubmit(false)
     }
   })
 
