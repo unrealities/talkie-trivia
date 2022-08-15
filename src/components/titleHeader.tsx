@@ -1,13 +1,13 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import AppLoading from 'expo-app-loading';
+import AppLoading from 'expo-app-loading'
 import { useFonts, Arvo_700Bold, Arvo_400Regular_Italic } from '@expo-google-fonts/arvo'
 
 const TitleHeader = () => {
     let [fontsLoaded] = useFonts({ Arvo_700Bold, Arvo_400Regular_Italic })
 
     if (!fontsLoaded) {
-        return <AppLoading />;
+        return <AppLoading />
     } else {
         return (
             <View style={styles.container}>
@@ -22,7 +22,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        padding: 1
+        maxHeight: '100px',
+        padding: 10
     },
     header: {
         borderTopColor: 'red',
@@ -41,6 +42,6 @@ const styles = StyleSheet.create({
         fontStyle: 'italic',
         paddingBottom: 8
     }
-});
+})
 
 export default TitleHeader

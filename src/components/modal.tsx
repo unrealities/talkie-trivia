@@ -16,7 +16,7 @@ const MovieModal = (props: MovieModalProps) => {
                 transparent={true}
                 visible={props.show}
                 onRequestClose={() => {
-                    props.toggleModal(false);
+                    props.toggleModal(false)
                 }}>
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
@@ -24,7 +24,7 @@ const MovieModal = (props: MovieModalProps) => {
                         <Pressable
                             style={[styles.button, styles.buttonClose]}
                             onPress={() => props.toggleModal(false)}>
-                            <Text style={styles.textStyle}>Hide Modal</Text>
+                            <Text style={styles.textStyle}>Close</Text>
                         </Pressable>
                     </View>
                 </View>
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'red',
     },
     buttonClose: {
-        backgroundColor: '#2196F3',
+        backgroundColor: 'red',
     },
     textStyle: {
         color: 'white',
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     modalText: {
         marginBottom: 15,
         textAlign: 'center',
-    },
+    }
 })
 
 export default MovieModal

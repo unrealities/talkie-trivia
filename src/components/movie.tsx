@@ -52,7 +52,7 @@ const MoviesContainer = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
   const [movie] = useState<Movie>(movies[Math.floor(Math.random() * movies.length)])
 
-  const confetti = useRef<ConfettiCannon>(null);
+  const confetti = useRef<ConfettiCannon>(null)
 
   useEffect(() => {
     if (guesses.length > 4) {
@@ -99,6 +99,7 @@ const MoviesContainer = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: 'column',
     padding: 8,
     justifyContent: 'center'
   }

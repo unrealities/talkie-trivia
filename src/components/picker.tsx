@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { Button, StyleSheet, View } from 'react-native'
-import AppLoading from 'expo-app-loading';
+import AppLoading from 'expo-app-loading'
 import { Picker } from '@react-native-picker/picker'
 import { useFonts, Arvo_400Regular } from '@expo-google-fonts/arvo'
 
 import { BasicMovie } from './movie'
-import GuessesContainer from './guesses';
+import GuessesContainer from './guesses'
 
 interface PickerContainerProps {
     enableSubmit: boolean
@@ -22,7 +22,7 @@ const PickerContainer = (props: PickerContainerProps) => {
     let [fontsLoaded] = useFonts({ Arvo_400Regular })
 
     if (!fontsLoaded) {
-        return <AppLoading />;
+        return <AppLoading />
     } else {
         return (
             <View style={styles.container}>
@@ -46,7 +46,7 @@ const PickerContainer = (props: PickerContainerProps) => {
                             props.updateCorrectGuess(true)
                             props.toggleModal(true)
                         }
-                        if (props.guesses.length > 4) {
+                        if (props.guesses.length > 3) {
                             props.toggleModal(true)
                         }
                     }}
@@ -69,8 +69,7 @@ const styles = StyleSheet.create({
     text: {
         fontFamily: 'Arvo_400Regular',
         fontSize: 14
-    },
-
-});
+    }
+})
 
 export default PickerContainer
