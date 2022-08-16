@@ -100,8 +100,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
+    flexGrow: 1,
+    justifyContent: 'flex-start',
     padding: 8,
-    justifyContent: 'center'
+    position: 'absolute',
+    top: 120
   }
 })
 

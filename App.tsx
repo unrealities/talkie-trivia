@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { StatusBar } from 'expo-status-bar'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import MoviesContainer from './src/components/movie'
 import TitleHeader from './src/components/titleHeader'
-import Constants from 'expo-constants'
 
 export default function App() {
   return (
@@ -17,10 +16,11 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
+    backgroundColor: '#fff',
+    flex: 1,
+    flexDirection: 'column',
+    flexGrow: 1,
     justifyContent: 'center',
-    textAlign: 'center',
   },
 })

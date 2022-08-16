@@ -32,7 +32,7 @@ const Facts = (props: FactsProps) => {
                 <Text style={styles.subHeader}>{movie.tagline}</Text>
                 <Image
                     source={{ uri: `${imageURI}${movie.poster_path}` }}
-                    style={{ width: '200px', height: '300px' }}
+                    style={{ width: 200, height: 300 }}
                 />
                 <Text style={styles.text}>Directed by {movie.director.name}</Text>
             </View>
@@ -42,10 +42,11 @@ const Facts = (props: FactsProps) => {
 
 const styles = StyleSheet.create({
     container: {
+        alignItems: 'center',
         flex: 1,
         justifyContent: 'center',
         paddingBottom: 20,
-        width: '320px'
+        width: 320
     },
     header: {
         flexWrap: 'wrap',
@@ -64,6 +65,7 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         fontFamily: 'Arvo_400Regular',
         fontSize: 14,
+        paddingTop: 20,
         textAlign: 'center'
     }
 })

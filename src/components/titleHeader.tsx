@@ -22,8 +22,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        maxHeight: '100px',
-        padding: 10
+        padding: 10,
+        position: 'absolute',
+        top: 30
     },
     header: {
         borderTopColor: 'red',
@@ -33,6 +34,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: '700',
         paddingTop: 8,
+        textAlign: 'center'
     },
     subHeader: {
         borderBottomColor: 'red',
@@ -40,7 +42,8 @@ const styles = StyleSheet.create({
         fontFamily: 'Arvo_400Regular_Italic',
         fontSize: 18,
         fontStyle: 'italic',
-        paddingBottom: 8
+        paddingBottom: 8,
+        textAlign: 'center'
     }
 })
 
