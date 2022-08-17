@@ -61,7 +61,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        padding: 1
+        paddingBottom: 20,
+        paddingTop: 20
     },
     text: {
         fontFamily: 'Arvo_400Regular',

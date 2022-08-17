@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         fontFamily: 'Arvo_400Regular_Italic',
         fontSize: 14,
+        paddingBottom: 20,
         textAlign: 'center'
     },
     text: {

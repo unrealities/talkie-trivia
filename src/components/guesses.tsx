@@ -1,13 +1,8 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import AppLoading from 'expo-app-loading'
 import { BasicMovie, Movie } from './movie'
-import { useFonts, Arvo_400Regular } from '@expo-google-fonts/arvo'
+import { useFonts, Arvo_400Regular, Arvo_700Bold } from '@expo-google-fonts/arvo'
 
-interface GuessContainerProps {
-    guess: number
-    movies: BasicMovie[]
-}
 interface GuessesContainerProps {
     guesses: number[]
     movie: Movie
@@ -15,7 +10,7 @@ interface GuessesContainerProps {
 }
 
 const GuessesContainer = (props: GuessesContainerProps) => {
-    let [fontsLoaded] = useFonts({ Arvo_400Regular })
+    let [fontsLoaded] = useFonts({ Arvo_400Regular, Arvo_700Bold })
     let getMovieTitle = (id: number) => {
         if (id > 0) {
             let movie = props.movies.find(m => m.id == id) as Movie
@@ -57,14 +52,17 @@ const styles = StyleSheet.create({
         width: '100%'
     },
     guessContainer: {
+        border: 2,
+        borderColor: 'red',
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        padding: 1
+        padding: 4
     },
     guessNumber: {
         color: 'red',
-        fontFamily: 'Arvo_400Regular',
+        flex: 1,
+        fontFamily: 'Arvo_700Bold',
         fontSize: 14,
         paddingRight: 20,
         textAlign: 'left'

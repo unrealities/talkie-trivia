@@ -5,7 +5,6 @@ import { Picker } from '@react-native-picker/picker'
 import { useFonts, Arvo_400Regular } from '@expo-google-fonts/arvo'
 
 import { BasicMovie } from './movie'
-import GuessesContainer from './guesses'
 
 interface PickerContainerProps {
     enableSubmit: boolean
@@ -21,6 +20,19 @@ const PickerContainer = (props: PickerContainerProps) => {
     const [selectedMovieID, setSelectedMovieID] = useState<number>(0)
     let [fontsLoaded] = useFonts({ Arvo_400Regular })
 
+    let onPressCheck = () => {
+        if (selectedMovieID > 0) {
+            props.updateGuesses([...props.guesses, selectedMovieID])
+        }
+        if (props.movieID == selectedMovieID) {
+            props.updateCorrectGuess(true)
+            props.toggleModal(true)
+        }
+        if (props.guesses.length > 3) {
+            props.toggleModal(true)
+        }
+    }
+
     if (!fontsLoaded) {
         return <AppLoading />
     } else {
@@ -32,28 +44,18 @@ const PickerContainer = (props: PickerContainerProps) => {
                     onValueChange={(itemValue, itemIndex) => {
                         setSelectedMovieID(itemValue)
                     }}>
-                    <Picker.Item key="0" label="" value={0} />
+                    <Picker.Item label="" value={0} />
                     {props.movies.map((movie) => (
-                        <Picker.Item key={movie.id} label={movie.title} value={movie.id} />
+                        <Picker.Item label={movie.title} value={movie.id} />
                     ))}
                 </Picker>
                 <Button
-                    onPress={() => {
-                        if (selectedMovieID > 0) {
-                            props.updateGuesses([...props.guesses, selectedMovieID])
-                        }
-                        if (props.movieID == selectedMovieID) {
-                            props.updateCorrectGuess(true)
-                            props.toggleModal(true)
-                        }
-                        if (props.guesses.length > 3) {
-                            props.toggleModal(true)
-                        }
-                    }}
-                    disabled={!props.enableSubmit}
-                    title="Submit"
-                    color="red"
                     accessibilityLabel="Submit your guess"
+                    color="red"
+                    disabled={!props.enableSubmit}
+                    onPress={onPressCheck}
+                    style={styles.button}
+                    title="Submit"
                 />
             </View>
         )
@@ -61,14 +63,20 @@ const PickerContainer = (props: PickerContainerProps) => {
 }
 
 const styles = StyleSheet.create({
+    button: {
+        fontFamily: 'Arvo_400Regular',
+        fontSize: 18,
+    },
     container: {
         flex: 1,
         justifyContent: 'center',
-        padding: 1
+        paddingBottom: 20,
+        paddingTop: 20
     },
     text: {
         fontFamily: 'Arvo_400Regular',
-        fontSize: 14
+        fontSize: 14,
+        marginBottom: 10
     }
 })
 
