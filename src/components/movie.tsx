@@ -99,12 +99,9 @@ const MoviesContainer = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
-    flexGrow: 1,
-    justifyContent: 'flex-start',
-    padding: 8,
     position: 'absolute',
-    top: 120
+    top: 120,
+    width: '80%'
   }
 })
 

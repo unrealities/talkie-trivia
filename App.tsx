@@ -19,8 +19,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
-    flexDirection: 'column',
-    flexGrow: 1,
     justifyContent: 'center',
+    width: '100%'
   },
 })

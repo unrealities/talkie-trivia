@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, StyleSheet, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import AppLoading from 'expo-app-loading'
 import { Picker } from '@react-native-picker/picker'
 import { useFonts, Arvo_400Regular } from '@expo-google-fonts/arvo'
@@ -49,14 +49,12 @@ const PickerContainer = (props: PickerContainerProps) => {
                         <Picker.Item label={movie.title} value={movie.id} />
                     ))}
                 </Picker>
-                <Button
-                    accessibilityLabel="Submit your guess"
-                    color="red"
+                <Pressable
                     disabled={!props.enableSubmit}
                     onPress={onPressCheck}
-                    style={styles.button}
-                    title="Submit"
-                />
+                    style={styles.button}>
+                    <Text style={styles.buttonText}>Submit Guess</Text>
+                </Pressable>
             </View>
         )
     }
@@ -64,6 +62,12 @@ const PickerContainer = (props: PickerContainerProps) => {
 
 const styles = StyleSheet.create({
     button: {
+        backgroundColor: 'red',
+        borderRadius: 10,
+        padding: 10
+    },
+    buttonText: {
+        color: 'white',
         fontFamily: 'Arvo_400Regular',
         fontSize: 18,
     },
@@ -75,7 +79,7 @@ const styles = StyleSheet.create({
     },
     text: {
         fontFamily: 'Arvo_400Regular',
-        fontSize: 14,
+        fontSize: 12,
         marginBottom: 10
     }
 })
