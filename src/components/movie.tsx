@@ -90,7 +90,7 @@ const MoviesContainer = () => {
         autoStart={false}
         count={100}
         fallSpeed={2000}
-        origin={{ x: -20, y: -20 }}
+        origin={{ x: -100, y: -20 }}
         ref={confetti} />
     </View>
   )
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     flex: 1,
     position: 'absolute',
     top: 120,
-    width: '80%'
+    width: '90%'
   }
 })
 

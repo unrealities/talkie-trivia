@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontFamily: 'Arvo_400Regular',
         fontSize: 18,
+        textAlign: 'center'
     },
     container: {
         flex: 1,

@@ -61,12 +61,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
+        minHeight: 200,
         paddingBottom: 20,
         paddingTop: 20
     },
     text: {
         fontFamily: 'Arvo_400Regular',
-        fontSize: 18
+        fontSize: 16
     },
 
 });
