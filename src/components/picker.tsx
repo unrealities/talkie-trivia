@@ -16,6 +16,8 @@ interface PickerContainerProps {
     updateGuesses: Dispatch<SetStateAction<number[]>>
 }
 
+// TODO: Implement custom searchable list picker
+// https://www.kindacode.com/article/how-to-create-a-filter-search-list-in-react/
 const PickerContainer = (props: PickerContainerProps) => {
     const [selectedMovieID, setSelectedMovieID] = useState<number>(0)
     let [fontsLoaded] = useFonts({ Arvo_400Regular })
