@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import AppLoading from 'expo-app-loading'
 import { useFonts, Arvo_400Regular } from '@expo-google-fonts/arvo'
 
@@ -15,11 +15,10 @@ interface PickerContainerProps {
     updateGuesses: Dispatch<SetStateAction<number[]>>
 }
 
-// TODO: Implement custom searchable list picker
-// https://www.kindacode.com/article/how-to-create-a-filter-search-list-in-react/
 const PickerContainer = (props: PickerContainerProps) => {
     const [selectedMovieID, setSelectedMovieID] = useState<number>(0)
-    const [foundMovies, setFoundMovies] = useState(props.movies);
+    const [searchText, setSearchText] = useState<string>('')
+    const [foundMovies, setFoundMovies] = useState(props.movies)
     let [fontsLoaded] = useFonts({ Arvo_400Regular })
 
     let onPressCheck = () => {
@@ -36,18 +35,17 @@ const PickerContainer = (props: PickerContainerProps) => {
     }
 
     const filter = (e) => {
-        const keyword = e.target.value;
+        const keyword = e.target.value
 
         if (keyword !== '') {
             const results = props.movies.filter((movie) => {
                 return movie.title.toLowerCase().startsWith(keyword.toLowerCase())
             })
-            setFoundMovies(results);
+            setFoundMovies(results)
+            setSearchText(keyword)
         } else {
             setFoundMovies(props.movies)
         }
-
-        setSelectedMovieID(keyword);
     }
 
     if (!fontsLoaded) {
@@ -55,25 +53,24 @@ const PickerContainer = (props: PickerContainerProps) => {
     } else {
         return (
             <View style={styles.container}>
-                <input
-                    type="search"
-                    value={name}
-                    onChange={filter}
-                    className="input"
+                <TextInput
+                    value={searchText}
+                    onChangeText={filter}
                     placeholder="search for a movie title"
+                    style={styles.input}
                 />
 
-                <div style={styles.text}>
+                <View style={styles.text}>
                     {foundMovies && foundMovies.length > 0 ? (
-                        foundMovies.map((movie) => (
-                            <li key={movie.id} className="user">
-                                <span className="movie-name">{movie.name}</span>
-                            </li>
+                        foundMovies.slice(0,5).map((movie) => (
+                            <Pressable key={movie.id} onPress={() => {setSelectedMovieID(movie.id)}}>
+                                <span className={selectedMovieID == movie.id ? 'selected' : ''}>{movie.title}</span>
+                            </Pressable>
                         ))
                     ) : (
-                        <h1>No results found!</h1>
+                        <li></li>
                     )}
-                </div>
+                </View>
                 <Pressable
                     disabled={!props.enableSubmit}
                     onPress={onPressCheck}
@@ -102,6 +99,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingBottom: 20,
         paddingTop: 20
+    },
+    input: {
+        borderWidth: 2,
+        padding: 5,
+        width: 300
+    },
+    selected: {
+        backgroundColor: 'light red'
     },
     text: {
         fontFamily: 'Arvo_400Regular',
