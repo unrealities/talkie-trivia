@@ -49,17 +49,18 @@ const GuessesContainer = (props: GuessesContainerProps) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        width: '100%'
+        width: '400'
     },
     guessContainer: {
         border: 2,
         borderColor: 'red',
         flex: 1,
         flexDirection: 'row',
-        justifyContent: 'flex-start',
-        padding: 4
+        padding: 4,
+        textAlign: 'left'
     },
     guessNumber: {
+        alignSelf: 'flex-start',
         color: 'red',
         flex: 1,
         fontFamily: 'Arvo_700Bold',

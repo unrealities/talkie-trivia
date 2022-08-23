@@ -98,6 +98,7 @@ const MoviesContainer = () => {
 
 const styles = StyleSheet.create({
   container: {
+    alignItems: 'center',
     flex: 1,
     position: 'absolute',
     top: 120,

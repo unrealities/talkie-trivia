@@ -34,15 +34,14 @@ const PickerContainer = (props: PickerContainerProps) => {
         }
     }
 
-    const filter = (e) => {
-        const keyword = e.target.value
+    const filter = (text) => {
+        setSearchText(text)
 
-        if (keyword !== '') {
+        if (searchText !== '') {
             const results = props.movies.filter((movie) => {
-                return movie.title.toLowerCase().startsWith(keyword.toLowerCase())
+                return movie.title.toLowerCase().startsWith(searchText.toLowerCase())
             })
             setFoundMovies(results)
-            setSearchText(keyword)
         } else {
             setFoundMovies(props.movies)
         }
@@ -54,16 +53,17 @@ const PickerContainer = (props: PickerContainerProps) => {
         return (
             <View style={styles.container}>
                 <TextInput
-                    value={searchText}
-                    onChangeText={filter}
+                    defaultValue={searchText}
+                    onChangeText={text => filter(text)}
                     placeholder="search for a movie title"
+                    value={searchText}
                     style={styles.input}
                 />
 
                 <View style={styles.text}>
                     {foundMovies && foundMovies.length > 0 ? (
                         foundMovies.slice(0,5).map((movie) => (
-                            <Pressable key={movie.id} onPress={() => {setSelectedMovieID(movie.id)}}>
+                            <Pressable key={movie.id} onPress={() => {setSelectedMovieID(movie.id); setSearchText(movie.title)}}>
                                 <span className={selectedMovieID == movie.id ? 'selected' : ''}>{movie.title}</span>
                             </Pressable>
                         ))
