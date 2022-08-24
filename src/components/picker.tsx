@@ -44,6 +44,7 @@ const PickerContainer = (props: PickerContainerProps) => {
             setFoundMovies(results)
         } else {
             setFoundMovies(props.movies)
+            setSelectedMovieID(0)
         }
     }
 
@@ -64,11 +65,11 @@ const PickerContainer = (props: PickerContainerProps) => {
                     {foundMovies && foundMovies.length > 0 ? (
                         foundMovies.slice(0,5).map((movie) => (
                             <Pressable key={movie.id} onPress={() => {setSelectedMovieID(movie.id); setSearchText(movie.title)}}>
-                                <span className={selectedMovieID == movie.id ? 'selected' : ''}>{movie.title}</span>
+                                <Text style={selectedMovieID == movie.id ? styles.selected : styles.unselected}>{movie.title}</Text>
                             </Pressable>
                         ))
                     ) : (
-                        <li></li>
+                        <Text>No Movie Found</Text>
                     )}
                 </View>
                 <Pressable
@@ -101,17 +102,25 @@ const styles = StyleSheet.create({
         paddingTop: 20
     },
     input: {
+        borderColor: 'red',
+        borderRadius: 10,
         borderWidth: 2,
+        color: 'grey',
         padding: 5,
         width: 300
     },
     selected: {
-        backgroundColor: 'light red'
+        color: 'red'
     },
     text: {
         fontFamily: 'Arvo_400Regular',
         fontSize: 12,
+        padding: 10,
+        lineHeight: 16,
         marginBottom: 10
+    },
+    unselected: {
+        fontStyle: 'italic'
     }
 })
 

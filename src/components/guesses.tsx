@@ -48,16 +48,21 @@ const GuessesContainer = (props: GuessesContainerProps) => {
 
 const styles = StyleSheet.create({
     container: {
+        alignItems: 'flex-start',
         flex: 1,
-        width: '400'
+        flexDirection: 'column',
+        flexGrow: 1
     },
     guessContainer: {
+        alignItems: 'flex-start',
         border: 2,
         borderColor: 'red',
         flex: 1,
         flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'flex-start', 
         padding: 4,
-        textAlign: 'left'
+        textAlign: 'left',
     },
     guessNumber: {
         alignSelf: 'flex-start',
@@ -65,13 +70,16 @@ const styles = StyleSheet.create({
         flex: 1,
         fontFamily: 'Arvo_700Bold',
         fontSize: 14,
+        maxWidth: 40,
         paddingRight: 20,
         textAlign: 'left'
     },
     guess: {
+        flex: 1,
         fontFamily: 'Arvo_400Regular',
         fontSize: 14,
-        textAlign: 'right'
+        minWidth: 240,
+        textAlign: 'center',
     }
 })
 
