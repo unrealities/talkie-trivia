@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
         flex: 1,
         fontFamily: 'Arvo_400Regular',
         fontSize: 14,
-        minWidth: 240,
+        minWidth: 260,
         textAlign: 'center',
     }
 })
