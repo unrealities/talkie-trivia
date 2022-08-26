@@ -16,10 +16,11 @@ interface PickerContainerProps {
 }
 
 const PickerContainer = (props: PickerContainerProps) => {
+    const [foundMovies, setFoundMovies] = useState(props.movies)
+    const [inputActive, setInputActive] = useState(false)
     const [selectedMovieID, setSelectedMovieID] = useState<number>(0)
     const [selectedMovieTitle, setSelectedMovieTitle] = useState<string>('')
     const [searchText, setSearchText] = useState<string>('')
-    const [foundMovies, setFoundMovies] = useState(props.movies)
     let [fontsLoaded] = useFonts({ Arvo_400Regular })
 
     let onPressCheck = () => {
@@ -63,22 +64,27 @@ const PickerContainer = (props: PickerContainerProps) => {
         return (
             <View style={styles.container}>
                 <TextInput
+                    clearTextOnFocus={true}
                     defaultValue={searchText}
+                    maxLength={100}
                     onChangeText={text => filter(text)}
+                    onBlur={() => setInputActive(false)}
+                    onFocus={() => setInputActive(true)}
                     placeholder="search for a movie title"
+                    placeholderTextColor={'grey'}
                     value={searchText}
                     style={styles.input}
                 />
 
                 <View style={styles.text}>
-                    {foundMovies && foundMovies.length > 0 ? (
-                        foundMovies.slice(0,5).map((movie) => (
+                    {foundMovies && foundMovies.length > 0 && (
+                        <View style={inputActive? styles.resultsShow : styles.resultsHide}>
+                        {foundMovies.slice(0,5).map((movie) => (
                             <Pressable key={movie.id} onPress={() => {setSelectedMovieID(movie.id); setSelectedMovieTitle(movie.title); setSearchText(movie.title)}}>
                                 <Text style={styles.unselected}>{movie.title}</Text>
                             </Pressable>
-                        ))
-                    ) : (
-                        <Text>No Movie Found</Text>
+                        ))}
+                        </View>
                     )}
                     {selectedMovieID > 0 && (
                         <Pressable key={selectedMovieID} onPress={() => {setSelectedMovieID(0); setSelectedMovieTitle(''); setSearchText(selectedMovieTitle)}}>
@@ -119,9 +125,14 @@ const styles = StyleSheet.create({
         borderColor: 'red',
         borderRadius: 10,
         borderWidth: 2,
-        color: 'grey',
         padding: 5,
         width: 300
+    },
+    resultsHide: {
+        display: 'none'
+    },
+    resultsShow: {
+        flex: 1
     },
     selected: {
         color: 'red',
