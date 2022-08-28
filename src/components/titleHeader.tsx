@@ -3,6 +3,8 @@ import { StyleSheet, Text, View } from 'react-native'
 import AppLoading from 'expo-app-loading'
 import { useFonts, Arvo_700Bold, Arvo_400Regular_Italic } from '@expo-google-fonts/arvo'
 
+import { colors } from '../styles/global'
+
 const TitleHeader = () => {
     let [fontsLoaded] = useFonts({ Arvo_700Bold, Arvo_400Regular_Italic })
 
@@ -26,9 +28,9 @@ const styles = StyleSheet.create({
         top: 30
     },
     header: {
-        borderTopColor: 'red',
+        borderTopColor: colors.primary,
         borderTopWidth: 2,
-        color: 'red',
+        color: colors.primary,
         fontFamily: 'Arvo_700Bold',
         fontSize: 24,
         fontWeight: '700',
@@ -36,8 +38,9 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     subHeader: {
-        borderBottomColor: 'red',
+        borderBottomColor: colors.primary,
         borderBottomWidth: 2,
+        color: colors.secondary,
         fontFamily: 'Arvo_400Regular_Italic',
         fontSize: 18,
         fontStyle: 'italic',

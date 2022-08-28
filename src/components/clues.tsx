@@ -3,6 +3,8 @@ import { StyleSheet, Text, View } from 'react-native'
 import AppLoading from 'expo-app-loading';
 import { useFonts, Arvo_400Regular } from '@expo-google-fonts/arvo'
 
+import { colors } from '../styles/global'
+
 interface CluesProps {
     correctGuess: boolean
     guesses: number[]
@@ -66,6 +68,7 @@ const styles = StyleSheet.create({
         paddingTop: 20
     },
     text: {
+        color: colors.secondary,
         fontFamily: 'Arvo_400Regular',
         fontSize: 16
     },

@@ -4,6 +4,7 @@ import AppLoading from 'expo-app-loading'
 import { useFonts, Arvo_400Regular } from '@expo-google-fonts/arvo'
 
 import { BasicMovie } from './movie'
+import { colors } from '../styles/global'
 
 interface PickerContainerProps {
     enableSubmit: boolean
@@ -65,7 +66,6 @@ const PickerContainer = (props: PickerContainerProps) => {
             <View style={styles.container}>
                 <TextInput
                     clearTextOnFocus={true}
-                    defaultValue={searchText}
                     maxLength={100}
                     onChangeText={text => filter(text)}
                     onBlur={() => setInputActive(false)}
@@ -105,12 +105,12 @@ const PickerContainer = (props: PickerContainerProps) => {
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: 'red',
+        backgroundColor: colors.primary,
         borderRadius: 10,
         padding: 10
     },
     buttonText: {
-        color: 'white',
+        color: colors.tertiary,
         fontFamily: 'Arvo_400Regular',
         fontSize: 18,
         textAlign: 'center'
@@ -122,9 +122,10 @@ const styles = StyleSheet.create({
         paddingTop: 20
     },
     input: {
-        borderColor: 'red',
+        borderColor: colors.primary,
         borderRadius: 10,
         borderWidth: 2,
+        color: colors.secondary,
         padding: 5,
         width: 300
     },
@@ -135,7 +136,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     selected: {
-        color: 'red',
+        color: colors.primary,
         fontWeight: 'bold',
         paddingTop: 10
     },
@@ -147,6 +148,7 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     unselected: {
+        color: colors.secondary,
         fontStyle: 'italic'
     }
 })

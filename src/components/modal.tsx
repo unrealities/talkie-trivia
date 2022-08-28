@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native'
+
+import { colors } from '../styles/global'
 import Facts from './facts'
 
 interface MovieModalProps {
@@ -47,7 +49,7 @@ const styles = StyleSheet.create({
     },
     modalView: {
         margin: 20,
-        backgroundColor: 'white',
+        backgroundColor: colors.tertiary,
         borderRadius: 20,
         padding: 35,
         alignItems: 'center',

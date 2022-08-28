@@ -1,7 +1,9 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { BasicMovie, Movie } from './movie'
+import { Movie } from './movie'
 import { useFonts, Arvo_400Regular, Arvo_700Bold } from '@expo-google-fonts/arvo'
+
+import { colors } from '../styles/global'
 
 interface GuessesContainerProps {
     guesses: number[]
@@ -56,7 +58,7 @@ const styles = StyleSheet.create({
     guessContainer: {
         alignItems: 'flex-start',
         border: 2,
-        borderColor: 'red',
+        borderColor: colors.primary,
         flex: 1,
         flexDirection: 'row',
         flexWrap: 'wrap',
@@ -66,7 +68,7 @@ const styles = StyleSheet.create({
     },
     guessNumber: {
         alignSelf: 'flex-start',
-        color: 'red',
+        color: colors.primary,
         flex: 1,
         fontFamily: 'Arvo_700Bold',
         fontSize: 14,
@@ -75,6 +77,7 @@ const styles = StyleSheet.create({
         textAlign: 'left'
     },
     guess: {
+        color: colors.secondary,
         flex: 1,
         fontFamily: 'Arvo_400Regular',
         fontSize: 14,
