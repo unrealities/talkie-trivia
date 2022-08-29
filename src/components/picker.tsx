@@ -68,26 +68,25 @@ const PickerContainer = (props: PickerContainerProps) => {
                     clearTextOnFocus={true}
                     maxLength={100}
                     onChangeText={text => filter(text)}
-                    onBlur={() => setInputActive(false)}
                     onFocus={() => setInputActive(true)}
                     placeholder="search for a movie title"
                     placeholderTextColor={'grey'}
-                    value={searchText}
                     style={styles.input}
+                    value={searchText}
                 />
 
                 <View style={styles.text}>
                     {foundMovies && foundMovies.length > 0 && (
-                        <View style={inputActive? styles.resultsShow : styles.resultsHide}>
-                        {foundMovies.slice(0,5).map((movie) => (
-                            <Pressable key={movie.id} onPress={() => {setSelectedMovieID(movie.id); setSelectedMovieTitle(movie.title); setSearchText(movie.title)}}>
-                                <Text style={styles.unselected}>{movie.title}</Text>
-                            </Pressable>
-                        ))}
+                        <View style={inputActive ? styles.resultsShow : styles.resultsHide}>
+                            {foundMovies.slice(0, 5).map((movie) => (
+                                <Pressable key={movie.id} onPress={() => { setSelectedMovieID(movie.id); setSelectedMovieTitle(movie.title); setSearchText(movie.title); setInputActive(false) }}>
+                                    <Text style={styles.unselected}>{movie.title}</Text>
+                                </Pressable>
+                            ))}
                         </View>
                     )}
                     {selectedMovieID > 0 && (
-                        <Pressable key={selectedMovieID} onPress={() => {setSelectedMovieID(0); setSelectedMovieTitle(''); setSearchText(selectedMovieTitle)}}>
+                        <Pressable key={selectedMovieID} onPress={() => { setSelectedMovieID(0); setSelectedMovieTitle(''); setSearchText(selectedMovieTitle) }}>
                             <Text style={styles.selected}>{selectedMovieTitle}</Text>
                         </Pressable>
                     )}
