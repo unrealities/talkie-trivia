@@ -70,7 +70,7 @@ const PickerContainer = (props: PickerContainerProps) => {
                     onChangeText={text => filter(text)}
                     onFocus={() => setInputActive(true)}
                     placeholder="search for a movie title"
-                    placeholderTextColor={'grey'}
+                    placeholderTextColor={colors.tertiary}
                     style={styles.input}
                     value={searchText}
                 />
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
         padding: 10
     },
     buttonText: {
-        color: colors.tertiary,
+        color: colors.secondary,
         fontFamily: 'Arvo_400Regular',
         fontSize: 18,
         textAlign: 'center'

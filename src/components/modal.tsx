@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native'
 
 import { colors } from '../styles/global'
@@ -49,9 +49,9 @@ const styles = StyleSheet.create({
     },
     modalView: {
         margin: 20,
-        backgroundColor: colors.tertiary,
+        backgroundColor: colors.secondary,
         borderRadius: 20,
-        padding: 35,
+        padding: 24,
         alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: {
@@ -64,17 +64,17 @@ const styles = StyleSheet.create({
     },
     button: {
         borderRadius: 20,
-        padding: 10,
+        padding: 16,
         elevation: 2,
     },
     buttonOpen: {
-        backgroundColor: 'red',
+        backgroundColor: colors.primary,
     },
     buttonClose: {
-        backgroundColor: 'red',
+        backgroundColor: colors.primary,
     },
     textStyle: {
-        color: 'white',
+        color: colors.background,
         fontWeight: 'bold',
         textAlign: 'center',
     },
