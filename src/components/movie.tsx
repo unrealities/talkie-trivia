@@ -46,11 +46,13 @@ const MoviesContainer = () => {
   let basicMovies: BasicMovie[] = require('../../data/basicMovies.json')
   let movies: Movie[] = require('../../data/popularMovies.json')
 
+  let newMovie = movies[Math.floor(Math.random() * movies.length)]
+
   const [correctGuess, setCorrectGuess] = useState<boolean>(false)
   const [enableSubmit, setEnableSubmit] = useState<boolean>(true)
   const [guesses, setGuesses] = useState<number[]>([])
   const [showModal, setShowModal] = useState<boolean>(false)
-  const [movie] = useState<Movie>(movies[Math.floor(Math.random() * movies.length)])
+  const [movie, setMovie] = useState<Movie>(newMovie)
 
   const confetti = useRef<ConfettiCannon>(null)
 

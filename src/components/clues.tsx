@@ -47,13 +47,15 @@ const CluesContainer = (props: CluesProps) => {
     } else {
         return (
             <View style={styles.container}>
-                {clues.map((clue, i) => {
-                    if ((i <= props.guesses.length) || (props.correctGuess)) {
-                        return (
-                            <Text key={i} style={styles.text}>{clue}</Text>
-                        )
-                    }
-                })}
+                <Text style={styles.textContainer}>
+                    {clues.map((clue, i) => {
+                        if ((i <= props.guesses.length) || (props.correctGuess)) {
+                            return (
+                                <Text key={i} style={styles.text}>{clue}</Text>
+                            )
+                        }
+                    })}
+                </Text>
             </View>
         )
     }
@@ -72,7 +74,11 @@ const styles = StyleSheet.create({
         fontFamily: 'Arvo_400Regular',
         fontSize: 16
     },
-
-});
+    textContainer: {
+        flex: 1,
+        flexWrap: 'wrap',
+        maxWidth: 300
+    }
+})
 
 export default CluesContainer
