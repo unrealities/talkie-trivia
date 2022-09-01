@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import AppLoading from 'expo-app-loading'
 import { useFonts, Arvo_400Regular } from '@expo-google-fonts/arvo'
 
@@ -42,12 +42,12 @@ const PickerContainer = (props: PickerContainerProps) => {
 
         if (searchText !== '') {
             let results = props.movies.filter((movie) => {
-                return movie.title.toLowerCase().startsWith(searchText.toLowerCase())
+                return movie.title.toLowerCase().includes(searchText.toLowerCase())
             })
             if (selectedMovieID > 0) {
                 results = results.filter((movie) => {
                     if (movie.id != selectedMovieID) {
-                        return movie.title.toLowerCase().startsWith(searchText.toLowerCase())
+                        return movie.title.toLowerCase().includes(searchText.toLowerCase())
                     }
                 })
             }
@@ -77,13 +77,13 @@ const PickerContainer = (props: PickerContainerProps) => {
 
                 <View style={styles.text}>
                     {foundMovies && foundMovies.length > 0 && (
-                        <View style={inputActive ? styles.resultsShow : styles.resultsHide}>
-                            {foundMovies.slice(0, 5).map((movie) => (
-                                <Pressable key={movie.id} onPress={() => { setSelectedMovieID(movie.id); setSelectedMovieTitle(movie.title); setSearchText(movie.title); setInputActive(false) }}>
-                                    <Text style={styles.unselected}>{movie.title}</Text>
+                        <ScrollView style={inputActive ? styles.resultsShow : styles.resultsHide}>
+                            {foundMovies.map((movie) => (
+                                <Pressable style={styles.pressableText} key={movie.id} onPress={() => { setSelectedMovieID(movie.id); setSelectedMovieTitle(movie.title); setSearchText(movie.title); setInputActive(false) }}>
+                                    <Text ellipsizeMode='tail' style={styles.unselected}>{movie.title}</Text>
                                 </Pressable>
                             ))}
-                        </View>
+                        </ScrollView>
                     )}
                     {selectedMovieID > 0 && (
                         <Pressable key={selectedMovieID} onPress={() => { setSelectedMovieID(0); setSelectedMovieTitle(''); setSearchText(selectedMovieTitle) }}>
@@ -128,11 +128,18 @@ const styles = StyleSheet.create({
         padding: 5,
         width: 300
     },
+    pressableText: {
+        flex: 1,
+        flexWrap: 'nowrap'
+    },
     resultsHide: {
         display: 'none'
     },
     resultsShow: {
-        flex: 1
+        flex: 1,
+        maxHeight: 88,
+        maxWidth: 280,
+        overflow: 'scroll'
     },
     selected: {
         color: colors.primary,
