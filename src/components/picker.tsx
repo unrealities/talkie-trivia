@@ -69,6 +69,7 @@ const PickerContainer = (props: PickerContainerProps) => {
                     maxLength={100}
                     onChangeText={text => filter(text)}
                     onFocus={() => setInputActive(true)}
+                    onPressOut={() => setInputActive(false)}
                     placeholder="search for a movie title"
                     placeholderTextColor={colors.tertiary}
                     style={styles.input}
@@ -80,7 +81,7 @@ const PickerContainer = (props: PickerContainerProps) => {
                         <ScrollView style={inputActive ? styles.resultsShow : styles.resultsHide}>
                             {foundMovies.map((movie) => (
                                 <Pressable style={styles.pressableText} key={movie.id} onPress={() => { setSelectedMovieID(movie.id); setSelectedMovieTitle(movie.title); setSearchText(movie.title); setInputActive(false) }}>
-                                    <Text ellipsizeMode='tail' style={styles.unselected}>{movie.title}</Text>
+                                    <Text numberOfLines={1} ellipsizeMode='tail' style={styles.unselected}>{movie.title}</Text>
                                 </Pressable>
                             ))}
                         </ScrollView>
@@ -125,6 +126,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderWidth: 2,
         color: colors.secondary,
+        maxWidth: 300,
         padding: 5,
         width: 300
     },
@@ -133,13 +135,13 @@ const styles = StyleSheet.create({
         flexWrap: 'nowrap'
     },
     resultsHide: {
-        display: 'none'
+        display: 'none',
+        height: 0
     },
     resultsShow: {
         flex: 1,
         maxHeight: 88,
-        maxWidth: 280,
-        overflow: 'scroll'
+        maxWidth: 280
     },
     selected: {
         color: colors.primary,
@@ -155,6 +157,8 @@ const styles = StyleSheet.create({
     },
     unselected: {
         color: colors.secondary,
+        flex: 1,
+        flexWrap: 'nowrap',
         fontStyle: 'italic'
     }
 })
