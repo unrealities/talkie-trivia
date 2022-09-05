@@ -26,23 +26,23 @@ const GuessesContainer = (props: GuessesContainerProps) => {
         <View style={styles.container}>
             <View style={styles.guessContainer}>
                 <Text style={styles.guessNumber}>1</Text>
-                <Text style={styles.guess}>{getMovieTitle(props.guesses[0])}</Text>
+                <Text numberOfLines={1} ellipsizeMode='tail' style={styles.guess}>{getMovieTitle(props.guesses[0])}</Text>
             </View>
             <View style={styles.guessContainer}>
                 <Text style={styles.guessNumber}>2</Text>
-                <Text style={styles.guess}>{getMovieTitle(props.guesses[1])}</Text>
+                <Text numberOfLines={1} ellipsizeMode='tail' style={styles.guess}>{getMovieTitle(props.guesses[1])}</Text>
             </View>
             <View style={styles.guessContainer}>
                 <Text style={styles.guessNumber}>3</Text>
-                <Text style={styles.guess}>{getMovieTitle(props.guesses[2])}</Text>
+                <Text numberOfLines={1} ellipsizeMode='tail' style={styles.guess}>{getMovieTitle(props.guesses[2])}</Text>
             </View>
             <View style={styles.guessContainer}>
                 <Text style={styles.guessNumber}>4</Text>
-                <Text style={styles.guess}>{getMovieTitle(props.guesses[3])}</Text>
+                <Text numberOfLines={1} ellipsizeMode='tail' style={styles.guess}>{getMovieTitle(props.guesses[3])}</Text>
             </View>
             <View style={styles.guessContainer}>
                 <Text style={styles.guessNumber}>5</Text>
-                <Text style={styles.guess}>{getMovieTitle(props.guesses[4])}</Text>
+                <Text numberOfLines={1} ellipsizeMode='tail' style={styles.guess}>{getMovieTitle(props.guesses[4])}</Text>
             </View>
         </View>
     )
@@ -53,7 +53,9 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         flex: 1,
         flexDirection: 'column',
-        flexGrow: 1
+        flexGrow: 1,
+        maxWidth: 280,
+        width: 280
     },
     guessContainer: {
         alignItems: 'flex-start',
@@ -63,8 +65,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'flex-start',
+        maxWidth: 260,
         padding: 4,
         textAlign: 'left',
+        width: 260
     },
     guessNumber: {
         alignSelf: 'flex-start',
@@ -81,8 +85,7 @@ const styles = StyleSheet.create({
         flex: 1,
         fontFamily: 'Arvo_400Regular',
         fontSize: 14,
-        minWidth: 260,
-        textAlign: 'center',
+        textAlign: 'center'
     }
 })
 

@@ -146,6 +146,7 @@ const styles = StyleSheet.create({
     selected: {
         color: colors.primary,
         fontWeight: 'bold',
+        maxWidth: 280,
         paddingTop: 10
     },
     text: {
