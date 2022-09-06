@@ -1,5 +1,5 @@
-import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React, { useEffect, useRef } from 'react'
+import { Animated, StyleSheet, Text } from 'react-native'
 import AppLoading from 'expo-app-loading';
 import { useFonts, Arvo_400Regular } from '@expo-google-fonts/arvo'
 
@@ -13,6 +13,18 @@ interface CluesProps {
 
 const CluesContainer = (props: CluesProps) => {
     let [fontsLoaded] = useFonts({ Arvo_400Regular })
+    const fadeAnim = useRef(new Animated.Value(0)).current
+
+    useEffect(() => {
+      Animated.timing(
+        fadeAnim,
+        {
+          duration: 1000,
+          toValue: 1,
+          useNativeDriver: true
+        }
+      ).start();
+    }, [fadeAnim])
 
     let splits = 5
     let summarySplit = props.summary.split(' ')
@@ -46,7 +58,7 @@ const CluesContainer = (props: CluesProps) => {
         return <AppLoading />;
     } else {
         return (
-            <View style={styles.container}>
+            <Animated.View style={[{...styles.container, opacity: fadeAnim}]}>
                 <Text style={styles.textContainer}>
                     {clues.map((clue, i) => {
                         if ((i <= props.guesses.length) || (props.correctGuess)) {
@@ -56,7 +68,7 @@ const CluesContainer = (props: CluesProps) => {
                         }
                     })}
                 </Text>
-            </View>
+            </Animated.View>
         )
     }
 }
