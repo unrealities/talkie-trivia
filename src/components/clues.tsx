@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { Animated, StyleSheet, Text } from 'react-native'
+import { Animated, StyleSheet, Text, View } from 'react-native'
 import AppLoading from 'expo-app-loading';
 import { useFonts, Arvo_400Regular } from '@expo-google-fonts/arvo'
 
@@ -13,18 +13,20 @@ interface CluesProps {
 
 const CluesContainer = (props: CluesProps) => {
     let [fontsLoaded] = useFonts({ Arvo_400Regular })
-    const fadeAnim = useRef(new Animated.Value(0)).current
+    let fadeAnim = useRef(new Animated.Value(0))
 
     useEffect(() => {
       Animated.timing(
-        fadeAnim,
+        fadeAnim.current,
         {
           duration: 1000,
           toValue: 1,
           useNativeDriver: true
         }
-      ).start();
-    }, [fadeAnim])
+      ).start()
+    })
+
+    fadeAnim.current.setValue(0)
 
     let splits = 5
     let summarySplit = props.summary.split(' ')
@@ -58,17 +60,19 @@ const CluesContainer = (props: CluesProps) => {
         return <AppLoading />;
     } else {
         return (
-            <Animated.View style={[{...styles.container, opacity: fadeAnim}]}>
+            <View style={styles.container}>
                 <Text style={styles.textContainer}>
                     {clues.map((clue, i) => {
                         if ((i <= props.guesses.length) || (props.correctGuess)) {
                             return (
-                                <Text key={i} style={styles.text}>{clue}</Text>
+                                <Animated.Text key={i} style={{...styles.text, opacity: props.guesses.length == i ? fadeAnim.current : new Animated.Value(1)}}>
+                                    {clue}
+                                </Animated.Text>
                             )
                         }
                     })}
                 </Text>
-            </Animated.View>
+            </View>
         )
     }
 }
