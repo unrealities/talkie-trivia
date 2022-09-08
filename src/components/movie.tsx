@@ -78,6 +78,7 @@ const MoviesContainer = () => {
         movieID={movie.id}
         movies={basicMovies}
         toggleModal={setShowModal}
+        toggleSubmit={setEnableSubmit}
         updateCorrectGuess={setCorrectGuess}
         updateGuesses={setGuesses} />
       <GuessesContainer

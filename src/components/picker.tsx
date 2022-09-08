@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { SetStateAction, useEffect, useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import AppLoading from 'expo-app-loading'
 import { useFonts, Arvo_400Regular } from '@expo-google-fonts/arvo'
@@ -12,6 +12,7 @@ interface PickerContainerProps {
     movieID: number
     movies: BasicMovie[]
     toggleModal: Dispatch<SetStateAction<boolean>>
+    toggleSubmit: Dispatcn<SetStateAction<boolean>>
     updateCorrectGuess: Dispatch<SetStateAction<boolean>>
     updateGuesses: Dispatch<SetStateAction<number[]>>
 }
@@ -36,6 +37,10 @@ const PickerContainer = (props: PickerContainerProps) => {
             props.toggleModal(true)
         }
     }
+
+    useEffect(() => {
+        selectedMovieID === 0 ? props.toggleSubmit(false) : props.toggleSubmit(true)
+    })
 
     const filter = (text) => {
         setSearchText(text)

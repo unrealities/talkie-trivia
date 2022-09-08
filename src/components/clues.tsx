@@ -41,7 +41,7 @@ const CluesContainer = (props: CluesProps) => {
                 break
             }
             if (j > clueLength - 2 && (summarySplit[wordTrack].endsWith('.') || summarySplit[wordTrack].endsWith(','))) {
-                clues[i] = clues[i] + summarySplit[wordTrack]
+                clues[i] = clues[i] + summarySplit[wordTrack] + " "
                 wordTrack++
                 clueLength += clueLength - j
                 break
