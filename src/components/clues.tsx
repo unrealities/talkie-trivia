@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useLayoutEffect } from 'react'
 import { Animated, StyleSheet, Text, View } from 'react-native'
 import AppLoading from 'expo-app-loading';
-import { useFonts, Arvo_400Regular } from '@expo-google-fonts/arvo'
+import { useFonts, Arvo_400Regular, Arvo_700Bold } from '@expo-google-fonts/arvo'
 
 import { colors } from '../styles/global'
 
@@ -12,21 +12,23 @@ interface CluesProps {
 }
 
 const CluesContainer = (props: CluesProps) => {
-    let [fontsLoaded] = useFonts({ Arvo_400Regular })
-    let fadeAnim = useRef(new Animated.Value(0))
-
-    useEffect(() => {
-      Animated.timing(
-        fadeAnim.current,
+    let [fontsLoaded] = useFonts({ Arvo_400Regular, Arvo_700Bold })
+    let fadeAnim = new Animated.Value(0)
+    let fadeAnimTiming = Animated.timing(
+        fadeAnim,
         {
-          duration: 1000,
+          duration: 1500,
           toValue: 1,
           useNativeDriver: true
         }
-      ).start()
-    })
+      )
 
-    fadeAnim.current.setValue(0)
+    let animateClue = () => {
+        fadeAnimTiming.reset()
+        fadeAnimTiming.start()
+    }
+    useEffect(animateClue, [props.guesses])
+    useEffect(animateClue, [fontsLoaded])
 
     let splits = 5
     let summarySplit = props.summary.split(' ')
@@ -65,7 +67,14 @@ const CluesContainer = (props: CluesProps) => {
                     {clues.map((clue, i) => {
                         if ((i <= props.guesses.length) || (props.correctGuess)) {
                             return (
-                                <Animated.Text key={i} style={{...styles.text, opacity: props.guesses.length == i ? fadeAnim.current : new Animated.Value(1)}}>
+                                <Animated.Text 
+                                    key={i} 
+                                    style={
+                                        {...styles.text,
+                                            fontFamily: props.guesses.length == i ? 'Arvo_700Bold' : 'Arvo_400Regular',
+                                            fontWeight: props.guesses.length == i ? '700' : '400',
+                                            opacity: props.guesses.length == i ? fadeAnim : 1
+                                    }}>
                                     {clue}
                                 </Animated.Text>
                             )
