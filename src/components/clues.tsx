@@ -17,11 +17,11 @@ const CluesContainer = (props: CluesProps) => {
     let fadeAnimTiming = Animated.timing(
         fadeAnim,
         {
-          duration: 1500,
-          toValue: 1,
-          useNativeDriver: true
+            duration: 1500,
+            toValue: 1,
+            useNativeDriver: true
         }
-      )
+    )
 
     let animateClue = () => {
         fadeAnimTiming.reset()
@@ -36,6 +36,7 @@ const CluesContainer = (props: CluesProps) => {
     let clueLength = summarySubLength
     let clues: string[] = ["", "", "", "", ""]
     let wordTrack = 0
+    let wordCount = [0, 0, 0, 0, 0]
     for (let i = 0; i < splits; i++) {
         for (let j = 0; j < clueLength; j++) {
             if (wordTrack >= summarySplit.length) {
@@ -51,6 +52,7 @@ const CluesContainer = (props: CluesProps) => {
             clues[i] = clues[i] + summarySplit[wordTrack] + " "
             wordTrack++
         }
+        wordCount[i] = wordTrack
     }
 
     while (wordTrack < summarySplit.length) {
@@ -67,20 +69,22 @@ const CluesContainer = (props: CluesProps) => {
                     {clues.map((clue, i) => {
                         if ((i <= props.guesses.length) || (props.correctGuess)) {
                             return (
-                                <Animated.Text 
-                                    key={i} 
+                                <Animated.Text
+                                    key={i}
                                     style={
-                                        {...styles.text,
+                                        {
+                                            ...styles.text,
                                             fontFamily: props.guesses.length == i ? 'Arvo_700Bold' : 'Arvo_400Regular',
                                             fontWeight: props.guesses.length == i ? '700' : '400',
                                             opacity: props.guesses.length == i ? fadeAnim : 1
-                                    }}>
+                                        }}>
                                     {clue}
                                 </Animated.Text>
                             )
                         }
                     })}
                 </Text>
+                <Text style={styles.wordCountText}>{wordCount[props.guesses.length]}/{wordCount[4]}</Text>
             </View>
         )
     }
@@ -103,6 +107,12 @@ const styles = StyleSheet.create({
         flex: 1,
         flexWrap: 'wrap',
         maxWidth: 300
+    },
+    wordCountText: {
+        color: colors.primary,
+        flex: 1,
+        fontSize: 10,
+        textAlign: 'right'
     }
 })
 
