@@ -60,7 +60,7 @@ const MoviesContainer = () => {
     if (guesses.length > 4) {
       setEnableSubmit(false)
     }
-    if (correctGuess) {
+    if (correctGuess && showModal) {
       confetti.current?.start()
       setEnableSubmit(false)
     }

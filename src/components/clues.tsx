@@ -84,7 +84,9 @@ const CluesContainer = (props: CluesProps) => {
                         }
                     })}
                 </Text>
-                <Text style={styles.wordCountText}>{wordCount[props.guesses.length]}/{wordCount[4]}</Text>
+                <Text style={styles.wordCountText}>
+                    {props.guesses.length < 4 ? wordCount[props.guesses.length] : summarySplit.length}/{summarySplit.length}
+                </Text>
             </View>
         )
     }
