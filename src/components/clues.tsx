@@ -11,6 +11,12 @@ interface CluesProps {
     summary: string
 }
 
+interface CountContainerProps {
+    currentWordLength: number
+    guessNumber: number
+    totalWordLength: number
+}
+
 const CluesContainer = (props: CluesProps) => {
     let [fontsLoaded] = useFonts({ Arvo_400Regular, Arvo_700Bold })
     let fadeAnim = new Animated.Value(0)
@@ -84,8 +90,26 @@ const CluesContainer = (props: CluesProps) => {
                         }
                     })}
                 </Text>
+                <CountContainer
+                    currentWordLength={wordCount[props.guesses.length]}
+                    guessNumber={props.guesses.length}
+                    totalWordLength={summarySplit.length}
+                />
+            </View>
+        )
+    }
+}
+
+const CountContainer = (props: CountContainerProps) => {
+    let [fontsLoaded] = useFonts({ Arvo_400Regular })
+
+    if (!fontsLoaded) {
+        return <AppLoading />;
+    } else {
+        return (
+            <View style={styles.countContainer}>
                 <Text style={styles.wordCountText}>
-                    {props.guesses.length < 4 ? wordCount[props.guesses.length] : summarySplit.length}/{summarySplit.length}
+                    {props.guessNumber < 4 ? props.currentWordLength : props.totalWordLength}/{props.totalWordLength}
                 </Text>
             </View>
         )
@@ -96,9 +120,15 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
+        minWidth: 300,
         minHeight: 200,
         paddingBottom: 20,
         paddingTop: 20
+    },
+    countContainer: {
+        flex: 1,
+        textAlign: 'right',
+        justifyContent: 'flex-end'
     },
     text: {
         color: colors.secondary,
