@@ -6,6 +6,7 @@ import CluesContainer from './clues'
 import GuessesContainer from './guesses'
 import MovieModal from './modal'
 import PickerContainer from './picker'
+import { ResetContainer } from './reset'
 
 export interface BasicMovie {
   id: number
@@ -89,6 +90,11 @@ const MoviesContainer = () => {
         movie={movie}
         show={showModal}
         toggleModal={setShowModal} />
+      <ResetContainer
+        updateCorrectGuess={setCorrectGuess}
+        updateGuesses={setGuesses}
+        updateMovie={setMovie}
+      />
       <ConfettiCannon
         autoStart={false}
         count={100}
