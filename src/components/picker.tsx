@@ -38,9 +38,14 @@ const PickerContainer = (props: PickerContainerProps) => {
         }
     }
 
+    useEffect(() => {selectedMovieID === 0 ? props.toggleSubmit(false) : props.toggleSubmit(true)})
     useEffect(() => {
-        selectedMovieID === 0 ? props.toggleSubmit(false) : props.toggleSubmit(true)
-    })
+        if (props.guesses.length === 0) {
+            setSelectedMovieID(0)
+            setSelectedMovieTitle('')
+            setSearchText('')
+        }
+    }, [props.guesses])
 
     const filter = (text) => {
         setSearchText(text)

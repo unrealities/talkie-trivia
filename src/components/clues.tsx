@@ -23,7 +23,7 @@ const CluesContainer = (props: CluesProps) => {
     let fadeAnimTiming = Animated.timing(
         fadeAnim,
         {
-            duration: 1500,
+            duration: 1000,
             toValue: 1,
             useNativeDriver: true
         }
@@ -33,8 +33,9 @@ const CluesContainer = (props: CluesProps) => {
         fadeAnimTiming.reset()
         fadeAnimTiming.start()
     }
+    useEffect(animateClue, [fontsLoaded]) // display first clue
     useEffect(animateClue, [props.guesses])
-    useEffect(animateClue, [fontsLoaded])
+    useEffect(animateClue, [props.correctGuess, props.summary]) // trying to getfirst clue to display on a new movie
 
     let splits = 5
     let summarySplit = props.summary.split(' ')
