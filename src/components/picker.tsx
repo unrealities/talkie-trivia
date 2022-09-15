@@ -18,10 +18,11 @@ interface PickerContainerProps {
 }
 
 const PickerContainer = (props: PickerContainerProps) => {
+    const defaultButtonText = 'Select a Movie'
     const [foundMovies, setFoundMovies] = useState(props.movies)
     const [inputActive, setInputActive] = useState(false)
     const [selectedMovieID, setSelectedMovieID] = useState<number>(0)
-    const [selectedMovieTitle, setSelectedMovieTitle] = useState<string>('')
+    const [selectedMovieTitle, setSelectedMovieTitle] = useState<string>(defaultButtonText)
     const [searchText, setSearchText] = useState<string>('')
     let [fontsLoaded] = useFonts({ Arvo_400Regular })
 
@@ -38,11 +39,11 @@ const PickerContainer = (props: PickerContainerProps) => {
         }
     }
 
-    useEffect(() => {selectedMovieID === 0 ? props.toggleSubmit(false) : props.toggleSubmit(true)})
+    useEffect(() => { selectedMovieID === 0 ? props.toggleSubmit(false) : props.toggleSubmit(true) })
     useEffect(() => {
         if (props.guesses.length === 0) {
             setSelectedMovieID(0)
-            setSelectedMovieTitle('')
+            setSelectedMovieTitle(defaultButtonText)
             setSearchText('')
         }
     }, [props.guesses])
@@ -65,7 +66,7 @@ const PickerContainer = (props: PickerContainerProps) => {
         } else {
             setFoundMovies(props.movies)
             setSelectedMovieID(0)
-            setSelectedMovieTitle('')
+            setSelectedMovieTitle(defaultButtonText)
         }
     }
 
@@ -85,28 +86,30 @@ const PickerContainer = (props: PickerContainerProps) => {
                     style={styles.input}
                     value={searchText}
                 />
-
                 <View style={styles.text}>
                     {foundMovies && foundMovies.length > 0 && (
                         <ScrollView style={inputActive ? styles.resultsShow : styles.resultsHide}>
                             {foundMovies.map((movie) => (
-                                <Pressable style={styles.pressableText} key={movie.id} onPress={() => { setSelectedMovieID(movie.id); setSelectedMovieTitle(movie.title); setSearchText(movie.title); setInputActive(false) }}>
+                                <Pressable
+                                    key={movie.id}
+                                    onPress={() => {
+                                        setSelectedMovieID(movie.id)
+                                        setSelectedMovieTitle(movie.title)
+                                        setSearchText(movie.title)
+                                        setInputActive(false)
+                                    }}
+                                    style={styles.pressableText}>
                                     <Text numberOfLines={1} ellipsizeMode='tail' style={styles.unselected}>{movie.title}</Text>
                                 </Pressable>
                             ))}
                         </ScrollView>
-                    )}
-                    {selectedMovieID > 0 && (
-                        <Pressable key={selectedMovieID} onPress={() => { setSelectedMovieID(0); setSelectedMovieTitle(''); setSearchText(selectedMovieTitle) }}>
-                            <Text style={styles.selected}>{selectedMovieTitle}</Text>
-                        </Pressable>
                     )}
                 </View>
                 <Pressable
                     disabled={!props.enableSubmit}
                     onPress={onPressCheck}
                     style={styles.button}>
-                    <Text style={styles.buttonText}>Submit Guess</Text>
+                    <Text numberOfLines={1} ellipsizeMode='tail' style={styles.buttonText}>{selectedMovieTitle}</Text>
                 </Pressable>
             </View>
         )
@@ -117,12 +120,13 @@ const styles = StyleSheet.create({
     button: {
         backgroundColor: colors.primary,
         borderRadius: 10,
-        padding: 10
+        padding: 10,
+        width: 300
     },
     buttonText: {
         color: colors.secondary,
         fontFamily: 'Arvo_400Regular',
-        fontSize: 18,
+        fontSize: 16,
         textAlign: 'center'
     },
     container: {

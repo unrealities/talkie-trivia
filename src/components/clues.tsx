@@ -1,6 +1,6 @@
-import React, { useEffect, useLayoutEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Animated, StyleSheet, Text, View } from 'react-native'
-import AppLoading from 'expo-app-loading';
+import AppLoading from 'expo-app-loading'
 import { useFonts, Arvo_400Regular, Arvo_700Bold } from '@expo-google-fonts/arvo'
 
 import { colors } from '../styles/global'
@@ -19,23 +19,17 @@ interface CountContainerProps {
 
 const CluesContainer = (props: CluesProps) => {
     let [fontsLoaded] = useFonts({ Arvo_400Regular, Arvo_700Bold })
-    let fadeAnim = new Animated.Value(0)
+    let [fadeAnim, setFadeAnim] = useState<Animated.Value>(new Animated.Value(0))
+
     let fadeAnimTiming = Animated.timing(
         fadeAnim,
         {
             duration: 1000,
             toValue: 1,
-            useNativeDriver: true
+            useNativeDriver: false
         }
     )
-
-    let animateClue = () => {
-        fadeAnimTiming.reset()
-        fadeAnimTiming.start()
-    }
-    useEffect(animateClue, [fontsLoaded]) // display first clue
-    useEffect(animateClue, [props.guesses])
-    useEffect(animateClue, [props.correctGuess, props.summary]) // trying to getfirst clue to display on a new movie
+    useEffect(() => {fadeAnimTiming.start(() => {fadeAnimTiming.reset()})}, [props.guesses])
 
     let splits = 5
     let summarySplit = props.summary.split(' ')
@@ -68,7 +62,7 @@ const CluesContainer = (props: CluesProps) => {
     }
 
     if (!fontsLoaded) {
-        return <AppLoading />;
+        return <AppLoading />
     } else {
         return (
             <View style={styles.container}>
@@ -105,7 +99,7 @@ const CountContainer = (props: CountContainerProps) => {
     let [fontsLoaded] = useFonts({ Arvo_400Regular })
 
     if (!fontsLoaded) {
-        return <AppLoading />;
+        return <AppLoading />
     } else {
         return (
             <View style={styles.countContainer}>
