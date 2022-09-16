@@ -1,6 +1,5 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import AppLoading from 'expo-app-loading'
 import { useFonts, Arvo_700Bold, Arvo_400Regular_Italic } from '@expo-google-fonts/arvo'
 
 import { colors } from '../styles/global'
@@ -8,9 +7,7 @@ import { colors } from '../styles/global'
 const TitleHeader = () => {
     let [fontsLoaded] = useFonts({ Arvo_700Bold, Arvo_400Regular_Italic })
 
-    if (!fontsLoaded) {
-        return <AppLoading />
-    } else {
+    if (fontsLoaded) {
         return (
             <View style={styles.container}>
                 <Text style={styles.header}>TALKIE-TRIVIA</Text>

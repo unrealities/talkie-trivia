@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Animated, StyleSheet, Text, View } from 'react-native'
-import AppLoading from 'expo-app-loading'
 import { useFonts, Arvo_400Regular, Arvo_700Bold } from '@expo-google-fonts/arvo'
 
 import { colors } from '../styles/global'
@@ -61,9 +60,7 @@ const CluesContainer = (props: CluesProps) => {
         wordTrack++
     }
 
-    if (!fontsLoaded) {
-        return <AppLoading />
-    } else {
+    if (fontsLoaded) {
         return (
             <View style={styles.container}>
                 <Text style={styles.textContainer}>
@@ -98,9 +95,7 @@ const CluesContainer = (props: CluesProps) => {
 const CountContainer = (props: CountContainerProps) => {
     let [fontsLoaded] = useFonts({ Arvo_400Regular })
 
-    if (!fontsLoaded) {
-        return <AppLoading />
-    } else {
+    if (fontsLoaded) {
         return (
             <View style={styles.countContainer}>
                 <Text style={styles.wordCountText}>

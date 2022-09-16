@@ -1,6 +1,5 @@
 import React, { SetStateAction, useEffect, useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
-import AppLoading from 'expo-app-loading'
 import { useFonts, Arvo_400Regular } from '@expo-google-fonts/arvo'
 
 import { BasicMovie } from './movie'
@@ -46,6 +45,7 @@ const PickerContainer = (props: PickerContainerProps) => {
             setSelectedMovieTitle(defaultButtonText)
             setSearchText('')
         }
+        setInputActive(true)
     }, [props.guesses])
 
     const filter = (text) => {
@@ -70,9 +70,7 @@ const PickerContainer = (props: PickerContainerProps) => {
         }
     }
 
-    if (!fontsLoaded) {
-        return <AppLoading />
-    } else {
+    if (fontsLoaded) {
         return (
             <View style={styles.container}>
                 <TextInput
@@ -80,7 +78,6 @@ const PickerContainer = (props: PickerContainerProps) => {
                     maxLength={100}
                     onChangeText={text => filter(text)}
                     onFocus={() => setInputActive(true)}
-                    onPressOut={() => setInputActive(false)}
                     placeholder="search for a movie title"
                     placeholderTextColor={colors.tertiary}
                     style={styles.input}

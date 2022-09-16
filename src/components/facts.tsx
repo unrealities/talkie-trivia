@@ -1,7 +1,6 @@
 import React from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import * as Linking from 'expo-linking'
-import AppLoading from 'expo-app-loading'
 import { Movie } from './movie'
 import { useFonts, Arvo_700Bold, Arvo_400Regular, Arvo_400Regular_Italic } from '@expo-google-fonts/arvo'
 
@@ -21,9 +20,7 @@ const Facts = (props: FactsProps) => {
         displayActors = displayActors + " | " + actor.name
     })
 
-    if (!fontsLoaded) {
-        return <AppLoading />
-    } else {
+    if (fontsLoaded) {
         return (
             <View style={styles.container}>
                 <TouchableOpacity onPress={() => { Linking.openURL(`${imdbURI}${movie.imdb_id}`) }}>

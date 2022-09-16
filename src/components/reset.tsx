@@ -16,17 +16,19 @@ export const ResetContainer = (props: ResetContainerProps) => {
 
     let newMovie = movies[Math.floor(Math.random() * movies.length)]
 
-    return (
-        <View style={styles.container}>
-            <Pressable onPress={() => {
-                props.updateCorrectGuess(false)
-                props.updateGuesses([])
-                props.updateMovie(newMovie)
-            }}>
-                <Text style={styles.text}>Play Again?</Text>
-            </Pressable>
-        </View>
-    )
+    if (fontsLoaded) {
+        return (
+            <View style={styles.container}>
+                <Pressable onPress={() => {
+                    props.updateCorrectGuess(false)
+                    props.updateGuesses([])
+                    props.updateMovie(newMovie)
+                }}>
+                    <Text style={styles.text}>Play Again?</Text>
+                </Pressable>
+            </View>
+        )
+    }
 }
 
 const styles = StyleSheet.create({
