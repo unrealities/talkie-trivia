@@ -105,7 +105,7 @@ const PickerContainer = (props: PickerContainerProps) => {
                 <Pressable
                     disabled={!props.enableSubmit}
                     onPress={onPressCheck}
-                    style={styles.button}>
+                    style={props.enableSubmit? styles.button : styles.buttonDisabled}>
                     <Text numberOfLines={1} ellipsizeMode='tail' style={styles.buttonText}>{selectedMovieTitle}</Text>
                 </Pressable>
             </View>
@@ -116,6 +116,12 @@ const PickerContainer = (props: PickerContainerProps) => {
 const styles = StyleSheet.create({
     button: {
         backgroundColor: colors.primary,
+        borderRadius: 10,
+        padding: 10,
+        width: 300
+    },
+    buttonDisabled: {
+        backgroundColor: colors.tertiary,
         borderRadius: 10,
         padding: 10,
         width: 300
