@@ -1,6 +1,6 @@
 import React from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { useFonts, Arvo_400Regular_Italic } from '@expo-google-fonts/arvo'
+import { useFonts } from 'expo-font'
 
 import { colors } from '../styles/global'
 
@@ -11,7 +11,7 @@ export interface ResetContainerProps {
 }
 
 export const ResetContainer = (props: ResetContainerProps) => {
-    let [fontsLoaded] = useFonts({ Arvo_400Regular_Italic })
+    let [fontsLoaded] = useFonts({ 'Arvo-Italic': require('../../assets/fonts/Arvo-Italic.ttf') })
     let movies: Movie[] = require('../../data/popularMovies.json')
 
     let newMovie = movies[Math.floor(Math.random() * movies.length)]
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     text: {
         color: colors.secondary,
         flex: 1,
-        fontFamily: 'Arvo_400Regular_Italic',
+        fontFamily: 'Arvo-Italic',
         fontSize: 20
     }
 })

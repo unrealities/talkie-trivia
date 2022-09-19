@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Movie } from './movie'
-import { useFonts, Arvo_400Regular, Arvo_700Bold } from '@expo-google-fonts/arvo'
+import { useFonts } from 'expo-font'
 
 import { colors } from '../styles/global'
 
@@ -12,7 +12,10 @@ interface GuessesContainerProps {
 }
 
 const GuessesContainer = (props: GuessesContainerProps) => {
-    let [fontsLoaded] = useFonts({ Arvo_400Regular, Arvo_700Bold })
+    let [fontsLoaded] = useFonts({
+        'Arvo-Bold': require('../../assets/fonts/Arvo-Bold.ttf'),
+        'Arvo-Regular': require('../../assets/fonts/Arvo-Regular.ttf')
+    })
     let getMovieTitle = (id: number) => {
         if (id > 0) {
             let movie = props.movies.find(m => m.id == id) as Movie
@@ -76,7 +79,7 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
         color: colors.primary,
         flex: 1,
-        fontFamily: 'Arvo_700Bold',
+        fontFamily: 'Arvo-Bold',
         fontSize: 14,
         maxWidth: 40,
         paddingRight: 20,
@@ -85,7 +88,7 @@ const styles = StyleSheet.create({
     guess: {
         color: colors.secondary,
         flex: 1,
-        fontFamily: 'Arvo_400Regular',
+        fontFamily: 'Arvo-Regular',
         fontSize: 14,
         textAlign: 'center'
     }

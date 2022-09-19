@@ -1,6 +1,6 @@
 import React, { SetStateAction, useEffect, useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
-import { useFonts, Arvo_400Regular } from '@expo-google-fonts/arvo'
+import { useFonts } from 'expo-font'
 
 import { BasicMovie } from './movie'
 import { colors } from '../styles/global'
@@ -15,7 +15,6 @@ interface PickerContainerProps {
     updateCorrectGuess: Dispatch<SetStateAction<boolean>>
     updateGuesses: Dispatch<SetStateAction<number[]>>
 }
-
 const PickerContainer = (props: PickerContainerProps) => {
     const defaultButtonText = 'Select a Movie'
     const [foundMovies, setFoundMovies] = useState(props.movies)
@@ -23,7 +22,9 @@ const PickerContainer = (props: PickerContainerProps) => {
     const [selectedMovieID, setSelectedMovieID] = useState<number>(0)
     const [selectedMovieTitle, setSelectedMovieTitle] = useState<string>(defaultButtonText)
     const [searchText, setSearchText] = useState<string>('')
-    let [fontsLoaded] = useFonts({ Arvo_400Regular })
+    let [fontsLoaded] = useFonts({ 
+        'Arvo-Italic': require('../../assets/fonts/Arvo-Italic.ttf'),
+        'Arvo-Regular': require('../../assets/fonts/Arvo-Regular.ttf') })
 
     let onPressCheck = () => {
         if (selectedMovieID > 0) {
@@ -105,7 +106,7 @@ const PickerContainer = (props: PickerContainerProps) => {
                 <Pressable
                     disabled={!props.enableSubmit}
                     onPress={onPressCheck}
-                    style={props.enableSubmit? styles.button : styles.buttonDisabled}>
+                    style={props.enableSubmit ? styles.button : styles.buttonDisabled}>
                     <Text numberOfLines={1} ellipsizeMode='tail' style={styles.buttonText}>{selectedMovieTitle}</Text>
                 </Pressable>
             </View>
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: colors.secondary,
-        fontFamily: 'Arvo_400Regular',
+        fontFamily: 'Arvo-Regular',
         fontSize: 16,
         textAlign: 'center'
     },
@@ -143,13 +144,15 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderWidth: 2,
         color: colors.secondary,
+        fontFamily: 'Arvo-Regular',
         maxWidth: 300,
         padding: 5,
         width: 300
     },
     pressableText: {
         flex: 1,
-        flexWrap: 'nowrap'
+        flexWrap: 'nowrap',
+        fontFamily: 'Arvo-Regular'
     },
     resultsHide: {
         display: 'none',
@@ -160,14 +163,8 @@ const styles = StyleSheet.create({
         maxHeight: 88,
         maxWidth: 280
     },
-    selected: {
-        color: colors.primary,
-        fontWeight: 'bold',
-        maxWidth: 280,
-        paddingTop: 10
-    },
     text: {
-        fontFamily: 'Arvo_400Regular',
+        fontFamily: 'Arvo-Regular',
         fontSize: 12,
         padding: 10,
         lineHeight: 16,
@@ -177,6 +174,7 @@ const styles = StyleSheet.create({
         color: colors.secondary,
         flex: 1,
         flexWrap: 'nowrap',
+        fontFamily: 'Arvo-Italic',
         fontStyle: 'italic'
     }
 })

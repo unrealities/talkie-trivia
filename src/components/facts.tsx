@@ -2,14 +2,18 @@ import React from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import * as Linking from 'expo-linking'
 import { Movie } from './movie'
-import { useFonts, Arvo_700Bold, Arvo_400Regular, Arvo_400Regular_Italic } from '@expo-google-fonts/arvo'
+import { useFonts } from 'expo-font'
 
 interface FactsProps {
     movie: Movie
 }
 
 const Facts = (props: FactsProps) => {
-    let [fontsLoaded] = useFonts({ Arvo_700Bold, Arvo_400Regular, Arvo_400Regular_Italic })
+    let [fontsLoaded] = useFonts({
+        'Arvo-Bold': require('../../assets/fonts/Arvo-Bold.ttf'),
+        'Arvo-Italic': require('../../assets/fonts/Arvo-Italic.ttf'),
+        'Arvo-Regular': require('../../assets/fonts/Arvo-Regular.ttf')
+    })
 
     let imdbURI = 'https://www.imdb.com/title/'
     let imageURI = 'https://image.tmdb.org/t/p/original'
@@ -47,21 +51,21 @@ const styles = StyleSheet.create({
     },
     header: {
         flexWrap: 'wrap',
-        fontFamily: 'Arvo_700Bold',
+        fontFamily: 'Arvo-Bold',
         fontSize: 24,
         paddingBottom: 6,
         textAlign: 'center'
     },
     subHeader: {
         flexWrap: 'wrap',
-        fontFamily: 'Arvo_400Regular_Italic',
+        fontFamily: 'Arvo-Italic',
         fontSize: 14,
         paddingBottom: 20,
         textAlign: 'center'
     },
     text: {
         flexWrap: 'wrap',
-        fontFamily: 'Arvo_400Regular',
+        fontFamily: 'Arvo-Regular',
         fontSize: 14,
         paddingTop: 20,
         textAlign: 'center'

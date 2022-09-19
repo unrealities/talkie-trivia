@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Animated, StyleSheet, Text, View } from 'react-native'
-import { useFonts, Arvo_400Regular, Arvo_700Bold } from '@expo-google-fonts/arvo'
+import { useFonts } from 'expo-font'
 
 import { colors } from '../styles/global'
 
@@ -17,8 +17,10 @@ interface CountContainerProps {
 }
 
 const CluesContainer = (props: CluesProps) => {
-    let [fontsLoaded] = useFonts({ Arvo_400Regular, Arvo_700Bold })
-    let [fadeAnim, setFadeAnim] = useState<Animated.Value>(new Animated.Value(0))
+    let [fontsLoaded] = useFonts({ 
+        'Arvo-Bold': require('../../assets/fonts/Arvo-Bold.ttf'),
+        'Arvo-Regular': require('../../assets/fonts/Arvo-Regular.ttf') })
+    let [fadeAnim] = useState<Animated.Value>(new Animated.Value(0))
 
     let fadeAnimTiming = Animated.timing(
         fadeAnim,
@@ -28,7 +30,7 @@ const CluesContainer = (props: CluesProps) => {
             useNativeDriver: false
         }
     )
-    useEffect(() => {fadeAnimTiming.start(() => {fadeAnimTiming.reset()})}, [props.guesses])
+    useEffect(() => { fadeAnimTiming.start(() => { fadeAnimTiming.reset() }) }, [props.guesses])
 
     let splits = 5
     let summarySplit = props.summary.split(' ')
@@ -72,7 +74,7 @@ const CluesContainer = (props: CluesProps) => {
                                     style={
                                         {
                                             ...styles.text,
-                                            fontFamily: props.guesses.length == i ? 'Arvo_700Bold' : 'Arvo_400Regular',
+                                            fontFamily: props.guesses.length == i ? 'Arvo-Bold' : 'Arvo-Regular',
                                             fontWeight: props.guesses.length == i ? '700' : '400',
                                             opacity: props.guesses.length == i ? fadeAnim : 1
                                         }}>
@@ -93,7 +95,7 @@ const CluesContainer = (props: CluesProps) => {
 }
 
 const CountContainer = (props: CountContainerProps) => {
-    let [fontsLoaded] = useFonts({ Arvo_400Regular })
+    let [fontsLoaded] = useFonts({ 'Arvo-Regular': require('../../assets/fonts/Arvo-Regular.ttf') })
 
     if (fontsLoaded) {
         return (
@@ -122,7 +124,7 @@ const styles = StyleSheet.create({
     },
     text: {
         color: colors.secondary,
-        fontFamily: 'Arvo_400Regular',
+        fontFamily: 'Arvo-Regular',
         fontSize: 16
     },
     textContainer: {
@@ -133,6 +135,7 @@ const styles = StyleSheet.create({
     wordCountText: {
         color: colors.primary,
         flex: 1,
+        fontFamily: 'Arvo-Regular',
         fontSize: 10,
         textAlign: 'right'
     }
