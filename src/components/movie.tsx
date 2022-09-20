@@ -98,6 +98,7 @@ const MoviesContainer = () => {
       <ConfettiCannon
         autoStart={false}
         count={100}
+        fadeOut={true}
         fallSpeed={2000}
         origin={{ x: -100, y: -20 }}
         ref={confetti} />
