@@ -1,6 +1,5 @@
 import React, { SetStateAction, useEffect, useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
-import { useFonts } from 'expo-font'
 
 import { BasicMovie } from './movie'
 import { colors } from '../styles/global'
@@ -22,9 +21,6 @@ const PickerContainer = (props: PickerContainerProps) => {
     const [selectedMovieID, setSelectedMovieID] = useState<number>(0)
     const [selectedMovieTitle, setSelectedMovieTitle] = useState<string>(defaultButtonText)
     const [searchText, setSearchText] = useState<string>('')
-    let [fontsLoaded] = useFonts({ 
-        'Arvo-Italic': require('../../assets/fonts/Arvo-Italic.ttf'),
-        'Arvo-Regular': require('../../assets/fonts/Arvo-Regular.ttf') })
 
     let onPressCheck = () => {
         if (selectedMovieID > 0) {
@@ -71,47 +67,45 @@ const PickerContainer = (props: PickerContainerProps) => {
         }
     }
 
-    if (fontsLoaded) {
-        return (
-            <View style={styles.container}>
-                <TextInput
-                    clearTextOnFocus={true}
-                    maxLength={100}
-                    onChangeText={text => filter(text)}
-                    onFocus={() => setInputActive(true)}
-                    placeholder="search for a movie title"
-                    placeholderTextColor={colors.tertiary}
-                    style={styles.input}
-                    value={searchText}
-                />
-                <View style={styles.text}>
-                    {foundMovies && foundMovies.length > 0 && (
-                        <ScrollView style={inputActive ? styles.resultsShow : styles.resultsHide}>
-                            {foundMovies.map((movie) => (
-                                <Pressable
-                                    key={movie.id}
-                                    onPress={() => {
-                                        setSelectedMovieID(movie.id)
-                                        setSelectedMovieTitle(movie.title)
-                                        setSearchText(movie.title)
-                                        setInputActive(false)
-                                    }}
-                                    style={styles.pressableText}>
-                                    <Text numberOfLines={1} ellipsizeMode='tail' style={styles.unselected}>{movie.title}</Text>
-                                </Pressable>
-                            ))}
-                        </ScrollView>
-                    )}
-                </View>
-                <Pressable
-                    disabled={!props.enableSubmit}
-                    onPress={onPressCheck}
-                    style={props.enableSubmit ? styles.button : styles.buttonDisabled}>
-                    <Text numberOfLines={1} ellipsizeMode='tail' style={styles.buttonText}>{selectedMovieTitle}</Text>
-                </Pressable>
+    return (
+        <View style={styles.container}>
+            <TextInput
+                clearTextOnFocus={true}
+                maxLength={100}
+                onChangeText={text => filter(text)}
+                onFocus={() => setInputActive(true)}
+                placeholder="search for a movie title"
+                placeholderTextColor={colors.tertiary}
+                style={styles.input}
+                value={searchText}
+            />
+            <View style={styles.text}>
+                {foundMovies && foundMovies.length > 0 && (
+                    <ScrollView style={inputActive ? styles.resultsShow : styles.resultsHide}>
+                        {foundMovies.map((movie) => (
+                            <Pressable
+                                key={movie.id}
+                                onPress={() => {
+                                    setSelectedMovieID(movie.id)
+                                    setSelectedMovieTitle(movie.title)
+                                    setSearchText(movie.title)
+                                    setInputActive(false)
+                                }}
+                                style={styles.pressableText}>
+                                <Text numberOfLines={1} ellipsizeMode='tail' style={styles.unselected}>{movie.title}</Text>
+                            </Pressable>
+                        ))}
+                    </ScrollView>
+                )}
             </View>
-        )
-    }
+            <Pressable
+                disabled={!props.enableSubmit}
+                onPress={onPressCheck}
+                style={props.enableSubmit ? styles.button : styles.buttonDisabled}>
+                <Text numberOfLines={1} ellipsizeMode='tail' style={styles.buttonText}>{selectedMovieTitle}</Text>
+            </Pressable>
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({

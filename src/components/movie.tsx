@@ -1,12 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import ConfettiCannon from 'react-native-confetti-cannon'
+import { useFonts } from 'expo-font'
+import * as SplashScreen from 'expo-splash-screen'
 
 import CluesContainer from './clues'
 import GuessesContainer from './guesses'
 import MovieModal from './modal'
 import PickerContainer from './picker'
 import { ResetContainer } from './reset'
+
+SplashScreen.preventAutoHideAsync()
 
 export interface BasicMovie {
   id: number
@@ -44,6 +48,17 @@ export interface Director {
 }
 
 const MoviesContainer = () => {
+  let [fontsLoaded] = useFonts({
+    'Arvo-Bold': require('../../assets/fonts/Arvo-Bold.ttf'),
+    'Arvo-Italic': require('../../assets/fonts/Arvo-Italic.ttf'),
+    'Arvo-Regular': require('../../assets/fonts/Arvo-Regular.ttf')
+  })
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync()
+    }
+  }, [fontsLoaded])
+
   let basicMovies: BasicMovie[] = require('../../data/basicMovies.json')
   let movies: Movie[] = require('../../data/popularMovies.json')
 
@@ -67,8 +82,10 @@ const MoviesContainer = () => {
     }
   })
 
+  if (!fontsLoaded) { return null }
+
   return (
-    <View style={styles.container}>
+    <View style={styles.container} onLayout={onLayoutRootView}>
       <CluesContainer
         correctGuess={correctGuess}
         guesses={guesses}

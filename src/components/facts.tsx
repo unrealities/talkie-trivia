@@ -2,19 +2,12 @@ import React from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import * as Linking from 'expo-linking'
 import { Movie } from './movie'
-import { useFonts } from 'expo-font'
 
 interface FactsProps {
     movie: Movie
 }
 
 const Facts = (props: FactsProps) => {
-    let [fontsLoaded] = useFonts({
-        'Arvo-Bold': require('../../assets/fonts/Arvo-Bold.ttf'),
-        'Arvo-Italic': require('../../assets/fonts/Arvo-Italic.ttf'),
-        'Arvo-Regular': require('../../assets/fonts/Arvo-Regular.ttf')
-    })
-
     let imdbURI = 'https://www.imdb.com/title/'
     let imageURI = 'https://image.tmdb.org/t/p/original'
     let movie = props.movie
@@ -24,21 +17,19 @@ const Facts = (props: FactsProps) => {
         displayActors = displayActors + " | " + actor.name
     })
 
-    if (fontsLoaded) {
-        return (
-            <View style={styles.container}>
-                <TouchableOpacity onPress={() => { Linking.openURL(`${imdbURI}${movie.imdb_id}`) }}>
-                    <Text style={styles.header}>{movie.title}</Text>
-                </TouchableOpacity>
-                <Text style={styles.subHeader}>{movie.tagline}</Text>
-                <Image
-                    source={{ uri: `${imageURI}${movie.poster_path}` }}
-                    style={{ width: 200, height: 300 }}
-                />
-                <Text style={styles.text}>Directed by {movie.director.name}</Text>
-            </View>
-        )
-    }
+    return (
+        <View style={styles.container}>
+            <TouchableOpacity onPress={() => { Linking.openURL(`${imdbURI}${movie.imdb_id}`) }}>
+                <Text style={styles.header}>{movie.title}</Text>
+            </TouchableOpacity>
+            <Text style={styles.subHeader}>{movie.tagline}</Text>
+            <Image
+                source={{ uri: `${imageURI}${movie.poster_path}` }}
+                style={{ width: 200, height: 300 }}
+            />
+            <Text style={styles.text}>Directed by {movie.director.name}</Text>
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({

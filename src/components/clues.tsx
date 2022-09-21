@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Animated, StyleSheet, Text, View } from 'react-native'
-import { useFonts } from 'expo-font'
 
 import { colors } from '../styles/global'
 
@@ -16,10 +15,7 @@ interface CountContainerProps {
     totalWordLength: number
 }
 
-const CluesContainer = (props: CluesProps) => {
-    let [fontsLoaded] = useFonts({ 
-        'Arvo-Bold': require('../../assets/fonts/Arvo-Bold.ttf'),
-        'Arvo-Regular': require('../../assets/fonts/Arvo-Regular.ttf') })
+const   CluesContainer = (props: CluesProps) => {
     let [fadeAnim] = useState<Animated.Value>(new Animated.Value(0))
 
     let fadeAnimTiming = Animated.timing(
@@ -62,50 +58,44 @@ const CluesContainer = (props: CluesProps) => {
         wordTrack++
     }
 
-    if (fontsLoaded) {
-        return (
-            <View style={styles.container}>
-                <Text style={styles.textContainer}>
-                    {clues.map((clue, i) => {
-                        if ((i <= props.guesses.length) || (props.correctGuess)) {
-                            return (
-                                <Animated.Text
-                                    key={i}
-                                    style={
-                                        {
-                                            ...styles.text,
-                                            fontFamily: props.guesses.length == i ? 'Arvo-Bold' : 'Arvo-Regular',
-                                            fontWeight: props.guesses.length == i ? '700' : '400',
-                                            opacity: props.guesses.length == i ? fadeAnim : 1
-                                        }}>
-                                    {clue}
-                                </Animated.Text>
-                            )
-                        }
-                    })}
-                </Text>
-                <CountContainer
-                    currentWordLength={wordCount[props.guesses.length]}
-                    guessNumber={props.guesses.length}
-                    totalWordLength={summarySplit.length}
-                />
-            </View>
-        )
-    }
+    return (
+        <View style={styles.container}>
+            <Text style={styles.textContainer}>
+                {clues.map((clue, i) => {
+                    if ((i <= props.guesses.length) || (props.correctGuess)) {
+                        return (
+                            <Animated.Text
+                                key={i}
+                                style={
+                                    {
+                                        ...styles.text,
+                                        fontFamily: props.guesses.length == i ? 'Arvo-Bold' : 'Arvo-Regular',
+                                        fontWeight: props.guesses.length == i ? '700' : '400',
+                                        opacity: props.guesses.length == i ? fadeAnim : 1
+                                    }}>
+                                {clue}
+                            </Animated.Text>
+                        )
+                    }
+                })}
+            </Text>
+            <CountContainer
+                currentWordLength={wordCount[props.guesses.length]}
+                guessNumber={props.guesses.length}
+                totalWordLength={summarySplit.length}
+            />
+        </View>
+    )
 }
 
 const CountContainer = (props: CountContainerProps) => {
-    let [fontsLoaded] = useFonts({ 'Arvo-Regular': require('../../assets/fonts/Arvo-Regular.ttf') })
-
-    if (fontsLoaded) {
-        return (
-            <View style={styles.countContainer}>
-                <Text style={styles.wordCountText}>
-                    {props.guessNumber < 4 ? props.currentWordLength : props.totalWordLength}/{props.totalWordLength}
-                </Text>
-            </View>
-        )
-    }
+    return (
+        <View style={styles.countContainer}>
+            <Text style={styles.wordCountText}>
+                {props.guessNumber < 4 ? props.currentWordLength : props.totalWordLength}/{props.totalWordLength}
+            </Text>
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({

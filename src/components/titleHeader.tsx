@@ -1,23 +1,15 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { useFonts } from 'expo-font'
 
 import { colors } from '../styles/global'
 
 const TitleHeader = () => {
-    let [fontsLoaded] = useFonts({
-        'Arvo-Bold': require('../../assets/fonts/Arvo-Bold.ttf'),
-        'Arvo-Italic': require('../../assets/fonts/Arvo-Italic.ttf')
-    })
-
-    if (fontsLoaded) {
-        return (
-            <View style={styles.container}>
-                <Text style={styles.header}>TALKIE-TRIVIA</Text>
-                <Text style={styles.subHeader}>guess the movie given it's summary</Text>
-            </View>
-        )
-    }
+    return (
+        <View style={styles.container}>
+            <Text style={styles.header}>TALKIE-TRIVIA</Text>
+            <Text style={styles.subHeader}>guess the movie given it's summary</Text>
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({

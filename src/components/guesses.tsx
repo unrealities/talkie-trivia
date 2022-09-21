@@ -1,7 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Movie } from './movie'
-import { useFonts } from 'expo-font'
 
 import { colors } from '../styles/global'
 
@@ -12,10 +11,6 @@ interface GuessesContainerProps {
 }
 
 const GuessesContainer = (props: GuessesContainerProps) => {
-    let [fontsLoaded] = useFonts({
-        'Arvo-Bold': require('../../assets/fonts/Arvo-Bold.ttf'),
-        'Arvo-Regular': require('../../assets/fonts/Arvo-Regular.ttf')
-    })
     let getMovieTitle = (id: number) => {
         if (id > 0) {
             let movie = props.movies.find(m => m.id == id) as Movie
@@ -25,32 +20,30 @@ const GuessesContainer = (props: GuessesContainerProps) => {
         }
     }
 
-    if (fontsLoaded) {
-        return (
-            <View style={styles.container}>
-                <View style={styles.guessContainer}>
-                    <Text style={styles.guessNumber}>1</Text>
-                    <Text numberOfLines={1} ellipsizeMode='tail' style={styles.guess}>{getMovieTitle(props.guesses[0])}</Text>
-                </View>
-                <View style={styles.guessContainer}>
-                    <Text style={styles.guessNumber}>2</Text>
-                    <Text numberOfLines={1} ellipsizeMode='tail' style={styles.guess}>{getMovieTitle(props.guesses[1])}</Text>
-                </View>
-                <View style={styles.guessContainer}>
-                    <Text style={styles.guessNumber}>3</Text>
-                    <Text numberOfLines={1} ellipsizeMode='tail' style={styles.guess}>{getMovieTitle(props.guesses[2])}</Text>
-                </View>
-                <View style={styles.guessContainer}>
-                    <Text style={styles.guessNumber}>4</Text>
-                    <Text numberOfLines={1} ellipsizeMode='tail' style={styles.guess}>{getMovieTitle(props.guesses[3])}</Text>
-                </View>
-                <View style={styles.guessContainer}>
-                    <Text style={styles.guessNumber}>5</Text>
-                    <Text numberOfLines={1} ellipsizeMode='tail' style={styles.guess}>{getMovieTitle(props.guesses[4])}</Text>
-                </View>
+    return (
+        <View style={styles.container}>
+            <View style={styles.guessContainer}>
+                <Text style={styles.guessNumber}>1</Text>
+                <Text numberOfLines={1} ellipsizeMode='tail' style={styles.guess}>{getMovieTitle(props.guesses[0])}</Text>
             </View>
-        )
-    }
+            <View style={styles.guessContainer}>
+                <Text style={styles.guessNumber}>2</Text>
+                <Text numberOfLines={1} ellipsizeMode='tail' style={styles.guess}>{getMovieTitle(props.guesses[1])}</Text>
+            </View>
+            <View style={styles.guessContainer}>
+                <Text style={styles.guessNumber}>3</Text>
+                <Text numberOfLines={1} ellipsizeMode='tail' style={styles.guess}>{getMovieTitle(props.guesses[2])}</Text>
+            </View>
+            <View style={styles.guessContainer}>
+                <Text style={styles.guessNumber}>4</Text>
+                <Text numberOfLines={1} ellipsizeMode='tail' style={styles.guess}>{getMovieTitle(props.guesses[3])}</Text>
+            </View>
+            <View style={styles.guessContainer}>
+                <Text style={styles.guessNumber}>5</Text>
+                <Text numberOfLines={1} ellipsizeMode='tail' style={styles.guess}>{getMovieTitle(props.guesses[4])}</Text>
+            </View>
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({
