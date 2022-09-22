@@ -37,11 +37,10 @@ const PickerContainer = (props: PickerContainerProps) => {
 
     useEffect(() => { selectedMovieID === 0 ? props.toggleSubmit(false) : props.toggleSubmit(true) })
     useEffect(() => {
-        if (props.guesses.length === 0) {
-            setSelectedMovieID(0)
-            setSelectedMovieTitle(defaultButtonText)
-            setSearchText('')
-        }
+        setFoundMovies(props.movies)
+        setSelectedMovieID(0)
+        setSelectedMovieTitle(defaultButtonText)
+        setSearchText('')
         setInputActive(true)
     }, [props.guesses])
 
@@ -154,7 +153,7 @@ const styles = StyleSheet.create({
     },
     resultsShow: {
         flex: 1,
-        maxHeight: 88,
+        maxHeight: 80,
         maxWidth: 280
     },
     text: {
