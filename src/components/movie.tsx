@@ -8,6 +8,7 @@ import CluesContainer from './clues'
 import GuessesContainer from './guesses'
 import MovieModal from './modal'
 import PickerContainer from './picker'
+import TitleHeader from './titleHeader'
 import { ResetContainer } from './reset'
 
 SplashScreen.preventAutoHideAsync()
@@ -86,6 +87,7 @@ const MoviesContainer = () => {
 
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
+      <TitleHeader />
       <CluesContainer
         correctGuess={correctGuess}
         guesses={guesses}
@@ -127,8 +129,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     flex: 1,
-    position: 'absolute',
-    top: 120,
     width: '90%'
   }
 })

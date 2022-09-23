@@ -15,9 +15,7 @@ const TitleHeader = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        position: 'absolute',
-        top: 30
+        justifyContent: 'center'
     },
     header: {
         borderTopColor: colors.primary,
@@ -25,6 +23,7 @@ const styles = StyleSheet.create({
         color: colors.primary,
         fontFamily: 'Arvo-Bold',
         fontSize: 24,
+        marginTop: 8,
         paddingTop: 8,
         textAlign: 'center'
     },
