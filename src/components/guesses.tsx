@@ -50,8 +50,6 @@ const styles = StyleSheet.create({
     container: {
         alignItems: 'flex-start',
         flex: 1,
-        flexDirection: 'column',
-        flexGrow: 1,
         maxWidth: 280,
         width: 280
     },
@@ -60,8 +58,6 @@ const styles = StyleSheet.create({
         border: 2,
         borderColor: colors.primary,
         flex: 1,
-        flexDirection: 'row',
-        flexWrap: 'wrap',
         justifyContent: 'flex-start',
         maxWidth: 260,
         padding: 4,
