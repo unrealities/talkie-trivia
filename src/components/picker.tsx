@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        paddingBottom: 20,
+        paddingBottom: 50,
         paddingTop: 20
     },
     input: {
@@ -167,8 +167,7 @@ const styles = StyleSheet.create({
         color: colors.secondary,
         flex: 1,
         flexWrap: 'nowrap',
-        fontFamily: 'Arvo-Italic',
-        fontStyle: 'italic'
+        fontFamily: 'Arvo-Italic'
     }
 })
 
