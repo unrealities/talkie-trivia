@@ -129,8 +129,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        paddingBottom: 50,
-        paddingTop: 20
+        minHeight: 200
     },
     input: {
         borderColor: colors.primary,
