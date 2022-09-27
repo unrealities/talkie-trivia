@@ -15,7 +15,7 @@ interface CountContainerProps {
     totalWordLength: number
 }
 
-const   CluesContainer = (props: CluesProps) => {
+const CluesContainer = (props: CluesProps) => {
     let [fadeAnim] = useState<Animated.Value>(new Animated.Value(0))
 
     let fadeAnimTiming = Animated.timing(
@@ -69,7 +69,7 @@ const   CluesContainer = (props: CluesProps) => {
                                 style={
                                     {
                                         ...styles.text,
-                                        fontFamily: props.guesses.length == i ? 'Arvo-Bold' : 'Arvo-Regular',
+                                        fontFamily: props.guesses.length == i && !props.correctGuess ? 'Arvo-Bold' : 'Arvo-Regular',
                                         opacity: props.guesses.length == i ? fadeAnim : 1
                                     }}>
                                 {clue}
@@ -100,14 +100,18 @@ const CountContainer = (props: CountContainerProps) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        flexDirection: 'column',
         justifyContent: 'center',
+        marginBottom: 10,
+        marginTop: 30,
         minWidth: 300,
         minHeight: 220,
-        paddingBottom: 20,
-        paddingTop: 20
     },
     countContainer: {
         flex: 1,
+        alignSelf: 'flex-end',
+        marginTop: 0,
+        maxHeight: 16,
         textAlign: 'right',
         justifyContent: 'flex-end'
     },
@@ -119,6 +123,7 @@ const styles = StyleSheet.create({
     textContainer: {
         flex: 1,
         flexWrap: 'wrap',
+        margin: 'auto',
         maxWidth: 300
     },
     wordCountText: {
