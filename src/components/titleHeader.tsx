@@ -15,7 +15,8 @@ const TitleHeader = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center'
+        justifyContent: 'center',
+        minHeight: 60
     },
     header: {
         borderTopColor: colors.primary,

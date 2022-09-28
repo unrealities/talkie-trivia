@@ -49,15 +49,14 @@ const GuessesContainer = (props: GuessesContainerProps) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        minHeight: 140,
+        maxHeight: 140,
         minWidth: 280,
         width: 280
     },
     guessContainer: {
         flex: 1,
         flexDirection: 'row',
-        minHeight: 20,
-        padding: 4,
+        minHeight: 16,
         textAlign: 'left',
         width: 260
     },
