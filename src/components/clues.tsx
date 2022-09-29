@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         marginBottom: 10,
         marginTop: 30,
         minWidth: 300,

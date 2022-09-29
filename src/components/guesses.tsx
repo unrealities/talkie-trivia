@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     guessContainer: {
         flex: 1,
         flexDirection: 'row',
-        minHeight: 16,
+        minHeight: 20,
         textAlign: 'left',
         width: 260
     },

@@ -13,28 +13,31 @@ const TitleHeader = () => {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        minHeight: 60
-    },
-    header: {
+    container: {                
+        borderBottomColor: colors.primary,
+        borderBottomWidth: 2,
         borderTopColor: colors.primary,
         borderTopWidth: 2,
+        borderStyle: 'solid',
+        flex: 1,
+        justifyContent: 'center',
+        padding: 6,
+        marginTop: 12,
+        minHeight: 30,
+        minWidth: 300
+    },
+    header: {
         color: colors.primary,
+        flex: 1,
         fontFamily: 'Arvo-Bold',
         fontSize: 24,
-        marginTop: 8,
-        paddingTop: 8,
         textAlign: 'center'
     },
     subHeader: {
-        borderBottomColor: colors.primary,
-        borderBottomWidth: 2,
         color: colors.secondary,
+        flex: 1,
         fontFamily: 'Arvo-Italic',
-        fontSize: 18,
-        paddingBottom: 8,
+        fontSize: 14,
         textAlign: 'center'
     }
 })
