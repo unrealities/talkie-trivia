@@ -43,6 +43,7 @@ const PickerContainer = (props: PickerContainerProps) => {
         setSearchText('')
         setInputActive(true)
     }, [props.guesses])
+    useEffect(() => { filter(searchText) }, [searchText])
 
     const filter = (text) => {
         setSearchText(text)
