@@ -69,6 +69,7 @@ const CluesContainer = (props: CluesProps) => {
                                 style={
                                     {
                                         ...styles.text,
+                                        color: props.guesses.length > i && !props.correctGuess ? colors.primary : colors.secondary,
                                         fontFamily: props.guesses.length == i && !props.correctGuess ? 'Arvo-Bold' : 'Arvo-Regular',
                                         opacity: props.guesses.length == i ? fadeAnim : 1
                                     }}>
