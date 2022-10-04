@@ -13,18 +13,15 @@ type DetailedMovie struct {
 	BackdropPath        string      `json:"backdrop_path"`
 	BelongsToCollection interface{} `json:"belongs_to_collection"`
 	Budget              int         `json:"budget"`
-	Genres              []struct {
-		ID   int    `json:"id"`
-		Name string `json:"name"`
-	} `json:"genres"`
-	Homepage            string  `json:"homepage"`
-	ID                  int     `json:"id"`
-	ImdbID              string  `json:"imdb_id"`
-	OriginalLanguage    string  `json:"original_language"`
-	OriginalTitle       string  `json:"original_title"`
-	Overview            string  `json:"overview"`
-	Popularity          float64 `json:"popularity"`
-	PosterPath          string  `json:"poster_path"`
+	Genres              []Genre     `json:"genres"`
+	Homepage            string      `json:"homepage"`
+	ID                  int         `json:"id"`
+	ImdbID              string      `json:"imdb_id"`
+	OriginalLanguage    string      `json:"original_language"`
+	OriginalTitle       string      `json:"original_title"`
+	Overview            string      `json:"overview"`
+	Popularity          float64     `json:"popularity"`
+	PosterPath          string      `json:"poster_path"`
 	ProductionCompanies []struct {
 		ID            int    `json:"id"`
 		LogoPath      string `json:"logo_path"`
@@ -51,9 +48,15 @@ type DetailedMovie struct {
 	VoteCount   int     `json:"vote_count"`
 }
 
+type Genre struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}
+
 type Movie struct {
 	Actors      []MovieActor  `json:"actors"`
 	Director    MovieDirector `json:"director"`
+	Genres      []Genre       `json:"genres"`
 	ImdbID      string        `json:"imdb_id"`
 	ID          int           `json:"id"`
 	Overview    string        `json:"overview"`
@@ -117,15 +120,20 @@ func main() {
 
 	popularMovies := []Movie{}
 	for _, movie := range movies {
-		if len(movie.Overview) < 350 &&
+		if len(movie.Overview) < 400 &&
 			len(movie.Overview) > 60 &&
 			movie.Runtime > 75 &&
 			movie.Popularity > 10 &&
 			movie.VoteAverage > 4.9 &&
 			movie.VoteCount > 400 {
+			genres := []Genre{}
+			for _, genre := range movie.Genres {
+				genres = append(genres, genre)
+			}
 			m := Movie{
 				Actors:      actors[movie.ID],
 				Director:    directors[movie.ID],
+				Genres:      genres,
 				ImdbID:      movie.ImdbID,
 				ID:          movie.ID,
 				Overview:    movie.Overview,

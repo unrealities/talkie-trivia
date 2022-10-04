@@ -18,9 +18,15 @@ export interface BasicMovie {
   title: string
 }
 
+export interface Genre {
+  id: number
+  name: string
+}
+
 export interface Movie {
   actors: Actor[]
   director: Director
+  genres: Genre[]
   id: number
   imdb_id: number
   overview: string
