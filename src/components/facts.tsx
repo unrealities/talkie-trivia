@@ -1,8 +1,9 @@
 import React from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import * as Linking from 'expo-linking'
+import Actors from './actors'
+import Genres from './genres'
 import { Movie } from './movie'
-import { disableExpoCliLogging } from 'expo/build/logs/Logs'
 
 interface FactsProps {
     movie: Movie
@@ -12,16 +13,6 @@ const Facts = (props: FactsProps) => {
     let imdbURI = 'https://www.imdb.com/title/'
     let imageURI = 'https://image.tmdb.org/t/p/original'
     let movie = props.movie
-
-    let displayActors = ""
-    movie.actors.forEach((actor) => {
-        displayActors = displayActors + " | " + actor.name
-    })
-
-    let displayGenres = ""
-    movie.genres.forEach((genre) => {
-        displayGenres = displayGenres + " | " + genre.name
-    })
 
     return (
         <View style={styles.container}>
@@ -34,8 +25,8 @@ const Facts = (props: FactsProps) => {
                 style={{ width: 200, height: 300 }}
             />
             <Text style={styles.text}>Directed by {movie.director.name}</Text>
-            <Text style={styles.text}>Actors: {displayActors}</Text>
-            <Text style={styles.text}>Genres: {displayGenres}</Text>
+            <Actors actors={movie.actors} />
+            <Genres genres={movie.genres} />
         </View>
     )
 }

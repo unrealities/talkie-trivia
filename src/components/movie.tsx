@@ -13,9 +13,24 @@ import { ResetContainer } from './reset'
 
 SplashScreen.preventAutoHideAsync()
 
+export interface Actor {
+  id: number
+  order: number
+  name: string
+  popularity: number
+  profile_path: string
+}
+
 export interface BasicMovie {
   id: number
   title: string
+}
+
+export interface Director {
+  id: number
+  name: string
+  popularity: number
+  profile_path: string
 }
 
 export interface Genre {
@@ -37,21 +52,6 @@ export interface Movie {
   title: string
   vote_average: number
   vote_count: number
-}
-
-export interface Actor {
-  id: number
-  order: number
-  name: string
-  popularity: number
-  profile_path: string
-}
-
-export interface Director {
-  id: number
-  name: string
-  popularity: number
-  profile_path: string
 }
 
 const MoviesContainer = () => {
