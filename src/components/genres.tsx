@@ -1,23 +1,46 @@
 import React from 'react'
-import { Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
+import { colors } from '../styles/global'
 import { Genre } from './movie'
 
+interface GenreProps {
+    genre: Genre
+}
 interface GenresProps {
     genres: Genre[]
 }
 
-const Genres = (props: GenresProps) => {
-    let displayGenres = ""
-    props.genres.forEach((genre) => {
-        displayGenres = displayGenres + " | " + genre.name
-    })
-    displayGenres = displayGenres + " | "
-
+const GenreContainer = (props: GenreProps) => {
     return (
-        <View>
-            <Text>{displayGenres}</Text>
+        <View style={styles.GenreContainer}>
+            <Text key={props.genre.id} style={styles.GenreText}>{props.genre.name}</Text>
         </View>
     )
 }
+
+const Genres = (props: GenresProps) => {
+    return (
+        <View style={styles.GenresContainer}>
+            {props.genres.map((genre) => { return <GenreContainer genre={genre} /> })}
+        </View>
+    )
+}
+
+const styles = StyleSheet.create({
+    GenreContainer: {
+        borderColor: colors.tertiary,
+        borderRadius: 8,
+        padding: 4
+    },
+    GenresContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        padding: 10
+    },
+    GenreText: {
+        fontFamily: 'Arvo-Bold',
+        fontSize: 12
+    }
+})
 
 export default Genres
