@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
     GenresContainer: {
         flex: 1,
         flexDirection: 'row',
+        flexWarp: 'wrap',
         padding: 10
     },
     GenreText: {

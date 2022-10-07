@@ -125,7 +125,9 @@ const styles = StyleSheet.create({
         flex: 1,
         flexWrap: 'wrap',
         margin: 'auto',
-        maxWidth: 300
+        minWidth: 280,
+        textAlign: 'left',
+        width: 280
     },
     wordCountText: {
         color: colors.primary,

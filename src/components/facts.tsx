@@ -24,9 +24,9 @@ const Facts = (props: FactsProps) => {
                 source={{ uri: `${imageURI}${movie.poster_path}` }}
                 style={{ width: 200, height: 300 }}
             />
-            <Genres genres={movie.genres} />
             <Text style={styles.text}>Directed by {movie.director.name}</Text>
             <Actors actors={movie.actors} />
+            <Genres genres={movie.genres} />
         </View>
     )
 }

@@ -47,13 +47,16 @@ const styles = StyleSheet.create({
     ActorContainer: {
         alignItems: 'center',
         flex: 1,
-        maxWidth: 90
+        maxWidth: 90,
+        minHeight: 120
     },
     ActorImage: {
+        flex: 1,
         height: 90,
         width: 60
     },
     ActorText: {
+        flex: 1,
         fontFamily: 'Arvo-Regular',
         fontSize: 12,
         paddingTop: 4,
