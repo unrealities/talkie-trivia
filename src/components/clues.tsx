@@ -104,9 +104,9 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'flex-start',
         marginBottom: 10,
-        marginTop: 30,
+        marginTop: 10,
         minWidth: 300,
-        minHeight: 220,
+        minHeight: 250,
     },
     countContainer: {
         flex: 1,

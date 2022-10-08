@@ -24,7 +24,7 @@ const MovieModal = (props: MovieModalProps) => {
                     <View style={styles.modalView}>
                         <Facts movie={props.movie} />
                         <Pressable
-                            style={[styles.button, styles.buttonClose]}
+                            style={styles.button}
                             onPress={() => props.toggleModal(false)}>
                             <Text style={styles.textStyle}>Close</Text>
                         </Pressable>
@@ -63,15 +63,10 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     button: {
+        backgroundColor: colors.primary,
         borderRadius: 20,
         padding: 16,
         elevation: 2,
-    },
-    buttonOpen: {
-        backgroundColor: colors.primary,
-    },
-    buttonClose: {
-        backgroundColor: colors.primary,
     },
     textStyle: {
         color: colors.background,

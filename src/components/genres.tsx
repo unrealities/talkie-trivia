@@ -28,17 +28,21 @@ const Genres = (props: GenresProps) => {
 
 const styles = StyleSheet.create({
     GenreContainer: {
-        borderColor: colors.tertiary,
+        backgroundColor: colors.tertiary,
+        borderColor: colors.primary,
         borderRadius: 8,
-        padding: 4
+        height: 26,
+        margin: 4,
+        padding: 6
     },
     GenresContainer: {
         flex: 1,
         flexDirection: 'row',
         flexWarp: 'wrap',
-        padding: 10
+        margin: 10
     },
     GenreText: {
+        color: colors.secondary,
         fontFamily: 'Arvo-Bold',
         fontSize: 12
     }
