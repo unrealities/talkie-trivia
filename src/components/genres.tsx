@@ -29,10 +29,9 @@ const Genres = (props: GenresProps) => {
 const styles = StyleSheet.create({
     GenreContainer: {
         backgroundColor: colors.tertiary,
-        borderColor: colors.primary,
         borderRadius: 8,
         height: 26,
-        margin: 4,
+        margin: 6,
         padding: 6
     },
     GenresContainer: {
