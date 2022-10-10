@@ -63,15 +63,16 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     button: {
-        backgroundColor: colors.primary,
+        backgroundColor: colors.secondary,
+        borderColor: colors.primary,
         borderRadius: 20,
-        borderWidth: 2,
-        padding: 16,
+        borderWidth: 4,
+        padding: 12,
         elevation: 2,
     },
     textStyle: {
-        color: colors.background,
-        fontWeight: 'bold',
+        color: colors.primary,
+        fontFamily: 'Arvo-Bold',
         textAlign: 'center',
     },
     modalText: {
