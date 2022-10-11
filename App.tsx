@@ -4,6 +4,10 @@ import { StyleSheet, View } from 'react-native'
 import MoviesContainer from './src/components/movie'
 import { colors } from './src/styles/global'
 
+/* TODO: Auth
+https://medium.com/@csaba.ujvari/expo-google-login-f83e2b7885b0
+*/
+
 export default function App() {
   return (
     <View style={styles.container}>
