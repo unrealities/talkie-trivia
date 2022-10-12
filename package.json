@@ -15,7 +15,7 @@
     "browserify-fs": "^1.0.0",
     "dotenv": "^16.0.1",
     "expo": "^46.0.0",
-    "expo-application": "^4.2.2",
+    "expo-application": "~4.2.2",
     "expo-auth-session": "~3.7.1",
     "expo-constants": "~13.2.4",
     "expo-font": "~10.2.0",
