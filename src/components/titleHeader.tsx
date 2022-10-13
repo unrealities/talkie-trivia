@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
         flex: 1,
         fontFamily: 'Arvo-Bold',
         fontSize: 24,
+        marginTop: 6,
         textAlign: 'center'
     },
     subHeader: {
