@@ -36,6 +36,14 @@ const MovieModal = (props: MovieModalProps) => {
 }
 
 const styles = StyleSheet.create({
+    button: {
+        backgroundColor: colors.secondary,
+        borderColor: colors.primary,
+        borderRadius: 20,
+        borderWidth: 4,
+        padding: 12,
+        elevation: 2,
+    },
     container: {
         flex: 1,
         padding: 8,
@@ -48,11 +56,14 @@ const styles = StyleSheet.create({
         marginTop: 22,
     },
     modalView: {
-        margin: 20,
+        alignItems: 'center',
         backgroundColor: colors.secondary,
         borderRadius: 20,
-        padding: 24,
-        alignItems: 'center',
+        elevation: 5,
+        flex: 1,
+        justifyContent: 'space-evenly',
+        margin: 8,
+        padding: 16,
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -60,23 +71,10 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 4,
-        elevation: 5,
-    },
-    button: {
-        backgroundColor: colors.secondary,
-        borderColor: colors.primary,
-        borderRadius: 20,
-        borderWidth: 4,
-        padding: 12,
-        elevation: 2,
     },
     textStyle: {
         color: colors.primary,
         fontFamily: 'Arvo-Bold',
-        textAlign: 'center',
-    },
-    modalText: {
-        marginBottom: 15,
         textAlign: 'center',
     }
 })

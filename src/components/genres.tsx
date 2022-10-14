@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     GenreContainer: {
         backgroundColor: colors.tertiary,
         borderRadius: 8,
+        flex: 1,
         height: 26,
         margin: 6,
         padding: 6
@@ -38,7 +39,8 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         flexWarp: 'wrap',
-        margin: 10
+        margin: 10,
+        minHeight: 20
     },
     GenreText: {
         color: colors.secondary,
