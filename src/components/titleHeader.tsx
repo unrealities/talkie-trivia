@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
         flex: 1,
         fontFamily: 'Arvo-Italic',
         fontSize: 14,
+        marginBottom: 8,
         textAlign: 'center'
     }
 })
