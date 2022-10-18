@@ -1,4 +1,6 @@
+import {FIREBASE_APIKEY, FIREBASE_PROJECTID} from "@env"
+
 export const firebaseConfig = {
-    apiKey: 'AI....',
-    authDomain: '<firebase-project-id>.firebaseapp.com',
+    apiKey: `${FIREBASE_APIKEY}`,
+    authDomain: `${FIREBASE_PROJECTID}.firebaseapp.com`,
 }
