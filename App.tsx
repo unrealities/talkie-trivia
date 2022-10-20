@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, View } from 'react-native'
 import { initializeApp } from 'firebase/app'
 
+import GoogleLogin from './src/components/googleLogin'
 import MoviesContainer from './src/components/movie'
 import { colors } from './src/styles/global'
 import { firebaseConfig } from './src/config/firebase'
@@ -16,6 +17,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <MoviesContainer />
+      <GoogleLogin />
       <StatusBar style="auto" />
     </View>
   )

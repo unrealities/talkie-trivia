@@ -3,7 +3,7 @@ import { Pressable } from "react-native"
 import { GoogleAuthProvider, getAuth, signInWithCredential } from "firebase/auth"
 import * as Google from 'expo-auth-session/providers/google'
 
-import {CLIENTID_ANDROID, CLIENTID_EXPO, CLIENTID_IOS, TENANTID} from "@env"
+import {CLIENTID_ANDROID, CLIENTID_EXPO, CLIENTID_IOS, CLIENTID_WEB, TENANTID} from "@env"
 
 interface IGoogleLoginProps {
     onLoginStarted: () => any
@@ -17,6 +17,7 @@ const GoogleLogin: FC<IGoogleLoginProps> = ({ onLoginStarted, onLoginEnded, onLo
         androidClientId: CLIENTID_ANDROID,
         expoClientId: CLIENTID_EXPO,
         iosClientId: CLIENTID_IOS,
+        webClientId: CLIENTID_WEB,
         scopes: [
             'profile',
             'email',
