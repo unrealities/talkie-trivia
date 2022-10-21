@@ -2,8 +2,7 @@ import * as React from "react"
 import { Pressable } from "react-native"
 import { GoogleAuthProvider, getAuth, signInWithCredential } from "firebase/auth"
 import * as Google from 'expo-auth-session/providers/google'
-
-import {CLIENTID_ANDROID, CLIENTID_EXPO, CLIENTID_IOS, CLIENTID_WEB, TENANTID} from "@env"
+import Constants from 'expo-constants'
 
 interface IGoogleLoginProps {
     onLoginStarted: () => any
@@ -14,10 +13,10 @@ interface IGoogleLoginProps {
 
 const GoogleLogin: FC<IGoogleLoginProps> = ({ onLoginStarted, onLoginEnded, onLoginSucceeded, onLoginFailed }) => {
     const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-        androidClientId: CLIENTID_ANDROID,
-        expoClientId: CLIENTID_EXPO,
-        iosClientId: CLIENTID_IOS,
-        webClientId: CLIENTID_WEB,
+        androidClientId: Constants.expoConfig.extra.androidClientId,
+        expoClientId: Constants.expoConfig.extra.expoClientId,
+        iosClientId: Constants.expoConfig.extra.iosClientId,
+        webClientId: Constants.expoConfig.extra.webClientId,
         scopes: [
             'profile',
             'email',
@@ -30,7 +29,7 @@ const GoogleLogin: FC<IGoogleLoginProps> = ({ onLoginStarted, onLoginEnded, onLo
         onLoginStarted()
         const auth = getAuth()
         try {
-            auth.tenantId = TENANTID
+            auth.tenantId = Constants.expoConfig.extra.tenantId
             const result = await promptAsync()
             if (!result) {
                 throw new Error('failed to login')
