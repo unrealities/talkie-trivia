@@ -1,6 +1,6 @@
-import Constants from 'expo-constants'
+import {FIREBASE_APIKEY, FIREBASE_PROJECTID} from '@env'
 
 export const firebaseConfig = {
-    apiKey: `${Constants.expoConfig.extra.firebaseApiKey}`,
-    authDomain: `${Constants.expoConfig.extra.firebaseProjectId}.firebaseapp.com`,
+    apiKey: `${FIREBASE_APIKEY}`,
+    authDomain: `${FIREBASE_PROJECTID}.firebaseapp.com`,
 }
