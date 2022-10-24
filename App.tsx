@@ -1,4 +1,5 @@
 import React from 'react'
+import * as WebBrowser from 'expo-web-browser'
 import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, View } from 'react-native'
 import { initializeApp } from 'firebase/app'
@@ -10,8 +11,10 @@ import { firebaseConfig } from './src/config/firebase'
 
 /* TODO: Auth
 https://medium.com/@csaba.ujvari/expo-google-login-f83e2b7885b0
+https://docs.expo.dev/guides/authentication/#web-apps
 */
 initializeApp(firebaseConfig)
+WebBrowser.maybeCompleteAuthSession()
 
 export default function App() {
   return (

@@ -23,6 +23,7 @@
     "expo-random": "~12.3.0",
     "expo-splash-screen": "~0.16.2",
     "expo-status-bar": "~1.4.0",
+    "expo-web-browser": "~11.0.0",
     "firebase": "^9.12.1",
     "fs": "^0.0.1-security",
     "react": "18.0.0",

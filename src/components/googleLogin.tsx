@@ -27,30 +27,19 @@ const GoogleLogin: FC<IGoogleLoginProps> = ({ onLoginStarted, onLoginEnded, onLo
             'https://www.googleapis.com/auth/userinfo.profile',
         ],
     })
-    const googleLogIn = async () => {
-        onLoginStarted()
-        const auth = getAuth()
-        try {
-            // auth.tenantId = TENANTID
-            const result = await promptAsync()
-            if (!result) {
-                throw new Error('failed to login')
-            }
-            const creds = GoogleAuthProvider.credential(result!.params.id_token)
-            const res = await signInWithCredential(auth, creds)
-            const token = await res.user.getIdToken()
-            console.log('google login res', res, 'token', token)
-            onLoginSucceeded(token)
-        } catch (e: any) {
-            console.error(e)
-            onLoginFailed(e)
-        } finally {
-            onLoginEnded()
+
+    React.useEffect(() => {
+        if (response?.type === 'success') {
+          const { id_token } = response.params;
+          const auth = getAuth();
+          const credential = GoogleAuthProvider.credential(id_token);
+          signInWithCredential(auth, credential);
         }
-    }
+      }, [response])
+
     return (
         <Pressable
-            onPress={googleLogIn}
+            onPress={() => {promptAsync()}}
             style={styles.button}>
             <Text style={styles.buttonText}>Google Login</Text>
         </Pressable>
