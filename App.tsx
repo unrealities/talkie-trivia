@@ -9,9 +9,8 @@ import MoviesContainer from './src/components/movie'
 import { colors } from './src/styles/global'
 import { firebaseConfig } from './src/config/firebase'
 
-/* TODO: Auth
-https://medium.com/@csaba.ujvari/expo-google-login-f83e2b7885b0
-https://docs.expo.dev/guides/authentication/#web-apps
+/* TODO: Firebase
+https://docs.expo.dev/guides/using-firebase/
 */
 initializeApp(firebaseConfig)
 WebBrowser.maybeCompleteAuthSession()
