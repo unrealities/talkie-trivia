@@ -3,6 +3,7 @@ import * as WebBrowser from 'expo-web-browser'
 import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, View } from 'react-native'
 import { initializeApp } from 'firebase/app'
+import { getAnalytics } from "firebase/analytics"
 
 import GoogleLogin from './src/components/googleLogin'
 import MoviesContainer from './src/components/movie'
@@ -12,7 +13,8 @@ import { firebaseConfig } from './src/config/firebase'
 /* TODO: Firebase
 https://docs.expo.dev/guides/using-firebase/
 */
-initializeApp(firebaseConfig)
+const app = initializeApp(firebaseConfig)
+const analytics = getAnalytics(app)
 WebBrowser.maybeCompleteAuthSession()
 
 export default function App() {
