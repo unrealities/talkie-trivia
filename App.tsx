@@ -12,6 +12,7 @@ import { firebaseConfig } from './src/config/firebase'
 
 /* TODO: Firebase
 https://docs.expo.dev/guides/using-firebase/
+https://blog.logrocket.com/integrating-firebase-authentication-expo-mobile-app/
 */
 const app = initializeApp(firebaseConfig)
 const analytics = getAnalytics(app)

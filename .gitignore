@@ -15,7 +15,6 @@ web-build/
 
 # config
 .env
-app.config.js
 data/secrets.json
 data/credits.json
 process.env
