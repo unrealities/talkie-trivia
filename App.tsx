@@ -4,7 +4,6 @@ import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, Text, View } from 'react-native'
 import { initializeApp } from 'firebase/app'
 import { getAnalytics } from 'firebase/analytics'
-import { User } from 'firebase/auth'
 
 import GoogleLogin from './src/components/googleLogin'
 import MoviesContainer from './src/components/movie'
@@ -26,7 +25,6 @@ export default function App() {
       <MoviesContainer />
       <GoogleLogin />
       <StatusBar style="auto" />
-      <Text>{User.displayName}</Text>
       <RootNavigation />
     </View>
   )
