@@ -2,6 +2,7 @@ import * as React from "react"
 import { Pressable, StyleSheet, Text } from "react-native"
 import { GoogleAuthProvider, getAuth, signInWithCredential } from "firebase/auth"
 import * as Google from 'expo-auth-session/providers/google'
+import { useAuthentication } from '../utils/hooks/useAuthentication'
 import { CLIENTID_ANDROID, CLIENTID_EXPO, CLIENTID_IOS, CLIENTID_WEB } from '@env'
 
 import { colors } from '../styles/global'
@@ -14,6 +15,9 @@ interface IGoogleLoginProps {
 }
 
 const GoogleLogin: FC<IGoogleLoginProps> = ({ onLoginStarted, onLoginEnded, onLoginSucceeded, onLoginFailed }) => {
+    const { user } = useAuthentication()
+    const name = user ? user.displayName : 'Google Login'
+    
     const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
         androidClientId: CLIENTID_ANDROID,
         expoClientId: CLIENTID_EXPO,
@@ -41,7 +45,7 @@ const GoogleLogin: FC<IGoogleLoginProps> = ({ onLoginStarted, onLoginEnded, onLo
         <Pressable
             onPress={() => {promptAsync()}}
             style={styles.button}>
-            <Text style={styles.buttonText}>Google Login</Text>
+            <Text style={styles.buttonText}>{name}</Text>
         </Pressable>
     )
 }

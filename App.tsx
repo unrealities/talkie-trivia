@@ -9,7 +9,6 @@ import GoogleLogin from './src/components/googleLogin'
 import MoviesContainer from './src/components/movie'
 import { colors } from './src/styles/global'
 import { firebaseConfig } from './src/config/firebase'
-import RootNavigation from './src/navigation'
 
 /* TODO: Firebase
 https://docs.expo.dev/guides/using-firebase/
@@ -25,7 +24,6 @@ export default function App() {
       <MoviesContainer />
       <GoogleLogin />
       <StatusBar style="auto" />
-      <RootNavigation />
     </View>
   )
 }
