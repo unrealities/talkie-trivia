@@ -1,9 +1,13 @@
 interface Game {
     answerID: number
+    date: Date
+    guessesMax: number
+}
+
+interface PlayerGame {
     correctAnswer: boolean
     endDate: Date
     guessesMade: number
-    guessesMax: number
-    uuid: string
+    playerId: string
     startDate: Date
 }
