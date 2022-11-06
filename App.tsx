@@ -4,11 +4,14 @@ import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, Text, View } from 'react-native'
 import { initializeApp } from 'firebase/app'
 import { getAnalytics } from 'firebase/analytics'
+import uuid from 'react-native-uuid'
 
 import GoogleLogin from './src/components/googleLogin'
 import MoviesContainer from './src/components/movie'
+import Player from './src/models/player'
 import { colors } from './src/styles/global'
 import { firebaseConfig } from './src/config/firebase'
+import { useAuthentication } from './src/utils/hooks/useAuthentication'
 
 /* TODO: Firebase
 https://docs.expo.dev/guides/using-firebase/
@@ -19,6 +22,9 @@ const analytics = getAnalytics(app)
 WebBrowser.maybeCompleteAuthSession()
 
 export default function App() {
+  const { user } = useAuthentication()
+  const player = user ? new Player() : new Player(uuid.v4(), 'anonymous')
+
   return (
     <View style={styles.container}>
       <MoviesContainer />
