@@ -23,12 +23,13 @@ WebBrowser.maybeCompleteAuthSession()
 
 export default function App() {
   const { user } = useAuthentication()
-  const player = user ? new Player() : new Player(uuid.v4(), 'anonymous')
+  const player = new Player()
+  user ? player.Name = user.displayName : player.Id = uuid.v4().toString(); player.Name = 'anonymous'
 
   return (
     <View style={styles.container}>
       <MoviesContainer />
-      <GoogleLogin />
+      <GoogleLogin player={player}/>
       <StatusBar style="auto" />
     </View>
   )
