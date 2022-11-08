@@ -1,4 +1,4 @@
 export default class Player {
-    Id: string
-    Name: string
+    id: string
+    name: string
 }

@@ -22,9 +22,12 @@ const analytics = getAnalytics(app)
 WebBrowser.maybeCompleteAuthSession()
 
 export default function App() {
-  const { user } = useAuthentication()
   const player = new Player()
-  user ? player.Name = user.displayName : player.Id = uuid.v4().toString(); player.Name = 'anonymous'
+  const { user } = useAuthentication()
+
+  React.useEffect(() => {
+    user?.displayName ? player.name = user.displayName : player.id = uuid.v4().toString(); player.name = 'anonymous'
+  }, [])
 
   return (
     <View style={styles.container}>

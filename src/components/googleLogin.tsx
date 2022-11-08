@@ -5,17 +5,13 @@ import * as Google from 'expo-auth-session/providers/google'
 import { CLIENTID_ANDROID, CLIENTID_EXPO, CLIENTID_IOS, CLIENTID_WEB } from '@env'
 
 import { colors } from '../styles/global'
-import { Player } from "../models/player"
+import Player from "../models/player"
 
-interface IGoogleLoginProps {
-    onLoginStarted: () => any
-    onLoginEnded: () => any
-    onLoginSucceeded: (token: string) => any
-    onLoginFailed: (e: any) => any
+interface GoogleLoginProps {
     player: Player
 }
 
-const GoogleLogin: FC<IGoogleLoginProps> = ({ onLoginStarted, onLoginEnded, onLoginSucceeded, onLoginFailed, props }) => {
+const GoogleLogin = (props: GoogleLoginProps) => {
     const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
         androidClientId: CLIENTID_ANDROID,
         expoClientId: CLIENTID_EXPO,
@@ -43,7 +39,7 @@ const GoogleLogin: FC<IGoogleLoginProps> = ({ onLoginStarted, onLoginEnded, onLo
         <Pressable
             onPress={() => {promptAsync()}}
             style={styles.button}>
-            <Text style={styles.buttonText}>{props.player.Name}</Text>
+            <Text style={styles.buttonText}>{props.player.name}</Text>
         </Pressable>
     )
 }
