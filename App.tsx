@@ -26,7 +26,13 @@ export default function App() {
   const { user } = useAuthentication()
 
   React.useEffect(() => {
-    user?.displayName ? player.name = user.displayName : player.id = uuid.v4().toString(); player.name = 'anonymous'
+    if (user) {
+      player.id = '123'
+      player.name = 'test'
+    } else {
+      player.id = uuid.v4().toString()
+      player.name = 'anonymous'
+    }
   }, [])
 
   return (
