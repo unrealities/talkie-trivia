@@ -35,7 +35,7 @@ export default function App() {
       player.id = uuid.v4().toString()
       player.name = 'anonymous'
     }
-  }, [])
+  }, [user])
 
   return (
     <View style={styles.container}>

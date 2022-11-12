@@ -39,7 +39,7 @@ const GoogleLogin = (props: GoogleLoginProps) => {
         <Pressable
             onPress={() => {promptAsync()}}
             style={styles.button}>
-            <Text style={styles.buttonText}>{props.player.id}</Text>
+            <Text style={styles.buttonText}>{props.player.id}:{props.player.name}</Text>
         </Pressable>
     )
 }
