@@ -37,9 +37,10 @@ const GoogleLogin = (props: GoogleLoginProps) => {
 
     return (
         <Pressable
+            disabled={props.player.name != '' }
             onPress={() => {promptAsync()}}
             style={styles.button}>
-            <Text style={styles.buttonText}>{props.player.id}:{props.player.name}</Text>
+            <Text style={styles.buttonText}>{props.player.name != '' ? props.player.name : 'Sign In'}</Text>
         </Pressable>
     )
 }

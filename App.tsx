@@ -23,17 +23,17 @@ WebBrowser.maybeCompleteAuthSession()
 
 export default function App() {
   const player = new Player()
-  player.id = '123'
-  player.name = 'test'
+  player.id = ''
+  player.name = ''
   const { user } = useAuthentication()
 
   React.useEffect(() => {
     if (user) {
       player.id = '456'
-      player.name = user.displayName
+      player.name = user?.displayName ? user.displayName.toString() : 'unknown'
     } else {
       player.id = uuid.v4().toString()
-      player.name = 'anonymous'
+      player.name = ''
     }
   }, [user])
 
