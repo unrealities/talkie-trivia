@@ -1,10 +1,10 @@
-interface Game {
+export class Game {
     answerID: number
     date: Date
     guessesMax: number
 }
 
-interface PlayerGame {
+export class PlayerGame {
     correctAnswer: boolean
     endDate: Date
     guessesMade: number

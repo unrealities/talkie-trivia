@@ -9,6 +9,7 @@ import uuid from 'react-native-uuid'
 import GoogleLogin from './src/components/googleLogin'
 import MoviesContainer from './src/components/movie'
 import Player from './src/models/player'
+import { Game, PlayerGame } from './src/models/game'
 import { colors } from './src/styles/global'
 import { firebaseConfig } from './src/config/firebase'
 import { useAuthentication } from './src/utils/hooks/useAuthentication'
@@ -22,10 +23,15 @@ const analytics = getAnalytics(app)
 WebBrowser.maybeCompleteAuthSession()
 
 export default function App() {
+  // init user
   const player = new Player()
   player.id = ''
   player.name = ''
   const { user } = useAuthentication()
+
+  // init new game
+  const game = new Game() // TODO: This should be initiated separately on a global level for all users
+  const playerGame = new PlayerGame()
 
   React.useEffect(() => {
     if (user) {
