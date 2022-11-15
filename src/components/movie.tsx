@@ -54,7 +54,12 @@ export interface Movie {
   vote_count: number
 }
 
-const MoviesContainer = () => {
+interface MovieContainerProps {
+  movie: Movie
+  movies: BasicMovie[]
+}
+
+const MoviesContainer = (props: MovieContainerProps) => {
   let [fontsLoaded] = useFonts({
     'Arvo-Bold': require('../../assets/fonts/Arvo-Bold.ttf'),
     'Arvo-Italic': require('../../assets/fonts/Arvo-Italic.ttf'),
@@ -66,16 +71,11 @@ const MoviesContainer = () => {
     }
   }, [fontsLoaded])
 
-  let basicMovies: BasicMovie[] = require('../../data/basicMovies.json')
-  let movies: Movie[] = require('../../data/popularMovies.json')
-
-  let newMovie = movies[Math.floor(Math.random() * movies.length)]
-
   const [correctGuess, setCorrectGuess] = useState<boolean>(false)
   const [enableSubmit, setEnableSubmit] = useState<boolean>(true)
   const [guesses, setGuesses] = useState<number[]>([])
   const [showModal, setShowModal] = useState<boolean>(false)
-  const [movie, setMovie] = useState<Movie>(newMovie)
+  const [movie, setMovie] = useState<Movie>(props.movie)
 
   const confetti = useRef<ConfettiCannon>(null)
 
@@ -102,7 +102,7 @@ const MoviesContainer = () => {
         enableSubmit={enableSubmit}
         guesses={guesses}
         movieID={movie.id}
-        movies={basicMovies}
+        movies={props.movies}
         toggleModal={setShowModal}
         toggleSubmit={setEnableSubmit}
         updateCorrectGuess={setCorrectGuess}
@@ -110,7 +110,7 @@ const MoviesContainer = () => {
       <GuessesContainer
         guesses={guesses}
         movie={movie}
-        movies={basicMovies} />
+        movies={props.movies} />
       <MovieModal
         movie={movie}
         show={showModal}

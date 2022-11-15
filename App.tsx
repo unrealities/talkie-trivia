@@ -29,6 +29,11 @@ export default function App() {
   player.name = ''
   const { user } = useAuthentication()
 
+  // init new movie
+  let movies: Movie[] = require('../../data/popularMovies.json')
+  let basicMovies: BasicMovie[] = require('../../data/basicMovies.json')
+  let newMovie = movies[Math.floor(Math.random() * movies.length)]
+
   // init new game
   const game = new Game() // TODO: This should be initiated separately on a global level for all users
   const playerGame = new PlayerGame()
@@ -45,7 +50,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <MoviesContainer />
+      <MoviesContainer movie={newMovie} movies={basicMovies} />
       <GoogleLogin player={player}/>
       <StatusBar style="auto" />
     </View>
