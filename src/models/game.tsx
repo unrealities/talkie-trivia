@@ -1,7 +1,8 @@
 export class Game {
-    answerID: number
+    answerID: string
     date: Date
     guessesMax: number
+    id: string
 }
 
 export class PlayerGame {

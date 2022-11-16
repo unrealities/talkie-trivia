@@ -35,7 +35,12 @@ export default function App() {
   let newMovie = movies[Math.floor(Math.random() * movies.length)]
 
   // init new game
-  const game = new Game() // TODO: This should be initiated separately on a global level for all users
+  let game: Game = {
+    answerID: newMovie.id,
+    date: new Date,
+    guessesMax: 5,
+    id: uuid.v4().toString()
+  } // TODO: This should be initiated separately on a global level for all users
   const playerGame = new PlayerGame()
 
   React.useEffect(() => {
