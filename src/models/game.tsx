@@ -1,3 +1,5 @@
+import Player from "./player"
+
 export class Game {
     answerID: string
     date: Date
@@ -9,6 +11,6 @@ export class PlayerGame {
     correctAnswer: boolean
     endDate: Date
     guessesMade: number
-    playerId: string
+    player: Player
     startDate: Date
 }

@@ -41,22 +41,28 @@ export default function App() {
     guessesMax: 5,
     id: uuid.v4().toString()
   } // TODO: This should be initiated separately on a global level for all users
-  const playerGame = new PlayerGame()
+  let playerGame: PlayerGame = {
+    correctAnswer: false,
+    endDate: new Date,
+    guessesMade: 0,
+    player: player,
+    startDate: new Date, 
+  }
 
   React.useEffect(() => {
     if (user) {
-      player.id = '456'
-      player.name = user?.displayName ? user.displayName.toString() : 'unknown'
+      playerGame.player.id = '456'
+      playerGame.player.name = user?.displayName ? user.displayName.toString() : 'unknown'
     } else {
-      player.id = uuid.v4().toString()
-      player.name = ''
+      playerGame.player.id = uuid.v4().toString()
+      playerGame.player.name = ''
     }
   }, [user])
 
   return (
     <View style={styles.container}>
       <MoviesContainer movie={newMovie} movies={basicMovies} />
-      <GoogleLogin player={player}/>
+      <GoogleLogin player={playerGame.player}/>
       <StatusBar style="auto" />
     </View>
   )
