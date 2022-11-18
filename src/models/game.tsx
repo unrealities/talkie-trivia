@@ -1,10 +1,11 @@
-import Player from "./player"
+import Movie from '../components/movie'
+import Player from './player'
 
 export class Game {
-    answerID: string
     date: Date
     guessesMax: number
     id: string
+    movie: typeof Movie
 }
 
 export class PlayerGame {

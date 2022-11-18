@@ -36,10 +36,10 @@ export default function App() {
 
   // init new game
   let game: Game = {
-    answerID: newMovie.id,
     date: new Date,
     guessesMax: 5,
-    id: uuid.v4().toString()
+    id: uuid.v4().toString(),
+    movie: newMovie
   } // TODO: This should be initiated separately on a global level for all users
   let playerGame: PlayerGame = {
     correctAnswer: false,
