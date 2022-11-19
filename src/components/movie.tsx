@@ -10,49 +10,9 @@ import MovieModal from './modal'
 import PickerContainer from './picker'
 import TitleHeader from './titleHeader'
 import { ResetContainer } from './reset'
+import { BasicMovie, Movie } from '../models/movie'
 
 SplashScreen.preventAutoHideAsync()
-
-export interface Actor {
-  id: number
-  order: number
-  name: string
-  popularity: number
-  profile_path: string
-}
-
-export interface BasicMovie {
-  id: number
-  title: string
-}
-
-export interface Director {
-  id: number
-  name: string
-  popularity: number
-  profile_path: string
-}
-
-export interface Genre {
-  id: number
-  name: string
-}
-
-export interface Movie {
-  actors: Actor[]
-  director: Director
-  genres: Genre[]
-  id: number
-  imdb_id: number
-  overview: string
-  poster_path: string
-  popularity: number
-  release_date: string
-  tagline: string
-  title: string
-  vote_average: number
-  vote_count: number
-}
 
 interface MovieContainerProps {
   movie: Movie

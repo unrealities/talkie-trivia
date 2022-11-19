@@ -3,7 +3,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import * as Linking from 'expo-linking'
 import Actors from './actors'
 import Genres from './genres'
-import { Movie } from './movie'
+import { Movie } from '../models/movie'
 
 interface FactsProps {
     movie: Movie

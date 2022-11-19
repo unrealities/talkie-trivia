@@ -35,12 +35,13 @@ export default function App() {
   let newMovie = movies[Math.floor(Math.random() * movies.length)]
 
   // init new game
+  // TODO: This should be initiated separately on a global level for all users
   let game: Game = {
     date: new Date,
     guessesMax: 5,
     id: uuid.v4().toString(),
     movie: newMovie
-  } // TODO: This should be initiated separately on a global level for all users
+  } 
   let playerGame: PlayerGame = {
     correctAnswer: false,
     endDate: new Date,

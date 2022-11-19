@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { Movie } from './movie'
+import { BasicMovie, Movie } from '../models/movie'
 
 import { colors } from '../styles/global'
 
