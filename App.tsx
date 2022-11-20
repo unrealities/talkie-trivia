@@ -30,8 +30,8 @@ export default function App() {
   const { user } = useAuthentication()
 
   // init new movie
-  let movies: Movie[] = require('../../data/popularMovies.json')
-  let basicMovies: BasicMovie[] = require('../../data/basicMovies.json')
+  let movies: Movie[] = require('./data/popularMovies.json')
+  let basicMovies: BasicMovie[] = require('./data/basicMovies.json')
   let newMovie = movies[Math.floor(Math.random() * movies.length)]
 
   // init new game

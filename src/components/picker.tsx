@@ -1,7 +1,7 @@
 import React, { SetStateAction, useEffect, useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 
-import { BasicMovie } from './movie'
+import { BasicMovie } from '../models/movie'
 import { colors } from '../styles/global'
 
 interface PickerContainerProps {

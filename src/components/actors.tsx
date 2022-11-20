@@ -1,7 +1,7 @@
 import React from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
 import { colors } from '../styles/global'
-import { Actor } from './movie'
+import { Actor } from '../models/movie'
 
 interface ActorProps {
     actor: Actor
@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
     ActorsContainer: {
         flex: 1,
         flexDirection: 'row',
+        fontColor: colors.primary,
         justifyContent: 'space-evenly',
         minWidth: 300,
         paddingBottom: 12,

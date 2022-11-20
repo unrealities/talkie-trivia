@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { colors } from '../styles/global'
-import { Genre } from './movie'
+import { Genre } from '../models/movie'
 
 interface GenreProps {
     genre: Genre

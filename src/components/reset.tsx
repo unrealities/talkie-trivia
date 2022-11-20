@@ -2,6 +2,7 @@ import React from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 import { colors } from '../styles/global'
+import { Movie } from '../models/movie'
 
 export interface ResetContainerProps {
     updateCorrectGuess: SetStateAction
