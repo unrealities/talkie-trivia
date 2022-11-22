@@ -45,6 +45,7 @@ export default function App() {
   let playerGame: PlayerGame = {
     correctAnswer: false,
     endDate: new Date,
+    game: game,
     guessesMade: 0,
     player: player,
     startDate: new Date, 
@@ -62,7 +63,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <MoviesContainer movie={newMovie} movies={basicMovies} />
+      <MoviesContainer movie={playerGame.game.movie} movies={basicMovies} />
       <GoogleLogin player={playerGame.player}/>
       <StatusBar style="auto" />
     </View>

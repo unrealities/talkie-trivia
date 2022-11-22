@@ -11,6 +11,7 @@ export class Game {
 export class PlayerGame {
     correctAnswer: boolean
     endDate: Date
+    game: Game
     guessesMade: number
     player: Player
     startDate: Date
