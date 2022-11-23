@@ -10,13 +10,14 @@ import MovieModal from './modal'
 import PickerContainer from './picker'
 import TitleHeader from './titleHeader'
 import { ResetContainer } from './reset'
-import { BasicMovie, Movie } from '../models/movie'
+import { BasicMovie } from '../models/movie'
+import { PlayerGame } from '../models/game'
 
 SplashScreen.preventAutoHideAsync()
 
 interface MovieContainerProps {
-  movie: Movie
   movies: BasicMovie[]
+  playerGame: PlayerGame
 }
 
 const MoviesContainer = (props: MovieContainerProps) => {
@@ -35,7 +36,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
   const [enableSubmit, setEnableSubmit] = useState<boolean>(true)
   const [guesses, setGuesses] = useState<number[]>([])
   const [showModal, setShowModal] = useState<boolean>(false)
-  const [movie, setMovie] = useState<Movie>(props.movie)
+  const [movie, setMovie] = useState<Movie>(props.playerGame.game.movie)
 
   const confetti = useRef<ConfettiCannon>(null)
 

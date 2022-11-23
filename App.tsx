@@ -63,7 +63,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <MoviesContainer movie={playerGame.game.movie} movies={basicMovies} />
+      <MoviesContainer movies={basicMovies} playerGame={playerGame} />
       <GoogleLogin player={playerGame.player}/>
       <StatusBar style="auto" />
     </View>
