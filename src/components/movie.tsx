@@ -10,7 +10,7 @@ import MovieModal from './modal'
 import PickerContainer from './picker'
 import TitleHeader from './titleHeader'
 import { ResetContainer } from './reset'
-import { BasicMovie } from '../models/movie'
+import { BasicMovie, Movie } from '../models/movie'
 import { PlayerGame } from '../models/game'
 
 SplashScreen.preventAutoHideAsync()
@@ -56,7 +56,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
     <View style={styles.container} onLayout={onLayoutRootView}>
       <TitleHeader />
       <CluesContainer
-        correctGuess={correctGuess}
+        correctGuess={props.playerGame.correctAnswer}
         guesses={guesses}
         summary={movie.overview} />
       <PickerContainer
