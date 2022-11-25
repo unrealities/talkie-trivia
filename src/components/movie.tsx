@@ -32,8 +32,8 @@ const MoviesContainer = (props: MovieContainerProps) => {
     }
   }, [fontsLoaded])
 
-  const [correctGuess, setCorrectGuess] = useState<boolean>(false)
-  const [enableSubmit, setEnableSubmit] = useState<boolean>(true)
+  const [correctGuess, setCorrectGuess] = useState<boolean>(props.playerGame.correctAnswer)
+  const [enableSubmit, setEnableSubmit] = useState<boolean>(!props.playerGame.correctAnswer)
   const [guesses, setGuesses] = useState<number[]>([])
   const [showModal, setShowModal] = useState<boolean>(false)
   const [movie, setMovie] = useState<Movie>(props.playerGame.game.movie)
@@ -56,7 +56,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
     <View style={styles.container} onLayout={onLayoutRootView}>
       <TitleHeader />
       <CluesContainer
-        correctGuess={props.playerGame.correctAnswer}
+        correctGuess={correctGuess}
         guesses={guesses}
         summary={movie.overview} />
       <PickerContainer
