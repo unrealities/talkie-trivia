@@ -12,7 +12,7 @@ export class PlayerGame {
     correctAnswer: boolean
     endDate: Date
     game: Game
-    guessesMade: number
+    guesses: number[]
     player: Player
     startDate: Date
 }

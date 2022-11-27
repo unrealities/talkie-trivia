@@ -34,7 +34,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
 
   const [correctGuess, setCorrectGuess] = useState<boolean>(props.playerGame.correctAnswer)
   const [enableSubmit, setEnableSubmit] = useState<boolean>(!props.playerGame.correctAnswer)
-  const [guesses, setGuesses] = useState<number[]>([])
+  const [guesses, setGuesses] = useState<number[]>(props.playerGame.guesses)
   const [showModal, setShowModal] = useState<boolean>(false)
   const [movie, setMovie] = useState<Movie>(props.playerGame.game.movie)
 

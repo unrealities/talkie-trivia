@@ -46,7 +46,7 @@ export default function App() {
     correctAnswer: false,
     endDate: new Date,
     game: game,
-    guessesMade: 0,
+    guesses: [],
     player: player,
     startDate: new Date, 
   }
