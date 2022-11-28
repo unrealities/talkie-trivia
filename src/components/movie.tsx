@@ -32,6 +32,8 @@ const MoviesContainer = (props: MovieContainerProps) => {
     }
   }, [fontsLoaded])
 
+  const [playerGame, setPlayerGame] = useState<PlayerGame>(props.playerGame)
+
   const [correctGuess, setCorrectGuess] = useState<boolean>(props.playerGame.correctAnswer)
   const [enableSubmit, setEnableSubmit] = useState<boolean>(!props.playerGame.correctAnswer)
   const [guesses, setGuesses] = useState<number[]>(props.playerGame.guesses)
@@ -80,6 +82,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
         updateCorrectGuess={setCorrectGuess}
         updateGuesses={setGuesses}
         updateMovie={setMovie}
+        updatePlayerGame={setPlayerGame}
       />
       <ConfettiCannon
         autoStart={false}
