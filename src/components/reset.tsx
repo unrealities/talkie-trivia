@@ -6,9 +6,7 @@ import { colors } from '../styles/global'
 import { Movie } from '../models/movie'
 
 export interface ResetContainerProps {
-    updateCorrectGuess: SetStateAction
-    updateGuesses: SetStateAction
-    updateMovie: SetStateAction
+    updatePlayerGame: SetStateAction
 }
 
 export const ResetContainer = (props: ResetContainerProps) => {
@@ -36,9 +34,7 @@ export const ResetContainer = (props: ResetContainerProps) => {
     return (
         <View style={styles.container}>
             <Pressable onPress={() => {
-                props.updateCorrectGuess(false)
-                props.updateGuesses([])
-                props.updateMovie(newMovie)
+                props.updatePlayerGame(playerGame)
             }}>
                 <Text style={styles.text}>Play Again?</Text>
             </Pressable>

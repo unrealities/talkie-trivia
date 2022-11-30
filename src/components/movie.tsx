@@ -79,9 +79,6 @@ const MoviesContainer = (props: MovieContainerProps) => {
         show={showModal}
         toggleModal={setShowModal} />
       <ResetContainer
-        updateCorrectGuess={setCorrectGuess}
-        updateGuesses={setGuesses}
-        updateMovie={setMovie}
         updatePlayerGame={setPlayerGame}
       />
       <ConfettiCannon
