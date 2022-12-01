@@ -1,7 +1,7 @@
 import React from 'react'
 import * as WebBrowser from 'expo-web-browser'
 import { StatusBar } from 'expo-status-bar'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { initializeApp } from 'firebase/app'
 import { getAnalytics } from 'firebase/analytics'
 import uuid from 'react-native-uuid'
@@ -9,6 +9,7 @@ import uuid from 'react-native-uuid'
 import GoogleLogin from './src/components/googleLogin'
 import MoviesContainer from './src/components/movie'
 import Player from './src/models/player'
+import { BasicMovie, Movie } from './src/models/movie'
 import { Game, PlayerGame } from './src/models/game'
 import { colors } from './src/styles/global'
 import { firebaseConfig } from './src/config/firebase'
@@ -41,14 +42,14 @@ export default function App() {
     guessesMax: 5,
     id: uuid.v4().toString(),
     movie: newMovie
-  } 
+  }
   let playerGame: PlayerGame = {
     correctAnswer: false,
     endDate: new Date,
     game: game,
     guesses: [],
     player: player,
-    startDate: new Date, 
+    startDate: new Date,
   }
 
   React.useEffect(() => {
@@ -64,7 +65,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <MoviesContainer movies={basicMovies} playerGame={playerGame} />
-      <GoogleLogin player={playerGame.player}/>
+      <GoogleLogin player={playerGame.player} />
       <StatusBar style="auto" />
     </View>
   )

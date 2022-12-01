@@ -1,12 +1,14 @@
-import React from 'react'
+import React, { Dispatch, SetStateAction} from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import uuid from 'react-native-uuid'
 
 import { colors } from '../styles/global'
 import { Movie } from '../models/movie'
+import { Game, PlayerGame } from '../models/game'
 
 export interface ResetContainerProps {
-    updatePlayerGame: SetStateAction
+    playerGame: PlayerGame
+    updatePlayerGame: Dispatch<SetStateAction<PlayerGame>>
 }
 
 export const ResetContainer = (props: ResetContainerProps) => {
@@ -28,6 +30,7 @@ export const ResetContainer = (props: ResetContainerProps) => {
       endDate: new Date,
       game: game,
       guesses: [],
+      player: props.playerGame.player,
       startDate: new Date, 
     }
 

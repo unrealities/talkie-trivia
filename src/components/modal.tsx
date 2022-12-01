@@ -1,13 +1,14 @@
-import React from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native'
 
 import { colors } from '../styles/global'
 import Facts from './facts'
+import { Movie } from '../models/movie'
 
 interface MovieModalProps {
     movie: Movie
-    show: SetStateAction
-    toggleModal: SetStateAction
+    show: boolean
+    toggleModal: Dispatch<SetStateAction<boolean>>
 }
 
 const MovieModal = (props: MovieModalProps) => {

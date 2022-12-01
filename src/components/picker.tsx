@@ -1,4 +1,4 @@
-import React, { SetStateAction, useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 
 import { BasicMovie } from '../models/movie'
@@ -10,7 +10,7 @@ interface PickerContainerProps {
     movieID: number
     movies: BasicMovie[]
     toggleModal: Dispatch<SetStateAction<boolean>>
-    toggleSubmit: Dispatcn<SetStateAction<boolean>>
+    toggleSubmit: Dispatch<SetStateAction<boolean>>
     updateCorrectGuess: Dispatch<SetStateAction<boolean>>
     updateGuesses: Dispatch<SetStateAction<number[]>>
 }
