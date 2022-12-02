@@ -16,7 +16,7 @@
     "dotenv": "^16.0.1",
     "expo": "^47.0.6",
     "expo-application": "~5.0.1",
-    "expo-auth-session": "~3.7.2",
+    "expo-auth-session": "~3.7.3",
     "expo-constants": "~14.0.2",
     "expo-font": "~11.0.1",
     "expo-linking": "~3.2.3",

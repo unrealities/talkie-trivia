@@ -28,17 +28,17 @@ const GoogleLogin = (props: GoogleLoginProps) => {
 
     React.useEffect(() => {
         if (response?.type === 'success') {
-          const { id_token } = response.params;
-          const auth = getAuth();
-          const credential = GoogleAuthProvider.credential(id_token);
-          signInWithCredential(auth, credential);
+            const { id_token } = response.params;
+            const auth = getAuth();
+            const credential = GoogleAuthProvider.credential(id_token);
+            signInWithCredential(auth, credential);
         }
-      }, [response])
+    }, [response])
 
     return (
         <Pressable
-            disabled={props.player.name != '' }
-            onPress={() => {promptAsync()}}
+            disabled={props.player.name != ''}
+            onPress={() => { promptAsync() }}
             style={styles.button}>
             <Text style={styles.buttonText}>{props.player.name != '' ? props.player.name : 'Sign In'}</Text>
         </Pressable>
