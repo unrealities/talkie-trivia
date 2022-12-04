@@ -1,4 +1,4 @@
-import * as React from "react"
+import React, { useEffect } from "react"
 import { Pressable, StyleSheet, Text } from "react-native"
 import { GoogleAuthProvider, getAuth, signInWithCredential } from "firebase/auth"
 import * as Google from 'expo-auth-session/providers/google'
@@ -26,7 +26,7 @@ const GoogleLogin = (props: GoogleLoginProps) => {
         ],
     })
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (response?.type === 'success') {
             const { id_token } = response.params;
             const auth = getAuth();

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import * as WebBrowser from 'expo-web-browser'
 import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, View } from 'react-native'
@@ -52,7 +52,7 @@ export default function App() {
     startDate: new Date,
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (user) {
       playerGame.player.id = '456'
       playerGame.player.name = user?.displayName ? user.displayName.toString() : 'unknown'
