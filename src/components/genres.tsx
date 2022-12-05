@@ -31,8 +31,10 @@ const styles = StyleSheet.create({
         backgroundColor: colors.tertiary,
         borderRadius: 8,
         flex: 1,
-        height: 26,
         margin: 6,
+        maxHeight: 44,
+        minHeight: 26,
+        minWidth: 80,
         padding: 6
     },
     GenresContainer: {
@@ -40,12 +42,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWarp: 'wrap',
         margin: 10,
-        minHeight: 20
+        minHeight: 20,
+        minWidth: 80
     },
     GenreText: {
         color: colors.secondary,
         fontFamily: 'Arvo-Bold',
-        fontSize: 12
+        fontSize: 12,
+        textAlign: 'center',
+        textAlignVertical: 'center'
     }
 })
 
