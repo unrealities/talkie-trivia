@@ -33,20 +33,16 @@ const MoviesContainer = (props: MovieContainerProps) => {
   }, [fontsLoaded])
 
   const [playerGame, setPlayerGame] = useState<PlayerGame>(props.playerGame)
-
-  const [correctGuess, setCorrectGuess] = useState<boolean>(props.playerGame.correctAnswer)
-  const [enableSubmit, setEnableSubmit] = useState<boolean>(!props.playerGame.correctAnswer)
-  const [guesses, setGuesses] = useState<number[]>(props.playerGame.guesses)
+  const [enableSubmit, setEnableSubmit] = useState<boolean>(!playerGame.correctAnswer)
   const [showModal, setShowModal] = useState<boolean>(false)
-  const [movie, setMovie] = useState<Movie>(props.playerGame.game.movie)
 
   const confetti = useRef<ConfettiCannon>(null)
 
   useEffect(() => {
-    if (guesses.length > 4) {
+    if (playerGame.guesses.length > 4) {
       setEnableSubmit(false)
     }
-    if (correctGuess && showModal) {
+    if (playerGame.correctAnswer && showModal) {
       confetti.current?.start()
       setEnableSubmit(false)
     }
@@ -58,24 +54,22 @@ const MoviesContainer = (props: MovieContainerProps) => {
     <View style={styles.container} onLayout={onLayoutRootView}>
       <TitleHeader />
       <CluesContainer
-        correctGuess={correctGuess}
-        guesses={guesses}
-        summary={movie.overview} />
+        correctGuess={playerGame.correctAnswer}
+        guesses={playerGame.guesses}
+        summary={playerGame.game.movie.overview} />
       <PickerContainer
         enableSubmit={enableSubmit}
-        guesses={guesses}
-        movieID={movie.id}
+        playerGame={playerGame}
         movies={props.movies}
         toggleModal={setShowModal}
         toggleSubmit={setEnableSubmit}
-        updateCorrectGuess={setCorrectGuess}
-        updateGuesses={setGuesses} />
+        updatePlayerGame={setPlayerGame} />
       <GuessesContainer
-        guesses={guesses}
-        movie={movie}
+        guesses={playerGame.guesses}
+        movie={playerGame.game.movie}
         movies={props.movies} />
       <MovieModal
-        movie={movie}
+        movie={playerGame.game.movie}
         show={showModal}
         toggleModal={setShowModal} />
       <ResetContainer

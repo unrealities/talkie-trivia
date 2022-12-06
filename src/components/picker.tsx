@@ -2,17 +2,16 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 
 import { BasicMovie } from '../models/movie'
+import { PlayerGame } from '../models/game'
 import { colors } from '../styles/global'
 
 interface PickerContainerProps {
     enableSubmit: boolean
-    guesses: number[]
-    movieID: number
     movies: BasicMovie[]
+    playerGame: PlayerGame
     toggleModal: Dispatch<SetStateAction<boolean>>
     toggleSubmit: Dispatch<SetStateAction<boolean>>
-    updateCorrectGuess: Dispatch<SetStateAction<boolean>>
-    updateGuesses: Dispatch<SetStateAction<number[]>>
+    updatePlayerGame: Dispatch<SetStateAction<PlayerGame>>
 }
 const PickerContainer = (props: PickerContainerProps) => {
     const defaultButtonText = 'Select a Movie'
@@ -24,13 +23,16 @@ const PickerContainer = (props: PickerContainerProps) => {
 
     let onPressCheck = () => {
         if (selectedMovieID > 0) {
-            props.updateGuesses([...props.guesses, selectedMovieID])
+            props.updatePlayerGame({
+                ...props.playerGame,
+                guesses: [...props.playerGame.guesses, selectedMovieID]
+            })
         }
-        if (props.movieID == selectedMovieID) {
-            props.updateCorrectGuess(true)
+        if (props.playerGame.game.movie.id == selectedMovieID) {
+            props.updatePlayerGame({ ...props.playerGame, correctAnswer: true })
             props.toggleModal(true)
         }
-        if (props.guesses.length > 3) {
+        if (props.playerGame.guesses.length > 3) {
             props.toggleModal(true)
         }
     }
@@ -42,7 +44,7 @@ const PickerContainer = (props: PickerContainerProps) => {
         setSelectedMovieTitle(defaultButtonText)
         setSearchText('')
         setInputActive(true)
-    }, [props.guesses])
+    }, [props.playerGame.guesses])
     useEffect(() => { filter(searchText) }, [searchText])
 
     const filter = (text) => {
