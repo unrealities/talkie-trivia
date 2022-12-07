@@ -10,7 +10,7 @@ import MovieModal from './modal'
 import PickerContainer from './picker'
 import TitleHeader from './titleHeader'
 import { ResetContainer } from './reset'
-import { BasicMovie, Movie } from '../models/movie'
+import { BasicMovie } from '../models/movie'
 import { PlayerGame } from '../models/game'
 
 SplashScreen.preventAutoHideAsync()

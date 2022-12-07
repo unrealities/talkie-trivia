@@ -3,6 +3,7 @@ import * as WebBrowser from 'expo-web-browser'
 import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, View } from 'react-native'
 import { initializeApp } from 'firebase/app'
+import { addDoc, collection, getFirestore } from "firebase/firestore"
 import { getAnalytics } from 'firebase/analytics'
 import uuid from 'react-native-uuid'
 
@@ -20,6 +21,7 @@ https://docs.expo.dev/guides/using-firebase/
 https://blog.logrocket.com/integrating-firebase-authentication-expo-mobile-app/
 */
 const app = initializeApp(firebaseConfig)
+const db = getFirestore(app)
 const analytics = getAnalytics(app)
 WebBrowser.maybeCompleteAuthSession()
 
@@ -51,6 +53,17 @@ export default function App() {
     player: player,
     startDate: new Date,
   }
+
+  useEffect(() => {
+    async function updatePlayerGame() {
+      try {
+        const docRef = await addDoc(collection(db, 'main'), playerGame)
+        console.log("Document written with ID: ", docRef.id)
+      } catch (e) {
+        console.error("Error adding document: ", e)
+      }
+    }
+  })
 
   useEffect(() => {
     if (user) {
