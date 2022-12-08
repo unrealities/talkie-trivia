@@ -55,15 +55,17 @@ export default function App() {
   }
 
   useEffect(() => {
-    async function updatePlayerGame() {
+    const updatePlayerGame = async () => {
       try {
-        const docRef = await addDoc(collection(db, 'main'), playerGame)
+        // TODO: Below seems like a hacky way to get this to a plain JS object
+        const docRef = await addDoc(collection(db, 'main'), JSON.parse(JSON.stringify(playerGame)))
         console.log("Document written with ID: ", docRef.id)
       } catch (e) {
         console.error("Error adding document: ", e)
       }
     }
-  })
+    updatePlayerGame()
+  }, [])
 
   useEffect(() => {
     if (user) {
