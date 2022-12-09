@@ -13,6 +13,7 @@ export class PlayerGame {
     endDate: Date
     game: Game
     guesses: number[]
+    id: string
     player: Player
     startDate: Date
 }

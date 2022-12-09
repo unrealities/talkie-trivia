@@ -3,7 +3,7 @@ import * as WebBrowser from 'expo-web-browser'
 import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, View } from 'react-native'
 import { initializeApp } from 'firebase/app'
-import { addDoc, collection, getFirestore } from "firebase/firestore"
+import { doc, getFirestore, setDoc } from "firebase/firestore"
 import { getAnalytics } from 'firebase/analytics'
 import uuid from 'react-native-uuid'
 
@@ -50,6 +50,7 @@ export default function App() {
     endDate: new Date,
     game: game,
     guesses: [],
+    id: uuid.v4().toString(),
     player: player,
     startDate: new Date,
   }
@@ -58,14 +59,13 @@ export default function App() {
     const updatePlayerGame = async () => {
       try {
         // TODO: Below seems like a hacky way to get this to a plain JS object
-        const docRef = await addDoc(collection(db, 'main'), JSON.parse(JSON.stringify(playerGame)))
-        console.log("Document written with ID: ", docRef.id)
+        const docRef = await setDoc(doc(db, 'main', playerGame.id), JSON.parse(JSON.stringify(playerGame)))
       } catch (e) {
         console.error("Error adding document: ", e)
       }
     }
     updatePlayerGame()
-  }, [])
+  }, ['', playerGame])
 
   useEffect(() => {
     if (user) {
