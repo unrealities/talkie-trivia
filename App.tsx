@@ -3,7 +3,7 @@ import * as WebBrowser from 'expo-web-browser'
 import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, View } from 'react-native'
 import { initializeApp } from 'firebase/app'
-import { doc, getFirestore, setDoc } from "firebase/firestore"
+import { doc, getFirestore, setDoc } from 'firebase/firestore'
 import { getAnalytics } from 'firebase/analytics'
 import uuid from 'react-native-uuid'
 
@@ -65,7 +65,7 @@ export default function App() {
       }
     }
     updatePlayerGame()
-  }, ['', playerGame])
+  }, [])
 
   useEffect(() => {
     if (user) {

@@ -3,6 +3,8 @@ import { StyleSheet, View } from 'react-native'
 import ConfettiCannon from 'react-native-confetti-cannon'
 import { useFonts } from 'expo-font'
 import * as SplashScreen from 'expo-splash-screen'
+import { initializeApp } from 'firebase/app'
+import { doc, getFirestore, setDoc } from 'firebase/firestore'
 
 import CluesContainer from './clues'
 import GuessesContainer from './guesses'
@@ -12,8 +14,12 @@ import TitleHeader from './titleHeader'
 import { ResetContainer } from './reset'
 import { BasicMovie } from '../models/movie'
 import { PlayerGame } from '../models/game'
+import { firebaseConfig } from '../config/firebase'
 
 SplashScreen.preventAutoHideAsync()
+
+const app = initializeApp(firebaseConfig)
+const db = getFirestore(app)
 
 interface MovieContainerProps {
   movies: BasicMovie[]
@@ -47,6 +53,18 @@ const MoviesContainer = (props: MovieContainerProps) => {
       setEnableSubmit(false)
     }
   })
+
+  useEffect(() => {
+    const updatePlayerGame = async () => {
+      try {
+        // TODO: Below seems like a hacky way to get this to a plain JS object
+        const docRef = await setDoc(doc(db, 'main', playerGame.id), JSON.parse(JSON.stringify(playerGame)))
+      } catch (e) {
+        console.error("Error adding document: ", e)
+      }
+    }
+    updatePlayerGame()
+  }, [playerGame])
 
   if (!fontsLoaded) { return null }
 
