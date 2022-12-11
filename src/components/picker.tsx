@@ -118,10 +118,7 @@ const styles = StyleSheet.create({
         width: 300
     },
     buttonDisabled: {
-        backgroundColor: colors.tertiary,
-        borderRadius: 10,
-        padding: 10,
-        width: 300
+        display: 'none'
     },
     buttonText: {
         color: colors.secondary,
@@ -142,6 +139,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Arvo-Regular',
         maxWidth: 300,
         padding: 5,
+        textAlign: 'center',
         width: 300
     },
     pressableText: {
