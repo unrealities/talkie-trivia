@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         maxWidth: 40,
         paddingRight: 20,
-        textAlign: 'left'
+        textAlign: 'right'
     },
     guess: {
         color: colors.secondary,
