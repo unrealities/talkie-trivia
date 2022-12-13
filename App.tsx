@@ -64,10 +64,7 @@ export default function App() {
         console.error("Error adding document: ", e)
       }
     }
-    updatePlayerGame()
-  }, [])
-
-  useEffect(() => {
+    // TODO: set playerGame correctly
     if (user) {
       playerGame.player.id = '456'
       playerGame.player.name = user?.displayName ? user.displayName.toString() : 'unknown'
@@ -75,7 +72,9 @@ export default function App() {
       playerGame.player.id = uuid.v4().toString()
       playerGame.player.name = ''
     }
-  }, [user])
+    // TODO: update DB only if user is logged in
+    updatePlayerGame()
+  }, ['', user])
 
   return (
     <View style={styles.container}>
