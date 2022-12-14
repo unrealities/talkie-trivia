@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import ConfettiCannon from 'react-native-confetti-cannon'
 import { useFonts } from 'expo-font'
@@ -24,6 +24,7 @@ const db = getFirestore(app)
 interface MovieContainerProps {
   movies: BasicMovie[]
   playerGame: PlayerGame
+  updatePlayerGame: Dispatch<SetStateAction<PlayerGame>>
 }
 
 const MoviesContainer = (props: MovieContainerProps) => {
@@ -38,35 +39,34 @@ const MoviesContainer = (props: MovieContainerProps) => {
     }
   }, [fontsLoaded])
 
-  const [playerGame, setPlayerGame] = useState<PlayerGame>(props.playerGame)
-  const [enableSubmit, setEnableSubmit] = useState<boolean>(!playerGame.correctAnswer)
+  const [enableSubmit, setEnableSubmit] = useState<boolean>(!props.playerGame.correctAnswer)
   const [showModal, setShowModal] = useState<boolean>(false)
 
   const confetti = useRef<ConfettiCannon>(null)
 
   useEffect(() => {
-    if (playerGame.guesses.length > 4) {
+    if (props.playerGame.guesses.length > 4) {
       setEnableSubmit(false)
     }
-    if (playerGame.correctAnswer && showModal) {
+    if (props.playerGame.correctAnswer && showModal) {
       confetti.current?.start()
       setEnableSubmit(false)
     }
   })
 
   useEffect(() => {
-    const updatePlayerGame = async () => {
+    const setPlayerGame = async () => {
       try {
         // TODO: Below seems like a hacky way to get this to a plain JS object
-        const docRef = await setDoc(doc(db, 'main', playerGame.id), JSON.parse(JSON.stringify(playerGame)))
+        const docRef = await setDoc(doc(db, 'main', props.playerGame.id), JSON.parse(JSON.stringify(props.playerGame)))
       } catch (e) {
         console.error("Error adding document: ", e)
       }
     }
     //if (playerGame.player.name != '') {
-      updatePlayerGame()
+      setPlayerGame()
     //}
-  }, [playerGame])
+  }, [props.playerGame])
 
   if (!fontsLoaded) { return null }
 
@@ -74,27 +74,27 @@ const MoviesContainer = (props: MovieContainerProps) => {
     <View style={styles.container} onLayout={onLayoutRootView}>
       <TitleHeader />
       <CluesContainer
-        correctGuess={playerGame.correctAnswer}
-        guesses={playerGame.guesses}
-        summary={playerGame.game.movie.overview} />
+        correctGuess={props.playerGame.correctAnswer}
+        guesses={props.playerGame.guesses}
+        summary={props.playerGame.game.movie.overview} />
       <PickerContainer
         enableSubmit={enableSubmit}
-        playerGame={playerGame}
+        playerGame={props.playerGame}
         movies={props.movies}
         toggleModal={setShowModal}
         toggleSubmit={setEnableSubmit}
-        updatePlayerGame={setPlayerGame} />
+        updatePlayerGame={props.updatePlayerGame} />
       <GuessesContainer
-        guesses={playerGame.guesses}
-        movie={playerGame.game.movie}
+        guesses={props.playerGame.guesses}
+        movie={props.playerGame.game.movie}
         movies={props.movies} />
       <MovieModal
-        movie={playerGame.game.movie}
+        movie={props.playerGame.game.movie}
         show={showModal}
         toggleModal={setShowModal} />
       <ResetContainer
-        playerGame={playerGame}
-        updatePlayerGame={setPlayerGame} />
+        playerGame={props.playerGame}
+        updatePlayerGame={props.updatePlayerGame} />
       <ConfettiCannon
         autoStart={false}
         count={100}
