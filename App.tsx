@@ -63,16 +63,16 @@ export default function App() {
         console.error("Error adding document: ", e)
       }
     }
-    // TODO: set playerGame correctly
+
     if (user) {
+      // TODO: Set Player in DB
       pg.player.id = '456'
       pg.player.name = user?.displayName ? user.displayName.toString() : 'unknown'
+      updatePlayerGame()
     } else {
       pg.player.id = uuid.v4().toString()
       pg.player.name = ''
     }
-    // TODO: update DB only if user is logged in
-    updatePlayerGame()
   }, ['', user])
 
   return (
