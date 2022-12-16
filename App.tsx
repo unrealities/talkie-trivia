@@ -58,20 +58,31 @@ export default function App() {
       try {
         setPlayerGame(pg)
         // TODO: Below seems like a hacky way to get this to a plain JS object
-        const docRef = await setDoc(doc(db, 'main', playerGame.id), JSON.parse(JSON.stringify(playerGame)))
+        const docRef = await setDoc(doc(db, 'playerGames', playerGame.id), JSON.parse(JSON.stringify(playerGame)))
       } catch (e) {
         console.error("Error adding document: ", e)
       }
     }
 
+    const updatePlayer = async () => {
+      try {
+        // TODO: Below seems like a hacky way to get this to a plain JS object
+        const docRef = await setDoc(doc(db, 'players', playerGame.player.id), JSON.parse(JSON.stringify(playerGame.player)))
+      } catch (e) {
+        console.error("Error adding document: ", e)
+      }
+    }
+
+    // TODO: how to persist user information if already logged in?
     if (user) {
-      // TODO: Set Player in DB
-      pg.player.id = '456'
       pg.player.name = user?.displayName ? user.displayName.toString() : 'unknown'
+      setPlayerGame(pg)
       updatePlayerGame()
+      updatePlayer()
     } else {
       pg.player.id = uuid.v4().toString()
       pg.player.name = ''
+      setPlayerGame(pg)
     }
   }, ['', user])
 

@@ -58,7 +58,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
     const setPlayerGame = async () => {
       try {
         // TODO: Below seems like a hacky way to get this to a plain JS object
-        const docRef = await setDoc(doc(db, 'main', props.playerGame.id), JSON.parse(JSON.stringify(props.playerGame)))
+        const docRef = await setDoc(doc(db, 'playerGames', props.playerGame.id), JSON.parse(JSON.stringify(props.playerGame)))
       } catch (e) {
         console.error("Error adding document: ", e)
       }
