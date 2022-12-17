@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import * as WebBrowser from 'expo-web-browser'
+import * as SecureStore from 'expo-secure-store'
 import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, View } from 'react-native'
 import { initializeApp } from 'firebase/app'
@@ -20,6 +21,19 @@ const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 const analytics = getAnalytics(app)
 WebBrowser.maybeCompleteAuthSession()
+
+async function save(key, value) {
+  await SecureStore.setItemAsync(key, value)
+}
+
+async function getValueFor(key) {
+  let result = await SecureStore.getItemAsync(key)
+  if (result) {
+    alert("🔐 Here's your value 🔐 \n" + result)
+  } else {
+    alert('No values stored under that key.')
+  }
+}
 
 export default function App() {
   // init user
