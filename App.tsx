@@ -22,16 +22,19 @@ const db = getFirestore(app)
 const analytics = getAnalytics(app)
 WebBrowser.maybeCompleteAuthSession()
 
-async function save(key, value) {
-  await SecureStore.setItemAsync(key, value)
+const userID = 'userID'
+const noUserID = ''
+
+async function saveUserID(id:string) {
+  await SecureStore.setItemAsync(userID, id)
 }
 
-async function getValueFor(key) {
-  let result = await SecureStore.getItemAsync(key)
-  if (result) {
-    alert("🔐 Here's your value 🔐 \n" + result)
+async function getUserID() {
+  let id = await SecureStore.getItemAsync(userID)
+  if (id) {
+    return id
   } else {
-    alert('No values stored under that key.')
+    return noUserID
   }
 }
 
@@ -86,6 +89,9 @@ export default function App() {
         console.error("Error adding document: ", e)
       }
     }
+
+    // TODO: attempt to fetch local user
+    let userID = getUserID()
 
     // TODO: how to persist user information if already logged in?
     if (user) {
