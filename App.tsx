@@ -25,7 +25,7 @@ WebBrowser.maybeCompleteAuthSession()
 const userID = 'userID'
 const noUserID = ''
 
-async function saveUserID(id:string) {
+async function setUserID(id:string) {
   await SecureStore.setItemAsync(userID, id)
 }
 
@@ -102,6 +102,7 @@ export default function App() {
     } else {
       pg.player.id = uuid.v4().toString()
       pg.player.name = ''
+      setUserID(pg.player.id)
       setPlayerGame(pg)
     }
   }, ['', user])
