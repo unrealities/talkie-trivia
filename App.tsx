@@ -23,9 +23,9 @@ const analytics = getAnalytics(app)
 WebBrowser.maybeCompleteAuthSession()
 
 const userID = 'userID'
-const noUserID = ''
+const { user } = useAuthentication()
 
-async function setUserID(id:string) {
+async function setUserID(id: string) {
   await SecureStore.setItemAsync(userID, id)
 }
 
@@ -34,17 +34,13 @@ async function getUserID() {
   if (id) {
     return id
   } else {
-    return noUserID
+    let newUserID = uuid.v4().toString()
+    setUserID(newUserID)
+    return newUserID
   }
 }
 
 export default function App() {
-  // init user
-  const player = new Player()
-  player.id = ''
-  player.name = ''
-  const { user } = useAuthentication()
-
   // init new movie
   let movies: Movie[] = require('./data/popularMovies.json')
   let basicMovies: BasicMovie[] = require('./data/basicMovies.json')
@@ -57,15 +53,6 @@ export default function App() {
     guessesMax: 5,
     id: uuid.v4().toString(),
     movie: newMovie
-  }
-  let pg: PlayerGame = {
-    correctAnswer: false,
-    endDate: new Date,
-    game: game,
-    guesses: [],
-    id: uuid.v4().toString(),
-    player: player,
-    startDate: new Date,
   }
 
   const [playerGame, setPlayerGame] = useState<PlayerGame>(pg)
@@ -90,8 +77,19 @@ export default function App() {
       }
     }
 
-    // TODO: attempt to fetch local user
-    let userID = getUserID()
+    const player = new Player()
+    player.id = getUserID()
+    player.name = ''
+
+    let pg: PlayerGame = {
+      correctAnswer: false,
+      endDate: new Date,
+      game: game,
+      guesses: [],
+      id: uuid.v4().toString(),
+      player: player,
+      startDate: new Date,
+    }
 
     // TODO: how to persist user information if already logged in?
     if (user) {
@@ -100,9 +98,6 @@ export default function App() {
       updatePlayerGame()
       updatePlayer()
     } else {
-      pg.player.id = uuid.v4().toString()
-      pg.player.name = ''
-      setUserID(pg.player.id)
       setPlayerGame(pg)
     }
   }, ['', user])
