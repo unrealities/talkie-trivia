@@ -23,7 +23,6 @@ const analytics = getAnalytics(app)
 WebBrowser.maybeCompleteAuthSession()
 
 const userID = 'userID'
-const { user } = useAuthentication()
 
 async function setUserID(id: string) {
   await SecureStore.setItemAsync(userID, id)
@@ -41,6 +40,8 @@ async function getUserID() {
 }
 
 export default function App() {
+  const { user } = useAuthentication()
+
   // init new movie
   let movies: Movie[] = require('./data/popularMovies.json')
   let basicMovies: BasicMovie[] = require('./data/basicMovies.json')
@@ -53,6 +54,22 @@ export default function App() {
     guessesMax: 5,
     id: uuid.v4().toString(),
     movie: newMovie
+  }
+
+  const player = new Player()
+  getUserID().then(id => {
+    player.id = id
+    player.name = ''
+  })
+
+  let pg: PlayerGame = {
+    correctAnswer: false,
+    endDate: new Date,
+    game: game,
+    guesses: [],
+    id: uuid.v4().toString(),
+    player: player,
+    startDate: new Date,
   }
 
   const [playerGame, setPlayerGame] = useState<PlayerGame>(pg)
@@ -75,20 +92,6 @@ export default function App() {
       } catch (e) {
         console.error("Error adding document: ", e)
       }
-    }
-
-    const player = new Player()
-    player.id = getUserID()
-    player.name = ''
-
-    let pg: PlayerGame = {
-      correctAnswer: false,
-      endDate: new Date,
-      game: game,
-      guesses: [],
-      id: uuid.v4().toString(),
-      player: player,
-      startDate: new Date,
     }
 
     // TODO: how to persist user information if already logged in?
