@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import * as WebBrowser from 'expo-web-browser'
-import * as SecureStore from 'expo-secure-store'
 import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, View } from 'react-native'
 import { initializeApp } from 'firebase/app'
@@ -16,28 +15,12 @@ import { Game, PlayerGame } from './src/models/game'
 import { colors } from './src/styles/global'
 import { firebaseConfig } from './src/config/firebase'
 import { useAuthentication } from './src/utils/hooks/useAuthentication'
+import { getUserID } from './src/utils/hooks/localStore'
 
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 const analytics = getAnalytics(app)
 WebBrowser.maybeCompleteAuthSession()
-
-const userID = 'userID'
-
-async function setUserID(id: string) {
-  await SecureStore.setItemAsync(userID, id)
-}
-
-async function getUserID() {
-  let id = await SecureStore.getItemAsync(userID)
-  if (id) {
-    return id
-  } else {
-    let newUserID = uuid.v4().toString()
-    setUserID(newUserID)
-    return newUserID
-  }
-}
 
 export default function App() {
   const { user } = useAuthentication()
@@ -96,7 +79,7 @@ export default function App() {
 
     // TODO: how to persist user information if already logged in?
     if (user) {
-      pg.player.name = user?.displayName ? user.displayName.toString() : 'unknown'
+      pg.player.name = user?.displayName ? user.displayName.toString() : ''
       setPlayerGame(pg)
       updatePlayerGame()
       updatePlayer()
