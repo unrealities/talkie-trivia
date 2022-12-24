@@ -64,7 +64,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
       }
     }
     //if (playerGame.player.name != '') {
-      setPlayerGame()
+    setPlayerGame()
     //}
   }, [props.playerGame])
 
