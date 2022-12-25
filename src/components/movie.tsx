@@ -63,9 +63,9 @@ const MoviesContainer = (props: MovieContainerProps) => {
         console.error("Error adding document: ", e)
       }
     }
-    //if (playerGame.player.name != '') {
-    setPlayerGame()
-    //}
+    if (props.playerGame.player.name != '') {
+      setPlayerGame()
+    }
   }, [props.playerGame])
 
   if (!fontsLoaded) { return null }
