@@ -30,6 +30,7 @@ export const ResetContainer = (props: ResetContainerProps) => {
       endDate: new Date,
       game: game,
       guesses: [],
+      id: uuid.v4().toString(),
       player: props.playerGame.player,
       startDate: new Date, 
     }
@@ -48,8 +49,9 @@ export const ResetContainer = (props: ResetContainerProps) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 8,
-        justifyContent: 'center'
+        justifyContent: 'center',
+        maxHeight: 50,
+        padding: 8
     },
     text: {
         color: colors.secondary,
