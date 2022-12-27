@@ -50,7 +50,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        maxHeight: 50,
         padding: 8
     },
     text: {

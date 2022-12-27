@@ -88,13 +88,13 @@ const MoviesContainer = (props: MovieContainerProps) => {
         guesses={props.playerGame.guesses}
         movie={props.playerGame.game.movie}
         movies={props.movies} />
+      <ResetContainer
+        playerGame={props.playerGame}
+        updatePlayerGame={props.updatePlayerGame} />
       <MovieModal
         movie={props.playerGame.game.movie}
         show={showModal}
         toggleModal={setShowModal} />
-      <ResetContainer
-        playerGame={props.playerGame}
-        updatePlayerGame={props.updatePlayerGame} />
       <ConfettiCannon
         autoStart={false}
         count={100}
