@@ -49,6 +49,8 @@ const styles = StyleSheet.create({
     button: {
         backgroundColor: colors.primary,
         borderRadius: 10,
+        flex: 1,
+        maxHeight: 40,
         padding: 10,
         width: 300
     },

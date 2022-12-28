@@ -7,7 +7,6 @@ import { doc, getFirestore, setDoc } from 'firebase/firestore'
 import { getAnalytics } from 'firebase/analytics'
 import uuid from 'react-native-uuid'
 
-import GoogleLogin from './src/components/googleLogin'
 import MoviesContainer from './src/components/movie'
 import Player from './src/models/player'
 import { BasicMovie, Movie } from './src/models/movie'
@@ -91,7 +90,6 @@ export default function App() {
   return (
     <View style={styles.container}>
       <MoviesContainer movies={basicMovies} playerGame={playerGame} updatePlayerGame={setPlayerGame} />
-      <GoogleLogin player={playerGame.player} />
       <StatusBar style="auto" />
     </View>
   )
