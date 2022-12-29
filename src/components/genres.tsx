@@ -28,6 +28,8 @@ const Genres = (props: GenresProps) => {
 
 const styles = StyleSheet.create({
     GenreContainer: {
+        alignItems: 'center',
+        alignSelf: 'center',
         backgroundColor: colors.tertiary,
         borderRadius: 8,
         flex: 1,
@@ -46,11 +48,13 @@ const styles = StyleSheet.create({
         minWidth: 80
     },
     GenreText: {
+        alignItems: 'center',
+        alignSelf: 'center',
         color: colors.secondary,
+        flex: 1,
         fontFamily: 'Arvo-Bold',
         fontSize: 12,
-        textAlign: 'center',
-        textAlignVertical: 'center'
+        textAlign: 'center'
     }
 })
 
