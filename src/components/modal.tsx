@@ -38,7 +38,7 @@ const MovieModal = (props: MovieModalProps) => {
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: colors.secondary,
+        backgroundColor: colors.primary,
         borderColor: colors.primary,
         borderRadius: 20,
         borderWidth: 4,
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
     },
     textStyle: {
-        color: colors.primary,
+        color: colors.secondary,
         fontFamily: 'Arvo-Bold',
         textAlign: 'center',
     }
