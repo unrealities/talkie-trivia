@@ -37,7 +37,7 @@ const PickerContainer = (props: PickerContainerProps) => {
         }
     }
 
-    useEffect(() => { selectedMovieID === 0 ? props.toggleSubmit(false) : props.toggleSubmit(true) })
+    useEffect(() => { selectedMovieID === 0 ? props.toggleSubmit(false) : props.toggleSubmit(true) }, [selectedMovieID])
     useEffect(() => {
         setFoundMovies(props.movies)
         setSelectedMovieID(0)

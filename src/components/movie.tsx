@@ -46,16 +46,6 @@ const MoviesContainer = (props: MovieContainerProps) => {
   const confetti = useRef<ConfettiCannon>(null)
 
   useEffect(() => {
-    if (props.playerGame.guesses.length > 4) {
-      setEnableSubmit(false)
-    }
-    if (props.playerGame.correctAnswer && showModal) {
-      confetti.current?.start()
-      setEnableSubmit(false)
-    }
-  })
-
-  useEffect(() => {
     const setPlayerGame = async () => {
       try {
         // TODO: Below seems like a hacky way to get this to a plain JS object
@@ -64,6 +54,15 @@ const MoviesContainer = (props: MovieContainerProps) => {
         console.error("Error adding document: ", e)
       }
     }
+
+    if (props.playerGame.guesses.length > 4) {
+      setEnableSubmit(false)
+    }
+    if (props.playerGame.correctAnswer && showModal) {
+      confetti.current?.start()
+      setEnableSubmit(false)
+    }
+
     if (props.playerGame.player.name != '') {
       setPlayerGame()
     }
