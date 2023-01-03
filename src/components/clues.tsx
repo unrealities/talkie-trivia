@@ -26,7 +26,9 @@ const CluesContainer = (props: CluesProps) => {
             useNativeDriver: false
         }
     )
-    useEffect(() => { fadeAnimTiming.start(() => { fadeAnimTiming.reset() }) }, [props.guesses])
+    useEffect(() => {
+        fadeAnimTiming.start(() => { fadeAnimTiming.reset() })
+    }, [props.guesses])
 
     let splits = 5
     let summarySplit = props.summary.split(' ')

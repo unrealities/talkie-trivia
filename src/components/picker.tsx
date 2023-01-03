@@ -37,7 +37,10 @@ const PickerContainer = (props: PickerContainerProps) => {
         }
     }
 
-    useEffect(() => { selectedMovieID === 0 ? props.toggleSubmit(false) : props.toggleSubmit(true) }, [selectedMovieID])
+    useEffect(() => {
+        selectedMovieID === 0 ? props.toggleSubmit(false) : props.toggleSubmit(true)
+    }, [selectedMovieID])
+
     useEffect(() => {
         setFoundMovies(props.movies)
         setSelectedMovieID(0)
@@ -45,7 +48,10 @@ const PickerContainer = (props: PickerContainerProps) => {
         setSearchText('')
         setInputActive(true)
     }, [props.playerGame.guesses])
-    useEffect(() => { filter(searchText) }, [searchText])
+
+    useEffect(() => {
+        filter(searchText)
+    }, [searchText])
 
     const filter = (text) => {
         setSearchText(text)

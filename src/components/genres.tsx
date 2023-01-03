@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     GenreContainer: {
         alignItems: 'center',
         alignSelf: 'center',
-        backgroundColor: colors.tertiary,
+        backgroundColor: colors.quaternary,
         borderRadius: 8,
         flex: 1,
         margin: 6,

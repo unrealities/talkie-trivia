@@ -28,6 +28,7 @@ export default function App() {
   let movies: Movie[] = require('./data/popularMovies.json')
   let basicMovies: BasicMovie[] = require('./data/basicMovies.json')
   let newMovie = movies[Math.floor(Math.random() * movies.length)]
+  const [movie] = useState<Movie>(newMovie)
 
   // init new game
   // TODO: This should be initiated separately on a global level for all users
@@ -35,7 +36,7 @@ export default function App() {
     date: new Date,
     guessesMax: 5,
     id: uuid.v4().toString(),
-    movie: newMovie
+    movie: movie
   }
 
   const player = new Player()
@@ -61,7 +62,7 @@ export default function App() {
       try {
         setPlayerGame(pg)
         // TODO: Below seems like a hacky way to get this to a plain JS object
-        const docRef = await setDoc(doc(db, 'playerGames', playerGame.id), JSON.parse(JSON.stringify(playerGame)))
+        await setDoc(doc(db, 'playerGames', playerGame.id), JSON.parse(JSON.stringify(playerGame)))
       } catch (e) {
         console.error("Error adding document: ", e)
       }
@@ -70,13 +71,12 @@ export default function App() {
     const updatePlayer = async () => {
       try {
         // TODO: Below seems like a hacky way to get this to a plain JS object
-        const docRef = await setDoc(doc(db, 'players', playerGame.player.id), JSON.parse(JSON.stringify(playerGame.player)))
+        await setDoc(doc(db, 'players', playerGame.player.id), JSON.parse(JSON.stringify(playerGame.player)))
       } catch (e) {
         console.error("Error adding document: ", e)
       }
     }
 
-    // TODO: how to persist user information if already logged in?
     if (user) {
       pg.player.name = user?.displayName ? user.displayName.toString() : ''
       setPlayerGame(pg)
@@ -85,7 +85,7 @@ export default function App() {
     } else {
       setPlayerGame(pg)
     }
-  }, ['', user])
+  }, [user])
 
   return (
     <View style={styles.container}>
