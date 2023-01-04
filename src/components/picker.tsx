@@ -134,10 +134,10 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        justifyContent: 'center',
         minHeight: 130
     },
     input: {
+        alignSelf: 'flex-start',
         borderColor: colors.primary,
         borderRadius: 10,
         borderWidth: 2,
@@ -159,8 +159,9 @@ const styles = StyleSheet.create({
     },
     resultsShow: {
         flex: 1,
-        maxHeight: 80,
-        maxWidth: 280
+        maxHeight: 82,
+        maxWidth: 280,
+        minHeight: 82
     },
     text: {
         fontFamily: 'Arvo-Regular',
