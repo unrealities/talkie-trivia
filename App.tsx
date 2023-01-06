@@ -4,7 +4,7 @@ import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, View } from 'react-native'
 import { initializeApp } from 'firebase/app'
 import { doc, getFirestore, setDoc } from 'firebase/firestore'
-import { getAnalytics } from 'firebase/analytics'
+import { getAnalytics, isSupported } from 'firebase/analytics'
 import uuid from 'react-native-uuid'
 
 import MoviesContainer from './src/components/movie'
@@ -18,7 +18,7 @@ import { getUserID } from './src/utils/hooks/localStore'
 
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
-const analytics = getAnalytics(app)
+const analytics = isSupported().then(yes => yes ? getAnalytics(app) : null)
 WebBrowser.maybeCompleteAuthSession()
 
 export default function App() {
