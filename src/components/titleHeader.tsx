@@ -21,9 +21,11 @@ const styles = StyleSheet.create({
         borderStyle: 'solid',
         flex: 1,
         justifyContent: 'center',
-        padding: 6,
-        marginTop: 12,
-        minHeight: 30,
+        paddingBottom: 6,
+        paddingTop: 6,
+        marginTop: 20,
+        maxHeight: 75,
+        minHeight: 60,
         minWidth: 300
     },
     header: {
