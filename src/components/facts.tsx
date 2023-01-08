@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import * as Linking from 'expo-linking'
 import Actors from './actors'
 import Genres from './genres'
@@ -19,14 +19,16 @@ const Facts = (props: FactsProps) => {
             <TouchableOpacity onPress={() => { Linking.openURL(`${imdbURI}${movie.imdb_id}`) }}>
                 <Text style={styles.header}>{movie.title}</Text>
             </TouchableOpacity>
-            <Text style={styles.subHeader}>{movie.tagline}</Text>
-            <Image
-                source={{ uri: `${imageURI}${movie.poster_path}` }}
-                style={{ width: '80%', height: '60%' }}
-            />
-            <Text style={styles.text}>Directed by {movie.director.name}</Text>
-            <Actors actors={movie.actors} />
-            <Genres genres={movie.genres} />
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+                <Text style={styles.subHeader}>{movie.tagline}</Text>
+                <Genres genres={movie.genres} />
+                <Image
+                    source={{ uri: `${imageURI}${movie.poster_path}` }}
+                    style={{ width: '80%', height: '60%' }}
+                />
+                <Text style={styles.text}>Directed by {movie.director.name}</Text>
+                <Actors actors={movie.actors} />
+            </ScrollView>
         </View>
     )
 }
@@ -47,11 +49,19 @@ const styles = StyleSheet.create({
         paddingBottom: 6,
         textAlign: 'center'
     },
+    scrollContainer: {
+        alignItems: 'center',
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'space-evenly',
+        paddingBottom: 20,
+        width: 320
+    },
     subHeader: {
         flexWrap: 'wrap',
         fontFamily: 'Arvo-Italic',
         fontSize: 14,
-        paddingBottom: 20,
+        paddingBottom: 8,
         textAlign: 'center'
     },
     text: {
