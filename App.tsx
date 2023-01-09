@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import * as WebBrowser from 'expo-web-browser'
-import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, View } from 'react-native'
+
+import * as Network from 'expo-network'
+import { StatusBar } from 'expo-status-bar'
+import * as WebBrowser from 'expo-web-browser'
+
 import { initializeApp } from 'firebase/app'
 import { doc, getFirestore, setDoc } from 'firebase/firestore'
 import { getAnalytics, isSupported } from 'firebase/analytics'
@@ -74,6 +77,15 @@ export default function App() {
         await setDoc(doc(db, 'players', playerGame.player.id), JSON.parse(JSON.stringify(playerGame.player)))
       } catch (e) {
         console.error("Error adding document: ", e)
+      }
+    }
+
+    const networkConnected = async () => {
+      try {
+        const networkState = await Network.getNetworkStateAsync()
+        console.log(networkState.isConnected)
+      } catch (e) {
+        console.error("No network connection")
       }
     }
 
