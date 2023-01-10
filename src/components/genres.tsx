@@ -43,7 +43,8 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         flexWarp: 'wrap',
-        margin: 10,
+        marginBottom: 10,
+        marginTop: 10,
         minHeight: 20,
         minWidth: 80
     },
