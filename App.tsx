@@ -59,6 +59,23 @@ export default function App() {
   }
 
   const [playerGame, setPlayerGame] = useState<PlayerGame>(pg)
+  const [isNetworkConnected, setIsNetworkConnected] = useState<boolean>(true)
+
+  useEffect(() => {
+    const networkConnected = async () => {
+      try {
+        await Network.getNetworkStateAsync().then((networkState) => {
+          if (networkState.isConnected) {
+            setIsNetworkConnected(true)
+            console.log(networkState.isConnected)
+          }
+        })
+      } catch (e) {
+        console.error("No network connection")
+      }
+    }
+    networkConnected()
+  }, [])
 
   useEffect(() => {
     const updatePlayerGame = async () => {
@@ -77,15 +94,6 @@ export default function App() {
         await setDoc(doc(db, 'players', playerGame.player.id), JSON.parse(JSON.stringify(playerGame.player)))
       } catch (e) {
         console.error("Error adding document: ", e)
-      }
-    }
-
-    const networkConnected = async () => {
-      try {
-        const networkState = await Network.getNetworkStateAsync()
-        console.log(networkState.isConnected)
-      } catch (e) {
-        console.error("No network connection")
       }
     }
 
