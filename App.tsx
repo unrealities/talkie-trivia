@@ -75,7 +75,7 @@ export default function App() {
       }
     }
     networkConnected()
-  }, [])
+  })
 
   useEffect(() => {
     const updatePlayerGame = async () => {
@@ -109,7 +109,11 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <MoviesContainer movies={basicMovies} playerGame={playerGame} updatePlayerGame={setPlayerGame} />
+      <MoviesContainer
+        isNetworkConnected={isNetworkConnected}
+        movies={basicMovies}
+        playerGame={playerGame}
+        updatePlayerGame={setPlayerGame} />
       <StatusBar style="auto" />
     </View>
   )

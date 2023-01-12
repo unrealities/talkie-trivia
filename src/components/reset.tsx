@@ -11,7 +11,7 @@ export interface ResetContainerProps {
     updatePlayerGame: Dispatch<SetStateAction<PlayerGame>>
 }
 
-export const ResetContainer = (props: ResetContainerProps) => {
+const ResetContainer = (props: ResetContainerProps) => {
     let movies: Movie[] = require('../../data/popularMovies.json')
 
     let newMovie = movies[Math.floor(Math.random() * movies.length)]
@@ -59,3 +59,5 @@ const styles = StyleSheet.create({
         fontSize: 20
     }
 })
+
+export default ResetContainer

@@ -8,11 +8,12 @@ import { doc, getFirestore, setDoc } from 'firebase/firestore'
 
 import CluesContainer from './clues'
 import GuessesContainer from './guesses'
+import NetworkContainer from './network'
 import MovieModal from './modal'
 import PickerContainer from './picker'
 import TitleHeader from './titleHeader'
 import GoogleLogin from './googleLogin'
-import { ResetContainer } from './reset'
+import ResetContainer from './reset'
 import { BasicMovie } from '../models/movie'
 import { PlayerGame } from '../models/game'
 import { firebaseConfig } from '../config/firebase'
@@ -23,6 +24,7 @@ const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 
 interface MovieContainerProps {
+  isNetworkConnected: boolean
   movies: BasicMovie[]
   playerGame: PlayerGame
   updatePlayerGame: Dispatch<SetStateAction<PlayerGame>>
@@ -72,6 +74,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
 
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
+      <NetworkContainer isConnected={props.isNetworkConnected} />
       <TitleHeader />
       <CluesContainer
         correctGuess={props.playerGame.correctAnswer}
