@@ -65,7 +65,7 @@ export default function App() {
     const networkConnected = async () => {
       try {
         await Network.getNetworkStateAsync().then((networkState) => {
-          if (networkState.isConnected) {
+          if (networkState.isInternetReachable) {
             setIsNetworkConnected(true)
             console.log(networkState.isConnected)
           }

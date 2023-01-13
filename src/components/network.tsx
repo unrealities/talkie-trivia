@@ -18,7 +18,7 @@ const NetworkContainer = (props: NetworkContainerProps) => {
     })
 
     return (
-        <View style={styles.container}>
+        <View style={isConnected ? styles.containerConnected : styles.containerNotConnected}>
             <Text style={isConnected ? styles.connected : styles.notConnected}>Network is {text}</Text>
         </View>
     )
@@ -26,7 +26,22 @@ const NetworkContainer = (props: NetworkContainerProps) => {
 
 
 const styles = StyleSheet.create({
-    container: {
+    containerConnected: {
+        borderBottomColor: colors.primary,
+        borderBottomWidth: 2,
+        borderTopColor: colors.primary,
+        borderTopWidth: 2,
+        borderStyle: 'solid',
+        flex: 1,
+        justifyContent: 'center',
+        paddingBottom: 4,
+        paddingTop: 4,
+        marginTop: 20,
+        maxHeight: 75,
+        minHeight: 20,
+        minWidth: 300
+    },
+    containerNotConnected: {
         borderBottomColor: colors.quaternary,
         borderBottomWidth: 2,
         borderTopColor: colors.quaternary,
