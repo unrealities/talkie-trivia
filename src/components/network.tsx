@@ -24,7 +24,6 @@ const NetworkContainer = (props: NetworkContainerProps) => {
     )
 }
 
-
 const styles = StyleSheet.create({
     containerConnected: {
         borderBottomColor: colors.primary,

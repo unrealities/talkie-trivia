@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction} from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import uuid from 'react-native-uuid'
 
@@ -19,20 +19,20 @@ const ResetContainer = (props: ResetContainerProps) => {
     // init new game
     // TODO: This should be initiated separately on a global level for all users
     let game: Game = {
-      date: new Date,
-      guessesMax: 5,
-      id: uuid.v4().toString(),
-      movie: newMovie
-    } 
-    // TODO: pass in player here
+        date: new Date,
+        guessesMax: 5,
+        id: uuid.v4().toString(),
+        movie: newMovie
+    }
+
     let playerGame: PlayerGame = {
-      correctAnswer: false,
-      endDate: new Date,
-      game: game,
-      guesses: [],
-      id: uuid.v4().toString(),
-      player: props.playerGame.player,
-      startDate: new Date, 
+        correctAnswer: false,
+        endDate: new Date,
+        game: game,
+        guesses: [],
+        id: uuid.v4().toString(),
+        player: props.playerGame.player,
+        startDate: new Date,
     }
 
     return (
