@@ -4,6 +4,7 @@ import { BasicMovie, Movie } from '../models/movie'
 
 import { colors } from '../styles/global'
 
+// TODO: Final guess is not displaying if correct answer is given
 interface GuessesContainerProps {
     guesses: number[]
     movie: Movie

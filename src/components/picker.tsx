@@ -21,6 +21,7 @@ const PickerContainer = (props: PickerContainerProps) => {
     const [selectedMovieTitle, setSelectedMovieTitle] = useState<string>(defaultButtonText)
     const [searchText, setSearchText] = useState<string>('')
 
+    // TODO: Do not update playerGame until guess is confirmed
     let onPressCheck = () => {
         if (selectedMovieID > 0) {
             props.updatePlayerGame({

@@ -28,8 +28,10 @@ const CluesContainer = (props: CluesProps) => {
     )
     useEffect(() => {
         fadeAnimTiming.start(() => { fadeAnimTiming.reset() })
-    }, [props.guesses])
+    }, [props.guesses.length])
 
+
+    // TODO: summary splitting should be done before the app loads and just pulled from a datastore
     let splits = 5
     let summarySplit = props.summary.split(' ')
     let summarySubLength = Math.floor(summarySplit.length / splits)
