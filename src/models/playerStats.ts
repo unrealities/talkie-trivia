@@ -1,12 +1,9 @@
+import Player from './player'
+
 export default class PlayerStats {
     currentStreak: number
-    games: number
+    games: number // number of games attempted (at least one guess made)
     maxStreak: number
-    win1: number
-    win2: number
-    win3: number
-    win4: number
-    win5: number
-    wins: number
-    winPercentage: number
+    player: Player
+    wins: number[]  // wins[0] = win on first guess, win[4] = win on fifth guess, sum(wins) = total wins
 }
