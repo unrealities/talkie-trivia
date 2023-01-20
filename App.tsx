@@ -6,12 +6,13 @@ import { StatusBar } from 'expo-status-bar'
 import * as WebBrowser from 'expo-web-browser'
 
 import { initializeApp } from 'firebase/app'
-import { doc, getFirestore, setDoc } from 'firebase/firestore'
+import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
 import { getAnalytics, isSupported } from 'firebase/analytics'
 import uuid from 'react-native-uuid'
 
 import MoviesContainer from './src/components/movie'
 import Player from './src/models/player'
+import PlayerStats from './src/models/playerStats'
 import { BasicMovie, Movie } from './src/models/movie'
 import { Game, PlayerGame } from './src/models/game'
 import { colors } from './src/styles/global'
@@ -58,6 +59,14 @@ export default function App() {
     startDate: new Date,
   }
 
+  let ps: PlayerStats = {
+    currentStreak: 0,
+    games: 1,
+    maxStreak: 0,
+    player: player,
+    wins: [0, 0, 0, 0, 0]
+  }
+
   const [playerGame, setPlayerGame] = useState<PlayerGame>(pg)
   const [isNetworkConnected, setIsNetworkConnected] = useState<boolean>(true)
 
@@ -90,6 +99,15 @@ export default function App() {
       try {
         // TODO: Below seems like a hacky way to get this to a plain JS object
         await setDoc(doc(db, 'players', playerGame.player.id), JSON.parse(JSON.stringify(playerGame.player)))
+      } catch (e) {
+        console.error("Error adding document: ", e)
+      }
+    }
+
+    // TODO: fetch playerStats
+    const getPlayer = async () => {
+      try {
+        await getDoc(doc(db, 'playerStats',))
       } catch (e) {
         console.error("Error adding document: ", e)
       }
