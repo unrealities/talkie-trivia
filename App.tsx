@@ -68,6 +68,7 @@ export default function App() {
   }
 
   const [playerGame, setPlayerGame] = useState<PlayerGame>(pg)
+  const [playerStats, setPlayerStats] = useState<PlayerStats>(ps)
   const [isNetworkConnected, setIsNetworkConnected] = useState<boolean>(true)
 
   useEffect(() => {
@@ -105,13 +106,23 @@ export default function App() {
     }
 
     // TODO: fetch playerStats
-    const getPlayer = async () => {
+    const getPlayerStats = async () => {
       try {
-        await getDoc(doc(db, 'playerStats',))
+        const docRef = doc(db, 'playerStats', playerGame.player.id)
+        const docSnap = await getDoc(docRef)
+
+        if (docSnap.exists()) {
+          const dbPlayerStats = docSnap.data() as PlayerStats
+          setPlayerStats(dbPlayerStats)
+        }
+        // TODO: Below seems like a hacky way to get this to a plain JS object
+        await setDoc(doc(db, 'playerStats', playerGame.player.id), JSON.parse(JSON.stringify(playerStats)))
       } catch (e) {
         console.error("Error adding document: ", e)
       }
     }
+
+    getPlayerStats()
 
     if (user) {
       pg.player.name = user?.displayName ? user.displayName.toString() : ''
