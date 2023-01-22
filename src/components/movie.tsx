@@ -16,6 +16,7 @@ import GoogleLogin from './googleLogin'
 import ResetContainer from './reset'
 import { BasicMovie } from '../models/movie'
 import { PlayerGame } from '../models/game'
+import PlayerStats from '../models/playerStats'
 import { firebaseConfig } from '../config/firebase'
 
 SplashScreen.preventAutoHideAsync()
@@ -27,6 +28,7 @@ interface MovieContainerProps {
   isNetworkConnected: boolean
   movies: BasicMovie[]
   playerGame: PlayerGame
+  playerStats: PlayerStats
   updatePlayerGame: Dispatch<SetStateAction<PlayerGame>>
 }
 
@@ -57,11 +59,31 @@ const MoviesContainer = (props: MovieContainerProps) => {
       }
     }
 
+    const setPlayerStats = async (correctAnswer: boolean) => {
+      let ps = props.playerStats
+      
+      // TODO: update playerStats
+      if (correctAnswer) {
+
+      } else {
+
+      }
+
+      try {
+        // TODO: Below seems like a hacky way to get this to a plain JS object
+        const docRef = await setDoc(doc(db, 'playerStats', props.playerGame.player.id), JSON.parse(JSON.stringify(ps)))
+      } catch (e) {
+        console.error("Error adding document: ", e)
+      }
+    }
+
     if (props.playerGame.guesses.length > 4) {
+      setPlayerStats(false)
       setEnableSubmit(false)
     }
     if (props.playerGame.correctAnswer && showModal) {
       confetti.current?.start()
+      setPlayerStats(true)
       setEnableSubmit(false)
     }
 

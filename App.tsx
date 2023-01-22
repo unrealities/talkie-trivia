@@ -106,7 +106,7 @@ export default function App() {
     }
 
     // TODO: fetch playerStats
-    const getPlayerStats = async () => {
+    const updatePlayerStats = async () => {
       try {
         const docRef = doc(db, 'playerStats', playerGame.player.id)
         const docSnap = await getDoc(docRef)
@@ -122,7 +122,7 @@ export default function App() {
       }
     }
 
-    getPlayerStats()
+    updatePlayerStats()
 
     if (user) {
       pg.player.name = user?.displayName ? user.displayName.toString() : ''
@@ -140,6 +140,7 @@ export default function App() {
         isNetworkConnected={isNetworkConnected}
         movies={basicMovies}
         playerGame={playerGame}
+        playerStats={playerStats}
         updatePlayerGame={setPlayerGame} />
       <StatusBar style="auto" />
     </View>
