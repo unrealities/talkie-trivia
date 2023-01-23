@@ -113,6 +113,7 @@ export default function App() {
 
         if (docSnap.exists()) {
           const dbPlayerStats = docSnap.data() as PlayerStats
+          dbPlayerStats.games++
           setPlayerStats(dbPlayerStats)
         }
         // TODO: Below seems like a hacky way to get this to a plain JS object

@@ -64,9 +64,13 @@ const MoviesContainer = (props: MovieContainerProps) => {
       
       // TODO: update playerStats
       if (correctAnswer) {
-
+        ps.currentStreak++
+        if (ps.currentStreak > ps.maxStreak) {
+          ps.maxStreak = ps.currentStreak
+        }
+        ps.wins[props.playerGame.guesses.length]++
       } else {
-
+        ps.currentStreak = 0
       }
 
       try {
