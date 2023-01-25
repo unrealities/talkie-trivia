@@ -11,6 +11,7 @@ import GuessesContainer from './guesses'
 import NetworkContainer from './network'
 import MovieModal from './modal'
 import PickerContainer from './picker'
+import PlayerStatsContainer from './playerStats'
 import TitleHeader from './titleHeader'
 import GoogleLogin from './googleLogin'
 import ResetContainer from './reset'
@@ -121,6 +122,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
         playerGame={props.playerGame}
         updatePlayerGame={props.updatePlayerGame} />
       <GoogleLogin player={props.playerGame.player} />
+      <PlayerStatsContainer playerStats={props.playerStats} />
       <MovieModal
         movie={props.playerGame.game.movie}
         show={showModal}
