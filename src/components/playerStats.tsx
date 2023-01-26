@@ -3,10 +3,7 @@ import { StyleSheet, Text, View } from 'react-native'
 
 import Player from '../models/player'
 import PlayerStats from '../models/playerStats'
-
-//TODO: This will display player lifetime statistics 
-//      either after completing a gain or from a profile menu
-
+import WinChart from './winChart'
 
 export interface PlayerStatsContainerProps {
     player: Player
@@ -24,6 +21,7 @@ const PlayerStatsContainer = (props: PlayerStatsContainerProps) => {
             <Text>{props.playerStats.wins[2]}</Text>
             <Text>{props.playerStats.wins[3]}</Text>
             <Text>{props.playerStats.wins[4]}</Text>
+            <WinChart wins={props.playerStats.wins} />
         </View>
     )
 }
