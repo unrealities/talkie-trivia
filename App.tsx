@@ -76,7 +76,6 @@ export default function App() {
       try {
         await Network.getNetworkStateAsync().then((networkState) => {
           networkState.isInternetReachable ? setIsNetworkConnected(true) : setIsNetworkConnected(false)
-          console.log(networkState.isConnected)
         })
       } catch (e) {
         console.error("No network connection")
