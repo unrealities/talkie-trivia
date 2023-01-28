@@ -12,11 +12,10 @@ interface selectedSlice {
 }
 
 const WinChart = (props: WinChartProps) => {
-    const [wins] = useState<number[]>(props.wins)
+    console.log(props.wins)
 
     const keys = ['1', '2', '3', '4', '5']
-    // const values = [wins[0], wins[1], wins[2], wins[3], wins[4]]
-    const values = [3, 5, 1, 9, 2]
+    const values = [props.wins[0], props.wins[1], props.wins[2], props.wins[3], props.wins[4]]
     const data = keys.map((key, index) => {
         return {
             key: key,

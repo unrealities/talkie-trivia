@@ -12,7 +12,7 @@ interface GenresProps {
 
 const GenreContainer = (props: GenreProps) => {
     return (
-        <View style={styles.GenreContainer}>
+        <View key={props.genre.id} style={styles.GenreContainer}>
             <Text key={props.genre.id} style={styles.GenreText}>{props.genre.name}</Text>
         </View>
     )
