@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
-import { Text, View, Dimensions } from 'react-native'
-import { VictoryPie } from "victory"
+import React from 'react'
+import { View, Dimensions } from 'react-native'
+import { VictoryPie } from 'victory'
+import { colors } from '../styles/global'
 
 export interface WinChartProps {
     wins: number[]
@@ -28,7 +29,7 @@ const WinChart = (props: WinChartProps) => {
     return (
         <View style={{ justifyContent: 'center', flex: 1 }}>
             <VictoryPie
-                colorScale={['#600080', '#9900cc', '#c61aff', '#d966ff', '#ecb3ff']}
+                colorScale={[colors.primary, colors.secondary, colors.tertiary, colors.quaternary, colors.quinary]}
                 data={data} />
         </View>
     )
