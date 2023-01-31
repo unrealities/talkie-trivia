@@ -16,11 +16,6 @@ const PlayerStatsContainer = (props: PlayerStatsContainerProps) => {
             <Text>{props.playerStats.games}</Text>
             <Text>{props.playerStats.currentStreak}</Text>
             <Text>{props.playerStats.maxStreak}</Text>
-            <Text>{props.playerStats.wins[0]}</Text>
-            <Text>{props.playerStats.wins[1]}</Text>
-            <Text>{props.playerStats.wins[2]}</Text>
-            <Text>{props.playerStats.wins[3]}</Text>
-            <Text>{props.playerStats.wins[4]}</Text>
             <WinChart wins={props.playerStats.wins} />
         </View>
     )

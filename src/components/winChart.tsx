@@ -25,24 +25,12 @@ const WinChart = (props: WinChartProps) => {
             y: values[index]
         }
     })
-    const deviceWidth = Dimensions.get('window').width
 
     return (
-        <View style={styles.container}>
-            <VictoryPie
+        <VictoryPie
                 colorScale={[colors.primary, colors.secondary, colors.tertiary, colors.quaternary, colors.quinary]}
-                data={data}
-                style={{data: {width: 300}}}/>
-        </View>
+                data={data}/>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        padding: 8
-    }
-})
 
 export default WinChart
