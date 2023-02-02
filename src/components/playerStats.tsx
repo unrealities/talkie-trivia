@@ -4,6 +4,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import Player from '../models/player'
 import PlayerStats from '../models/playerStats'
 import WinChart from './winChart'
+import { colors } from '../styles/global'
 
 export interface PlayerStatsContainerProps {
     player: Player
@@ -13,9 +14,18 @@ export interface PlayerStatsContainerProps {
 const PlayerStatsContainer = (props: PlayerStatsContainerProps) => {
     return (
         <View style={styles.container}>
-            <Text>{props.playerStats.games}</Text>
-            <Text>{props.playerStats.currentStreak}</Text>
-            <Text>{props.playerStats.maxStreak}</Text>
+            <View style={styles.statContainer}>
+                <Text style={styles.header}>Games</Text>
+                <Text style={styles.text}>{props.playerStats.games}</Text>
+            </View>
+            <View style={styles.statContainer}>
+                <Text style={styles.header}>Current Streak</Text>
+                <Text style={styles.text}>{props.playerStats.currentStreak}</Text>
+            </View>
+            <View style={styles.statContainer}>
+                <Text style={styles.header}>Max Streak</Text>
+                <Text style={styles.text}>{props.playerStats.maxStreak}</Text>
+            </View>
             <WinChart wins={props.playerStats.wins} />
         </View>
     )
@@ -24,7 +34,33 @@ const PlayerStatsContainer = (props: PlayerStatsContainerProps) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'column'
+        minHeight: 430,
+        minWidth: 140,
+        padding: 8,
+        textAlign: 'center'
+    },
+    header: {
+        color: colors.primary,
+        flex: 1,
+        flexDirection: 'row',
+        fontFamily: 'Arvo-Bold',
+        fontSize: 12,
+        minWidth: 100,
+        textAlign: 'right'
+    },
+    statContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        minHeight: 20
+    },
+    text: {
+        color: colors.secondary,
+        flex: 1,
+        flexDirection: 'row',
+        fontFamily: 'Arvo-Regular',
+        fontSize: 12,
+        paddingLeft: 12,
+        textAlign: 'left'
     }
 })
 

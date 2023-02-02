@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { Pressable, StyleSheet, Text } from "react-native"
+import { Pressable, StyleSheet, Text, View } from "react-native"
 import { GoogleAuthProvider, getAuth, signInWithCredential } from "firebase/auth"
 import * as Google from 'expo-auth-session/providers/google'
 import { CLIENTID_ANDROID, CLIENTID_EXPO, CLIENTID_IOS, CLIENTID_WEB } from '@env'
@@ -36,12 +36,14 @@ const GoogleLogin = (props: GoogleLoginProps) => {
     }, [response])
 
     return (
-        <Pressable
-            disabled={props.player.name != ''}
-            onPress={() => { promptAsync() }}
-            style={styles.button}>
-            <Text style={styles.buttonText}>{props.player.name != '' ? props.player.name : 'Sign In'}</Text>
-        </Pressable>
+        <View style={styles.container}>
+            <Pressable
+                disabled={props.player.name != ''}
+                onPress={() => { promptAsync() }}
+                style={styles.button}>
+                <Text style={styles.buttonText}>{props.player.name != '' ? props.player.name : 'Sign In'}</Text>
+            </Pressable>
+        </View>
     )
 }
 
@@ -58,6 +60,9 @@ const styles = StyleSheet.create({
         color: colors.secondary,
         fontFamily: 'Arvo-Bold',
         textAlign: 'center'
+    },
+    container: {
+        flex: 1
     }
 })
 

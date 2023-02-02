@@ -62,7 +62,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
 
     const setPlayerStats = async (correctAnswer: boolean) => {
       let ps = props.playerStats
-      
+
       // TODO: update playerStats
       if (correctAnswer) {
         ps.currentStreak++
@@ -118,11 +118,11 @@ const MoviesContainer = (props: MovieContainerProps) => {
         guesses={props.playerGame.guesses}
         movie={props.playerGame.game.movie}
         movies={props.movies} />
+      <PlayerStatsContainer playerStats={props.playerStats} />
+      <GoogleLogin player={props.playerGame.player} />
       <ResetContainer
         playerGame={props.playerGame}
         updatePlayerGame={props.updatePlayerGame} />
-      <GoogleLogin player={props.playerGame.player} />
-      <PlayerStatsContainer playerStats={props.playerStats} />
       <MovieModal
         movie={props.playerGame.game.movie}
         show={showModal}

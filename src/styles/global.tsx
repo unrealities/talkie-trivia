@@ -5,5 +5,5 @@ export const colors = {
     secondary: '#eae2b7',
     tertiary: '#fcbf49',
     quaternary: '#d62828',
-    quinary: '##29d7d7' // inverted quaternary
+    quinary: '#29d7d7' // inverted quaternary
 }
