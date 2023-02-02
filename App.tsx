@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { NavigationContainer } from '@react-navigation/native'
 
 import * as Network from 'expo-network'
 import { StatusBar } from 'expo-status-bar'
@@ -10,7 +12,9 @@ import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
 import { getAnalytics, isSupported } from 'firebase/analytics'
 import uuid from 'react-native-uuid'
 
+import GoogleLogin from './src/components/googleLogin'
 import MoviesContainer from './src/components/movie'
+import PlayerStatsContainer from './src/components/playerStats'
 import Player from './src/models/player'
 import PlayerStats from './src/models/playerStats'
 import { BasicMovie, Movie } from './src/models/movie'
@@ -134,16 +138,43 @@ export default function App() {
     }
   }, [user])
 
+  const Tab = createBottomTabNavigator()
+
+  function Game() {
+    return (
+      <View style={styles.container}>
+        <MoviesContainer
+          isNetworkConnected={isNetworkConnected}
+          movies={basicMovies}
+          playerGame={playerGame}
+          updatePlayerGame={setPlayerGame} />
+      </View>
+    )
+  }
+
+  function Profile() {
+    return (
+      <View style={styles.container}>
+        <GoogleLogin player={playerGame.player} />
+        <PlayerStatsContainer playerStats={playerStats} />
+      </View>
+    )
+  }
+
   return (
-    <View style={styles.container}>
-      <MoviesContainer
-        isNetworkConnected={isNetworkConnected}
-        movies={basicMovies}
-        playerGame={playerGame}
-        playerStats={playerStats}
-        updatePlayerGame={setPlayerGame} />
+    <NavigationContainer>
       <StatusBar style="auto" />
-    </View>
+      <Tab.Navigator screenOptions={{ headerShown: false }}>
+        <Tab.Screen
+          name="Game"
+          component={Game}
+        />
+        <Tab.Screen
+          name="Profile"
+          component={Profile}
+        />
+      </Tab.Navigator>
+    </NavigationContainer>
   )
 }
 

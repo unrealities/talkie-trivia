@@ -11,13 +11,10 @@ import GuessesContainer from './guesses'
 import NetworkContainer from './network'
 import MovieModal from './modal'
 import PickerContainer from './picker'
-import PlayerStatsContainer from './playerStats'
 import TitleHeader from './titleHeader'
-import GoogleLogin from './googleLogin'
 import ResetContainer from './reset'
 import { BasicMovie } from '../models/movie'
 import { PlayerGame } from '../models/game'
-import PlayerStats from '../models/playerStats'
 import { firebaseConfig } from '../config/firebase'
 
 SplashScreen.preventAutoHideAsync()
@@ -29,7 +26,6 @@ interface MovieContainerProps {
   isNetworkConnected: boolean
   movies: BasicMovie[]
   playerGame: PlayerGame
-  playerStats: PlayerStats
   updatePlayerGame: Dispatch<SetStateAction<PlayerGame>>
 }
 
@@ -118,8 +114,6 @@ const MoviesContainer = (props: MovieContainerProps) => {
         guesses={props.playerGame.guesses}
         movie={props.playerGame.game.movie}
         movies={props.movies} />
-      <PlayerStatsContainer playerStats={props.playerStats} />
-      <GoogleLogin player={props.playerGame.player} />
       <ResetContainer
         playerGame={props.playerGame}
         updatePlayerGame={props.updatePlayerGame} />
