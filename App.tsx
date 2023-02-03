@@ -164,7 +164,22 @@ export default function App() {
   return (
     <NavigationContainer>
       <StatusBar style="auto" />
-      <Tab.Navigator screenOptions={{ headerShown: false }}>
+      <Tab.Navigator screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: colors.primary,
+        tabBarIconStyle: {
+          display: 'none'
+        },
+        tabBarInactiveTintColor: colors.tertiary,
+        tabBarLabelStyle: {
+          fontFamily: 'Arvo-Bold',
+          fontSize: 16
+        },
+        tabBarStyle: {
+          backgroundColor: colors.secondary,
+          height: 40,
+        }
+      }}>
         <Tab.Screen
           name="Game"
           component={Game}
