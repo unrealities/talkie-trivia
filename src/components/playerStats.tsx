@@ -14,17 +14,19 @@ export interface PlayerStatsContainerProps {
 const PlayerStatsContainer = (props: PlayerStatsContainerProps) => {
     return (
         <View style={styles.container}>
-            <View style={styles.statContainer}>
-                <Text style={styles.header}>Games</Text>
-                <Text style={styles.text}>{props.playerStats.games}</Text>
-            </View>
-            <View style={styles.statContainer}>
-                <Text style={styles.header}>Current Streak</Text>
-                <Text style={styles.text}>{props.playerStats.currentStreak}</Text>
-            </View>
-            <View style={styles.statContainer}>
-                <Text style={styles.header}>Max Streak</Text>
-                <Text style={styles.text}>{props.playerStats.maxStreak}</Text>
+            <View style={styles.statsContainer}>
+                <View style={styles.statContainer}>
+                    <Text style={styles.header}>Games</Text>
+                    <Text style={styles.text}>{props.playerStats.games}</Text>
+                </View>
+                <View style={styles.statContainer}>
+                    <Text style={styles.header}>Current Streak</Text>
+                    <Text style={styles.text}>{props.playerStats.currentStreak}</Text>
+                </View>
+                <View style={styles.statContainer}>
+                    <Text style={styles.header}>Max Streak</Text>
+                    <Text style={styles.text}>{props.playerStats.maxStreak}</Text>
+                </View>
             </View>
             <WinChart wins={props.playerStats.wins} />
         </View>
@@ -33,8 +35,8 @@ const PlayerStatsContainer = (props: PlayerStatsContainerProps) => {
 
 const styles = StyleSheet.create({
     container: {
+        alignItems: 'flex-start',
         flex: 1,
-        minHeight: 430,
         minWidth: 140,
         padding: 8,
         textAlign: 'center'
@@ -52,6 +54,9 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         minHeight: 20
+    },
+    statsContainer :{
+        flex: 1
     },
     text: {
         color: colors.secondary,
