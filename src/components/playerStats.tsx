@@ -14,9 +14,10 @@ export interface PlayerStatsContainerProps {
 const PlayerStatsContainer = (props: PlayerStatsContainerProps) => {
     return (
         <View style={styles.container}>
+            <WinChart wins={props.playerStats.wins} />
             <View style={styles.statsContainer}>
                 <View style={styles.statContainer}>
-                    <Text style={styles.header}>Games</Text>
+                    <Text style={styles.header}>Games Played</Text>
                     <Text style={styles.text}>{props.playerStats.games}</Text>
                 </View>
                 <View style={styles.statContainer}>
@@ -28,7 +29,6 @@ const PlayerStatsContainer = (props: PlayerStatsContainerProps) => {
                     <Text style={styles.text}>{props.playerStats.maxStreak}</Text>
                 </View>
             </View>
-            <WinChart wins={props.playerStats.wins} />
         </View>
     )
 }
@@ -39,7 +39,8 @@ const styles = StyleSheet.create({
         flex: 1,
         minWidth: 140,
         padding: 8,
-        textAlign: 'center'
+        textAlign: 'center',
+        width: 300
     },
     header: {
         color: colors.primary,
@@ -56,7 +57,9 @@ const styles = StyleSheet.create({
         minHeight: 20
     },
     statsContainer :{
-        flex: 1
+        flex: 1,
+        textAlign: 'right',
+        width: 300
     },
     text: {
         color: colors.secondary,

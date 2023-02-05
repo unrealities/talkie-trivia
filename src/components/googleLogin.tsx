@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
         flex: 1,
         maxHeight: 40,
         padding: 10,
-        width: 300
+        width: 280
     },
     buttonText: {
         color: colors.secondary,
@@ -64,7 +64,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         height: 60,
-        padding: 8
+        padding: 8,
+        width: 300
     }
 })
 

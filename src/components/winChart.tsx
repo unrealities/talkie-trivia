@@ -31,6 +31,7 @@ const WinChart = (props: WinChartProps) => {
             <VictoryPie
                 colorScale={[colors.primary, colors.secondary, colors.tertiary, colors.quaternary, colors.quinary]}
                 data={data}
+                innerRadius={({ datum }) => datum.y * 25}
                 style={{labels: styles.victoryLabels}}
                 theme={VictoryTheme.material} />
         </View>
