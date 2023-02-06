@@ -49,16 +49,18 @@ const styles = StyleSheet.create({
         fontFamily: 'Arvo-Bold',
         fontSize: 12,
         minWidth: 100,
-        textAlign: 'right'
+        textAlign: 'left'
     },
     statContainer: {
         flex: 1,
         flexDirection: 'row',
-        minHeight: 20
+        maxHeight: 20
     },
     statsContainer :{
+        alignItems: 'center',
         flex: 1,
-        textAlign: 'right',
+        flexDirection: 'column',
+        paddingTop: 10,
         width: 300
     },
     text: {

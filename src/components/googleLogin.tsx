@@ -62,8 +62,10 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     container: {
+        alignItems: 'center',
+        alignSelf: 'center',
         flex: 1,
-        height: 60,
+        maxHeight: 60,
         padding: 8,
         width: 300
     }

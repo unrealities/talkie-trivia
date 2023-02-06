@@ -40,12 +40,17 @@ const WinChart = (props: WinChartProps) => {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 4
+        alignItems: 'center',
+        alignSelf: 'center',
+        flex: 1,
+        flexDirection: 'column',
+        padding: 12,
+        width: '100%'
     },
     victoryLabels: {
-        fill: colors.primary,
+        fill: colors.white,
         fontFamily: 'Arvo-Bold',
-        fontSize: 16
+        fontSize: 20
     }
 })
 
