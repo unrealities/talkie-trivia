@@ -26,9 +26,10 @@ const CluesContainer = (props: CluesProps) => {
             useNativeDriver: false
         }
     )
+
     useEffect(() => {
         fadeAnimTiming.start(() => { fadeAnimTiming.reset() })
-    }, [props.guesses.length])
+    }, [props.guesses])
 
 
     // TODO: summary splitting should be done before the app loads and just pulled from a datastore
