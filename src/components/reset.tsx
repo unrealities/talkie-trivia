@@ -31,7 +31,7 @@ const ResetContainer = (props: ResetContainerProps) => {
         game: game,
         guesses: [],
         id: uuid.v4().toString(),
-        player: props.playerGame.player,
+        playerID: props.playerGame.playerID,
         startDate: new Date,
     }
 

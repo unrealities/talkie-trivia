@@ -47,11 +47,7 @@ export default function App() {
     movie: movie
   }
 
-  const player = new Player()
-  getUserID().then(id => {
-    player.id = id
-    player.name = ''
-  })
+  let p = new Player()
 
   let pg: PlayerGame = {
     correctAnswer: false,
@@ -59,7 +55,7 @@ export default function App() {
     game: game,
     guesses: [],
     id: uuid.v4().toString(),
-    player: player,
+    playerID: p.id,
     startDate: new Date,
   }
 
@@ -67,10 +63,11 @@ export default function App() {
     currentStreak: 0,
     games: 1,
     maxStreak: 0,
-    player: player,
+    player: p,
     wins: [0, 0, 0, 0, 0]
   }
 
+  const [player, setPlayer] = useState<Player>(p)
   const [playerGame, setPlayerGame] = useState<PlayerGame>(pg)
   const [playerStats, setPlayerStats] = useState<PlayerStats>(ps)
   const [isNetworkConnected, setIsNetworkConnected] = useState<boolean>(true)
@@ -101,8 +98,13 @@ export default function App() {
 
     const updatePlayer = async () => {
       try {
+        getUserID().then(id => {
+          p.id = id
+          p.name = ''
+        })
+        setPlayer(p)
         // TODO: Below seems like a hacky way to get this to a plain JS object
-        await setDoc(doc(db, 'players', playerGame.player.id), JSON.parse(JSON.stringify(playerGame.player)))
+        await setDoc(doc(db, 'players', player.id), JSON.parse(JSON.stringify(player)))
       } catch (e) {
         console.error("Error adding document: ", e)
       }
@@ -111,7 +113,7 @@ export default function App() {
     // TODO: fetch playerStats
     const updatePlayerStats = async () => {
       try {
-        const docRef = doc(db, 'playerStats', playerGame.player.id)
+        const docRef = doc(db, 'playerStats', player.id)
         const docSnap = await getDoc(docRef)
 
         if (docSnap.exists()) {
@@ -120,7 +122,7 @@ export default function App() {
           setPlayerStats(dbPlayerStats)
         }
         // TODO: Below seems like a hacky way to get this to a plain JS object
-        await setDoc(doc(db, 'playerStats', playerGame.player.id), JSON.parse(JSON.stringify(playerStats)))
+        await setDoc(doc(db, 'playerStats', player.id), JSON.parse(JSON.stringify(playerStats)))
       } catch (e) {
         console.error("Error adding document: ", e)
       }
@@ -129,7 +131,7 @@ export default function App() {
     updatePlayerStats()
 
     if (user) {
-      pg.player.name = user?.displayName ? user.displayName.toString() : ''
+      player.name = user?.displayName ? user.displayName.toString() : ''
       setPlayerGame(pg)
       updatePlayerGame()
       updatePlayer()
@@ -146,7 +148,9 @@ export default function App() {
         <MoviesContainer
           isNetworkConnected={isNetworkConnected}
           movies={basicMovies}
+          player={player}
           playerGame={playerGame}
+          playerStats={playerStats}
           updatePlayerGame={setPlayerGame} />
       </View>
     )
@@ -155,8 +159,8 @@ export default function App() {
   function Profile() {
     return (
       <View style={styles.container}>
-        <GoogleLogin player={playerGame.player} />
-        <PlayerStatsContainer playerStats={playerStats} />
+        <GoogleLogin player={player} />
+        <PlayerStatsContainer player={player} playerStats={playerStats} />
       </View>
     )
   }

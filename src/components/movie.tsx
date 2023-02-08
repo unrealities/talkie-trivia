@@ -15,6 +15,8 @@ import TitleHeader from './titleHeader'
 import ResetContainer from './reset'
 import { BasicMovie } from '../models/movie'
 import { PlayerGame } from '../models/game'
+import Player from '../models/player'
+import PlayerStats from '../models/playerStats'
 import { firebaseConfig } from '../config/firebase'
 
 SplashScreen.preventAutoHideAsync()
@@ -25,7 +27,9 @@ const db = getFirestore(app)
 interface MovieContainerProps {
   isNetworkConnected: boolean
   movies: BasicMovie[]
+  player: Player
   playerGame: PlayerGame
+  playerStats: PlayerStats
   updatePlayerGame: Dispatch<SetStateAction<PlayerGame>>
 }
 
@@ -72,7 +76,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
 
       try {
         // TODO: Below seems like a hacky way to get this to a plain JS object
-        const docRef = await setDoc(doc(db, 'playerStats', props.playerGame.player.id), JSON.parse(JSON.stringify(ps)))
+        const docRef = await setDoc(doc(db, 'playerStats', props.player.id), JSON.parse(JSON.stringify(ps)))
       } catch (e) {
         console.error("Error adding document: ", e)
       }
@@ -88,7 +92,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
       setEnableSubmit(false)
     }
 
-    if (props.playerGame.player.name != '') {
+    if (props.player.name != '') {
       setPlayerGame()
     }
   }, [props.playerGame])

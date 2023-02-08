@@ -14,6 +14,6 @@ export class PlayerGame {
     game: Game
     guesses: number[]
     id: string
-    player: Player
+    playerID: string
     startDate: Date
 }
