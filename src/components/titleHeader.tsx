@@ -7,7 +7,7 @@ const TitleHeader = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.header}>TALKIE-TRIVIA</Text>
-            <Text style={styles.subHeader}>guess the movie given it's summary</Text>
+            <Text style={styles.subHeader}>guess the movie, given its summary.</Text>
         </View>
     )
 }
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingBottom: 6,
         paddingTop: 6,
-        marginTop: 20,
+        marginTop: 30,
         maxHeight: 75,
         minHeight: 60,
         minWidth: 300
@@ -33,7 +33,8 @@ const styles = StyleSheet.create({
         flex: 1,
         fontFamily: 'Arvo-Bold',
         fontSize: 24,
-        marginTop: 6,
+        minHeight: 40,
+        paddingTop: 6,
         textAlign: 'center'
     },
     subHeader: {
@@ -41,7 +42,8 @@ const styles = StyleSheet.create({
         flex: 1,
         fontFamily: 'Arvo-Italic',
         fontSize: 14,
-        marginBottom: 8,
+        minHeight: 30,
+        paddingBottom: 6,
         textAlign: 'center'
     }
 })
