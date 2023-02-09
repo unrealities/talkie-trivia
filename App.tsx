@@ -110,7 +110,6 @@ export default function App() {
       }
     }
 
-    // TODO: fetch playerStats
     const updatePlayerStats = async () => {
       try {
         const docRef = doc(db, 'playerStats', player.id)
