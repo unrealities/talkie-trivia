@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { NavigationContainer } from '@react-navigation/native'
 
+import { useFonts } from 'expo-font'
 import * as Network from 'expo-network'
+import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
 import * as WebBrowser from 'expo-web-browser'
 
@@ -29,8 +31,21 @@ const db = getFirestore(app)
 const analytics = isSupported().then(yes => yes ? getAnalytics(app) : null)
 WebBrowser.maybeCompleteAuthSession()
 
+SplashScreen.preventAutoHideAsync()
+
 export default function App() {
   const { user } = useAuthentication()
+
+  let [fontsLoaded] = useFonts({
+    'Arvo-Bold': require('./assets/fonts/Arvo-Bold.ttf'),
+    'Arvo-Italic': require('./assets/fonts/Arvo-Italic.ttf'),
+    'Arvo-Regular': require('./assets/fonts/Arvo-Regular.ttf')
+  })
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync()
+    }
+  }, [fontsLoaded])
 
   // init new movie
   let movies: Movie[] = require('./data/popularMovies.json')
@@ -142,8 +157,10 @@ export default function App() {
   const Tab = createBottomTabNavigator()
 
   function Game() {
+    if (!fontsLoaded) { return null }
+
     return (
-      <View style={styles.container}>
+      <View style={styles.container} onLayout={onLayoutRootView}>
         <MoviesContainer
           isNetworkConnected={isNetworkConnected}
           movies={basicMovies}
@@ -156,8 +173,10 @@ export default function App() {
   }
 
   function Profile() {
+    if (!fontsLoaded) { return null }
+
     return (
-      <View style={styles.container}>
+      <View style={styles.container} onLayout={onLayoutRootView}>
         <GoogleLogin player={player} />
         <PlayerStatsContainer player={player} playerStats={playerStats} />
       </View>
@@ -176,7 +195,8 @@ export default function App() {
         tabBarInactiveTintColor: colors.tertiary,
         tabBarLabelStyle: {
           fontFamily: 'Arvo-Bold',
-          fontSize: 16
+          fontSize: 16,
+          paddingBottom: 8
         },
         tabBarStyle: {
           backgroundColor: colors.secondary,

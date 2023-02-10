@@ -1,8 +1,6 @@
-import React, { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import ConfettiCannon from 'react-native-confetti-cannon'
-import { useFonts } from 'expo-font'
-import * as SplashScreen from 'expo-splash-screen'
 import { initializeApp } from 'firebase/app'
 import { doc, getFirestore, setDoc } from 'firebase/firestore'
 
@@ -19,8 +17,6 @@ import Player from '../models/player'
 import PlayerStats from '../models/playerStats'
 import { firebaseConfig } from '../config/firebase'
 
-SplashScreen.preventAutoHideAsync()
-
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 
@@ -34,17 +30,6 @@ interface MovieContainerProps {
 }
 
 const MoviesContainer = (props: MovieContainerProps) => {
-  let [fontsLoaded] = useFonts({
-    'Arvo-Bold': require('../../assets/fonts/Arvo-Bold.ttf'),
-    'Arvo-Italic': require('../../assets/fonts/Arvo-Italic.ttf'),
-    'Arvo-Regular': require('../../assets/fonts/Arvo-Regular.ttf')
-  })
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync()
-    }
-  }, [fontsLoaded])
-
   const [enableSubmit, setEnableSubmit] = useState<boolean>(!props.playerGame.correctAnswer)
   const [showModal, setShowModal] = useState<boolean>(false)
 
@@ -97,10 +82,8 @@ const MoviesContainer = (props: MovieContainerProps) => {
     }
   }, [props.playerGame])
 
-  if (!fontsLoaded) { return null }
-
   return (
-    <View style={styles.container} onLayout={onLayoutRootView}>
+    <View style={styles.container}>
       <NetworkContainer isConnected={props.isNetworkConnected} />
       <TitleHeader />
       <CluesContainer
