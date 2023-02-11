@@ -157,8 +157,6 @@ export default function App() {
   const Tab = createBottomTabNavigator()
 
   function Game() {
-    if (!fontsLoaded) { return null }
-
     return (
       <View style={styles.container} onLayout={onLayoutRootView}>
         <MoviesContainer
@@ -173,8 +171,6 @@ export default function App() {
   }
 
   function Profile() {
-    if (!fontsLoaded) { return null }
-
     return (
       <View style={styles.container} onLayout={onLayoutRootView}>
         <GoogleLogin player={player} />
@@ -183,8 +179,10 @@ export default function App() {
     )
   }
 
+  if (!fontsLoaded) { return null }
+
   return (
-    <NavigationContainer>
+    <NavigationContainer onReady={onLayoutRootView}>
       <StatusBar style="auto" />
       <Tab.Navigator screenOptions={{
         headerShown: false,
@@ -200,7 +198,7 @@ export default function App() {
         },
         tabBarStyle: {
           backgroundColor: colors.secondary,
-          height: 40,
+          height: 80,
         }
       }}>
         <Tab.Screen
