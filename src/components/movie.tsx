@@ -68,10 +68,12 @@ const MoviesContainer = (props: MovieContainerProps) => {
     }
 
     if (props.playerGame.guesses.length > 4) {
+      console.log('game over. no correct answer')
       setPlayerStats(false)
       setEnableSubmit(false)
     }
     if (props.playerGame.correctAnswer && showModal) {
+      console.log('game over. correct answer.')
       confetti.current?.start()
       setPlayerStats(true)
       setEnableSubmit(false)
@@ -80,6 +82,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
     if (props.player.name != '') {
       setPlayerGame()
     }
+  
   }, [props.playerGame])
 
   return (

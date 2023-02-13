@@ -103,7 +103,6 @@ export default function App() {
   useEffect(() => {
     const updatePlayerGame = async () => {
       try {
-        setPlayerGame(pg)
         // TODO: Below seems like a hacky way to get this to a plain JS object
         await setDoc(doc(db, 'playerGames', playerGame.id), JSON.parse(JSON.stringify(playerGame)))
       } catch (e) {
@@ -117,7 +116,6 @@ export default function App() {
           p.id = id
           p.name = ''
         })
-        setPlayer(p)
         // TODO: Below seems like a hacky way to get this to a plain JS object
         await setDoc(doc(db, 'players', player.id), JSON.parse(JSON.stringify(player)))
       } catch (e) {
