@@ -2,7 +2,7 @@ import React, { useEffect } from "react"
 import { Pressable, StyleSheet, Text, View } from "react-native"
 import { GoogleAuthProvider, getAuth, signInWithCredential } from "firebase/auth"
 import * as Google from 'expo-auth-session/providers/google'
-import { CLIENTID_ANDROID, CLIENTID_EXPO, CLIENTID_IOS, CLIENTID_WEB } from '@env'
+import Constants from 'expo-constants'
 
 import { colors } from '../styles/global'
 import Player from "../models/player"
@@ -13,10 +13,10 @@ interface GoogleLoginProps {
 
 const GoogleLogin = (props: GoogleLoginProps) => {
     const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-        androidClientId: CLIENTID_ANDROID,
-        expoClientId: CLIENTID_EXPO,
-        iosClientId: CLIENTID_IOS,
-        webClientId: CLIENTID_WEB,
+        androidClientId: Constants.expoConfig.extra.androidClientId,
+        expoClientId: Constants.expoConfig.extra.expoClientId,
+        iosClientId: Constants.expoConfig.extra.iosClientId,
+        webClientId: Constants.expoConfig.extra.webClientId,
         scopes: [
             'profile',
             'email',
