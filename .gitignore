@@ -17,4 +17,4 @@ web-build/
 .env
 data/secrets.json
 data/credits.json
-process.env
+eas.json
