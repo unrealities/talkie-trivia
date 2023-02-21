@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const myValue = 'talkie-trivia'
 
 export default {
