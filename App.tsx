@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { LogBox, StyleSheet, View } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { NavigationContainer } from '@react-navigation/native'
 
@@ -25,6 +25,8 @@ import { colors } from './src/styles/global'
 import { firebaseConfig } from './src/config/firebase'
 import { useAuthentication } from './src/utils/hooks/useAuthentication'
 import { getUserID } from './src/utils/hooks/localStore'
+
+LogBox.ignoreLogs([ "Require cycle: node_modules/victory"]) // victory
 
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)

@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
-import { VictoryPie, VictoryTheme } from 'victory'
+import { VictoryPie, VictoryTheme } from 'victory-native'
 import { colors } from '../styles/global'
 
 export interface WinChartProps {
@@ -13,8 +13,6 @@ interface selectedSlice {
 }
 
 const WinChart = (props: WinChartProps) => {
-    console.log(props.wins)
-
     const keys = ['1', '2', '3', '4', '5']
     // const values = [props.wins[0], props.wins[1], props.wins[2], props.wins[3], props.wins[4]]
     const values = [1, 3, 4, 3, 7]

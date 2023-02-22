@@ -13,10 +13,10 @@ interface GoogleLoginProps {
 
 const GoogleLogin = (props: GoogleLoginProps) => {
     const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-        androidClientId: Constants.expoConfig.extra.androidClientId,
-        expoClientId: Constants.expoConfig.extra.expoClientId,
-        iosClientId: Constants.expoConfig.extra.iosClientId,
-        webClientId: Constants.expoConfig.extra.webClientId,
+        androidClientId: Constants?.expoConfig?.extra?.androidClientId,
+        expoClientId: Constants?.expoConfig?.extra?.expoClientId,
+        iosClientId: Constants?.expoConfig?.extra?.iosClientId,
+        webClientId: Constants?.expoConfig?.extra?.webClientId,
         scopes: [
             'profile',
             'email',
