@@ -26,8 +26,6 @@ import { firebaseConfig } from './src/config/firebase'
 import { useAuthentication } from './src/utils/hooks/useAuthentication'
 import { getUserID } from './src/utils/hooks/localStore'
 
-LogBox.ignoreLogs([ "Require cycle: node_modules/victory"]) // victory
-
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 const analytics = isSupported().then(yes => yes ? getAnalytics(app) : null)

@@ -1,15 +1,13 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
-import { VictoryPie, VictoryTheme } from 'victory-native'
+import Victory from '../utils/victory/victory'
 import { colors } from '../styles/global'
+
+const VictoryPie = Victory.VictoryPie
+const VictoryTheme = Victory.VictoryTheme
 
 export interface WinChartProps {
     wins: number[]
-}
-
-interface selectedSlice {
-    label: string
-    value: number
 }
 
 const WinChart = (props: WinChartProps) => {

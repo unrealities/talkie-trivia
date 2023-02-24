@@ -43,6 +43,7 @@
     "react-native-web": "~0.18.7",
     "react-navigation": "^4.4.4",
     "resize-observer-polyfill": "^1.5.1",
+    "victory": "^36.6.8",
     "victory-native": "^36.6.8"
   },
   "devDependencies": {
