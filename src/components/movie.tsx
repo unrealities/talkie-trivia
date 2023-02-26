@@ -48,7 +48,6 @@ const MoviesContainer = (props: MovieContainerProps) => {
     const setPlayerStats = async (correctAnswer: boolean) => {
       let ps = props.playerStats
 
-      // TODO: update playerStats
       if (correctAnswer) {
         ps.currentStreak++
         if (ps.currentStreak > ps.maxStreak) {
