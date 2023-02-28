@@ -31,10 +31,12 @@ const PickerContainer = (props: PickerContainerProps) => {
             })
         }
         if (playerGame.game.movie.id == selectedMovieID) {
+            console.log('picker. correct answer')
             props.updatePlayerGame({ ...playerGame, correctAnswer: true })
             props.toggleModal(true)
         }
         if (playerGame.guesses.length > 3) {
+            console.log('picker. incorrect answer')
             props.toggleModal(true)
         }
     }

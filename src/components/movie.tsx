@@ -77,14 +77,13 @@ const MoviesContainer = (props: MovieContainerProps) => {
       confetti.current?.start()
       setPlayerStats(true)
       setEnableSubmit(false)
-      setShowModal(true)
     }
 
     if (props.player.name != '') {
       setPlayerGame()
     }
   
-  }, [props.playerGame])
+  }, [props.playerGame, showModal])
 
   return (
     <View style={styles.container}>
