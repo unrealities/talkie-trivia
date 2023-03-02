@@ -81,7 +81,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
     if (props.player.name != '') {
       setPlayerGame()
     }
-  
+
   }, [props.playerGame, showModal])
 
   return (
