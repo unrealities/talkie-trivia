@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Animated, StyleSheet, Text, View } from 'react-native'
 
 import { colors } from '../styles/global'
@@ -16,6 +16,7 @@ interface CountContainerProps {
 }
 
 const CluesContainer = (props: CluesProps) => {
+    const mountedRef = useRef()
     let [fadeAnim] = useState<Animated.Value>(new Animated.Value(0))
 
     let fadeAnimTiming = Animated.timing(
@@ -28,8 +29,14 @@ const CluesContainer = (props: CluesProps) => {
     )
 
     useEffect(() => {
-        fadeAnimTiming.start(() => { fadeAnimTiming.reset() })
+        if (mountedRef.current) {
+            fadeAnimTiming.start(() => { fadeAnimTiming.reset() })
+        }
     }, [props.guesses])
+
+    useEffect(() => {
+        mountedRef.current = true
+    }, [])
 
 
     // TODO: summary splitting should be done before the app loads and just pulled from a datastore

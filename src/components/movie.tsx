@@ -84,6 +84,11 @@ const MoviesContainer = (props: MovieContainerProps) => {
 
   }, [props.playerGame, showModal])
 
+  useEffect(() => {
+    console.log('showModal')
+    console.log(showModal)
+  }, [showModal])
+
   return (
     <View style={styles.container}>
       <NetworkContainer isConnected={props.isNetworkConnected} />
