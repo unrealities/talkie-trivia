@@ -86,6 +86,7 @@ export default function App() {
   const [playerGame, setPlayerGame] = useState<PlayerGame>(pg)
   const [playerStats, setPlayerStats] = useState<PlayerStats>(ps)
   const [isNetworkConnected, setIsNetworkConnected] = useState<boolean>(true)
+  const [isLoading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
     const networkConnected = async () => {
@@ -150,6 +151,8 @@ export default function App() {
     } else {
       setPlayerGame(pg)
     }
+
+    setLoading(false)
   }, [user])
 
   const Tab = createBottomTabNavigator()
@@ -178,6 +181,7 @@ export default function App() {
   }
 
   if (!fontsLoaded) { return null }
+  if (isLoading) { return null }
 
   return (
     <NavigationContainer onReady={onLayoutRootView}>
