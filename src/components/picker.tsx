@@ -34,8 +34,7 @@ const PickerContainer = (props: PickerContainerProps) => {
             console.log('picker. correct answer')
             props.toggleModal(true)
             props.updatePlayerGame({ ...playerGame, correctAnswer: true })
-        }
-        if (playerGame.guesses.length > 3) {
+        } else if (playerGame.guesses.length > 3) {
             console.log('picker. incorrect answer')
             props.toggleModal(true)
         }

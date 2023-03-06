@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { LogBox, StyleSheet, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { NavigationContainer } from '@react-navigation/native'
 
@@ -10,7 +10,7 @@ import { StatusBar } from 'expo-status-bar'
 import * as WebBrowser from 'expo-web-browser'
 
 import { initializeApp } from 'firebase/app'
-import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
+import { doc, getDoc, getFirestore, setDoc, updateDoc } from 'firebase/firestore'
 import { getAnalytics, isSupported } from 'firebase/analytics'
 import uuid from 'react-native-uuid'
 
@@ -86,7 +86,6 @@ export default function App() {
   const [playerGame, setPlayerGame] = useState<PlayerGame>(pg)
   const [playerStats, setPlayerStats] = useState<PlayerStats>(ps)
   const [isNetworkConnected, setIsNetworkConnected] = useState<boolean>(true)
-  const [isLoading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
     const networkConnected = async () => {
@@ -133,9 +132,13 @@ export default function App() {
           const dbPlayerStats = docSnap.data() as PlayerStats
           dbPlayerStats.games++
           setPlayerStats(dbPlayerStats)
+          // TODO: Below seems like a hacky way to get this to a plain JS object
+          await updateDoc(doc(db, 'playerStats', player.id), JSON.parse(JSON.stringify(playerStats)))
+        } else {
+          // TODO: Below seems like a hacky way to get this to a plain JS object
+          await setDoc(doc(db, 'playerStats', player.id), JSON.parse(JSON.stringify(playerStats)))
         }
-        // TODO: Below seems like a hacky way to get this to a plain JS object
-        await setDoc(doc(db, 'playerStats', player.id), JSON.parse(JSON.stringify(playerStats)))
+        
       } catch (e) {
         console.error("Error adding document: ", e)
       }
@@ -151,8 +154,6 @@ export default function App() {
     } else {
       setPlayerGame(pg)
     }
-
-    setLoading(false)
   }, [user])
 
   const Tab = createBottomTabNavigator()
@@ -181,7 +182,6 @@ export default function App() {
   }
 
   if (!fontsLoaded) { return null }
-  if (isLoading) { return null }
 
   return (
     <NavigationContainer onReady={onLayoutRootView}>

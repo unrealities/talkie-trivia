@@ -30,6 +30,7 @@ interface MovieContainerProps {
 }
 
 const MoviesContainer = (props: MovieContainerProps) => {
+  const [isLoading, setLoading] = useState<boolean>(true)
   const [enableSubmit, setEnableSubmit] = useState<boolean>(!props.playerGame.correctAnswer)
   const [showModal, setShowModal] = useState<boolean>(false)
 
@@ -82,12 +83,15 @@ const MoviesContainer = (props: MovieContainerProps) => {
       setPlayerGame()
     }
 
+    setLoading(false)
   }, [props.playerGame, showModal])
 
   useEffect(() => {
     console.log('showModal')
     console.log(showModal)
   }, [showModal])
+
+  if (isLoading) { return null }
 
   return (
     <View style={styles.container}>
