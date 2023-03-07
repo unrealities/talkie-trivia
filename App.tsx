@@ -103,6 +103,13 @@ export default function App() {
   useEffect(() => {
     const updatePlayerGame = async () => {
       try {
+        const docRef = doc(db, 'playerStats', playerGame.id)
+        const docSnap = await getDoc(docRef)
+
+        if (docSnap.exists()) {
+          // TODO: Below seems like a hacky way to get this to a plain JS object
+          await updateDoc(doc(db, 'playerGames', playerGame.id), JSON.parse(JSON.stringify(playerGame)))
+        }
         // TODO: Below seems like a hacky way to get this to a plain JS object
         await setDoc(doc(db, 'playerGames', playerGame.id), JSON.parse(JSON.stringify(playerGame)))
       } catch (e) {
@@ -112,12 +119,17 @@ export default function App() {
 
     const updatePlayer = async () => {
       try {
-        getUserID().then(id => {
-          p.id = id
-          p.name = ''
-        })
-        // TODO: Below seems like a hacky way to get this to a plain JS object
-        await setDoc(doc(db, 'players', player.id), JSON.parse(JSON.stringify(player)))
+        const docRef = doc(db, 'players', player.id)
+        const docSnap = await getDoc(docRef)
+
+        if (!docSnap.exists()) {
+          getUserID().then(id => {
+            p.id = id
+            p.name = ''
+          })
+          // TODO: Below seems like a hacky way to get this to a plain JS object
+          await setDoc(doc(db, 'players', player.id), JSON.parse(JSON.stringify(player)))
+        }
       } catch (e) {
         console.error("Error adding document: ", e)
       }
@@ -138,7 +150,6 @@ export default function App() {
           // TODO: Below seems like a hacky way to get this to a plain JS object
           await setDoc(doc(db, 'playerStats', player.id), JSON.parse(JSON.stringify(playerStats)))
         }
-        
       } catch (e) {
         console.error("Error adding document: ", e)
       }
