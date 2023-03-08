@@ -25,6 +25,7 @@ import { colors } from './src/styles/global'
 import { firebaseConfig } from './src/config/firebase'
 import { useAuthentication } from './src/utils/hooks/useAuthentication'
 import { getUserID } from './src/utils/hooks/localStore'
+import { playerStatsConverter } from './src/utils/firestore/playerStats'
 
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
@@ -137,7 +138,7 @@ export default function App() {
 
     const updatePlayerStats = async () => {
       try {
-        const docRef = doc(db, 'playerStats', player.id)
+        const docRef = doc(db, 'playerStats', player.id).withConverter(playerStatsConverter)
         const docSnap = await getDoc(docRef)
 
         if (docSnap.exists()) {
