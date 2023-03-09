@@ -6,7 +6,6 @@ export const playerStatsConverter = {
             currentStreak: playerStats.currentStreak,
             games: playerStats.games,
             maxStreak: playerStats.maxStreak,
-            player: playerStats.player,
             wins: playerStats.wins
         }
         return ps
@@ -17,7 +16,6 @@ export const playerStatsConverter = {
             currentStreak: data.currentStreak,
             games: data.games,
             maxStreak: data.maxStreak,
-            player: data.player,
             wins: data.wins
         }
         return ps

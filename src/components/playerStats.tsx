@@ -13,7 +13,7 @@ export interface PlayerStatsContainerProps {
 
 const PlayerStatsContainer = (props: PlayerStatsContainerProps) => {
     return (
-        <View style={styles.container}>
+        <View style={styles.container} key={props.player.id}>
             <WinChart wins={props.playerStats.wins} />
             <View style={styles.statsContainer}>
                 <View style={styles.statContainer}>
