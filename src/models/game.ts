@@ -1,5 +1,4 @@
 import { Movie } from './movie'
-import Player from './player'
 
 export class Game {
     date: Date

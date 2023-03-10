@@ -25,7 +25,8 @@ import { colors } from './src/styles/global'
 import { firebaseConfig } from './src/config/firebase'
 import { useAuthentication } from './src/utils/hooks/useAuthentication'
 import { getUserID } from './src/utils/hooks/localStore'
-import { playerStatsConverter } from './src/utils/firestore/playerStats'
+import { playerStatsConverter } from './src/utils/firestore/converters/playerStats'
+import { playerConverter } from './src/utils/firestore/converters/player'
 
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
@@ -104,7 +105,7 @@ export default function App() {
   useEffect(() => {
     const updatePlayerGame = async () => {
       try {
-        const docRef = doc(db, 'playerStats', playerGame.id)
+        const docRef = doc(db, 'playerStats', playerGame.id).withConverter(playerStatsConverter)
         const docSnap = await getDoc(docRef)
 
         if (docSnap.exists()) {
@@ -120,7 +121,7 @@ export default function App() {
 
     const updatePlayer = async () => {
       try {
-        const docRef = doc(db, 'players', player.id)
+        const docRef = doc(db, 'players', player.id).withConverter(playerConverter)
         const docSnap = await getDoc(docRef)
 
         if (!docSnap.exists()) {

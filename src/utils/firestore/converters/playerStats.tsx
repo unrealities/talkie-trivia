@@ -1,4 +1,4 @@
-import PlayerStats from '../../models/playerStats'
+import PlayerStats from '../../../models/playerStats'
 
 export const playerStatsConverter = {
     toFirestore: (playerStats) => {
