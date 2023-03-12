@@ -80,7 +80,6 @@ export default function App() {
     currentStreak: 0,
     games: 1,
     maxStreak: 0,
-    player: p,
     wins: [0, 0, 0, 0, 0]
   }
 
