@@ -16,6 +16,8 @@ import { PlayerGame } from '../models/game'
 import Player from '../models/player'
 import PlayerStats from '../models/playerStats'
 import { firebaseConfig } from '../config/firebase'
+import { playerStatsConverter } from '../utils/firestore/converters/playerStats'
+import { playerGameConverter } from '../utils/firestore/converters/playerGame'
 
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
@@ -39,8 +41,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
   useEffect(() => {
     const setPlayerGame = async () => {
       try {
-        // TODO: Below seems like a hacky way to get this to a plain JS object
-        const docRef = await setDoc(doc(db, 'playerGames', props.playerGame.id), JSON.parse(JSON.stringify(props.playerGame)))
+        const docRef = await setDoc(doc(db, 'playerGames', props.playerGame.id).withConverter(playerGameConverter), props.playerGame)
       } catch (e) {
         console.error("Error adding document: ", e)
       }
@@ -60,8 +61,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
       }
 
       try {
-        // TODO: Below seems like a hacky way to get this to a plain JS object
-        const docRef = await setDoc(doc(db, 'playerStats', props.player.id), JSON.parse(JSON.stringify(ps)))
+        const docRef = await setDoc(doc(db, 'playerStats', props.player.id).withConverter(playerStatsConverter), ps)
       } catch (e) {
         console.error("Error adding document: ", e)
       }

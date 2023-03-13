@@ -25,6 +25,7 @@ import { colors } from './src/styles/global'
 import { firebaseConfig } from './src/config/firebase'
 import { useAuthentication } from './src/utils/hooks/useAuthentication'
 import { getUserID } from './src/utils/hooks/localStore'
+import { playerGameConverter } from './src/utils/firestore/converters/playerGame'
 import { playerStatsConverter } from './src/utils/firestore/converters/playerStats'
 import { playerConverter } from './src/utils/firestore/converters/player'
 
@@ -104,15 +105,13 @@ export default function App() {
   useEffect(() => {
     const updatePlayerGame = async () => {
       try {
-        const docRef = doc(db, 'playerStats', playerGame.id).withConverter(playerStatsConverter)
+        const docRef = doc(db, 'playerGames', playerGame.id).withConverter(playerGameConverter)
         const docSnap = await getDoc(docRef)
 
         if (docSnap.exists()) {
-          // TODO: Below seems like a hacky way to get this to a plain JS object
-          await updateDoc(doc(db, 'playerGames', playerGame.id), JSON.parse(JSON.stringify(playerGame)))
+          await updateDoc(doc(db, 'playerGames', playerGame.id).withConverter(playerGameConverter), playerGame)
         }
-        // TODO: Below seems like a hacky way to get this to a plain JS object
-        await setDoc(doc(db, 'playerGames', playerGame.id), JSON.parse(JSON.stringify(playerGame)))
+        await setDoc(doc(db, 'playerGames', playerGame.id).withConverter(playerGameConverter), playerGame)
       } catch (e) {
         console.error("Error adding document: ", e)
       }
@@ -128,8 +127,7 @@ export default function App() {
             p.id = id
             p.name = ''
           })
-          // TODO: Below seems like a hacky way to get this to a plain JS object
-          await setDoc(doc(db, 'players', player.id), JSON.parse(JSON.stringify(player)))
+          await setDoc(doc(db, 'players', player.id).withConverter(playerConverter), player)
         }
       } catch (e) {
         console.error("Error adding document: ", e)
@@ -145,11 +143,9 @@ export default function App() {
           const dbPlayerStats = docSnap.data() as PlayerStats
           dbPlayerStats.games++
           setPlayerStats(dbPlayerStats)
-          // TODO: Below seems like a hacky way to get this to a plain JS object
-          await updateDoc(doc(db, 'playerStats', player.id), JSON.parse(JSON.stringify(playerStats)))
+          await updateDoc(doc(db, 'playerStats', player.id).withConverter(playerStatsConverter), playerStats)
         } else {
-          // TODO: Below seems like a hacky way to get this to a plain JS object
-          await setDoc(doc(db, 'playerStats', player.id), JSON.parse(JSON.stringify(playerStats)))
+          await setDoc(doc(db, 'playerStats', player.id).withConverter(playerStatsConverter), playerStats)
         }
       } catch (e) {
         console.error("Error adding document: ", e)
