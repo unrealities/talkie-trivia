@@ -104,10 +104,10 @@ export default function App() {
 
   useEffect(() => {
     const updatePlayerGame = async () => {
-      try {
-        const docRef = doc(db, 'playerGames', playerGame.id).withConverter(playerGameConverter)
-        const docSnap = await getDoc(docRef)
+      const docRef = doc(db, 'playerGames', playerGame.id).withConverter(playerGameConverter)
+      const docSnap = await getDoc(docRef)
 
+      try {
         if (docSnap.exists()) {
           await updateDoc(doc(db, 'playerGames', playerGame.id).withConverter(playerGameConverter), playerGame)
         }
@@ -118,10 +118,10 @@ export default function App() {
     }
 
     const updatePlayer = async () => {
-      try {
-        const docRef = doc(db, 'players', player.id).withConverter(playerConverter)
-        const docSnap = await getDoc(docRef)
+      const docRef = doc(db, 'players', player.id).withConverter(playerConverter)
+      const docSnap = await getDoc(docRef)
 
+      try {
         if (!docSnap.exists()) {
           getUserID().then(id => {
             p.id = id
@@ -135,10 +135,10 @@ export default function App() {
     }
 
     const updatePlayerStats = async () => {
-      try {
-        const docRef = doc(db, 'playerStats', player.id).withConverter(playerStatsConverter)
-        const docSnap = await getDoc(docRef)
+      const docRef = doc(db, 'playerStats', player.id).withConverter(playerStatsConverter)
+      const docSnap = await getDoc(docRef)
 
+      try {
         if (docSnap.exists()) {
           const dbPlayerStats = docSnap.data() as PlayerStats
           dbPlayerStats.games++

@@ -40,8 +40,9 @@ const MoviesContainer = (props: MovieContainerProps) => {
 
   useEffect(() => {
     const setPlayerGame = async () => {
+      console.log(props.playerGame)
       try {
-        const docRef = await setDoc(doc(db, 'playerGames', props.playerGame.id).withConverter(playerGameConverter), props.playerGame)
+        await setDoc(doc(db, 'playerGames', props.playerGame.id).withConverter(playerGameConverter), props.playerGame)
       } catch (e) {
         console.error("Error adding document: ", e)
       }
@@ -61,7 +62,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
       }
 
       try {
-        const docRef = await setDoc(doc(db, 'playerStats', props.player.id).withConverter(playerStatsConverter), ps)
+        await setDoc(doc(db, 'playerStats', props.player.id).withConverter(playerStatsConverter), ps)
       } catch (e) {
         console.error("Error adding document: ", e)
       }
