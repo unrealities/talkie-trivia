@@ -1,4 +1,4 @@
-import PlayerGame from '../../../models/game'
+import { PlayerGame } from '../../../models/game'
 
 export const playerGameConverter = {
     toFirestore: (playerGame) => {

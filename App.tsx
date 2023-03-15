@@ -65,7 +65,10 @@ export default function App() {
     movie: movie
   }
 
-  let p = new Player()
+  let p: Player = {
+    id: 'default new player',
+    name: ''
+  }
 
   let pg: PlayerGame = {
     correctAnswer: false,
@@ -103,39 +106,40 @@ export default function App() {
   })
 
   useEffect(() => {
-    const updatePlayerGame = async () => {
-      const docRef = doc(db, 'playerGames', playerGame.id).withConverter(playerGameConverter)
-      const docSnap = await getDoc(docRef)
-
-      try {
-        if (docSnap.exists()) {
-          await updateDoc(doc(db, 'playerGames', playerGame.id).withConverter(playerGameConverter), playerGame)
-        }
-        await setDoc(doc(db, 'playerGames', playerGame.id).withConverter(playerGameConverter), playerGame)
-      } catch (e) {
-        console.error("Error adding document: ", e)
-      }
-    }
-
-    const updatePlayer = async () => {
-      const docRef = doc(db, 'players', player.id).withConverter(playerConverter)
+    const updatePlayer = async (playerToUpdate:Player) => {
+      const docRef = doc(db, 'players', playerToUpdate.id).withConverter(playerConverter)
       const docSnap = await getDoc(docRef)
 
       try {
         if (!docSnap.exists()) {
           getUserID().then(id => {
-            p.id = id
-            p.name = ''
+            playerToUpdate.id = id
+            playerToUpdate.name = ''
+            setPlayer(playerToUpdate)
           })
-          await setDoc(doc(db, 'players', player.id).withConverter(playerConverter), player)
+          await setDoc(doc(db, 'players', playerToUpdate.id).withConverter(playerConverter), playerToUpdate)
         }
       } catch (e) {
         console.error("Error adding document: ", e)
       }
     }
 
-    const updatePlayerStats = async () => {
-      const docRef = doc(db, 'playerStats', player.id).withConverter(playerStatsConverter)
+    const updatePlayerGame = async (playerGameToUpdate) => {
+      const docRef = doc(db, 'playerGames', playerGameToUpdate.id).withConverter(playerGameConverter)
+      const docSnap = await getDoc(docRef)
+
+      try {
+        if (docSnap.exists()) {
+          await updateDoc(doc(db, 'playerGames', playerGameToUpdate.id).withConverter(playerGameConverter), playerGameToUpdate)
+        }
+        await setDoc(doc(db, 'playerGames', playerGameToUpdate.id).withConverter(playerGameConverter), playerGameToUpdate)
+      } catch (e) {
+        console.error("Error adding document: ", e)
+      }
+    }
+
+    const updatePlayerStats = async (playerStatsToUpdate) => {
+      const docRef = doc(db, 'playerStats', playerStatsToUpdate.id).withConverter(playerStatsConverter)
       const docSnap = await getDoc(docRef)
 
       try {
@@ -145,22 +149,19 @@ export default function App() {
           setPlayerStats(dbPlayerStats)
           await updateDoc(doc(db, 'playerStats', player.id).withConverter(playerStatsConverter), playerStats)
         } else {
-          await setDoc(doc(db, 'playerStats', player.id).withConverter(playerStatsConverter), playerStats)
+          await setDoc(doc(db, 'playerStats', player.id).withConverter(playerStatsConverter), playerStatsToUpdate)
         }
       } catch (e) {
         console.error("Error adding document: ", e)
       }
     }
 
-    updatePlayerStats()
+    updatePlayerStats(ps)
 
     if (user) {
       player.name = user?.displayName ? user.displayName.toString() : ''
-      setPlayerGame(pg)
-      updatePlayerGame()
-      updatePlayer()
-    } else {
-      setPlayerGame(pg)
+      updatePlayer(player)
+      updatePlayerGame(playerGame)
     }
   }, [user])
 
