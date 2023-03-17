@@ -114,7 +114,6 @@ export default function App() {
         if (!docSnap.exists()) {
           getUserID().then(id => {
             playerToUpdate.id = id
-            playerToUpdate.name = ''
             setPlayer(playerToUpdate)
           })
           await setDoc(doc(db, 'players', playerToUpdate.id).withConverter(playerConverter), playerToUpdate)
