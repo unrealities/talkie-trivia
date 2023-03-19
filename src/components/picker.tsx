@@ -29,6 +29,7 @@ const PickerContainer = (props: PickerContainerProps) => {
                 ...playerGame,
                 guesses: [...playerGame.guesses, selectedMovieID]
             })
+            console.log('playerGame updated')
         }
         if (playerGame.game.movie.id == selectedMovieID) {
             console.log('picker. correct answer')

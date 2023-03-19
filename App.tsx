@@ -66,7 +66,7 @@ export default function App() {
   }
 
   let p: Player = {
-    id: 'default new player',
+    id: uuid.v4().toString(),
     name: ''
   }
 
