@@ -39,10 +39,10 @@ const MoviesContainer = (props: MovieContainerProps) => {
   const confetti = useRef<ConfettiCannon>(null)
 
   useEffect(() => {
-    const setPlayerGame = async () => {
-      console.log(props.playerGame)
+    const setPlayerGame = async (playerGame: PlayerGame) => {
+      console.log(playerGame)
       try {
-        await setDoc(doc(db, 'playerGames', props.playerGame.id).withConverter(playerGameConverter), props.playerGame)
+        await setDoc(doc(db, 'playerGames', playerGame.id).withConverter(playerGameConverter), playerGame)
       } catch (e) {
         console.error("Error adding document: ", e)
       }
@@ -81,16 +81,11 @@ const MoviesContainer = (props: MovieContainerProps) => {
     }
 
     if (props.player.name != '') {
-      setPlayerGame()
+      setPlayerGame(props.playerGame)
     }
 
     setLoading(false)
   }, [props.playerGame, showModal])
-
-  useEffect(() => {
-    console.log('showModal')
-    console.log(showModal)
-  }, [showModal])
 
   if (isLoading) { return null }
 
