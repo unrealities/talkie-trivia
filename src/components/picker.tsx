@@ -17,7 +17,6 @@ const PickerContainer = (props: PickerContainerProps) => {
     const defaultButtonText = 'Select a Movie'
     const [foundMovies, setFoundMovies] = useState(props.movies)
     const [inputActive, setInputActive] = useState(false)
-    const [playerGame] = useState(props.playerGame)
     const [selectedMovieID, setSelectedMovieID] = useState<number>(0)
     const [selectedMovieTitle, setSelectedMovieTitle] = useState<string>(defaultButtonText)
     const [searchText, setSearchText] = useState<string>('')
@@ -26,16 +25,18 @@ const PickerContainer = (props: PickerContainerProps) => {
     let onPressCheck = () => {
         if (selectedMovieID > 0) {
             props.updatePlayerGame({
-                ...playerGame,
-                guesses: [...playerGame.guesses, selectedMovieID]
+                ...props.playerGame,
+                guesses: [...props.playerGame.guesses, selectedMovieID]
             })
             console.log('playerGame updated')
         }
-        if (playerGame.game.movie.id == selectedMovieID) {
+        if (props.playerGame.game.movie.id == selectedMovieID) {
             console.log('picker. correct answer')
             props.toggleModal(true)
-            props.updatePlayerGame({ ...playerGame, correctAnswer: true })
-        } else if (playerGame.guesses.length > 3) {
+            props.updatePlayerGame({ ...props.playerGame,
+                correctAnswer: true,
+                guesses: [...props.playerGame.guesses, selectedMovieID] })
+        } else if (props.playerGame.guesses.length > 3) {
             console.log('picker. incorrect answer')
             props.toggleModal(true)
         }
@@ -51,7 +52,7 @@ const PickerContainer = (props: PickerContainerProps) => {
         setSelectedMovieTitle(defaultButtonText)
         setSearchText('')
         setInputActive(true)
-    }, [playerGame.guesses])
+    }, [props.playerGame.guesses.length])
 
     useEffect(() => {
         filter(searchText)
