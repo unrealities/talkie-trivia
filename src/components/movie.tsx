@@ -73,11 +73,12 @@ const MoviesContainer = (props: MovieContainerProps) => {
       setEnableSubmit(false)
       setPlayerStats(false)
     }
-    if (props.playerGame.correctAnswer && showModal) {
+    if (props.playerGame.correctAnswer) {
       console.log('game over. correct answer.')
       confetti.current?.start()
       setEnableSubmit(false)
       setPlayerStats(true)
+      setShowModal(true)
     }
 
     if (props.player.name != '') {
@@ -85,7 +86,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
     }
 
     setLoading(false)
-  }, [props.playerGame, showModal])
+  }, [props.playerGame])
 
   if (isLoading) { return null }
 
