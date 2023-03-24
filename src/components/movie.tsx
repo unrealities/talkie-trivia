@@ -72,6 +72,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
       console.log('game over. no correct answer')
       setEnableSubmit(false)
       setPlayerStats(false)
+      setShowModal(true)
     }
     if (props.playerGame.correctAnswer) {
       console.log('game over. correct answer.')
@@ -109,13 +110,6 @@ const MoviesContainer = (props: MovieContainerProps) => {
         guesses={props.playerGame.guesses}
         movie={props.playerGame.game.movie}
         movies={props.movies} />
-      <ResetContainer
-        playerGame={props.playerGame}
-        updatePlayerGame={props.updatePlayerGame} />
-      <MovieModal
-        movie={props.playerGame.game.movie}
-        show={showModal}
-        toggleModal={setShowModal} />
       <ConfettiCannon
         autoStart={false}
         count={100}
@@ -123,6 +117,13 @@ const MoviesContainer = (props: MovieContainerProps) => {
         fallSpeed={2000}
         origin={{ x: -100, y: -20 }}
         ref={confetti} />
+      <ResetContainer
+        playerGame={props.playerGame}
+        updatePlayerGame={props.updatePlayerGame} />
+      <MovieModal
+        movie={props.playerGame.game.movie}
+        show={showModal}
+        toggleModal={setShowModal} />
     </View>
   )
 }
