@@ -36,7 +36,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
   const [enableSubmit, setEnableSubmit] = useState<boolean>(!props.playerGame.correctAnswer)
   const [showModal, setShowModal] = useState<boolean>(false)
 
-  const confetti = useRef<ConfettiCannon>(null)
+  const confettiRef = useRef<ConfettiCannon>(null)
 
   useEffect(() => {
     const setPlayerGame = async (playerGame: PlayerGame) => {
@@ -76,7 +76,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
     }
     if (props.playerGame.correctAnswer) {
       console.log('game over. correct answer.')
-      confetti.current?.start()
+      confettiRef?.current?.start()
       setEnableSubmit(false)
       setPlayerStats(true)
       setShowModal(true)
@@ -110,13 +110,6 @@ const MoviesContainer = (props: MovieContainerProps) => {
         guesses={props.playerGame.guesses}
         movie={props.playerGame.game.movie}
         movies={props.movies} />
-      <ConfettiCannon
-        autoStart={false}
-        count={100}
-        fadeOut={true}
-        fallSpeed={2000}
-        origin={{ x: -100, y: -20 }}
-        ref={confetti} />
       <ResetContainer
         playerGame={props.playerGame}
         updatePlayerGame={props.updatePlayerGame} />
@@ -124,6 +117,13 @@ const MoviesContainer = (props: MovieContainerProps) => {
         movie={props.playerGame.game.movie}
         show={showModal}
         toggleModal={setShowModal} />
+      <ConfettiCannon
+        autoStart={false}
+        count={250}
+        //fadeOut={true}
+        fallSpeed={2000}
+        origin={{ x: 100, y: -20 }}
+        ref={confettiRef} />
     </View>
   )
 }

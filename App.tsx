@@ -162,6 +162,8 @@ export default function App() {
       updatePlayer(player)
       updatePlayerGame(playerGame)
     }
+
+    console.log(playerGame.game.movie.title)
   }, [user])
 
   const Tab = createBottomTabNavigator()
