@@ -18,6 +18,7 @@ import PlayerStats from '../models/playerStats'
 import { firebaseConfig } from '../config/firebase'
 import { playerStatsConverter } from '../utils/firestore/converters/playerStats'
 import { playerGameConverter } from '../utils/firestore/converters/playerGame'
+import { colors } from '../styles/global'
 
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
@@ -37,6 +38,8 @@ const MoviesContainer = (props: MovieContainerProps) => {
   const [showModal, setShowModal] = useState<boolean>(false)
 
   const confettiRef = useRef<ConfettiCannon>(null)
+  confettiRef?.current?.start()
+  confettiRef?.current?.resume()
 
   useEffect(() => {
     const setPlayerGame = async (playerGame: PlayerGame) => {
@@ -119,8 +122,9 @@ const MoviesContainer = (props: MovieContainerProps) => {
         toggleModal={setShowModal} />
       <ConfettiCannon
         autoStart={false}
+        colors={Object.values(colors)}
         count={250}
-        //fadeOut={true}
+        fadeOut={true}
         fallSpeed={2000}
         origin={{ x: 100, y: -20 }}
         ref={confettiRef} />
