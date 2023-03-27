@@ -38,8 +38,6 @@ const MoviesContainer = (props: MovieContainerProps) => {
   const [showModal, setShowModal] = useState<boolean>(false)
 
   const confettiRef = useRef<ConfettiCannon>(null)
-  confettiRef?.current?.start()
-  confettiRef?.current?.resume()
 
   useEffect(() => {
     const setPlayerGame = async (playerGame: PlayerGame) => {
@@ -90,7 +88,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
     }
 
     setLoading(false)
-  }, [props.playerGame])
+  }) // TOOD: [props.playerGame] will prevent confetti, but also prevents modal from closing
 
   if (isLoading) { return null }
 
@@ -124,6 +122,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
         autoStart={false}
         colors={Object.values(colors)}
         count={250}
+        explosionSpeed={500}
         fadeOut={true}
         fallSpeed={2000}
         origin={{ x: 100, y: -20 }}
