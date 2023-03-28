@@ -34,14 +34,13 @@ interface MovieContainerProps {
 
 const MoviesContainer = (props: MovieContainerProps) => {
   const [isLoading, setLoading] = useState<boolean>(true)
-  const [enableSubmit, setEnableSubmit] = useState<boolean>(!props.playerGame.correctAnswer)
+  const [enableSubmit, setEnableSubmit] = useState<boolean>(true)
   const [showModal, setShowModal] = useState<boolean>(false)
 
   const confettiRef = useRef<ConfettiCannon>(null)
 
   useEffect(() => {
     const setPlayerGame = async (playerGame: PlayerGame) => {
-      console.log(playerGame)
       try {
         await setDoc(doc(db, 'playerGames', playerGame.id).withConverter(playerGameConverter), playerGame)
       } catch (e) {
@@ -70,17 +69,17 @@ const MoviesContainer = (props: MovieContainerProps) => {
     }
 
     if (props.playerGame.guesses.length > 4) {
-      console.log('game over. no correct answer')
       setEnableSubmit(false)
       setPlayerStats(false)
       setShowModal(true)
     }
     if (props.playerGame.correctAnswer) {
-      console.log('game over. correct answer.')
       confettiRef?.current?.start()
-      setEnableSubmit(false)
-      setPlayerStats(true)
-      setShowModal(true)
+      if (enableSubmit) {
+        setPlayerStats(true)
+        setShowModal(true)
+        setEnableSubmit(false)
+      }
     }
 
     if (props.player.name != '') {
@@ -104,8 +103,6 @@ const MoviesContainer = (props: MovieContainerProps) => {
         enableSubmit={enableSubmit}
         playerGame={props.playerGame}
         movies={props.movies}
-        toggleModal={setShowModal}
-        toggleSubmit={setEnableSubmit}
         updatePlayerGame={props.updatePlayerGame} />
       <GuessesContainer
         guesses={props.playerGame.guesses}

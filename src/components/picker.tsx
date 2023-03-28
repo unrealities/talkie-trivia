@@ -9,8 +9,6 @@ interface PickerContainerProps {
     enableSubmit: boolean
     movies: BasicMovie[]
     playerGame: PlayerGame
-    toggleModal: Dispatch<SetStateAction<boolean>>
-    toggleSubmit: Dispatch<SetStateAction<boolean>>
     updatePlayerGame: Dispatch<SetStateAction<PlayerGame>>
 }
 const PickerContainer = (props: PickerContainerProps) => {
@@ -28,23 +26,13 @@ const PickerContainer = (props: PickerContainerProps) => {
                 ...props.playerGame,
                 guesses: [...props.playerGame.guesses, selectedMovieID]
             })
-            console.log('playerGame updated')
         }
         if (props.playerGame.game.movie.id == selectedMovieID) {
-            console.log('picker. correct answer')
-            props.toggleModal(true)
             props.updatePlayerGame({ ...props.playerGame,
                 correctAnswer: true,
                 guesses: [...props.playerGame.guesses, selectedMovieID] })
-        } else if (props.playerGame.guesses.length > 3) {
-            console.log('picker. incorrect answer')
-            props.toggleModal(true)
-        }
+        } 
     }
-
-    useEffect(() => {
-        selectedMovieID === 0 ? props.toggleSubmit(false) : props.toggleSubmit(true)
-    }, [selectedMovieID])
 
     useEffect(() => {
         setFoundMovies(props.movies)
