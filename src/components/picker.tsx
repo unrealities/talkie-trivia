@@ -113,6 +113,9 @@ const styles = StyleSheet.create({
     button: {
         backgroundColor: colors.primary,
         borderRadius: 10,
+        flex: 1,
+        maxHeight: 40,
+        minHeight: 40,
         padding: 10,
         width: 300
     },
@@ -127,7 +130,7 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        minHeight: 130
+        minHeight: 180
     },
     input: {
         alignSelf: 'flex-start',

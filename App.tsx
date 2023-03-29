@@ -210,7 +210,7 @@ export default function App() {
         },
         tabBarStyle: {
           backgroundColor: colors.secondary,
-          height: 80,
+          height: 40,
         }
       }}>
         <Tab.Screen

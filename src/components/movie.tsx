@@ -68,7 +68,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
       }
     }
 
-    if (props.playerGame.guesses.length > 4) {
+    if (props.playerGame.guesses.length > 4 && enableSubmit) {
       setEnableSubmit(false)
       setPlayerStats(false)
       setShowModal(true)
