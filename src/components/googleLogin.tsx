@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import { Pressable, StyleSheet, Text, View } from "react-native"
-import { GoogleAuthProvider, getAuth, signInWithCredential } from "firebase/auth"
+import { GoogleAuthProvider, getAuth, signInWithCredential, signOut } from "firebase/auth"
 import * as Google from 'expo-auth-session/providers/google'
 import Constants from 'expo-constants'
 
@@ -38,10 +38,9 @@ const GoogleLogin = (props: GoogleLoginProps) => {
     return (
         <View style={styles.container}>
             <Pressable
-                disabled={props.player.name != ''}
-                onPress={() => { promptAsync() }}
+                onPress={() => {props.player.name != '' ? signOut(getAuth()) : promptAsync()}}
                 style={styles.button}>
-                <Text style={styles.buttonText}>{props.player.name != '' ? props.player.name : 'Sign In'}</Text>
+                <Text style={styles.buttonText}>{props.player.name != '' ? 'Sign Out' : 'Sign In'}</Text>
             </Pressable>
         </View>
     )
