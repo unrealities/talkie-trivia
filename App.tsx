@@ -164,7 +164,7 @@ export default function App() {
     }
 
     console.log(playerGame.game.movie.title)
-  }, [user])
+  }, [player, playerGame, playerStats])
 
   const Tab = createBottomTabNavigator()
 
@@ -190,8 +190,6 @@ export default function App() {
       </View>
     )
   }
-
-  if (!fontsLoaded) { return null }
 
   return (
     <NavigationContainer onReady={onLayoutRootView}>

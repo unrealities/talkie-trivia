@@ -33,7 +33,6 @@ interface MovieContainerProps {
 }
 
 const MoviesContainer = (props: MovieContainerProps) => {
-  const [isLoading, setLoading] = useState<boolean>(true)
   const [enableSubmit, setEnableSubmit] = useState<boolean>(true)
   const [showModal, setShowModal] = useState<boolean>(false)
 
@@ -85,11 +84,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
     if (props.player.name != '') {
       setPlayerGame(props.playerGame)
     }
-
-    setLoading(false)
-  }) // TOOD: [props.playerGame] will prevent confetti, but also prevents modal from closing
-
-  if (isLoading) { return null }
+  })
 
   return (
     <View style={styles.container}>
