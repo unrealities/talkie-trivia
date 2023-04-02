@@ -155,14 +155,15 @@ export default function App() {
       }
     }
 
-    updatePlayerStats(ps)
-
     if (user) {
       player.name = user?.displayName ? user.displayName.toString() : ''
-      updatePlayer(player)
-      updatePlayerGame(playerGame)
     }
 
+    updatePlayerStats(playerStats)
+    updatePlayer(player)
+    updatePlayerGame(playerGame)
+
+    // TODO: for debugging
     console.log(playerGame.game.movie.title)
   }, [player, playerGame, playerStats])
 
