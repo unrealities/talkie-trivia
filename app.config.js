@@ -14,5 +14,9 @@ export default {
     themoviedb_key: process.env.THEMOVIEDB_APIKEY,
     expoClientId: process.env.CLIENTID_EXPO,
     webClientId: process.env.CLIENTID_WEB
-  }
+  },
+  plugins: [
+    "expo-font",
+    "expo-secure-store"
+  ]
 }
