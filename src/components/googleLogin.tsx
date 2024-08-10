@@ -40,6 +40,7 @@ const GoogleLogin = (props: GoogleLoginProps) => {
             <Pressable
                 onPress={() => {props.player.name != '' ? signOut(getAuth()) : promptAsync()}}
                 style={styles.button}>
+                <Text>{props.player.id} : {props.player.name}</Text>
                 <Text style={styles.buttonText}>{props.player.name != '' ? 'Sign Out' : 'Sign In'}</Text>
             </Pressable>
         </View>
