@@ -19,7 +19,7 @@
     "browserify-fs": "^1.0.0",
     "crypto": "npm:crypto-browserify",
     "dotenv": "^16.0.3",
-    "expo": "~51.0.28",
+    "expo": "~51.0.31",
     "expo-application": "~5.9.1",
     "expo-auth-session": "~5.5.2",
     "expo-constants": "~16.0.2",
