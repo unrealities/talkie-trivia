@@ -27,7 +27,6 @@ const GoogleLogin = (props: GoogleLoginProps) => {
     })
 
     useEffect(() => {
-        alert(response)
         if (response?.type === 'success') {
             const { id_token } = response.params
             const auth = getAuth()
