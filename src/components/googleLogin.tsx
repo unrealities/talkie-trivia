@@ -1,6 +1,6 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { Pressable, StyleSheet, Text, View } from "react-native"
-import { GoogleAuthProvider, getAuth, signInWithCredential, signOut } from "firebase/auth"
+import { GoogleAuthProvider, getAuth, signInWithCredential, signOut, User } from "firebase/auth"
 import * as Google from 'expo-auth-session/providers/google'
 import Constants from 'expo-constants'
 
@@ -12,6 +12,8 @@ interface GoogleLoginProps {
 }
 
 const GoogleLogin = (props: GoogleLoginProps) => {
+    const [user, setUser] = useState<User>()
+    const [player, setPlayer] = useState<Player>()
     const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
         androidClientId: Constants?.expoConfig?.extra?.androidClientId,
         expoClientId: Constants?.expoConfig?.extra?.expoClientId,
@@ -32,6 +34,11 @@ const GoogleLogin = (props: GoogleLoginProps) => {
             const auth = getAuth()
             const credential = GoogleAuthProvider.credential(id_token)
             signInWithCredential(auth, credential)
+            if (user && player) {
+                if (user.displayName) {
+                    player.name = user.displayName
+                }
+            }
         }
     }, [response])
 
