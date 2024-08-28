@@ -14,12 +14,9 @@ export function useAuthentication() {
             if (user) {
                 // User is signed in, see docs for a list of available properties
                 // https://firebase.google.com/docs/reference/js/firebase.User
-                alert("hello")
-                alert("name: " + user.displayName + " email: " + user.email)
                 setUser(user)
             } else {
-                // User is signed out
-                alert("good bye")
+                // User is signed out]
                 setUser(undefined)
             }
         })
