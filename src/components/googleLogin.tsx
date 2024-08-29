@@ -34,11 +34,6 @@ const GoogleLogin = (props: GoogleLoginProps) => {
             const auth = getAuth()
             const credential = GoogleAuthProvider.credential(id_token)
             signInWithCredential(auth, credential)
-            if (user && player) {
-                if (user.displayName) {
-                    player.name = user.displayName
-                }
-            }
         }
     }, [response])
 
