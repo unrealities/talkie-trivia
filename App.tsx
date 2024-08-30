@@ -24,7 +24,7 @@ import { Game, PlayerGame } from './src/models/game'
 import { colors } from './src/styles/global'
 import { firebaseConfig } from './src/config/firebase'
 import { useAuthentication } from './src/utils/hooks/useAuthentication'
-import { getUserID } from './src/utils/hooks/localStore'
+import { getUserID, getUserName } from './src/utils/hooks/localStore'
 import { playerGameConverter } from './src/utils/firestore/converters/playerGame'
 import { playerStatsConverter } from './src/utils/firestore/converters/playerStats'
 import { playerConverter } from './src/utils/firestore/converters/player'
@@ -114,6 +114,10 @@ export default function App() {
         if (!docSnap.exists()) {
           getUserID().then(id => {
             playerToUpdate.id = id
+            setPlayer(playerToUpdate)
+          })
+          getUserName().then(name => {
+            playerToUpdate.name = name
             setPlayer(playerToUpdate)
           })
           await setDoc(doc(db, 'players', playerToUpdate.id).withConverter(playerConverter), playerToUpdate)
