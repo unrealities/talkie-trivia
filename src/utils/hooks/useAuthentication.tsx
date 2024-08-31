@@ -16,7 +16,7 @@ export function useAuthentication() {
                 // User is signed in, see docs for a list of available properties
                 // https://firebase.google.com/docs/reference/js/firebase.User
                 setUser(user)
-                setUserName(user.displayName)
+                setUserName(user.displayName || "no name")
             } else {
                 // User is signed out]
                 setUser(undefined)
