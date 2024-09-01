@@ -12,8 +12,6 @@ interface GoogleLoginProps {
 }
 
 const GoogleLogin = (props: GoogleLoginProps) => {
-    const [user, setUser] = useState<User>()
-    const [player, setPlayer] = useState<Player>()
     const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
         androidClientId: Constants?.expoConfig?.extra?.androidClientId,
         expoClientId: Constants?.expoConfig?.extra?.expoClientId,
