@@ -120,6 +120,7 @@ export default function App() {
           })
           await setDoc(doc(db, 'players', playerToUpdate.id).withConverter(playerConverter), playerToUpdate)
         }
+        alert(player.name)
         setUserName(player.name)
       } catch (e) {
         console.error("Error adding document: ", e)
