@@ -9,6 +9,7 @@ async function setUserID(id: string) {
 }
 
 export async function setUserName(name: string) {
+  alert(name)
   await AsyncStorage.setItem(userName, name)
 }
 
