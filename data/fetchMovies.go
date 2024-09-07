@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -72,20 +72,20 @@ func TMDBKey() string {
 	}
 	defer configFile.Close()
 
-	secretsBytes, _ := ioutil.ReadAll(configFile)
+	secretsBytes, _ := io.ReadAll(configFile)
 	var config Config
 	json.Unmarshal(secretsBytes, &config)
 	return config.TMDBKey
 }
 
 func URLS() []string {
-	moviesFile, err := os.Open("popular_movies_05_24_2022.json")
+	moviesFile, err := os.Open("popular_movies_09_07_2024.json")
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer moviesFile.Close()
 
-	byteValue, _ := ioutil.ReadAll(moviesFile)
+	byteValue, _ := io.ReadAll(moviesFile)
 	var movies []PopularMovie
 	json.Unmarshal(byteValue, &movies)
 
@@ -131,7 +131,7 @@ func main() {
 		if err != nil {
 			fmt.Printf(err.Error())
 		}
-		body, err := ioutil.ReadAll(resp.Body)
+		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			fmt.Printf(err.Error())
 		}
