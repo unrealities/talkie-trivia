@@ -79,7 +79,7 @@ func TMDBKey() string {
 }
 
 func URLS() []string {
-	moviesFile, err := os.Open("popular_movies_09_07_2024.json")
+	moviesFile, err := os.Open("popular_movies_09_09_2024.json")
 	if err != nil {
 		fmt.Println(err)
 	}
