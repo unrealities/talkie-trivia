@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 	"strconv"
+	"time"
 )
 
 type PopularMovie struct {
@@ -79,7 +80,10 @@ func TMDBKey() string {
 }
 
 func URLS() []string {
-	moviesFile, err := os.Open("popular_movies_09_09_2024.json")
+	now := time.Now()
+	d := now.Format("01_02_2006")
+	fileName := fmt.Sprintf("popular_movies_%s.json", d)
+	moviesFile, err := os.Create(fileName)
 	if err != nil {
 		fmt.Println(err)
 	}
