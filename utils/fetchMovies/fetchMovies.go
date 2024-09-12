@@ -67,7 +67,7 @@ type TMDBDetailsResponse struct {
 }
 
 func TMDBKey() string {
-	configFile, err := os.Open("secrets.json")
+	configFile, err := os.Open("../secrets.json")
 	if err != nil {
 		fmt.Println(err)
 	}

@@ -1,11 +1,3 @@
-// TODO:
-/*
-curl --request GET \
-     --url 'https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc' \
-     --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwYWYwMWY4NWQxMTg2NjJiZTZkYjgyMGUwN2EyNDBlYSIsIm5iZiI6MTcyNTgwNjk1Mi4yMzQ1OTIsInN1YiI6IjVkNWVmZDcxOTI0Y2U1MDAxNTE0N2IzZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.zmI2IGO10ovj50D9dmtXsMHVM1X6mPmoNLDqwYuTgHc' \
-     --header 'accept: application/json'
-*/
-
 package main
 
 import (
@@ -16,66 +8,38 @@ import (
 	"net/url"
 	"os"
 	"strconv"
-	"time"
 )
 
-type PopularMovie struct {
-	Adult         bool    `json:"adult"`
-	ID            int     `json:"id"`
-	OriginalTitle string  `json:"original_title"`
-	Popularity    float64 `json:"popularity"`
-	Video         bool    `json:"video"`
+type Movie struct {
+	Adult            bool    `json:"adult"`
+	BackdropPath     string  `json:"backdrop_path"`
+	GenreIds         []int   `json:"genre_ids"`
+	ID               int     `json:"id"`
+	OriginalLanguage string  `json:"original_language"`
+	OriginalTitle    string  `json:"original_title"`
+	Overview         string  `json:"overview"`
+	Popularity       float64 `json:"popularity"`
+	PosterPath       string  `json:"poster_path"`
+	ReleaseDate      string  `json:"release_date"`
+	Title            string  `json:"title"`
+	Video            bool    `json:"video"`
+	VoteAverage      float64 `json:"vote_average"`
+	VoteCount        int     `json:"vote_count"`
 }
 
 type Config struct {
 	TMDBKey string `json:"TMDBKey"`
 }
 
-type TMDBDetailsResponse struct {
-	Adult               bool        `json:"adult"`
-	BackdropPath        string      `json:"backdrop_path"`
-	BelongsToCollection interface{} `json:"belongs_to_collection"`
-	Budget              int         `json:"budget"`
-	Genres              []struct {
-		ID   int    `json:"id"`
-		Name string `json:"name"`
-	} `json:"genres"`
-	Homepage            string  `json:"homepage"`
-	ID                  int     `json:"id"`
-	ImdbID              string  `json:"imdb_id"`
-	OriginalLanguage    string  `json:"original_language"`
-	OriginalTitle       string  `json:"original_title"`
-	Overview            string  `json:"overview"`
-	Popularity          float64 `json:"popularity"`
-	PosterPath          string  `json:"poster_path"`
-	ProductionCompanies []struct {
-		ID            int    `json:"id"`
-		LogoPath      string `json:"logo_path"`
-		Name          string `json:"name"`
-		OriginCountry string `json:"origin_country"`
-	} `json:"production_companies"`
-	ProductionCountries []struct {
-		Iso31661 string `json:"iso_3166_1"`
-		Name     string `json:"name"`
-	} `json:"production_countries"`
-	ReleaseDate     string `json:"release_date"`
-	Revenue         int    `json:"revenue"`
-	Runtime         int    `json:"runtime"`
-	SpokenLanguages []struct {
-		EnglishName string `json:"english_name"`
-		Iso6391     string `json:"iso_639_1"`
-		Name        string `json:"name"`
-	} `json:"spoken_languages"`
-	Status      string  `json:"status"`
-	Tagline     string  `json:"tagline"`
-	Title       string  `json:"title"`
-	Video       bool    `json:"video"`
-	VoteAverage float64 `json:"vote_average"`
-	VoteCount   int     `json:"vote_count"`
+type TMDBMoviesReponse struct {
+	Page         int     `json:"page"`
+	Results      []Movie `json:"results"`
+	TotalPages   int     `json:"total_pages"`
+	TotalResults int     `json:"total_results"`
 }
 
 func TMDBKey() string {
-	configFile, err := os.Open("secrets.json")
+	configFile, err := os.Open("../secrets.json")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -87,30 +51,22 @@ func TMDBKey() string {
 	return config.TMDBKey
 }
 
-func URLS() []string {
-	now := time.Now()
-	d := now.Format("01_02_2006")
-	fileName := fmt.Sprintf("popular_movies_%s.json", d)
-	moviesFile, err := os.Create(fileName)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer moviesFile.Close()
+func URLS(pages int) []string {
+	urls := make([]string, pages)
 
-	byteValue, _ := io.ReadAll(moviesFile)
-	var movies []PopularMovie
-	json.Unmarshal(byteValue, &movies)
-
-	urls := make([]string, len(movies))
-
-	for _, movie := range movies {
-		path := "/3/movie/" + strconv.Itoa(movie.ID)
+	for page := 0; page < pages; page++ {
+		path := "/3/discover/movie/"
 		url := url.URL{
 			Scheme: "https",
 			Host:   "api.themoviedb.org",
 			Path:   path,
 		}
 		q := url.Query()
+		q.Set("page", strconv.Itoa(page))
+		q.Set("include_adult", "false")
+		q.Set("include_video", "false")
+		q.Set("language", "en-US")
+		q.Set("sort_by", "popularity.desc")
 		q.Set("api_key", TMDBKey())
 		url.RawQuery = q.Encode()
 		urls = append(urls, url.String())
@@ -127,15 +83,16 @@ func WriteToFile(file *os.File, data string) {
 }
 
 func main() {
-	fileName := "movies.txt"
-	urls := URLS()
+	fileName := "popular_movies_raw.json"
+	max_pages := 3
+	urls := URLS(max_pages)
 	f, err := os.Create(fileName)
 	if err != nil {
 		fmt.Printf(err.Error())
 	}
 	defer f.Close()
 
-	for _, url := range urls {
+	for page, url := range urls {
 		if url == "" {
 			continue
 		}
@@ -150,13 +107,13 @@ func main() {
 
 		// check for error response
 		data := (*json.RawMessage)(&body)
-		var validResponse TMDBDetailsResponse
+		var validResponse TMDBMoviesReponse
 		err = json.Unmarshal(*data, &validResponse)
 		if err != nil {
 			fmt.Printf(err.Error())
 		}
 
-		if validResponse.OriginalTitle > "" {
+		if validResponse.Page == page+1 {
 			WriteToFile(f, string(body))
 		}
 	}
