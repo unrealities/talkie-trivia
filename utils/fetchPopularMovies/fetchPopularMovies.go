@@ -54,8 +54,8 @@ func TMDBKey() string {
 func URLS(pages int) []string {
 	urls := make([]string, pages)
 
-	for page := 0; page < pages; page++ {
-		path := "/3/discover/movie/"
+	for page := 1; page < pages; page++ {
+		path := "/3/discover/movie"
 		url := url.URL{
 			Scheme: "https",
 			Host:   "api.themoviedb.org",
@@ -92,7 +92,7 @@ func main() {
 	}
 	defer f.Close()
 
-	for page, url := range urls {
+	for _, url := range urls {
 		if url == "" {
 			continue
 		}
@@ -113,8 +113,9 @@ func main() {
 			fmt.Printf(err.Error())
 		}
 
-		if validResponse.Page == page+1 {
-			WriteToFile(f, string(body))
-		}
+		WriteToFile(f, string(body))
+		// if validResponse.Page == page+1 {
+		// 	WriteToFile(f, string(body))
+		// }
 	}
 }
