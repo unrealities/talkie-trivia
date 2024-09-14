@@ -92,6 +92,8 @@ func main() {
 	}
 	defer f.Close()
 
+	results := []Movie{}
+
 	for _, url := range urls {
 		if url == "" {
 			continue
@@ -113,9 +115,9 @@ func main() {
 			fmt.Printf(err.Error())
 		}
 
-		WriteToFile(f, string(body))
-		// if validResponse.Page == page+1 {
-		// 	WriteToFile(f, string(body))
-		// }
+		results = append(results, validResponse.Results...)
 	}
+
+	jsonResults, _ := json.Marshal(results)
+	WriteToFile(f, string(jsonResults))
 }
