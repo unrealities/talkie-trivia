@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 	"strconv"
+	"time"
 )
 
 type Movie struct {
@@ -84,7 +85,7 @@ func WriteToFile(file *os.File, data string) {
 
 func main() {
 	fileName := "popular_movies_raw.json"
-	max_pages := 3
+	max_pages := 500
 	urls := URLS(max_pages)
 	f, err := os.Create(fileName)
 	if err != nil {
@@ -116,6 +117,7 @@ func main() {
 		}
 
 		results = append(results, validResponse.Results...)
+		time.Sleep(100 * time.Millisecond)
 	}
 
 	jsonResults, _ := json.Marshal(results)
