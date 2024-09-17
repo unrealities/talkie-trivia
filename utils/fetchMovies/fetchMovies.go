@@ -12,11 +12,20 @@ import (
 )
 
 type PopularMovie struct {
-	Adult         bool    `json:"adult"`
-	ID            int     `json:"id"`
-	OriginalTitle string  `json:"original_title"`
-	Popularity    float64 `json:"popularity"`
-	Video         bool    `json:"video"`
+	Adult            bool    `json:"adult"`
+	BackdropPath     string  `json:"backdrop_path"`
+	GenreIds         []int   `json:"genre_ids"`
+	ID               int     `json:"id"`
+	OriginalLanguage string  `json:"original_language"`
+	OriginalTitle    string  `json:"original_title"`
+	Overview         string  `json:"overview"`
+	Popularity       float64 `json:"popularity"`
+	PosterPath       string  `json:"poster_path"`
+	ReleaseDate      string  `json:"release_date"`
+	Title            string  `json:"title"`
+	Video            bool    `json:"video"`
+	VoteAverage      float64 `json:"vote_average"`
+	VoteCount        int     `json:"vote_count"`
 }
 
 type Config struct {
@@ -80,9 +89,7 @@ func TMDBKey() string {
 }
 
 func URLS() []string {
-	now := time.Now()
-	d := now.Format("01_02_2006")
-	fileName := fmt.Sprintf("popular_movies_%s.json", d)
+	fileName := "../fetchPopularMovies/popular_movies_raw.json"
 	moviesFile, err := os.Create(fileName)
 	if err != nil {
 		fmt.Println(err)
@@ -96,6 +103,9 @@ func URLS() []string {
 	urls := make([]string, len(movies))
 
 	for _, movie := range movies {
+		if movie.OriginalLanguage != "en" {
+			continue
+		}
 		path := "/3/movie/" + strconv.Itoa(movie.ID)
 		url := url.URL{
 			Scheme: "https",
@@ -151,5 +161,6 @@ func main() {
 		if validResponse.OriginalTitle > "" {
 			WriteToFile(f, string(body))
 		}
+		time.Sleep(100 * time.Millisecond)
 	}
 }
