@@ -90,7 +90,7 @@ func TMDBKey() string {
 
 func URLS() []string {
 	fileName := "../fetchPopularMovies/popular_movies_raw.json"
-	moviesFile, err := os.Create(fileName)
+	moviesFile, err := os.Open(fileName)
 	if err != nil {
 		fmt.Println(err)
 	}
