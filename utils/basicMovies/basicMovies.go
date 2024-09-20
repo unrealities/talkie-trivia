@@ -59,7 +59,7 @@ type DetailedMovie struct {
 }
 
 func main() {
-	jsonFile, err := os.Open("movies.json")
+	jsonFile, err := os.Open("../../data/movies.json")
 	if err != nil {
 		fmt.Println(err)
 	}
