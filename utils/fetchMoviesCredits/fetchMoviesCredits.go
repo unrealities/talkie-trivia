@@ -3,11 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
 	"strconv"
+	"time"
 )
 
 type PopularMovie struct {
@@ -54,26 +55,26 @@ type TMDBCreditsResponse struct {
 }
 
 func TMDBKey() string {
-	configFile, err := os.Open("secrets.json")
+	configFile, err := os.Open("../secrets.json")
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer configFile.Close()
 
-	secretsBytes, _ := ioutil.ReadAll(configFile)
+	secretsBytes, _ := io.ReadAll(configFile)
 	var config Config
 	json.Unmarshal(secretsBytes, &config)
 	return config.TMDBKey
 }
 
 func URLS() []string {
-	moviesFile, err := os.Open("movies.json")
+	moviesFile, err := os.Open("../../data/movies.json")
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer moviesFile.Close()
 
-	byteValue, _ := ioutil.ReadAll(moviesFile)
+	byteValue, _ := io.ReadAll(moviesFile)
 	var movies []PopularMovie
 	json.Unmarshal(byteValue, &movies)
 
@@ -98,7 +99,7 @@ func WriteToFile(file *os.File, data string) {
 	dataToWrite := data + "\n"
 	_, err := file.WriteString(dataToWrite)
 	if err != nil {
-		fmt.Printf(err.Error())
+		fmt.Println(err.Error())
 	}
 }
 
@@ -107,7 +108,7 @@ func main() {
 	urls := URLS()
 	f, err := os.Create(fileName)
 	if err != nil {
-		fmt.Printf(err.Error())
+		fmt.Println(err.Error())
 	}
 	defer f.Close()
 
@@ -117,11 +118,11 @@ func main() {
 		}
 		resp, err := http.Get(url)
 		if err != nil {
-			fmt.Printf(err.Error())
+			fmt.Println(err.Error())
 		}
-		body, err := ioutil.ReadAll(resp.Body)
+		body, err := io.ReadAll(resp.Body)
 		if err != nil {
-			fmt.Printf(err.Error())
+			fmt.Println(err.Error())
 		}
 
 		// check for error response
@@ -129,11 +130,13 @@ func main() {
 		var validResponse TMDBCreditsResponse
 		err = json.Unmarshal(*data, &validResponse)
 		if err != nil {
-			fmt.Printf(err.Error())
+			fmt.Println(err.Error())
 		}
 
 		if validResponse.ID > 0 {
 			WriteToFile(f, string(body))
 		}
+
+		time.Sleep(100 * time.Millisecond)
 	}
 }
