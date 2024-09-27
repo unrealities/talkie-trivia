@@ -1,1535 +1,4692 @@
 {
   "1": {
     "id": 1,
-    "movie_count": 4,
+    "movie_count": 5,
     "name": "George Lucas",
-    "popularity": 12.798,
+    "popularity": 16.53,
     "profile_path": "/WCSZzWdtPmdRxH9LUCVi2JPCSJ.jpg"
+  },
+  "101542": {
+    "id": 101542,
+    "movie_count": 5,
+    "name": "Ti West",
+    "popularity": 9.471,
+    "profile_path": "/y65ZHU9m830lbdbggxC8eOT123S.jpg"
   },
   "1032": {
     "id": 1032,
-    "movie_count": 18,
+    "movie_count": 21,
     "name": "Martin Scorsese",
-    "popularity": 12.414,
-    "profile_path": "/8KlPVWc91TruU0M9urCGqbf1ils.jpg"
+    "popularity": 23.955,
+    "profile_path": "/9U9Y5GQuWX3EZy39B8nkk4NY01S.jpg"
+  },
+  "10367": {
+    "id": 10367,
+    "movie_count": 6,
+    "name": "John Waters",
+    "popularity": 10.082,
+    "profile_path": "/4foU1kJ24CJwz2RVZgyc7oxMs4i.jpg"
   },
   "1038": {
     "id": 1038,
     "movie_count": 1,
     "name": "Jodie Foster",
-    "popularity": 27.023,
-    "profile_path": "/8DAd9knKivHR4CCStxlNEQXzjIh.jpg"
+    "popularity": 41.409,
+    "profile_path": "/5emVgsLFlU6SmeBIFsF2Y7aqwtG.jpg"
   },
-  "104659": {
-    "id": 104659,
-    "movie_count": 1,
-    "name": "Lane Shefter Bishop",
-    "popularity": 20.611,
-    "profile_path": "/t3ygrjo8p2GU2KLRWgAzT2wfN5n.jpg"
+  "104644": {
+    "id": 104644,
+    "movie_count": 2,
+    "name": "Dan Povenmire",
+    "popularity": 12.92,
+    "profile_path": "/fw4mmvp4G3V3pR3X3BvhEQ2C9tV.jpg"
+  },
+  "10491": {
+    "id": 10491,
+    "movie_count": 6,
+    "name": "Paul Verhoeven",
+    "popularity": 11.783,
+    "profile_path": "/wxkroRBtM6NKZdx9sYLFfFSGnaR.jpg"
   },
   "105643": {
     "id": 105643,
-    "movie_count": 13,
+    "movie_count": 9,
     "name": "Jay Oliva",
-    "popularity": 4.731,
+    "popularity": 16.078,
     "profile_path": "/y7EbnuoKFMvU7uZ4aD50jThyNoF.jpg"
   },
-  "105648": {
-    "id": 105648,
-    "movie_count": 1,
-    "name": "Nat Faxon",
-    "popularity": 11.037,
-    "profile_path": "/y0zLB7zVDztJLc2XW9Rg3f7dZvQ.jpg"
+  "1059578": {
+    "id": 1059578,
+    "movie_count": 2,
+    "name": "Jeymes Samuel",
+    "popularity": 9.525,
+    "profile_path": "/uDmJwZHQQ52H70QoYjGSwrHeVue.jpg"
   },
   "10702": {
     "id": 10702,
-    "movie_count": 10,
+    "movie_count": 11,
     "name": "Martin Campbell",
-    "popularity": 4.718,
-    "profile_path": "/vPT3FJrBE35yRpbbkLWQthhEDcr.jpg"
+    "popularity": 6.686,
+    "profile_path": "/4AiUb5lciEXdgOXFWAdebQUhEb9.jpg"
+  },
+  "107446": {
+    "id": 107446,
+    "movie_count": 4,
+    "name": "Phil Lord",
+    "popularity": 10.499,
+    "profile_path": "/yGLAUCnWwB0cQM0Ivb5FKzv3tr4.jpg"
+  },
+  "107770": {
+    "id": 107770,
+    "movie_count": 1,
+    "name": "B.J. Novak",
+    "popularity": 10.063,
+    "profile_path": "/o8Xf1khxhKGTz3QAplXD35opRA8.jpg"
   },
   "108": {
     "id": 108,
-    "movie_count": 10,
+    "movie_count": 11,
     "name": "Peter Jackson",
-    "popularity": 11.776,
-    "profile_path": "/4hh7hips4xc6kgpNDQKQH3goRvJ.jpg"
+    "popularity": 22.994,
+    "profile_path": "/bNc908d59Ba8VDNr4eCcm4G1cR.jpg"
+  },
+  "1081445": {
+    "id": 1081445,
+    "movie_count": 2,
+    "name": "Brandon Cronenberg",
+    "popularity": 10.761,
+    "profile_path": "/qZjzmqzIkPhrOxD34EP5PbwCvcZ.jpg"
   },
   "10828": {
     "id": 10828,
-    "movie_count": 8,
+    "movie_count": 7,
     "name": "Guillermo del Toro",
-    "popularity": 12.437,
+    "popularity": 14.475,
     "profile_path": "/gldeyCtKcaqnK1v4Vu9vqayhzUQ.jpg"
   },
-  "10943": {
-    "id": 10943,
-    "movie_count": 7,
-    "name": "Francis Lawrence",
-    "popularity": 10.039,
-    "profile_path": "/pyGWo5mAwZ2Koe6leB2RjKd7vmc.jpg"
+  "1088105": {
+    "id": 1088105,
+    "movie_count": 2,
+    "name": "Lucifer Valentine",
+    "popularity": 18.835,
+    "profile_path": ""
+  },
+  "1090": {
+    "id": 1090,
+    "movie_count": 11,
+    "name": "John McTiernan",
+    "popularity": 6.943,
+    "profile_path": "/yVfDkVbgQHD1A7JSV8Z47EjB1mU.jpg"
   },
   "10965": {
     "id": 10965,
     "movie_count": 11,
     "name": "Chris Columbus",
-    "popularity": 4.534,
-    "profile_path": "/p7VSWFQ6V99p3jLJOrNI1NlnTrg.jpg"
+    "popularity": 12.718,
+    "profile_path": "/yCyEz90NqjEXKZ7HYcEhDXlLlPc.jpg"
+  },
+  "109708": {
+    "id": 109708,
+    "movie_count": 1,
+    "name": "Bill Burr",
+    "popularity": 16.497,
+    "profile_path": "/tlRJmiJ62Sj9RGp0NVCH9FgUr8T.jpg"
+  },
+  "110": {
+    "id": 110,
+    "movie_count": 1,
+    "name": "Viggo Mortensen",
+    "popularity": 20.842,
+    "profile_path": "/vH5gVSpHAMhDaFWfh0Q7BG61O1y.jpg"
+  },
+  "1103": {
+    "id": 1103,
+    "movie_count": 1,
+    "name": "Bill Duke",
+    "popularity": 12.608,
+    "profile_path": "/3g2ggBB7hGq1gnQwiJtHgfX2AbF.jpg"
   },
   "11090": {
     "id": 11090,
     "movie_count": 6,
     "name": "Edgar Wright",
-    "popularity": 11.376,
-    "profile_path": "/dQzv5Ml2SkelS33hgl7E2oh0a9S.jpg"
+    "popularity": 12.34,
+    "profile_path": "/912vB9enhaErCSMpJpyWAB4yOOH.jpg"
+  },
+  "11092": {
+    "id": 11092,
+    "movie_count": 2,
+    "name": "Simon Kinberg",
+    "popularity": 11.817,
+    "profile_path": "/3xvTvkIaKfU276cpajiAoGjvaaO.jpg"
+  },
+  "1113116": {
+    "id": 1113116,
+    "movie_count": 4,
+    "name": "Andy Muschietti",
+    "popularity": 9.173,
+    "profile_path": "/mzOMGWzqFFLqIqa2WkDv5I1IxHE.jpg"
   },
   "11151": {
     "id": 11151,
     "movie_count": 5,
     "name": "Nick Cassavetes",
-    "popularity": 9.108,
-    "profile_path": "/uo0ISOxSwafZIkcRQ2GAKfHZLHx.jpg"
+    "popularity": 13.149,
+    "profile_path": "/kFGQOcOyBvQSW4k6m5LR8lnbu8n.jpg"
+  },
+  "11161": {
+    "id": 11161,
+    "movie_count": 1,
+    "name": "Tom Savini",
+    "popularity": 10.034,
+    "profile_path": "/zBYnzxzlAIEoanEU00bGYJmRS6k.jpg"
   },
   "11181": {
     "id": 11181,
-    "movie_count": 8,
+    "movie_count": 10,
     "name": "Kenneth Branagh",
-    "popularity": 45.73,
+    "popularity": 20.443,
     "profile_path": "/AbCqqFxNi5w3nDUFdQt0DGMFh5H.jpg"
   },
-  "11266": {
-    "id": 11266,
-    "movie_count": 5,
-    "name": "James McTeigue",
-    "popularity": 9.193,
-    "profile_path": "/8aUklN9PpswTG8DnhVAY92koRMC.jpg"
+  "1120694": {
+    "id": 1120694,
+    "movie_count": 3,
+    "name": "Jennifer Lee",
+    "popularity": 11.816,
+    "profile_path": "/pjZY7hdneR7FLrAT0mXNR6RrPfy.jpg"
   },
-  "11343": {
-    "id": 11343,
+  "11401": {
+    "id": 11401,
     "movie_count": 8,
-    "name": "David Yates",
-    "popularity": 16.111,
-    "profile_path": "/hAHOxR0NK4cZDumqNIpDoEdGVAh.jpg"
+    "name": "John Woo",
+    "popularity": 11.501,
+    "profile_path": "/s7sDmQq8cegHnsTmD0u2eZ4ArYZ.jpg"
   },
   "1145520": {
     "id": 1145520,
-    "movie_count": 2,
+    "movie_count": 4,
     "name": "Ari Aster",
-    "popularity": 19.25,
-    "profile_path": "/7ycICw9yVpk6bzTKLRiPd9eSfHA.jpg"
+    "popularity": 11.005,
+    "profile_path": "/ucJtVUAqLkaBNGxaLyY7IBOvAEC.jpg"
   },
   "1150": {
     "id": 1150,
-    "movie_count": 12,
+    "movie_count": 11,
     "name": "Brian De Palma",
-    "popularity": 8.46,
-    "profile_path": "/rQNkUdKRKv1A4s7N4xcFnJior6n.jpg"
+    "popularity": 5.542,
+    "profile_path": "/4xleWFdhtVC7faer6Ru2eyEgfTv.jpg"
+  },
+  "11505": {
+    "id": 11505,
+    "movie_count": 7,
+    "name": "John Hughes",
+    "popularity": 9.511,
+    "profile_path": "/1Pm0HXRXSwz5BON9HHNDLdl4HjZ.jpg"
   },
   "1152": {
     "id": 1152,
-    "movie_count": 12,
+    "movie_count": 15,
     "name": "Oliver Stone",
-    "popularity": 13.806,
-    "profile_path": "/nPFtjueZHmU56boVKXEvAoQOTWf.jpg"
+    "popularity": 13,
+    "profile_path": "/uHdNGBkrI74eYfUP2Uie7nuo0Nn.jpg"
   },
   "11614": {
     "id": 11614,
-    "movie_count": 11,
+    "movie_count": 13,
     "name": "M. Night Shyamalan",
-    "popularity": 13.225,
+    "popularity": 23.052,
     "profile_path": "/tOhFWjauKvJgjCVLJFnhbBCZuxZ.jpg"
   },
-  "11641": {
-    "id": 11641,
-    "movie_count": 2,
-    "name": "Scott Spiegel",
-    "popularity": 11.032,
-    "profile_path": "/3dKveWiEUeQbAxC7o9AKkIUymPQ.jpg"
+  "116370": {
+    "id": 116370,
+    "movie_count": 1,
+    "name": "Matthew Diamond",
+    "popularity": 9.78,
+    "profile_path": ""
+  },
+  "116805": {
+    "id": 116805,
+    "movie_count": 8,
+    "name": "Paul Feig",
+    "popularity": 17.005,
+    "profile_path": "/lcD0BkGKWKynUwtPSEDLAsFdIJX.jpg"
+  },
+  "11694": {
+    "id": 11694,
+    "movie_count": 10,
+    "name": "Doug Liman",
+    "popularity": 8.25,
+    "profile_path": "/kIT7NE6MDaiIrjPEbObXk4COFVa.jpg"
   },
   "11701": {
     "id": 11701,
-    "movie_count": 1,
+    "movie_count": 2,
     "name": "Angelina Jolie",
-    "popularity": 18.874,
-    "profile_path": "/k3W1XXddDOH2zibPkNotIh5amHo.jpg"
+    "popularity": 100.299,
+    "profile_path": "/wYqFJp7HXyNQ3hggB4XRRmT3YTg.jpg"
   },
   "11770": {
     "id": 11770,
-    "movie_count": 11,
+    "movie_count": 13,
     "name": "John Carpenter",
-    "popularity": 8.004,
-    "profile_path": "/ghBgALx0z2hGdY32eG9VL6dPyhz.jpg"
-  },
-  "1179419": {
-    "id": 1179419,
-    "movie_count": 1,
-    "name": "Matt Duffer",
-    "popularity": 19.931,
-    "profile_path": "/kXO5CnSxC0znMAICGxnPeuGP73U.jpg"
-  },
-  "1179422": {
-    "id": 1179422,
-    "movie_count": 1,
-    "name": "Ross Duffer",
-    "popularity": 14.64,
-    "profile_path": "/kN1HdFViQkcJOQlNcvvFJIx9Uju.jpg"
+    "popularity": 13.348,
+    "profile_path": "/3Qp0mg61u1qSZNJh30BFEUZrIMG.jpg"
   },
   "1179651": {
     "id": 1179651,
     "movie_count": 1,
     "name": "Lin-Manuel Miranda",
-    "popularity": 9.256,
+    "popularity": 15.26,
     "profile_path": "/r0wFwPa041pZ1QM66yJWuQXCkqx.jpg"
   },
   "118489": {
     "id": 118489,
-    "movie_count": 2,
+    "movie_count": 3,
     "name": "Walt Dohrn",
-    "popularity": 11.556,
-    "profile_path": "/2UwzPjaubMXBeto1vy00bNMZArK.jpg"
+    "popularity": 9.13,
+    "profile_path": "/uTTMPDK4qYQll5atL2qEHACdiaC.jpg"
   },
-  "1192152": {
-    "id": 1192152,
+  "1187819": {
+    "id": 1187819,
     "movie_count": 1,
-    "name": "Tomasz Mandes",
-    "popularity": 22.127,
-    "profile_path": "/wmYwPfWSXfjXpwvljvXEX8h0wfC.jpg"
+    "name": "Matthew Weiner",
+    "popularity": 9.177,
+    "profile_path": "/kzoNtRiOa36ktzQBY9I9c7JVnSh.jpg"
   },
-  "1215": {
-    "id": 1215,
+  "1201": {
+    "id": 1201,
     "movie_count": 10,
-    "name": "Raja Gosnell",
-    "popularity": 7.765,
-    "profile_path": "/dIovlHUjOfBEhqrUENBaRmGIAc0.jpg"
+    "name": "Garry Marshall",
+    "popularity": 6.782,
+    "profile_path": "/az6Hm9QyS1tkCXXppa6bXsIDArW.jpg"
+  },
+  "12098": {
+    "id": 12098,
+    "movie_count": 3,
+    "name": "Chris Miller",
+    "popularity": 9.356,
+    "profile_path": "/qKdbhP9amIRlydcoivWlTx3szuS.jpg"
   },
   "1215399": {
     "id": 1215399,
     "movie_count": 2,
     "name": "Taylor Sheridan",
-    "popularity": 51.789,
+    "popularity": 29.568,
     "profile_path": "/enrOQII7bCIf7U0WbdxiuXGfzrs.jpg"
+  },
+  "122029": {
+    "id": 122029,
+    "movie_count": 1,
+    "name": "Christian Camargo",
+    "popularity": 18.116,
+    "profile_path": "/86SVdy3HpO0KIoGMGMOg1DI5w9k.jpg"
   },
   "1223": {
     "id": 1223,
-    "movie_count": 11,
+    "movie_count": 18,
     "name": "Joel Coen",
-    "popularity": 7.317,
+    "popularity": 8.394,
     "profile_path": "/rgVaJNkZCgMarUcZuUAsVfXMWk3.jpg"
   },
-  "1241": {
-    "id": 1241,
+  "122423": {
+    "id": 122423,
+    "movie_count": 4,
+    "name": "Yorgos Lanthimos",
+    "popularity": 13.976,
+    "profile_path": "/kwKfSubzU8B0uLCEiPvY1mGOVwZ.jpg"
+  },
+  "1236122": {
+    "id": 1236122,
     "movie_count": 2,
-    "name": "John Turturro",
-    "popularity": 38.16,
-    "profile_path": "/6O9W9cJW0kCqMzYeLupV9oH0ftn.jpg"
+    "name": "Zar Amir Ebrahimi",
+    "popularity": 9.468,
+    "profile_path": "/rx57QSnK1bbHwGatNeAw2Pjsesa.jpg"
+  },
+  "123879": {
+    "id": 123879,
+    "movie_count": 1,
+    "name": "Matt Nable",
+    "popularity": 9.771,
+    "profile_path": "/yI7D2pwoWlNKClPym5lKCVEevEe.jpg"
   },
   "1243": {
     "id": 1243,
-    "movie_count": 8,
+    "movie_count": 13,
     "name": "Woody Allen",
-    "popularity": 9.017,
-    "profile_path": "/wcPQgZLDibuej1RwNTy1R2U2ZJw.jpg"
-  },
-  "12438": {
-    "id": 12438,
-    "movie_count": 1,
-    "name": "Bob Balaban",
-    "popularity": 9.035,
-    "profile_path": "/tLUlpF9EDxxRh6nM8AZ5BsPKc2B.jpg"
+    "popularity": 14.573,
+    "profile_path": "/3zaLDFvTmxAHl5JXc1zsWqZVKp0.jpg"
   },
   "124747": {
     "id": 124747,
     "movie_count": 4,
     "name": "Pierre Coffin",
-    "popularity": 12.16,
-    "profile_path": "/5HojYPP34c4agydy7D90apCMNHn.jpg"
+    "popularity": 13.539,
+    "profile_path": "/eAA9uWRqHlm1LT3nZfXb7UuPfVb.jpg"
+  },
+  "124748": {
+    "id": 124748,
+    "movie_count": 6,
+    "name": "Chris Renaud",
+    "popularity": 12.968,
+    "profile_path": "/sumBJgBqRkK4XEJ2JYXpad3MTJs.jpg"
   },
   "1269": {
     "id": 1269,
-    "movie_count": 2,
+    "movie_count": 4,
     "name": "Kevin Costner",
-    "popularity": 26.628,
+    "popularity": 56.018,
     "profile_path": "/bykmxJHLfbFM3NT05RZXhx8YTzF.jpg"
   },
   "126932": {
     "id": 126932,
     "movie_count": 1,
     "name": "Elisabeth Röhm",
-    "popularity": 16.339,
-    "profile_path": "/grXIO7etPAg2hUM9pPuEzfPovIU.jpg"
-  },
-  "1270": {
-    "id": 1270,
-    "movie_count": 3,
-    "name": "Charles Martin Smith",
-    "popularity": 9.485,
-    "profile_path": "/uzm5v0Q7nCH223EvPiJyh9Y0qiN.jpg"
+    "popularity": 14.257,
+    "profile_path": "/iWoXvqED65ym80zKPMuP6hyZhkr.jpg"
   },
   "1276759": {
     "id": 1276759,
     "movie_count": 1,
     "name": "Machine Gun Kelly",
-    "popularity": 20.01,
+    "popularity": 10.298,
     "profile_path": "/astSdaQqoYyI4p694WEllO6q3aN.jpg"
-  },
-  "12833": {
-    "id": 12833,
-    "movie_count": 1,
-    "name": "Edward Burns",
-    "popularity": 12.547,
-    "profile_path": "/i68I0bNcNd9i88cMQYQvKxX3gBr.jpg"
   },
   "12890": {
     "id": 12890,
-    "movie_count": 4,
+    "movie_count": 6,
     "name": "Pete Docter",
-    "popularity": 10.39,
-    "profile_path": "/rrAW10FlcOjqMllSwNBrFjfUT4k.jpg"
+    "popularity": 13.146,
+    "profile_path": "/xz46mHzo8apkVMxmrkMQvqakOL0.jpg"
+  },
+  "12891": {
+    "id": 12891,
+    "movie_count": 3,
+    "name": "Joss Whedon",
+    "popularity": 9.815,
+    "profile_path": "/mVvpZnKYKSCtkOQixQnOonV5kv3.jpg"
   },
   "1293994": {
     "id": 1293994,
     "movie_count": 5,
     "name": "Jon Watts",
-    "popularity": 11.311,
+    "popularity": 9.459,
     "profile_path": "/fkXChMX6CUXY1yOxBehAzvaTCl7.jpg"
+  },
+  "129561": {
+    "id": 129561,
+    "movie_count": 2,
+    "name": "Josh Safdie",
+    "popularity": 9.334,
+    "profile_path": "/bNYM97KLLVoICe3fZt6bKbvXV8d.jpg"
   },
   "12962": {
     "id": 12962,
-    "movie_count": 10,
+    "movie_count": 11,
     "name": "Jon Turteltaub",
-    "popularity": 5.625,
+    "popularity": 6.064,
     "profile_path": "/embHCkQj1fs1PaISQSQQbi9TjHj.jpg"
   },
-  "13015": {
-    "id": 13015,
-    "movie_count": 11,
-    "name": "Phillip Noyce",
-    "popularity": 7.442,
-    "profile_path": "/t41FK8X4egnSLNDexVUZ5yGq3XB.jpg"
+  "12964": {
+    "id": 12964,
+    "movie_count": 5,
+    "name": "Michael Ritchie",
+    "popularity": 14.671,
+    "profile_path": "/w2EXLsZNhTjZHi9E2nbYvLV05eO.jpg"
+  },
+  "12987": {
+    "id": 12987,
+    "movie_count": 7,
+    "name": "David Zucker",
+    "popularity": 14.692,
+    "profile_path": "/13iJccfZeC0X9WZgJnlI7ZphL7l.jpg"
+  },
+  "1304847": {
+    "id": 1304847,
+    "movie_count": 1,
+    "name": "Nora Fingscheidt",
+    "popularity": 10.954,
+    "profile_path": "/wjf96BGhggmdxiZVxOVJzWWVoq0.jpg"
+  },
+  "130938": {
+    "id": 130938,
+    "movie_count": 1,
+    "name": "Sergei Bodrov",
+    "popularity": 10.045,
+    "profile_path": "/9f4SPMNwQDA64lkSRgNhvrb1etf.jpg"
+  },
+  "1317685": {
+    "id": 1317685,
+    "movie_count": 4,
+    "name": "Scott Beck",
+    "popularity": 14.179,
+    "profile_path": "/AhRtX9KRTAVNFTAF9sKDQrlqJfE.jpg"
+  },
+  "1317686": {
+    "id": 1317686,
+    "movie_count": 4,
+    "name": "Bryan Woods",
+    "popularity": 11.778,
+    "profile_path": "/253lxpX7nAJIGWigf1XSyNxGlH8.jpg"
+  },
+  "1317730": {
+    "id": 1317730,
+    "movie_count": 1,
+    "name": "Daniel Scheinert",
+    "popularity": 12.205,
+    "profile_path": "/5VSpMLDEmygCu4bfB89Y7NV6YjM.jpg"
+  },
+  "1322602": {
+    "id": 1322602,
+    "movie_count": 2,
+    "name": "Richard Ramsey",
+    "popularity": 11.642,
+    "profile_path": "/2UmSnKRKEzlEd9tOSWRCBfJpc6h.jpg"
+  },
+  "13265": {
+    "id": 13265,
+    "movie_count": 4,
+    "name": "Franklin J. Schaffner",
+    "popularity": 9.941,
+    "profile_path": "/m04NRi0fxmE3xBZMwnIkpkjItBe.jpg"
+  },
+  "13294": {
+    "id": 13294,
+    "movie_count": 2,
+    "name": "Gene Kelly",
+    "popularity": 16.726,
+    "profile_path": "/hiyOUoYWGOth6evR0QjGeagSVUo.jpg"
+  },
+  "132964": {
+    "id": 132964,
+    "movie_count": 2,
+    "name": "Drake Doremus",
+    "popularity": 10.321,
+    "profile_path": "/dgxuBuL805ecuBhJs63YbdEwJR8.jpg"
+  },
+  "1331163": {
+    "id": 1331163,
+    "movie_count": 1,
+    "name": "Sam Esmail",
+    "popularity": 11.753,
+    "profile_path": "/mej39wMtNDsOI5HklLb65QAiM6K.jpg"
   },
   "1333": {
     "id": 1333,
-    "movie_count": 3,
+    "movie_count": 2,
     "name": "Andy Serkis",
-    "popularity": 23.878,
+    "popularity": 21.099,
     "profile_path": "/eNGqhebQ4cDssjVeNFrKtUvweV5.jpg"
+  },
+  "1338249": {
+    "id": 1338249,
+    "movie_count": 2,
+    "name": "Gary Dauberman",
+    "popularity": 14.438,
+    "profile_path": "/utWxbobxeJBRAaohiNIsIQBvuxe.jpg"
+  },
+  "13426": {
+    "id": 13426,
+    "movie_count": 10,
+    "name": "Peter Segal",
+    "popularity": 7.839,
+    "profile_path": "/x0nAuktiPai0OovveeegPAi0dRF.jpg"
+  },
+  "13484": {
+    "id": 13484,
+    "movie_count": 1,
+    "name": "Jim Sharman",
+    "popularity": 9.404,
+    "profile_path": "/Av2m8wJkKOZnlpedE4YXteTXjLE.jpg"
+  },
+  "13520": {
+    "id": 13520,
+    "movie_count": 2,
+    "name": "Aaron Sorkin",
+    "popularity": 11.118,
+    "profile_path": "/hGkusztbd1rb23QFAjvpJxKSTAU.jpg"
+  },
+  "1352022": {
+    "id": 1352022,
+    "movie_count": 1,
+    "name": "Nadine Crocker",
+    "popularity": 10.72,
+    "profile_path": "/eQGguaOxa4gabbFhqEOw5TdasaO.jpg"
   },
   "135651": {
     "id": 135651,
     "movie_count": 1,
     "name": "Michael B. Jordan",
-    "popularity": 19.96,
-    "profile_path": "/kfcn0yyEdN2aJfVaxW0NIoKVF4J.jpg"
+    "popularity": 24.458,
+    "profile_path": "/3EhMq9KKngojas9shTRjdCAqpav.jpg"
   },
-  "13581": {
-    "id": 13581,
-    "movie_count": 11,
-    "name": "Brian Levant",
-    "popularity": 2.036,
-    "profile_path": "/w5i30CI5PekRZry3AgME1ntEQSP.jpg"
+  "1358976": {
+    "id": 1358976,
+    "movie_count": 1,
+    "name": "Nick Powell",
+    "popularity": 9.808,
+    "profile_path": "/1mwtLOSNtBFB0tK6T9xKGgdRP7u.jpg"
+  },
+  "13594": {
+    "id": 13594,
+    "movie_count": 1,
+    "name": "Joseph Barbera",
+    "popularity": 10.452,
+    "profile_path": "/16UhnbVLaX9QBtcnjLH6hrdzq4F.jpg"
+  },
+  "13614": {
+    "id": 13614,
+    "movie_count": 1,
+    "name": "Deborah Kaplan",
+    "popularity": 10.89,
+    "profile_path": "/pP1MNYEN0H7T2rGWpERNQCRtzxV.jpg"
+  },
+  "1361406": {
+    "id": 1361406,
+    "movie_count": 1,
+    "name": "Nida Manzoor",
+    "popularity": 9.078,
+    "profile_path": "/e5O017MitV0wqzYhHxtXnqfqIXj.jpg"
+  },
+  "13620": {
+    "id": 13620,
+    "movie_count": 1,
+    "name": "William Hanna",
+    "popularity": 15.338,
+    "profile_path": "/zf5WRsouQN0ozuJ4vFosXylPjaZ.jpg"
+  },
+  "1362815": {
+    "id": 1362815,
+    "movie_count": 2,
+    "name": "David Yarovesky",
+    "popularity": 12.121,
+    "profile_path": "/44w2SUhfY7aPtZgv8cVvdo1ptiJ.jpg"
+  },
+  "136495": {
+    "id": 136495,
+    "movie_count": 4,
+    "name": "Damien Chazelle",
+    "popularity": 13.801,
+    "profile_path": "/14kRZ3XxNMyBv717YQSXr3wCucy.jpg"
+  },
+  "1371823": {
+    "id": 1371823,
+    "movie_count": 1,
+    "name": "Neasa Hardiman",
+    "popularity": 9.626,
+    "profile_path": "/nHmSWgumJ1KlTQ3jxQ3kvSLJOkP.jpg"
+  },
+  "137427": {
+    "id": 137427,
+    "movie_count": 7,
+    "name": "Denis Villeneuve",
+    "popularity": 16.945,
+    "profile_path": "/zdDx9Xs93UIrJFWYApYR28J8M6b.jpg"
+  },
+  "137467": {
+    "id": 137467,
+    "movie_count": 2,
+    "name": "Ben Wheatley",
+    "popularity": 16.893,
+    "profile_path": "/d9MEfHUzizFSB5IdrsGxG8vYBLK.jpg"
   },
   "138": {
     "id": 138,
-    "movie_count": 13,
+    "movie_count": 12,
     "name": "Quentin Tarantino",
-    "popularity": 25.868,
+    "popularity": 34.102,
     "profile_path": "/1gjcpAa99FAOWGnrUvHEXXsRs7o.jpg"
   },
   "13848": {
     "id": 13848,
-    "movie_count": 1,
+    "movie_count": 5,
     "name": "Charlie Chaplin",
-    "popularity": 24.977,
-    "profile_path": "/lRI9Ky1SMOehn04OqhYJ5hQfgIK.jpg"
+    "popularity": 18.133,
+    "profile_path": "/qQZ2qDAyX9aw8KCkj9VZAQLKysK.jpg"
   },
   "138781": {
     "id": 138781,
-    "movie_count": 3,
+    "movie_count": 4,
     "name": "Robert Eggers",
-    "popularity": 17.187,
-    "profile_path": "/v9ukVIUGT1vQ3KuPVLSua7FfS9s.jpg"
+    "popularity": 10.046,
+    "profile_path": "/xdN30BowN6uLjeNXYWWZINeht12.jpg"
   },
-  "14405": {
-    "id": 14405,
+  "1392152": {
+    "id": 1392152,
     "movie_count": 1,
-    "name": "Courteney Cox",
-    "popularity": 32.662,
-    "profile_path": "/3bTVQH9vBXAiwGVHXKLylStz4RT.jpg"
+    "name": "Dan Levy",
+    "popularity": 11.998,
+    "profile_path": "/2O9KqgCLHHMw5xmUpNexfWr2QVA.jpg"
   },
-  "14597": {
-    "id": 14597,
+  "1399842": {
+    "id": 1399842,
+    "movie_count": 2,
+    "name": "Bilall Fallah",
+    "popularity": 10.185,
+    "profile_path": "/thwiN6FPRkCtzrP7PrmrwaEIFtv.jpg"
+  },
+  "140151": {
+    "id": 140151,
     "movie_count": 1,
-    "name": "Gaspar Noé",
-    "popularity": 12.649,
-    "profile_path": "/wyUEwuZr3ATzltxxS4puwT5RS0b.jpg"
+    "name": "Bill Bindley",
+    "popularity": 11.21,
+    "profile_path": ""
+  },
+  "1416383": {
+    "id": 1416383,
+    "movie_count": 1,
+    "name": "Jim Cummings",
+    "popularity": 10.484,
+    "profile_path": "/3xZ06yaRBJKHzwqKYrGU4uKMtws.jpg"
+  },
+  "1419579": {
+    "id": 1419579,
+    "movie_count": 1,
+    "name": "Christian Rivers",
+    "popularity": 9.122,
+    "profile_path": "/qm9JrFiMFIkZCTAbM9scJVZIjOk.jpg"
+  },
+  "14386": {
+    "id": 14386,
+    "movie_count": 1,
+    "name": "Beyoncé",
+    "popularity": 13.247,
+    "profile_path": "/qY6iQf8mXPqZhjnpo2DC7EP0EW0.jpg"
+  },
+  "1438990": {
+    "id": 1438990,
+    "movie_count": 1,
+    "name": "Samantha Jayne",
+    "popularity": 11.074,
+    "profile_path": "/uqsuY2H0rfteUD0dvZuFpSJ50wO.jpg"
+  },
+  "14392": {
+    "id": 14392,
+    "movie_count": 4,
+    "name": "Kathryn Bigelow",
+    "popularity": 12.152,
+    "profile_path": "/IODNm2XtD61c7CNxjCXgRKtRP.jpg"
+  },
+  "1440271": {
+    "id": 1440271,
+    "movie_count": 1,
+    "name": "Ramsey Nouah",
+    "popularity": 11.275,
+    "profile_path": ""
+  },
+  "14409": {
+    "id": 14409,
+    "movie_count": 1,
+    "name": "David Schwimmer",
+    "popularity": 30.476,
+    "profile_path": "/XtKzJ9lM5Xwa7vCmE4xNHy6Owf.jpg"
+  },
+  "1447210": {
+    "id": 1447210,
+    "movie_count": 1,
+    "name": "Robert Hughes",
+    "popularity": 13.075,
+    "profile_path": "/7r5iTGTwkI0GizUhRcjsqZP6AW7.jpg"
+  },
+  "144816": {
+    "id": 144816,
+    "movie_count": 4,
+    "name": "Chris McKay",
+    "popularity": 10.742,
+    "profile_path": "/mQ42IPTpYQUOHuaVj19O1rBaZx9.jpg"
+  },
+  "1448492": {
+    "id": 1448492,
+    "movie_count": 3,
+    "name": "Castille Landon",
+    "popularity": 10.444,
+    "profile_path": "/s1oXtmqyG9X0uDfiU5HidPB6BJx.jpg"
+  },
+  "1450348": {
+    "id": 1450348,
+    "movie_count": 3,
+    "name": "Joel Crawford",
+    "popularity": 17.129,
+    "profile_path": "/3F60mZB4sGgB51jAIglwn6OrUgB.jpg"
+  },
+  "1453550": {
+    "id": 1453550,
+    "movie_count": 2,
+    "name": "Chris Appelhans",
+    "popularity": 10.907,
+    "profile_path": "/kpJNpRP4Yvdxm7O6AtpAywn6KNd.jpg"
   },
   "1461": {
     "id": 1461,
-    "movie_count": 3,
+    "movie_count": 5,
     "name": "George Clooney",
-    "popularity": 10.761,
-    "profile_path": "/kHiVY6r1k6juXrNetAYk2jILqn9.jpg"
+    "popularity": 40.327,
+    "profile_path": "/qCShMw6NW9dWcmCQrCl4tLNQwiC.jpg"
   },
-  "150": {
-    "id": 150,
-    "movie_count": 2,
-    "name": "RZA",
-    "popularity": 9.407,
-    "profile_path": "/2PVYCKXb1X3PLawJNoYGLN1x0In.jpg"
+  "1461394": {
+    "id": 1461394,
+    "movie_count": 1,
+    "name": "Jason Hand",
+    "popularity": 9.273,
+    "profile_path": "/gepbkgavGdDXdNbQzdFaxayTpoH.jpg"
+  },
+  "1462": {
+    "id": 1462,
+    "movie_count": 1,
+    "name": "Tim Blake Nelson",
+    "popularity": 15.616,
+    "profile_path": "/dcfdSmVmklb1HXHbB9kySdrl9Nq.jpg"
+  },
+  "14639": {
+    "id": 14639,
+    "movie_count": 6,
+    "name": "Mel Brooks",
+    "popularity": 21.469,
+    "profile_path": "/c21qNcMJlHnRolfhQhZOVacjtwI.jpg"
+  },
+  "1464049": {
+    "id": 1464049,
+    "movie_count": 1,
+    "name": "Michael Mullen",
+    "popularity": 13.58,
+    "profile_path": ""
+  },
+  "1466098": {
+    "id": 1466098,
+    "movie_count": 1,
+    "name": "Michael Varrati",
+    "popularity": 16.65,
+    "profile_path": "/d77sua6gQ5z6QnfkNEcI3Rf9vWa.jpg"
+  },
+  "14674": {
+    "id": 14674,
+    "movie_count": 3,
+    "name": "George Cukor",
+    "popularity": 11.938,
+    "profile_path": "/w7I9Af9fpL7nywdZiOogH0gBoZ2.jpg"
   },
   "15033": {
     "id": 15033,
     "movie_count": 1,
     "name": "Justin Long",
-    "popularity": 22.092,
-    "profile_path": "/Hlz1LnrOzGBKoZ50HBk9ytuVUa.jpg"
+    "popularity": 17.482,
+    "profile_path": "/7nbU2ZzYXMBaCeWHdAzmL38K9yO.jpg"
   },
   "15111": {
     "id": 15111,
     "movie_count": 1,
     "name": "Jean-Claude Van Damme",
-    "popularity": 59.126,
-    "profile_path": "/qAHXPJ4IybMsCbNY3811CytFj3H.jpg"
+    "popularity": 51.937,
+    "profile_path": "/7DP3bm3MS0qa0L8tBLHGebbCu6H.jpg"
   },
   "15217": {
     "id": 15217,
-    "movie_count": 10,
+    "movie_count": 12,
     "name": "Zack Snyder",
-    "popularity": 12.116,
+    "popularity": 16.107,
     "profile_path": "/iD0GDqkvJXDXiNEZej198hjt3Tt.jpg"
   },
-  "1524": {
-    "id": 1524,
-    "movie_count": 6,
-    "name": "Harold Ramis",
-    "popularity": 12.572,
-    "profile_path": "/kmTMTxthkDAsygk3Am4IUSVYYRi.jpg"
+  "15218": {
+    "id": 15218,
+    "movie_count": 8,
+    "name": "James Gunn",
+    "popularity": 17.118,
+    "profile_path": "/pnKqZub3IlKYbyH9RRTMDOoqEn0.jpg"
   },
   "15277": {
     "id": 15277,
-    "movie_count": 8,
+    "movie_count": 10,
     "name": "Jon Favreau",
-    "popularity": 28.66,
-    "profile_path": "/8MtRRnEHaBSw8Ztdl8saXiw1egP.jpg"
+    "popularity": 29.939,
+    "profile_path": "/tnx7iMVydPQXGOoLsxXl84PXtbA.jpg"
   },
-  "155483": {
-    "id": 155483,
-    "movie_count": 3,
-    "name": "Michelle Johnston",
-    "popularity": 9.856,
-    "profile_path": "/tBW5YIcWNx1ihVcm7nOUiZ9WPOZ.jpg"
-  },
-  "15556": {
-    "id": 15556,
+  "1532": {
+    "id": 1532,
     "movie_count": 1,
-    "name": "Rebecca Hall",
-    "popularity": 36.462,
-    "profile_path": "/cVZaQrUY7F5khCBYdKDlEppHnQi.jpg"
+    "name": "Bill Murray",
+    "popularity": 20.199,
+    "profile_path": "/nnCsJc9x3ZiG3AFyiyc3FPehppy.jpg"
+  },
+  "15344": {
+    "id": 15344,
+    "movie_count": 6,
+    "name": "J.J. Abrams",
+    "popularity": 12.409,
+    "profile_path": "/k4IWd2RV5kY1kAL2VgKQwFvnCLP.jpg"
+  },
+  "155267": {
+    "id": 155267,
+    "movie_count": 4,
+    "name": "Christopher Miller",
+    "popularity": 17.641,
+    "profile_path": "/dr2yCgYtmNmO5vzjk9KNbjTpbzO.jpg"
+  },
+  "15557": {
+    "id": 15557,
+    "movie_count": 8,
+    "name": "Bill Condon",
+    "popularity": 9.464,
+    "profile_path": "/dk7EK0mbUxgoDr7ki9kgYHu4cZs.jpg"
+  },
+  "15663": {
+    "id": 15663,
+    "movie_count": 2,
+    "name": "Joseph Sargent",
+    "popularity": 12.271,
+    "profile_path": "/tdRughmKCOifv5nHJLSkrCGhG9J.jpg"
+  },
+  "15774": {
+    "id": 15774,
+    "movie_count": 5,
+    "name": "Chris Buck",
+    "popularity": 11.271,
+    "profile_path": "/ponaYm3Xr1Pki8JVDSIzfA4NkNw.jpg"
   },
   "1579": {
     "id": 1579,
     "movie_count": 1,
     "name": "Maggie Gyllenhaal",
-    "popularity": 22.458,
-    "profile_path": "/5UD5cztXD9nmktUEqeuIldEiEEB.jpg"
+    "popularity": 25.82,
+    "profile_path": "/vsfkWdYWmA9CpzMHTJzrFxlDnEZ.jpg"
   },
-  "1614": {
-    "id": 1614,
-    "movie_count": 5,
-    "name": "Ang Lee",
-    "popularity": 10.986,
-    "profile_path": "/jrmdsPZI5WT4rmOl20Gb1Y2femb.jpg"
+  "1579358": {
+    "id": 1579358,
+    "movie_count": 1,
+    "name": "Sebastian Montes",
+    "popularity": 10.182,
+    "profile_path": ""
+  },
+  "15810": {
+    "id": 15810,
+    "movie_count": 7,
+    "name": "Ron Clements",
+    "popularity": 11.715,
+    "profile_path": "/u9k9yg2EGlDsxYo3ehf35yRUfcD.jpg"
+  },
+  "158735": {
+    "id": 158735,
+    "movie_count": 1,
+    "name": "Butch Hartman",
+    "popularity": 14.352,
+    "profile_path": "/wEzwotJekBQLPvG93cXaQ6wqJLD.jpg"
+  },
+  "1607016": {
+    "id": 1607016,
+    "movie_count": 1,
+    "name": "Coralie Fargeat",
+    "popularity": 20.124,
+    "profile_path": "/sNyjxmiGLnRKHsR9GUojdcG0dfK.jpg"
+  },
+  "1608418": {
+    "id": 1608418,
+    "movie_count": 1,
+    "name": "Joel Smallbone",
+    "popularity": 12.014,
+    "profile_path": "/jgmSh04jRbSxGlBTMJ9Wo4CFDMB.jpg"
+  },
+  "16294": {
+    "id": 16294,
+    "movie_count": 4,
+    "name": "Jonathan Demme",
+    "popularity": 12.096,
+    "profile_path": "/w9Lw3xTEFQUYELkl9AH5i3p5OhJ.jpg"
+  },
+  "16356": {
+    "id": 16356,
+    "movie_count": 1,
+    "name": "Steve Bendelack",
+    "popularity": 11.252,
+    "profile_path": "/rmNl92VXrO2yqoeqW2vX5rqmdKo.jpg"
+  },
+  "16377": {
+    "id": 16377,
+    "movie_count": 1,
+    "name": "Jerry Seinfeld",
+    "popularity": 16.799,
+    "profile_path": "/9OSptNQPVCUKZs1J3tqKcwtaB2v.jpg"
+  },
+  "1637776": {
+    "id": 1637776,
+    "movie_count": 8,
+    "name": "Matt Peters",
+    "popularity": 18.737,
+    "profile_path": "/twz7t4EyHuC3aTwQPedQI7ZBQXs.jpg"
+  },
+  "16384": {
+    "id": 16384,
+    "movie_count": 4,
+    "name": "Ralph Bakshi",
+    "popularity": 10.611,
+    "profile_path": "/5NxhYnuED0Jz0lLFSGBUOhM2SDx.jpg"
+  },
+  "16391": {
+    "id": 16391,
+    "movie_count": 1,
+    "name": "Julie Taymor",
+    "popularity": 10.164,
+    "profile_path": "/o57cVxN57SOC0GDUSHsKOuwTT6f.jpg"
+  },
+  "1641675": {
+    "id": 1641675,
+    "movie_count": 1,
+    "name": "Charlie Steeds",
+    "popularity": 13.73,
+    "profile_path": "/1EzyJuY6QimP4Wf0XuU4p129CmS.jpg"
+  },
+  "1644164": {
+    "id": 1644164,
+    "movie_count": 3,
+    "name": "Becca Hirani",
+    "popularity": 10.457,
+    "profile_path": "/hb3Gch6qk239AI4AgHcoBWgzZwv.jpg"
+  },
+  "164554": {
+    "id": 164554,
+    "movie_count": 2,
+    "name": "Jennifer Kent",
+    "popularity": 9.89,
+    "profile_path": "/neV1Pc9Ed051WmQ4jahjEHuIbRg.jpg"
   },
   "16483": {
     "id": 16483,
-    "movie_count": 6,
+    "movie_count": 7,
     "name": "Sylvester Stallone",
-    "popularity": 38.416,
-    "profile_path": "/qDRGPAcQoW8Wuig9bvoLpHwf1gU.jpg"
+    "popularity": 73.462,
+    "profile_path": "/pOpbPofjwpynRkWPZZZkyGds6rx.jpg"
+  },
+  "165787": {
+    "id": 165787,
+    "movie_count": 3,
+    "name": "Rich Moore",
+    "popularity": 10.793,
+    "profile_path": "/oIAmkZf9LuJuMqR8zSchoD3FJT8.jpg"
+  },
+  "1659144": {
+    "id": 1659144,
+    "movie_count": 1,
+    "name": "Julio Torres",
+    "popularity": 14.602,
+    "profile_path": "/oveoXN7fZFIeL5G1fJ7Dk5SJeNc.jpg"
   },
   "16644": {
     "id": 16644,
-    "movie_count": 1,
+    "movie_count": 2,
     "name": "Dolph Lundgren",
-    "popularity": 31.155,
-    "profile_path": "/t3hMzibYVUS1KBXFgtxuNnax8qX.jpg"
+    "popularity": 37.712,
+    "profile_path": "/3MqLWHnFFNGLEOQFlGrIE3rra85.jpg"
   },
-  "16828": {
-    "id": 16828,
+  "1673449": {
+    "id": 1673449,
     "movie_count": 1,
-    "name": "Chris Evans",
-    "popularity": 35.707,
-    "profile_path": "/3bOGNsHlrswhyW79uvIHH1V43JI.jpg"
+    "name": "Louisa Warren",
+    "popularity": 12.306,
+    "profile_path": "/pZJVNjkW7nGTwxQXxelaFezxo97.jpg"
+  },
+  "16808": {
+    "id": 16808,
+    "movie_count": 1,
+    "name": "Matthias Schweighöfer",
+    "popularity": 14.662,
+    "profile_path": "/i4c5JjvC5EpecZbp4J96mFmtm0Z.jpg"
   },
   "16847": {
     "id": 16847,
     "movie_count": 7,
     "name": "Eli Roth",
-    "popularity": 13.362,
+    "popularity": 20.203,
     "profile_path": "/qQTkpxzh1FlBGL1HD5hzdUMxv49.jpg"
   },
   "16848": {
     "id": 16848,
-    "movie_count": 7,
+    "movie_count": 4,
     "name": "Rob Zombie",
-    "popularity": 9.405,
+    "popularity": 19.899,
     "profile_path": "/kkl4gjIJ1pyEJhNp2B2HricD2v7.jpg"
   },
   "16938": {
     "id": 16938,
-    "movie_count": 13,
+    "movie_count": 16,
     "name": "Renny Harlin",
-    "popularity": 9.617,
-    "profile_path": "/pUDXr1kZe2rSxZpy9uPst3vQAha.jpg"
+    "popularity": 13.69,
+    "profile_path": "/IhXiDrZBrsLZpB5K5BmzUGkp4G.jpg"
   },
-  "17051": {
-    "id": 17051,
+  "16960": {
+    "id": 16960,
     "movie_count": 2,
-    "name": "James Franco",
-    "popularity": 13.126,
-    "profile_path": "/rShzuvrQJJQJ6lXDn3IQX4o0iCE.jpg"
+    "name": "Valerie Faris",
+    "popularity": 9.177,
+    "profile_path": "/9xxrlnkbQREPUo2Lj54PIQBKxGS.jpg"
   },
-  "1707": {
-    "id": 1707,
+  "1704": {
+    "id": 1704,
+    "movie_count": 9,
+    "name": "Gore Verbinski",
+    "popularity": 10.856,
+    "profile_path": "/rSQRdmLNAwdKxrtvBSSlBmWeSsj.jpg"
+  },
+  "17046": {
+    "id": 17046,
+    "movie_count": 4,
+    "name": "Gary Winick",
+    "popularity": 10.073,
+    "profile_path": "/65IlEyU6HWKTglfAk7cQRelYAbx.jpg"
+  },
+  "1704882": {
+    "id": 1704882,
     "movie_count": 1,
-    "name": "Stuart Beattie",
-    "popularity": 9.506,
-    "profile_path": "/mgR1jZAECtmvQ67iuZixlI3xFn6.jpg"
+    "name": "Max Barbakow",
+    "popularity": 20.046,
+    "profile_path": "/nJjznElTpKtQNOoGRaFtDIgcnqi.jpg"
   },
   "170820": {
     "id": 170820,
-    "movie_count": 5,
+    "movie_count": 1,
     "name": "Ben Falcone",
-    "popularity": 14.591,
-    "profile_path": "/jsRsK14OBLd8rqVaBB1IdLyvxN7.jpg"
+    "popularity": 21.456,
+    "profile_path": "/jtCKxxU1FPAOJKcwAa2yfKUk2WB.jpg"
   },
-  "17142": {
-    "id": 17142,
-    "movie_count": 1,
-    "name": "Paul Dano",
-    "popularity": 48.052,
-    "profile_path": "/tHsaqfauzG4MuFs5oCbq0pRy5EF.jpg"
+  "17087": {
+    "id": 17087,
+    "movie_count": 2,
+    "name": "Michael Moore",
+    "popularity": 11.452,
+    "profile_path": "/m5YViuBUXfKAHNEUObGpzhzQPgE.jpg"
   },
-  "17183": {
-    "id": 17183,
+  "1711826": {
+    "id": 1711826,
     "movie_count": 1,
-    "name": "Jackie Earle Haley",
-    "popularity": 9.618,
-    "profile_path": "/qVPNzBEm9xF4YX1SwkXhxgsuqCt.jpg"
+    "name": "Jude Weng",
+    "popularity": 9.906,
+    "profile_path": "/5z3euqstdxG10KzbrUNMCqKeUoS.jpg"
+  },
+  "17178": {
+    "id": 17178,
+    "movie_count": 1,
+    "name": "Patrick Wilson",
+    "popularity": 39.792,
+    "profile_path": "/tc1ezEfIY8BhCy85svOUDtpBFPt.jpg"
+  },
+  "17211": {
+    "id": 17211,
+    "movie_count": 3,
+    "name": "Randall Emmett",
+    "popularity": 11.204,
+    "profile_path": "/qkSvRlmJFSPl9Y1qMiOZyfP29mU.jpg"
   },
   "1723": {
     "id": 1723,
-    "movie_count": 9,
+    "movie_count": 16,
     "name": "Walter Hill",
-    "popularity": 9.258,
+    "popularity": 11.152,
     "profile_path": "/3CiICrmhaYnirmOMHEaFXYTbsnT.jpg"
   },
-  "17268": {
-    "id": 17268,
-    "movie_count": 2,
-    "name": "Ronny Yu",
-    "popularity": 9.453,
-    "profile_path": "/pFfRQ3dCtXpj1DQ5W2NlbiAYKWG.jpg"
+  "1724": {
+    "id": 1724,
+    "movie_count": 3,
+    "name": "Roger Spottiswoode",
+    "popularity": 12.555,
+    "profile_path": "/ofSwHS4FtNtKO70LHqXdOgU67iP.jpg"
+  },
+  "17242": {
+    "id": 17242,
+    "movie_count": 1,
+    "name": "Robert Schwartzman",
+    "popularity": 12.657,
+    "profile_path": "/aA0kVZY28PHOmCfWfDALS4oYZ6u.jpg"
+  },
+  "17329": {
+    "id": 17329,
+    "movie_count": 6,
+    "name": "Neil Burger",
+    "popularity": 9.328,
+    "profile_path": "/vTNNx4d3uy6v30DmWCRcqeBxeGb.jpg"
+  },
+  "17397": {
+    "id": 17397,
+    "movie_count": 1,
+    "name": "Callie Khouri",
+    "popularity": 10.734,
+    "profile_path": "/iIPeD4xUBilEhAoqud26NtbcHIC.jpg"
   },
   "17403": {
     "id": 17403,
-    "movie_count": 2,
+    "movie_count": 3,
     "name": "Mike Judge",
-    "popularity": 14.566,
-    "profile_path": "/8jEumAVtJ23rE4XZ0YrvVKAUKjk.jpg"
+    "popularity": 17.334,
+    "profile_path": "/ol4kd4mSOK7Hx3r86ydez84bwEI.jpg"
+  },
+  "174313": {
+    "id": 174313,
+    "movie_count": 1,
+    "name": "Adam Nee",
+    "popularity": 10.184,
+    "profile_path": "/6mmn1gcZCJR9fO2Wanwjydcp2XF.jpg"
+  },
+  "1748": {
+    "id": 1748,
+    "movie_count": 1,
+    "name": "William Shatner",
+    "popularity": 10.621,
+    "profile_path": "/7lsjbNFMGj3kYYWoMk1LNnl4p5P.jpg"
+  },
+  "1748949": {
+    "id": 1748949,
+    "movie_count": 1,
+    "name": "Chris Robinson",
+    "popularity": 9.466,
+    "profile_path": "/xtnebTZPleQCwA198oiev2aUhmT.jpg"
+  },
+  "1749": {
+    "id": 1749,
+    "movie_count": 3,
+    "name": "Leonard Nimoy",
+    "popularity": 13.779,
+    "profile_path": "/6U58BEkktBoLzevAvaMTR9mfGqR.jpg"
   },
   "17494": {
     "id": 17494,
     "movie_count": 12,
     "name": "Dennis Dugan",
-    "popularity": 4.517,
+    "popularity": 7.525,
     "profile_path": "/3QH2wJ1eVBLT3Vi2GNVO5TayXEB.jpg"
   },
   "17510": {
     "id": 17510,
-    "movie_count": 2,
+    "movie_count": 3,
     "name": "Ol Parker",
-    "popularity": 9.151,
-    "profile_path": "/pegrmVYV5JzSmLT9bvqOwqysTbk.jpg"
+    "popularity": 9.205,
+    "profile_path": "/emW4AxRaKnKPkhR5wXttIA5qr24.jpg"
+  },
+  "1769": {
+    "id": 1769,
+    "movie_count": 5,
+    "name": "Sofia Coppola",
+    "popularity": 9.194,
+    "profile_path": "/dzHC2LxmarkBxWLhjp2DRa5oCev.jpg"
   },
   "17697": {
     "id": 17697,
-    "movie_count": 2,
+    "movie_count": 3,
     "name": "John Krasinski",
-    "popularity": 41.609,
-    "profile_path": "/qyOE30A2ctnn7QnPjXgxLAnBore.jpg"
+    "popularity": 31.146,
+    "profile_path": "/pmVGDb6Yl6OyFcHVGbu1EYNfyFK.jpg"
+  },
+  "177532": {
+    "id": 177532,
+    "movie_count": 1,
+    "name": "Marielle Heller",
+    "popularity": 16.165,
+    "profile_path": "/3YMRpIF6fPH1RDNOG4Do1Yqq4l5.jpg"
+  },
+  "1776": {
+    "id": 1776,
+    "movie_count": 14,
+    "name": "Francis Ford Coppola",
+    "popularity": 13.385,
+    "profile_path": "/iMTQSdJ5R37IWC9ZRDIv06vvYMU.jpg"
+  },
+  "17784": {
+    "id": 17784,
+    "movie_count": 2,
+    "name": "John Irvin",
+    "popularity": 10.617,
+    "profile_path": "/gF3FWhmbiwD96E1DP68F07LkX1m.jpg"
   },
   "17825": {
     "id": 17825,
-    "movie_count": 11,
+    "movie_count": 13,
     "name": "Shawn Levy",
-    "popularity": 30.273,
-    "profile_path": "/b1ulkCHz8biG87LjLQQiMCebEZo.jpg"
+    "popularity": 23.003,
+    "profile_path": "/j1CXZgmfvFeD7S3PYtsEk8H3ebB.jpg"
   },
-  "18356": {
-    "id": 18356,
-    "movie_count": 10,
-    "name": "Stephen Herek",
-    "popularity": 5.801,
-    "profile_path": "/ni2MxgHBvzzYj9OzHpQ3yHkar79.jpg"
+  "17835": {
+    "id": 17835,
+    "movie_count": 1,
+    "name": "Ricky Gervais",
+    "popularity": 19.365,
+    "profile_path": "/zv50aVyBVDBOsMHXpeUYLi4kBhn.jpg"
+  },
+  "1785137": {
+    "id": 1785137,
+    "movie_count": 2,
+    "name": "Thomas Hardiman",
+    "popularity": 16.788,
+    "profile_path": "/cl2jLXwTMNTZ0x8b1ndmwFj0oEa.jpg"
+  },
+  "17867": {
+    "id": 17867,
+    "movie_count": 2,
+    "name": "Tom McCarthy",
+    "popularity": 11.994,
+    "profile_path": "/cEA6cxG3AiH0hUzFH9mUQQVy20O.jpg"
+  },
+  "1792483": {
+    "id": 1792483,
+    "movie_count": 1,
+    "name": "Éric Warin",
+    "popularity": 9.521,
+    "profile_path": "/14UdKmsmxNu73rPmKbZpef00YuM.jpg"
+  },
+  "1795072": {
+    "id": 1795072,
+    "movie_count": 1,
+    "name": "Nia DaCosta",
+    "popularity": 9.136,
+    "profile_path": "/zRyaLNXLT2gKgPvLreyg3GeEIdD.jpg"
+  },
+  "182001": {
+    "id": 182001,
+    "movie_count": 1,
+    "name": "Kelsey Mann",
+    "popularity": 10.545,
+    "profile_path": "/fbZTKdt6wcZ6s6J0z91ZpxXpqOY.jpg"
+  },
+  "1827119": {
+    "id": 1827119,
+    "movie_count": 1,
+    "name": "Jane Schoenbrun",
+    "popularity": 13.673,
+    "profile_path": "/wk1k21ImEp2QxnNibOCLGDT5NIN.jpg"
+  },
+  "182892": {
+    "id": 182892,
+    "movie_count": 2,
+    "name": "Mike Rohl",
+    "popularity": 10.511,
+    "profile_path": "/6MFWkS5rVa8NSh9gW9kYMLlkxmV.jpg"
+  },
+  "18311": {
+    "id": 18311,
+    "movie_count": 3,
+    "name": "Joe Roth",
+    "popularity": 12.082,
+    "profile_path": "/xLWXgnO7f3298NQawL9ctjA1uUZ.jpg"
+  },
+  "1833217": {
+    "id": 1833217,
+    "movie_count": 1,
+    "name": "Ryan Prows",
+    "popularity": 9.616,
+    "profile_path": "/gzs4WsGaneTX11MFGsVkgEs3jp5.jpg"
+  },
+  "18378": {
+    "id": 18378,
+    "movie_count": 2,
+    "name": "Herbert Ross",
+    "popularity": 19.08,
+    "profile_path": "/zeeqJjMyWhYHDUyjqkwHAJtOMgn.jpg"
+  },
+  "18392": {
+    "id": 18392,
+    "movie_count": 6,
+    "name": "Robert Aldrich",
+    "popularity": 11.484,
+    "profile_path": "/AvuC16e9Yw9sFBkj6aaXFy5vSno.jpg"
   },
   "185438": {
     "id": 185438,
-    "movie_count": 5,
+    "movie_count": 2,
     "name": "Genndy Tartakovsky",
-    "popularity": 9.493,
-    "profile_path": "/9zDGQgvPopxcPWCelOfXZfpffqi.jpg"
+    "popularity": 18.935,
+    "profile_path": "/neLR8ws82ezlbhOyUvhtLXwQZWL.jpg"
+  },
+  "18579": {
+    "id": 18579,
+    "movie_count": 1,
+    "name": "Burt Kennedy",
+    "popularity": 9.191,
+    "profile_path": "/x6etIE0KzWfvSYIQCDmDOAUQ6Ai.jpg"
+  },
+  "18596": {
+    "id": 18596,
+    "movie_count": 7,
+    "name": "Taylor Hackford",
+    "popularity": 11.283,
+    "profile_path": "/aAP9RYT7XxUiC2NZL9Hi2gEdxGB.jpg"
   },
   "1884": {
     "id": 1884,
-    "movie_count": 14,
+    "movie_count": 17,
     "name": "Steven Soderbergh",
-    "popularity": 2.941,
-    "profile_path": "/y8JlSDcQzd7gAaKyxFpExupMwDz.jpg"
+    "popularity": 16.872,
+    "profile_path": "/872DPaUxTlAOhxBb70h3vaWhMvz.jpg"
+  },
+  "1885450": {
+    "id": 1885450,
+    "movie_count": 1,
+    "name": "Spencer Squire",
+    "popularity": 11.647,
+    "profile_path": "/noF2IMQmGgWOMy74ZDDWVXjWmri.jpg"
+  },
+  "18864": {
+    "id": 18864,
+    "movie_count": 6,
+    "name": "Tom McGrath",
+    "popularity": 13.44,
+    "profile_path": "/83lSBvaRShYObPvhE89UDUkUfWo.jpg"
   },
   "18865": {
     "id": 18865,
-    "movie_count": 7,
+    "movie_count": 9,
     "name": "Louis Leterrier",
-    "popularity": 9.772,
-    "profile_path": "/pJl1hNtZOIxrdzQjwGlicWWGSXg.jpg"
-  },
-  "18878": {
-    "id": 18878,
-    "movie_count": 8,
-    "name": "Rob Cohen",
-    "popularity": 15.791,
-    "profile_path": "/kVbB8Q0g8eXsn8l81flyC6TgMPW.jpg"
+    "popularity": 12.695,
+    "profile_path": "/bpqqRRyCLeoAup2OAv1Dtm5C8Tn.jpg"
   },
   "190": {
     "id": 190,
-    "movie_count": 23,
+    "movie_count": 24,
     "name": "Clint Eastwood",
-    "popularity": 37.873,
+    "popularity": 62.471,
     "profile_path": "/dU35NnjZ4aGw5abIJe3WXVf3Eey.jpg"
   },
-  "19119": {
-    "id": 19119,
-    "movie_count": 1,
-    "name": "Mélanie Laurent",
-    "popularity": 16.285,
-    "profile_path": "/i99ogEo4gQyanCmHWYYoS6hsUqL.jpg"
+  "1911436": {
+    "id": 1911436,
+    "movie_count": 3,
+    "name": "Ciarán Foy",
+    "popularity": 10.807,
+    "profile_path": "/bj5y9QiTMdoSJ7cbdMCdUq2YpQZ.jpg"
   },
   "19274": {
     "id": 19274,
     "movie_count": 2,
     "name": "Seth Rogen",
-    "popularity": 25.279,
-    "profile_path": "/xCt0MWnPkk1tJIYYPT6fekgQRMg.jpg"
+    "popularity": 24.164,
+    "profile_path": "/2dPFskUtoiG0xafsSEGl9Oz4teA.jpg"
   },
-  "19303": {
-    "id": 19303,
-    "movie_count": 7,
-    "name": "Kevin Smith",
-    "popularity": 12.766,
-    "profile_path": "/g8sC36zUTkSTh7y9HjWa4Rbr0JP.jpg"
+  "1959810": {
+    "id": 1959810,
+    "movie_count": 2,
+    "name": "Jake Castorena",
+    "popularity": 18.04,
+    "profile_path": "/82sqCOiTOcpcQhXdYCgSI5E42jw.jpg"
   },
-  "19536": {
-    "id": 19536,
+  "1967383": {
+    "id": 1967383,
     "movie_count": 1,
-    "name": "Josh Duhamel",
-    "popularity": 13.455,
-    "profile_path": "/5Rp9aeWdN2S623KCjwfii9MhDK1.jpg"
+    "name": "Bob Bowen",
+    "popularity": 13.301,
+    "profile_path": "/z0JzOmgrzmM0UOUppblQMlZ8wXB.jpg"
   },
-  "19866": {
-    "id": 19866,
+  "197": {
+    "id": 197,
+    "movie_count": 9,
+    "name": "David Silverman",
+    "popularity": 11.154,
+    "profile_path": "/rfbJ0PUQsdggzWlLCdjdywDA7VV.jpg"
+  },
+  "1976040": {
+    "id": 1976040,
     "movie_count": 1,
-    "name": "Guillaume Canet",
-    "popularity": 11.306,
-    "profile_path": "/yxerAhXValEezb1EuV9XWc9L8KC.jpg"
+    "name": "Emma Seligman",
+    "popularity": 10.925,
+    "profile_path": "/qtB5lB3wl3m04XF8iyTfhlBzaGn.jpg"
+  },
+  "19769": {
+    "id": 19769,
+    "movie_count": 8,
+    "name": "David Ayer",
+    "popularity": 11.788,
+    "profile_path": "/7JmWK2wg2StEc9eYjY96s7OJgb7.jpg"
+  },
+  "1982638": {
+    "id": 1982638,
+    "movie_count": 1,
+    "name": "Daniel Byers",
+    "popularity": 12.32,
+    "profile_path": ""
+  },
+  "19840": {
+    "id": 19840,
+    "movie_count": 2,
+    "name": "Alejandro Amenábar",
+    "popularity": 11.058,
+    "profile_path": "/rFx8rEzC5M3qGXr8YUkjni0qXQB.jpg"
+  },
+  "19850": {
+    "id": 19850,
+    "movie_count": 5,
+    "name": "Catherine Hardwicke",
+    "popularity": 15.878,
+    "profile_path": "/6SKijrt0oEuHuzXIOl2RXNfFdvP.jpg"
+  },
+  "20006": {
+    "id": 20006,
+    "movie_count": 1,
+    "name": "Christopher Reeve",
+    "popularity": 18.867,
+    "profile_path": "/vAGrPf3ajy6OVE3FhgABynZfybP.jpg"
+  },
+  "20019": {
+    "id": 20019,
+    "movie_count": 4,
+    "name": "Lee Daniels",
+    "popularity": 11.3,
+    "profile_path": "/6boIrLokvene1qlhvb4wiKB5Ikd.jpg"
   },
   "2009739": {
     "id": 2009739,
-    "movie_count": 2,
+    "movie_count": 1,
     "name": "Domee Shi",
-    "popularity": 9.124,
+    "popularity": 14.791,
     "profile_path": "/qswD23e2Hx91SiaxyiLZHz8glNu.jpg"
+  },
+  "201": {
+    "id": 201,
+    "movie_count": 2,
+    "name": "Michel Gondry",
+    "popularity": 9.546,
+    "profile_path": "/1IAnVsl8JgHpUirBXpsbLlWyS1y.jpg"
+  },
+  "2019870": {
+    "id": 2019870,
+    "movie_count": 1,
+    "name": "Michael Cusack",
+    "popularity": 9.619,
+    "profile_path": "/fBP86WH5BBYrZh4k5ZUjN1GRObU.jpg"
+  },
+  "2036": {
+    "id": 2036,
+    "movie_count": 4,
+    "name": "Alex Garland",
+    "popularity": 11.765,
+    "profile_path": "/qSWzYnDw68xm4i5xprH9BwQ6q25.jpg"
+  },
+  "2036105": {
+    "id": 2036105,
+    "movie_count": 1,
+    "name": "Stefon Bristol",
+    "popularity": 12.156,
+    "profile_path": "/p4dycxBbucYkRFAFCHvG9PQ5rJ1.jpg"
   },
   "20387": {
     "id": 20387,
     "movie_count": 1,
     "name": "Clea DuVall",
-    "popularity": 13.181,
+    "popularity": 15.334,
     "profile_path": "/yueygn1Lmmni7EaMQD9LslexDlu.jpg"
   },
   "20400": {
     "id": 20400,
-    "movie_count": 10,
+    "movie_count": 11,
     "name": "Tim Story",
-    "popularity": 4.258,
-    "profile_path": "/d1VJwZmNnsZlDq9aAjJf95tehKh.jpg"
+    "popularity": 5.229,
+    "profile_path": "/9tixtZ4m2gpfBXPpVS2aFhGZg9D.jpg"
   },
-  "204553": {
-    "id": 204553,
-    "movie_count": 10,
-    "name": "Ethan Spaulding",
-    "popularity": 2.83,
-    "profile_path": "/wLTbLnSJ1jnjA2YOHOPqz2g0XNe.jpg"
+  "2050161": {
+    "id": 2050161,
+    "movie_count": 1,
+    "name": "Franklin Correa",
+    "popularity": 12.057,
+    "profile_path": "/qVcy7jfc5xpFIBne8suR8V2EzEJ.jpg"
+  },
+  "20503": {
+    "id": 20503,
+    "movie_count": 1,
+    "name": "Scott Mosier",
+    "popularity": 9.785,
+    "profile_path": "/oEQcuNy9uYGMNq3e49VSJ7oPsJw.jpg"
+  },
+  "2050340": {
+    "id": 2050340,
+    "movie_count": 5,
+    "name": "Justin Lee",
+    "popularity": 12.827,
+    "profile_path": "/3F0X6pHEGkplqPBfyazWUUrCKtk.jpg"
   },
   "2053": {
     "id": 2053,
     "movie_count": 2,
     "name": "Bill Paxton",
-    "popularity": 10.772,
+    "popularity": 16.822,
     "profile_path": "/aLdNe6mt1cSi2zWlUYRregzfis5.jpg"
+  },
+  "20561": {
+    "id": 20561,
+    "movie_count": 6,
+    "name": "James Gray",
+    "popularity": 9.022,
+    "profile_path": "/6oRlizIlhI2exF3OEGvtB6M7KmZ.jpg"
+  },
+  "20629": {
+    "id": 20629,
+    "movie_count": 11,
+    "name": "George Miller",
+    "popularity": 17.19,
+    "profile_path": "/pPPu5e9UDb7slbqW8Gh2dIJEvni.jpg"
+  },
+  "206919": {
+    "id": 206919,
+    "movie_count": 1,
+    "name": "Daniel Kaluuya",
+    "popularity": 15.785,
+    "profile_path": "/jj2kZqJobjom36wlhlYhc38nTwN.jpg"
+  },
+  "20739": {
+    "id": 20739,
+    "movie_count": 9,
+    "name": "Adam Shankman",
+    "popularity": 14.386,
+    "profile_path": "/6Eu0BNd8rMuXaIXkF7nPD7qYYW2.jpg"
+  },
+  "208664": {
+    "id": 208664,
+    "movie_count": 2,
+    "name": "Kay Cannon",
+    "popularity": 13.597,
+    "profile_path": "/3d61uWFZjkIt3Xzgsb649DgXQHR.jpg"
+  },
+  "2087": {
+    "id": 2087,
+    "movie_count": 9,
+    "name": "Richard Fleischer",
+    "popularity": 13.898,
+    "profile_path": "/vAPv1aa28u12zcq8YMvuwZu1hhC.jpg"
   },
   "20907": {
     "id": 20907,
-    "movie_count": 11,
+    "movie_count": 14,
     "name": "Antoine Fuqua",
-    "popularity": 8.41,
-    "profile_path": "/9zh0MmYIw1BP8V7y9N9K5Rjew4C.jpg"
+    "popularity": 16.827,
+    "profile_path": "/rPqqpDp0quYlmBiiMndzq2VdFgJ.jpg"
+  },
+  "2093041": {
+    "id": 2093041,
+    "movie_count": 1,
+    "name": "Will Merrick",
+    "popularity": 9.736,
+    "profile_path": "/6sLxwTSBpWTLF9NaXhLU9XBqFHQ.jpg"
+  },
+  "2093324": {
+    "id": 2093324,
+    "movie_count": 1,
+    "name": "Anna Halberg",
+    "popularity": 11.798,
+    "profile_path": "/pLObowRMNx7ZMRYFWFcQHCfEVvp.jpg"
   },
   "21007": {
     "id": 21007,
     "movie_count": 1,
     "name": "Jonah Hill",
-    "popularity": 13.544,
-    "profile_path": "/5aE4GgJADHzN1QsS6zkzElZSEYq.jpg"
+    "popularity": 25.309,
+    "profile_path": "/cymlWttB83MsAGR2EkTgANtjeRH.jpg"
+  },
+  "21063": {
+    "id": 21063,
+    "movie_count": 1,
+    "name": "Pamela Adlon",
+    "popularity": 14.681,
+    "profile_path": "/5eIRHUbNOH7ibXa0IfUfFvj5I5L.jpg"
   },
   "2127": {
     "id": 2127,
     "movie_count": 11,
     "name": "James Wan",
-    "popularity": 7.03,
+    "popularity": 13.665,
     "profile_path": "/bNJccMIKzCtYnndcOKniSKCzo5Y.jpg"
   },
-  "2128": {
-    "id": 2128,
-    "movie_count": 3,
-    "name": "Leigh Whannell",
-    "popularity": 11.908,
-    "profile_path": "/wvoTbsROOHfCqJ3Voe9zpal429L.jpg"
+  "21370": {
+    "id": 21370,
+    "movie_count": 10,
+    "name": "Roger Donaldson",
+    "popularity": 5.457,
+    "profile_path": "/qh19qXD1JpFSNhRKtg2vm9nDTwY.jpg"
+  },
+  "21479": {
+    "id": 21479,
+    "movie_count": 1,
+    "name": "Andrew Stevens",
+    "popularity": 23.694,
+    "profile_path": "/6j3lBX2klVHVfZg5fMJfpxEyc7z.jpg"
+  },
+  "21561": {
+    "id": 21561,
+    "movie_count": 1,
+    "name": "Tim Matheson",
+    "popularity": 17.215,
+    "profile_path": "/trZ4QaDidCOPNy7HK9cYnmKHkg9.jpg"
+  },
+  "2163": {
+    "id": 2163,
+    "movie_count": 5,
+    "name": "Richard LaGravenese",
+    "popularity": 16.142,
+    "profile_path": "/vCXgeY2gJXSSGTm9cy71268wGx5.jpg"
   },
   "21684": {
     "id": 21684,
     "movie_count": 1,
-    "name": "Bong Joon-ho",
-    "popularity": 16.034,
-    "profile_path": "/tKLJBqbdH6HFj2QxLA5o8Zk7IVs.jpg"
+    "name": "Bong Joon Ho",
+    "popularity": 14.687,
+    "profile_path": "/stwnTvZAoD8gEJEDHpDQyLCyDy5.jpg"
+  },
+  "2169945": {
+    "id": 2169945,
+    "movie_count": 1,
+    "name": "Max Eggers",
+    "popularity": 14.792,
+    "profile_path": "/dopLu6CBj5Cy6VMQhBsvlp6wOoW.jpg"
   },
   "2171": {
     "id": 2171,
-    "movie_count": 2,
+    "movie_count": 3,
     "name": "Griffin Dunne",
-    "popularity": 10.441,
+    "popularity": 9.61,
     "profile_path": "/oZeAznfOHgK1Kvy9TknkQhag1Um.jpg"
   },
   "2178": {
     "id": 2178,
     "movie_count": 1,
     "name": "Forest Whitaker",
-    "popularity": 16.418,
-    "profile_path": "/fugyEeN6sisuYi07HSoxdVHm0CZ.jpg"
+    "popularity": 20.087,
+    "profile_path": "/1GbfuDitXDBmNmXEKk2rGEXiEXE.jpg"
+  },
+  "21792": {
+    "id": 21792,
+    "movie_count": 2,
+    "name": "George Gallo",
+    "popularity": 10.345,
+    "profile_path": "/9ioCmUzm6djPaw7wC1l4ArxsSOt.jpg"
+  },
+  "21958": {
+    "id": 21958,
+    "movie_count": 1,
+    "name": "Mark Rydell",
+    "popularity": 13.142,
+    "profile_path": "/jnv40T7RTervb0jHzkh9bJFtQvH.jpg"
+  },
+  "220088": {
+    "id": 220088,
+    "movie_count": 1,
+    "name": "Tig Notaro",
+    "popularity": 12.298,
+    "profile_path": "/tdZ6XLzIaK0HWWPSM2B5OrOqUC0.jpg"
+  },
+  "22020": {
+    "id": 22020,
+    "movie_count": 1,
+    "name": "Barbara Kopple",
+    "popularity": 9.119,
+    "profile_path": "/6B3IxVoE11KPCEKS1VllDSZ374c.jpg"
+  },
+  "221522": {
+    "id": 221522,
+    "movie_count": 1,
+    "name": "Edward Berger",
+    "popularity": 9.332,
+    "profile_path": "/aBpMZi6vqvY9tacRIALPnXpde2t.jpg"
+  },
+  "2218465": {
+    "id": 2218465,
+    "movie_count": 2,
+    "name": "Parker Finn",
+    "popularity": 12.239,
+    "profile_path": "/lw1I0voNLS2llYTlDgd6qZzAMZ6.jpg"
+  },
+  "22214": {
+    "id": 22214,
+    "movie_count": 1,
+    "name": "David Wain",
+    "popularity": 9.94,
+    "profile_path": "/yh4AtjuNvBwca8HvzIXjo1Y1Nwf.jpg"
+  },
+  "22215": {
+    "id": 22215,
+    "movie_count": 1,
+    "name": "Michael Showalter",
+    "popularity": 13.318,
+    "profile_path": "/AtX8Eli8Cg8g8HrcRJDBFnplyN0.jpg"
+  },
+  "222169": {
+    "id": 222169,
+    "movie_count": 1,
+    "name": "J.G. Quintel",
+    "popularity": 20.295,
+    "profile_path": "/iVrY1k1ggfYUy8o9eY8XHAhu6f1.jpg"
+  },
+  "2223": {
+    "id": 2223,
+    "movie_count": 1,
+    "name": "Fred Savage",
+    "popularity": 14.722,
+    "profile_path": "/ux4TBPjG2kZDUlDiKb6eBK7BBFl.jpg"
+  },
+  "2226": {
+    "id": 2226,
+    "movie_count": 7,
+    "name": "Sydney Pollack",
+    "popularity": 10.617,
+    "profile_path": "/j3iXrQDiceGrAzEF6HE49zA7Wwj.jpg"
   },
   "2228": {
     "id": 2228,
-    "movie_count": 1,
+    "movie_count": 2,
     "name": "Sean Penn",
-    "popularity": 14.38,
-    "profile_path": "/9glqNTVpFpdN1nFklKaHPUyCwR6.jpg"
+    "popularity": 23.059,
+    "profile_path": "/lpZRNf56TmPsNNWZ7lhcgFM6rBc.jpg"
+  },
+  "2232": {
+    "id": 2232,
+    "movie_count": 1,
+    "name": "Michael Keaton",
+    "popularity": 52.328,
+    "profile_path": "/82rxrGxOqQW2NjKsIiNbDYHFfmb.jpg"
+  },
+  "224": {
+    "id": 224,
+    "movie_count": 10,
+    "name": "David Cronenberg",
+    "popularity": 13.664,
+    "profile_path": "/3xh4e2gWHDilMLtucHzDGsmJMuQ.jpg"
+  },
+  "224875": {
+    "id": 224875,
+    "movie_count": 1,
+    "name": "Nicole Conn",
+    "popularity": 9.164,
+    "profile_path": "/2mhHcdpbPGi7mvB08aIAXwioQik.jpg"
+  },
+  "2250105": {
+    "id": 2250105,
+    "movie_count": 1,
+    "name": "Karyna Kudzina",
+    "popularity": 14.876,
+    "profile_path": "/2UlwciLOHMqLTcHMl26DcELVFkM.jpg"
+  },
+  "2260": {
+    "id": 2260,
+    "movie_count": 2,
+    "name": "Steven Zaillian",
+    "popularity": 11.659,
+    "profile_path": "/a8OqAfO2m7TAuewIS0dOv4ip1Vr.jpg"
+  },
+  "2263272": {
+    "id": 2263272,
+    "movie_count": 2,
+    "name": "SK Dale",
+    "popularity": 9.363,
+    "profile_path": ""
+  },
+  "2269906": {
+    "id": 2269906,
+    "movie_count": 1,
+    "name": "Audie Harrison",
+    "popularity": 9.222,
+    "profile_path": ""
+  },
+  "227439": {
+    "id": 227439,
+    "movie_count": 4,
+    "name": "Don Hall",
+    "popularity": 11.428,
+    "profile_path": "/wT8rqrI65ROqwuJUGEv1A0rLoE0.jpg"
+  },
+  "227455": {
+    "id": 227455,
+    "movie_count": 1,
+    "name": "Lisa Langseth",
+    "popularity": 9.421,
+    "profile_path": "/q6M6RqiT4Z6ppWqgM4sPb2SMkgs.jpg"
+  },
+  "227564": {
+    "id": 227564,
+    "movie_count": 2,
+    "name": "Benny Safdie",
+    "popularity": 29.605,
+    "profile_path": "/gidElVVlUGeAby1trDGW9DlxLh5.jpg"
+  },
+  "22767": {
+    "id": 22767,
+    "movie_count": 1,
+    "name": "Alfonso Arau",
+    "popularity": 10.195,
+    "profile_path": "/5ishPim5akWXSnMbwOWSc3KxDx8.jpg"
+  },
+  "228": {
+    "id": 228,
+    "movie_count": 1,
+    "name": "Ed Harris",
+    "popularity": 21.121,
+    "profile_path": "/aAu9lJ02jlg0GAvv2vVnpJSDV1Y.jpg"
+  },
+  "228134": {
+    "id": 228134,
+    "movie_count": 3,
+    "name": "Rupert Sanders",
+    "popularity": 21.924,
+    "profile_path": "/jG07WemmHOWQvYnKPSdNGioGg7A.jpg"
   },
   "2294": {
     "id": 2294,
-    "movie_count": 19,
+    "movie_count": 18,
     "name": "Robert Rodriguez",
-    "popularity": 4.128,
+    "popularity": 17.576,
     "profile_path": "/bPqRdLWWwpOT8sBdj9PWOzNgwou.jpg"
+  },
+  "23213": {
+    "id": 23213,
+    "movie_count": 4,
+    "name": "Harold Becker",
+    "popularity": 9.665,
+    "profile_path": "/a68PQMWKXeB8rbdkxiR6RwshzBd.jpg"
+  },
+  "23393": {
+    "id": 23393,
+    "movie_count": 2,
+    "name": "Barbet Schroeder",
+    "popularity": 13.123,
+    "profile_path": "/5uBKjaIcxAaq70v2RPBAvb9qcgM.jpg"
+  },
+  "236592": {
+    "id": 236592,
+    "movie_count": 2,
+    "name": "Michael Goi",
+    "popularity": 13.572,
+    "profile_path": "/gGCYl0Nhc4DISIaF1tFnyPweWJO.jpg"
+  },
+  "237405": {
+    "id": 237405,
+    "movie_count": 1,
+    "name": "Lady Gaga",
+    "popularity": 33.304,
+    "profile_path": "/i1XLL9dzFS5WHaLKgju2ZOE5Msj.jpg"
+  },
+  "2376310": {
+    "id": 2376310,
+    "movie_count": 1,
+    "name": "Shane Atkinson",
+    "popularity": 17.301,
+    "profile_path": ""
+  },
+  "23799": {
+    "id": 23799,
+    "movie_count": 4,
+    "name": "Uwe Boll",
+    "popularity": 11.463,
+    "profile_path": "/atLWExqv0Att2kiKXp6gKKtiwmD.jpg"
+  },
+  "2388": {
+    "id": 2388,
+    "movie_count": 5,
+    "name": "Jonathan Frakes",
+    "popularity": 13.902,
+    "profile_path": "/gPirDX8cel6bqMdDM5VnkMH2ZmC.jpg"
+  },
+  "23964": {
+    "id": 23964,
+    "movie_count": 3,
+    "name": "Gary Ross",
+    "popularity": 11.297,
+    "profile_path": "/fEZbjmP02SIaXf1PLYhBE7uzWGn.jpg"
+  },
+  "2398947": {
+    "id": 2398947,
+    "movie_count": 2,
+    "name": "Brian Brough",
+    "popularity": 11.319,
+    "profile_path": "/8uErAH2LFWnxuUc3oEIXJPsjJLO.jpg"
   },
   "24": {
     "id": 24,
-    "movie_count": 16,
+    "movie_count": 18,
     "name": "Robert Zemeckis",
-    "popularity": 9.75,
+    "popularity": 15.228,
     "profile_path": "/lPYDQ5LYNJ12rJZENtyASmVZ1Ql.jpg"
   },
   "240": {
     "id": 240,
-    "movie_count": 10,
+    "movie_count": 13,
     "name": "Stanley Kubrick",
-    "popularity": 13.729,
+    "popularity": 26.812,
     "profile_path": "/yFT0VyIelI9aegZrsAwOG5iVP4v.jpg"
   },
   "24045": {
     "id": 24045,
     "movie_count": 1,
     "name": "Joseph Gordon-Levitt",
-    "popularity": 26.254,
-    "profile_path": "/dhv9f3AaozOjpvjAwVzOWlmmT2V.jpg"
+    "popularity": 38.553,
+    "profile_path": "/msb9UCBqBjGC95r7jns9K0C820h.jpg"
+  },
+  "2406": {
+    "id": 2406,
+    "movie_count": 2,
+    "name": "Mathieu Kassovitz",
+    "popularity": 12.071,
+    "profile_path": "/3FRBEdKKlxhvPWPt0jzgmSjeHwn.jpg"
+  },
+  "2414721": {
+    "id": 2414721,
+    "movie_count": 1,
+    "name": "Hamish Grieve",
+    "popularity": 14.51,
+    "profile_path": ""
+  },
+  "2421793": {
+    "id": 2421793,
+    "movie_count": 1,
+    "name": "Bishal Dutta",
+    "popularity": 14.236,
+    "profile_path": "/4vwoRg2SR0wb6TPVQ3BLbcsn3pY.jpg"
+  },
+  "24318": {
+    "id": 24318,
+    "movie_count": 5,
+    "name": "Richard Benjamin",
+    "popularity": 9.151,
+    "profile_path": "/i58m0OdJLHBez2z6ZbXiqXOZZpV.jpg"
+  },
+  "2441794": {
+    "id": 2441794,
+    "movie_count": 1,
+    "name": "Megumi Shimizu",
+    "popularity": 16.631,
+    "profile_path": ""
+  },
+  "2451598": {
+    "id": 2451598,
+    "movie_count": 2,
+    "name": "Kemp Powers",
+    "popularity": 16.481,
+    "profile_path": "/oE4TcENMQw25t4UTAjrnl0m4JyH.jpg"
   },
   "2461": {
     "id": 2461,
-    "movie_count": 4,
+    "movie_count": 5,
     "name": "Mel Gibson",
-    "popularity": 36.397,
-    "profile_path": "/oSOYCghY3XcXBYqMA0fsEi8WKaa.jpg"
+    "popularity": 50.923,
+    "profile_path": "/jnqHMaOslt8cef2atSmOpGRvNla.jpg"
+  },
+  "24657": {
+    "id": 24657,
+    "movie_count": 3,
+    "name": "Franco Zeffirelli",
+    "popularity": 13.813,
+    "profile_path": "/z4aOffBT2zI62z55evNG1BJAXf5.jpg"
+  },
+  "25527": {
+    "id": 25527,
+    "movie_count": 1,
+    "name": "Jason Connery",
+    "popularity": 26,
+    "profile_path": "/ljOWec5wX91bdfgPEualYHpTfLe.jpg"
+  },
+  "25882": {
+    "id": 25882,
+    "movie_count": 3,
+    "name": "Brad Turner",
+    "popularity": 19.468,
+    "profile_path": ""
+  },
+  "2602036": {
+    "id": 2602036,
+    "movie_count": 1,
+    "name": "Sean Wang",
+    "popularity": 13.499,
+    "profile_path": "/1b2NeoNZkODg4ZPemhz0X6x2Iir.jpg"
   },
   "2636": {
     "id": 2636,
-    "movie_count": 10,
+    "movie_count": 21,
     "name": "Alfred Hitchcock",
-    "popularity": 23.848,
-    "profile_path": "/108fiNM6poRieMg7RIqLJRxdAwG.jpg"
+    "popularity": 27.647,
+    "profile_path": "/osE39XteDT85B6sML8uTXFFv1sb.jpg"
   },
   "26473": {
     "id": 26473,
-    "movie_count": 1,
+    "movie_count": 2,
     "name": "Fisher Stevens",
-    "popularity": 15.065,
-    "profile_path": "/TutpOyw0A6FF5hEoFDYseI2EVN.jpg"
+    "popularity": 29.688,
+    "profile_path": "/vfyZMT3t3mGTloYGrC7T3QhGkwp.jpg"
   },
-  "27005": {
-    "id": 27005,
-    "movie_count": 12,
-    "name": "Don Michael Paul",
-    "popularity": 7.071,
-    "profile_path": "/68anBJK0vHrbwiORHh8NDaoOaLH.jpg"
+  "26502": {
+    "id": 26502,
+    "movie_count": 5,
+    "name": "Howard Deutch",
+    "popularity": 12.74,
+    "profile_path": "/7mVbikJeAf2rJ23fFE2apzPJ7ch.jpg"
+  },
+  "26648": {
+    "id": 26648,
+    "movie_count": 3,
+    "name": "Luis Llosa",
+    "popularity": 9.681,
+    "profile_path": "/mL2FmYTZvnvP4kJ9heOQLk5BT9m.jpg"
+  },
+  "26760": {
+    "id": 26760,
+    "movie_count": 2,
+    "name": "Tsui Hark",
+    "popularity": 15.756,
+    "profile_path": "/9WTG1Feva6S7n09dxON40KHBsuk.jpg"
+  },
+  "26875": {
+    "id": 26875,
+    "movie_count": 1,
+    "name": "Hideo Nakata",
+    "popularity": 10.212,
+    "profile_path": "/nGrrV7iZeYORB3VD4lfqYY8xFHy.jpg"
+  },
+  "2710": {
+    "id": 2710,
+    "movie_count": 11,
+    "name": "James Cameron",
+    "popularity": 36.443,
+    "profile_path": "/9NAZnTjBQ9WcXAQEzZpKy4vdQto.jpg"
+  },
+  "27103": {
+    "id": 27103,
+    "movie_count": 1,
+    "name": "Graham Phillips",
+    "popularity": 14.143,
+    "profile_path": "/qyEOvDgUEB7r2hc3DlYmB3wCVjN.jpg"
+  },
+  "27146": {
+    "id": 27146,
+    "movie_count": 1,
+    "name": "Rob Lieberman",
+    "popularity": 9.365,
+    "profile_path": "/lPaofAC7evfyLsS1lgbW2DlVwmD.jpg"
+  },
+  "27436": {
+    "id": 27436,
+    "movie_count": 1,
+    "name": "Costa-Gavras",
+    "popularity": 12.865,
+    "profile_path": "/shKz8ntEDXRu44fYk9c5kZsUu4k.jpg"
+  },
+  "27571": {
+    "id": 27571,
+    "movie_count": 4,
+    "name": "David Slade",
+    "popularity": 9.077,
+    "profile_path": "/9jL9OasecqvhQFvGYQtB4K6omGf.jpg"
   },
   "2778": {
     "id": 2778,
-    "movie_count": 1,
+    "movie_count": 3,
     "name": "Dennis Hopper",
-    "popularity": 9.957,
+    "popularity": 12.382,
     "profile_path": "/3Hg8mkb1RxqNhDOofzHdr0PoufH.jpg"
+  },
+  "27992": {
+    "id": 27992,
+    "movie_count": 1,
+    "name": "Brian Yuzna",
+    "popularity": 9.665,
+    "profile_path": "/qDChdKxDHwYiQyRZ4B0BEIovbhS.jpg"
+  },
+  "280": {
+    "id": 280,
+    "movie_count": 10,
+    "name": "Terry Gilliam",
+    "popularity": 10.98,
+    "profile_path": "/kODccJVnrt4ioPbJVEnkkKPHbG7.jpg"
+  },
+  "28239": {
+    "id": 28239,
+    "movie_count": 5,
+    "name": "David Twohy",
+    "popularity": 9.433,
+    "profile_path": "/gQm0cwAk4bsWgA7wF2PTFb8X37Z.jpg"
+  },
+  "28249": {
+    "id": 28249,
+    "movie_count": 1,
+    "name": "Peter Chung",
+    "popularity": 10.919,
+    "profile_path": "/r0WWewfDVpsVpnby26BI0nB1gx3.jpg"
+  },
+  "28741": {
+    "id": 28741,
+    "movie_count": 1,
+    "name": "Michael Rymer",
+    "popularity": 9.212,
+    "profile_path": "/bIBJifvtbH8sosRoii9gKNZ10VA.jpg"
+  },
+  "2880": {
+    "id": 2880,
+    "movie_count": 1,
+    "name": "Emilio Estevez",
+    "popularity": 19.94,
+    "profile_path": "/6TNIik0wBLo8DTvmJNDkKDqKWme.jpg"
+  },
+  "28898": {
+    "id": 28898,
+    "movie_count": 2,
+    "name": "Michael Radford",
+    "popularity": 10.34,
+    "profile_path": "/e30GOpg8s02V2b72pY95mCX8mhK.jpg"
+  },
+  "28902": {
+    "id": 28902,
+    "movie_count": 1,
+    "name": "Gregory Widen",
+    "popularity": 9.958,
+    "profile_path": ""
+  },
+  "28904": {
+    "id": 28904,
+    "movie_count": 4,
+    "name": "Hugh Wilson",
+    "popularity": 9.376,
+    "profile_path": "/h4P3b9XgclNpRr4TDCyBzdAe9C5.jpg"
+  },
+  "28976": {
+    "id": 28976,
+    "movie_count": 1,
+    "name": "Jack Bender",
+    "popularity": 12.29,
+    "profile_path": "/8BKWjdfFdjdqPxvJ880Y76qzSCT.jpg"
+  },
+  "29009": {
+    "id": 29009,
+    "movie_count": 2,
+    "name": "Ken Kwapis",
+    "popularity": 11.521,
+    "profile_path": "/ec57YfT1bN17GMDQNCbmWGv4EUN.jpg"
   },
   "291263": {
     "id": 291263,
     "movie_count": 3,
     "name": "Jordan Peele",
-    "popularity": 11.221,
-    "profile_path": "/9rOEfvKUInuUpJ6MMhiC8Tch1WM.jpg"
+    "popularity": 25.601,
+    "profile_path": "/kFUKn5g3ebpyZ3CSZZZo2HFWRNQ.jpg"
   },
-  "3027": {
-    "id": 3027,
-    "movie_count": 1,
-    "name": "Stephen King",
-    "popularity": 14.656,
-    "profile_path": "/7r5nEzNanuEhmxtpsKE1uCBU5Jd.jpg"
+  "29214": {
+    "id": 29214,
+    "movie_count": 4,
+    "name": "Anne Fletcher",
+    "popularity": 16.331,
+    "profile_path": "/8gD32nqf3fghg6FZhDbHxuowtyu.jpg"
   },
-  "3061": {
-    "id": 3061,
+  "29221": {
+    "id": 29221,
     "movie_count": 1,
-    "name": "Ewan McGregor",
-    "popularity": 44.866,
-    "profile_path": "/qYRGu6NIqkUYIO7ftso110WNQ6P.jpg"
+    "name": "Brittany Snow",
+    "popularity": 23.101,
+    "profile_path": "/uSQW2E7caOaXHBbvL2jdzGbwDwH.jpg"
   },
-  "32": {
-    "id": 32,
+  "29605": {
+    "id": 29605,
+    "movie_count": 3,
+    "name": "Mikael Håfström",
+    "popularity": 14.485,
+    "profile_path": "/7zOeNtAlm2aSz1ku5fcsuBFG46j.jpg"
+  },
+  "29664": {
+    "id": 29664,
+    "movie_count": 2,
+    "name": "Michael Carreras",
+    "popularity": 9.509,
+    "profile_path": "/e0MawnOmsD0PcYeceopaxklz7yK.jpg"
+  },
+  "3026": {
+    "id": 3026,
+    "movie_count": 6,
+    "name": "Rob Reiner",
+    "popularity": 18.245,
+    "profile_path": "/rcmPU3YlhHQVzZlV197qhmRsgEL.jpg"
+  },
+  "30309": {
+    "id": 30309,
     "movie_count": 1,
-    "name": "Robin Wright",
-    "popularity": 21.465,
-    "profile_path": "/lj5o0pvHfWCEaPX3rzeGQkfIQzj.jpg"
+    "name": "Peter Greenaway",
+    "popularity": 18.268,
+    "profile_path": "/xw8UM4GStDbmNy21Hi1tI1UprgW.jpg"
+  },
+  "30422": {
+    "id": 30422,
+    "movie_count": 1,
+    "name": "Jack Smight",
+    "popularity": 12.019,
+    "profile_path": "/7kjDX4Nnyzol8chMmwcQC39f8cT.jpg"
+  },
+  "3084": {
+    "id": 3084,
+    "movie_count": 1,
+    "name": "Marlon Brando",
+    "popularity": 25.556,
+    "profile_path": "/fuTEPMsBtV1zE98ujPONbKiYDc2.jpg"
+  },
+  "31": {
+    "id": 31,
+    "movie_count": 1,
+    "name": "Tom Hanks",
+    "popularity": 40.805,
+    "profile_path": "/eKF1sGJRrZJbfBG1KirPt1cfNd3.jpg"
+  },
+  "31074": {
+    "id": 31074,
+    "movie_count": 1,
+    "name": "Kinji Fukasaku",
+    "popularity": 12.64,
+    "profile_path": "/mrDEkUwgZOQz8ES5oMwTBfN4n7q.jpg"
+  },
+  "3146": {
+    "id": 3146,
+    "movie_count": 6,
+    "name": "Billy Wilder",
+    "popularity": 10.394,
+    "profile_path": "/tfVte6h2dlLn59Q0Mi6AvWAyRLP.jpg"
+  },
+  "31511": {
+    "id": 31511,
+    "movie_count": 1,
+    "name": "Grant Heslov",
+    "popularity": 17.012,
+    "profile_path": "/xNkGkkRN2I2Ly57PqDNk9QgAPJs.jpg"
+  },
+  "31621": {
+    "id": 31621,
+    "movie_count": 1,
+    "name": "Jeff Burr",
+    "popularity": 9.722,
+    "profile_path": "/d88kIiY3gdo6s9UOQl5mQUncOh6.jpg"
+  },
+  "3184902": {
+    "id": 3184902,
+    "movie_count": 1,
+    "name": "Christo Stamboliev",
+    "popularity": 9.225,
+    "profile_path": ""
+  },
+  "32277": {
+    "id": 32277,
+    "movie_count": 2,
+    "name": "Geoff Murphy",
+    "popularity": 9.647,
+    "profile_path": "/AtNod4v6Nzq9wXKXejIiOn4TAsW.jpg"
   },
   "32278": {
     "id": 32278,
-    "movie_count": 5,
+    "movie_count": 4,
     "name": "Matt Reeves",
-    "popularity": 11.666,
+    "popularity": 15.048,
     "profile_path": "/5rA459xpMt6IeJG7ZqvhLbSozEH.jpg"
+  },
+  "3238": {
+    "id": 3238,
+    "movie_count": 1,
+    "name": "Merian C. Cooper",
+    "popularity": 10.343,
+    "profile_path": "/sK5FUDK9CXW5pHtNRwTTp5T8Vxn.jpg"
+  },
+  "32593": {
+    "id": 32593,
+    "movie_count": 7,
+    "name": "Steven Brill",
+    "popularity": 9.685,
+    "profile_path": "/bhWId1JKFtFECSJPCYo9DbXeOaS.jpg"
   },
   "33": {
     "id": 33,
     "movie_count": 1,
     "name": "Gary Sinise",
-    "popularity": 15.358,
-    "profile_path": "/ngYV91xYfCu0JNcSxJ4yQ7tzOna.jpg"
+    "popularity": 15.847,
+    "profile_path": "/olRjiV8ZhBixQiTvrGwXhpVXxsV.jpg"
+  },
+  "33008": {
+    "id": 33008,
+    "movie_count": 2,
+    "name": "Menahem Golan",
+    "popularity": 11.633,
+    "profile_path": "/qGtHMLd4E7tRyw75H4lWTRelW7B.jpg"
   },
   "33192": {
     "id": 33192,
-    "movie_count": 2,
-    "name": "Joel Edgerton",
-    "popularity": 23.918,
-    "profile_path": "/uFLxGHmPaNoTD6EMpMmu5bfP9Fr.jpg"
-  },
-  "3460": {
-    "id": 3460,
     "movie_count": 1,
-    "name": "Gene Wilder",
-    "popularity": 13.206,
-    "profile_path": "/reDFAbxSrSQz4gTlQYT9i8VTl4r.jpg"
+    "name": "Joel Edgerton",
+    "popularity": 22.475,
+    "profile_path": "/2YzeeiYUbI94Ywc7MVMo1NcN6jf.jpg"
   },
-  "34849": {
-    "id": 34849,
+  "33433": {
+    "id": 33433,
+    "movie_count": 4,
+    "name": "Scott Hicks",
+    "popularity": 9.947,
+    "profile_path": "/xJWGoZpqFQodfLuiltknFfOdpV8.jpg"
+  },
+  "33485": {
+    "id": 33485,
+    "movie_count": 4,
+    "name": "Ron Underwood",
+    "popularity": 11.871,
+    "profile_path": "/3MxNvsTCxQIuAmEnmr5lRgxS20G.jpg"
+  },
+  "3417": {
+    "id": 3417,
+    "movie_count": 1,
+    "name": "Tony Goldwyn",
+    "popularity": 20.048,
+    "profile_path": "/A3hXimbzDtFxQ1PXNo8gG7RZeN4.jpg"
+  },
+  "34396": {
+    "id": 34396,
+    "movie_count": 1,
+    "name": "Roxann Dawson",
+    "popularity": 11.278,
+    "profile_path": "/46TogVXwdXoDqOnbcMulTXHaFzx.jpg"
+  },
+  "34517": {
+    "id": 34517,
+    "movie_count": 4,
+    "name": "Trey Parker",
+    "popularity": 12.637,
+    "profile_path": "/pVEfyxGOBoKoirRZtmSsJ7PX91V.jpg"
+  },
+  "34934": {
+    "id": 34934,
+    "movie_count": 3,
+    "name": "Bruce Timm",
+    "popularity": 19.485,
+    "profile_path": "/4G64qCUGFQ1Sfwa6MK7CzwAaHyL.jpg"
+  },
+  "35270": {
+    "id": 35270,
     "movie_count": 2,
-    "name": "Ted Demme",
-    "popularity": 12.372,
-    "profile_path": "/gAzwOACFPvmoSWM87ru8u4vLA9N.jpg"
+    "name": "Eric Radomski",
+    "popularity": 9.994,
+    "profile_path": "/z1vRonppwah0DVC4bvb711ukP4a.jpg"
+  },
+  "35318": {
+    "id": 35318,
+    "movie_count": 2,
+    "name": "Ken Annakin",
+    "popularity": 10.975,
+    "profile_path": "/5KKdodVlzI0aXmhw54i1Nsc37Z7.jpg"
   },
   "35452": {
     "id": 35452,
     "movie_count": 3,
     "name": "Corey Yuen",
-    "popularity": 9.172,
+    "popularity": 19.734,
     "profile_path": "/d4doL1fc0TCcQqgFvkB8fRRpa1F.jpg"
   },
   "3556": {
     "id": 3556,
-    "movie_count": 6,
+    "movie_count": 9,
     "name": "Roman Polanski",
-    "popularity": 9.293,
-    "profile_path": "/60UYC6apdoC8VBh62WCkZ2LPGPk.jpg"
+    "popularity": 18.254,
+    "profile_path": "/yHwHSXdZatkoLgIjPeW14GKlrZs.jpg"
+  },
+  "35796": {
+    "id": 35796,
+    "movie_count": 1,
+    "name": "Craig Mazin",
+    "popularity": 16.836,
+    "profile_path": "/uEhna6qcMuyU5TP7irpTUZ2ZsZc.jpg"
+  },
+  "36425": {
+    "id": 36425,
+    "movie_count": 9,
+    "name": "McG",
+    "popularity": 16.254,
+    "profile_path": "/sEcoHVCqc2IrJkxgixGHrDytsyd.jpg"
   },
   "366": {
     "id": 366,
-    "movie_count": 9,
+    "movie_count": 12,
     "name": "James Mangold",
-    "popularity": 9.83,
+    "popularity": 7.018,
     "profile_path": "/pk0GDjn99crNwR4qgCCEokDYd71.jpg"
   },
   "36602": {
     "id": 36602,
     "movie_count": 10,
     "name": "Peter Berg",
-    "popularity": 9.212,
+    "popularity": 8.864,
     "profile_path": "/1pR16H0zqRG49ns8cYykYpodgGF.jpg"
   },
-  "36811": {
-    "id": 36811,
+  "3663": {
+    "id": 3663,
     "movie_count": 1,
-    "name": "Nick Cannon",
-    "popularity": 11.649,
-    "profile_path": "/w0475CrtBvSva3p1qsIePoBXQ5g.jpg"
+    "name": "Jerry Lewis",
+    "popularity": 9.427,
+    "profile_path": "/3TpijSL83yJYvEurLjCnIU44Fr9.jpg"
+  },
+  "36797": {
+    "id": 36797,
+    "movie_count": 7,
+    "name": "Robert Luketic",
+    "popularity": 9.933,
+    "profile_path": "/dwescz6qnJ1zWeRLKQIL5X9zT9s.jpg"
+  },
+  "37153": {
+    "id": 37153,
+    "movie_count": 1,
+    "name": "Zoë Kravitz",
+    "popularity": 36.898,
+    "profile_path": "/A8Ig9UHh8NSiUGg3xChcoF7749w.jpg"
+  },
+  "37630": {
+    "id": 37630,
+    "movie_count": 3,
+    "name": "Shekhar Kapur",
+    "popularity": 9.46,
+    "profile_path": "/leGRUMubTyQ3arKUIMnuWYx5M2e.jpg"
+  },
+  "37710": {
+    "id": 37710,
+    "movie_count": 7,
+    "name": "Peter Hyams",
+    "popularity": 10.044,
+    "profile_path": "/duAvOEQ7Bt3RoiyBzFmlOawcCwW.jpg"
+  },
+  "37932": {
+    "id": 37932,
+    "movie_count": 10,
+    "name": "F. Gary Gray",
+    "popularity": 7.246,
+    "profile_path": "/lVbwLnxtdiQaS8oGWFZMkhATLc5.jpg"
   },
   "380": {
     "id": 380,
     "movie_count": 2,
     "name": "Robert De Niro",
-    "popularity": 44.479,
+    "popularity": 41.537,
     "profile_path": "/cT8htcckIuyI1Lqwt1CvD02ynTh.jpg"
   },
-  "38670": {
-    "id": 38670,
-    "movie_count": 1,
-    "name": "Camilla Belle",
-    "popularity": 19.586,
-    "profile_path": "/11a3sCUcZINGb1akxgJ0KTsgNIC.jpg"
-  },
-  "38673": {
-    "id": 38673,
-    "movie_count": 1,
-    "name": "Channing Tatum",
-    "popularity": 37.05,
-    "profile_path": "/bhTmp6FA8fOQnGlNk75tdmj2bpu.jpg"
+  "39012": {
+    "id": 39012,
+    "movie_count": 2,
+    "name": "Peter Bogdanovich",
+    "popularity": 19.114,
+    "profile_path": "/oLcVhrnT8bMnnMIp4KqjiJAWyEg.jpg"
   },
   "3905": {
     "id": 3905,
     "movie_count": 1,
     "name": "William H. Macy",
-    "popularity": 30.485,
-    "profile_path": "/7fkXWN1xQfQwxuHv6uhpgBWX0Dg.jpg"
+    "popularity": 13.916,
+    "profile_path": "/hdVEGSrP8qWlJnt0v5vSVcGOjy7.jpg"
+  },
+  "39104": {
+    "id": 39104,
+    "movie_count": 3,
+    "name": "Abel Ferrara",
+    "popularity": 17.838,
+    "profile_path": "/ymyeTdUit4Atectxxvrxla3M7nq.jpg"
   },
   "39189": {
     "id": 39189,
     "movie_count": 1,
     "name": "Stephen Merchant",
-    "popularity": 11.345,
+    "popularity": 25.942,
     "profile_path": "/6WM2rK6390Nwk398syJbGcPvRct.jpg"
+  },
+  "39608": {
+    "id": 39608,
+    "movie_count": 1,
+    "name": "John Derek",
+    "popularity": 9.864,
+    "profile_path": "/eQb5Tq9oyHUVBZsiLyBSMPOfItJ.jpg"
+  },
+  "39779": {
+    "id": 39779,
+    "movie_count": 2,
+    "name": "Peter Collinson",
+    "popularity": 9.217,
+    "profile_path": "/oSDx2b8rJ9Cd8bflKHSuN02fSON.jpg"
+  },
+  "39847": {
+    "id": 39847,
+    "movie_count": 2,
+    "name": "Halina Reijn",
+    "popularity": 18.367,
+    "profile_path": "/su9FMcM5wKfZiSNs35OLlot4hLd.jpg"
+  },
+  "39996": {
+    "id": 39996,
+    "movie_count": 7,
+    "name": "Sidney Lumet",
+    "popularity": 24.021,
+    "profile_path": "/hjj3V2DkPJ46zo5uz9bsZQzAk6R.jpg"
   },
   "40": {
     "id": 40,
-    "movie_count": 2,
+    "movie_count": 4,
     "name": "Orson Welles",
-    "popularity": 10.135,
+    "popularity": 12.494,
     "profile_path": "/e9lGmqQq3EsHeUQgQLByo275hcc.jpg"
   },
-  "40256": {
-    "id": 40256,
-    "movie_count": 8,
-    "name": "D. J. Caruso",
-    "popularity": 11.834,
-    "profile_path": "/f1SZVhhjvzVot596JYVJdf60dWY.jpg"
+  "40007": {
+    "id": 40007,
+    "movie_count": 1,
+    "name": "John Mackenzie",
+    "popularity": 9.82,
+    "profile_path": "/8sQAnh8Q2zNjAFiCNHddMWNUt0h.jpg"
+  },
+  "40223": {
+    "id": 40223,
+    "movie_count": 5,
+    "name": "Joe Carnahan",
+    "popularity": 16.884,
+    "profile_path": "/e6cnnUqh6mGIjnRFI4xFc30AqVr.jpg"
+  },
+  "40243": {
+    "id": 40243,
+    "movie_count": 3,
+    "name": "Gil Junger",
+    "popularity": 11.919,
+    "profile_path": "/5KNcFU2kyy9v3ytppOZq6NGBkNW.jpg"
   },
   "4027": {
     "id": 4027,
     "movie_count": 3,
     "name": "Frank Darabont",
-    "popularity": 11.386,
-    "profile_path": "/nvOqAQhKtXdHtczgqanoCfltsxJ.jpg"
+    "popularity": 13.803,
+    "profile_path": "/7LqmE3p1XTwCdNCOmBxovq210Qk.jpg"
+  },
+  "40345": {
+    "id": 40345,
+    "movie_count": 5,
+    "name": "Don Bluth",
+    "popularity": 14.583,
+    "profile_path": "/vzeIEidWO7v2Dfw7iMv3Xjnmfwd.jpg"
+  },
+  "40644": {
+    "id": 40644,
+    "movie_count": 4,
+    "name": "Chad Stahelski",
+    "popularity": 16.862,
+    "profile_path": "/eRCryGwKDH4XqUlrdkERmeBWPo8.jpg"
   },
   "40684": {
     "id": 40684,
-    "movie_count": 6,
+    "movie_count": 7,
     "name": "David Leitch",
-    "popularity": 9.028,
-    "profile_path": "/qykhwWkXTAteD9yvsmItXh9LxCq.jpg"
+    "popularity": 20.69,
+    "profile_path": "/7FOLULXFvWrovvfsSyljXtK0tr8.jpg"
+  },
+  "4081": {
+    "id": 4081,
+    "movie_count": 2,
+    "name": "Stanley Kramer",
+    "popularity": 17.269,
+    "profile_path": "/fNbpcXaHD0xTrekOxPDvTBMdmin.jpg"
+  },
+  "40863": {
+    "id": 40863,
+    "movie_count": 3,
+    "name": "Joe Swanberg",
+    "popularity": 15.652,
+    "profile_path": "/fv4N4HkrQ7FUNEYJm1XVcnhoPRe.jpg"
+  },
+  "41039": {
+    "id": 41039,
+    "movie_count": 3,
+    "name": "Judd Apatow",
+    "popularity": 12.903,
+    "profile_path": "/7iD2D263nT0ZOF6vuUojQYQ5cbf.jpg"
   },
   "4135": {
     "id": 4135,
     "movie_count": 2,
     "name": "Robert Redford",
-    "popularity": 16.424,
+    "popularity": 16.607,
     "profile_path": "/rra8c7kXwiOxwFdM3mJ83VPgFBT.jpg"
   },
-  "42": {
-    "id": 42,
-    "movie_count": 6,
-    "name": "Lars von Trier",
-    "popularity": 12.251,
-    "profile_path": "/nIgsB2yZJqWOd4c2jsS82InpcsD.jpg"
+  "4165": {
+    "id": 4165,
+    "movie_count": 1,
+    "name": "John Wayne",
+    "popularity": 33.724,
+    "profile_path": "/ggHZ8WTKaoD9bGRhmC1FlV9sXwL.jpg"
+  },
+  "41670": {
+    "id": 41670,
+    "movie_count": 1,
+    "name": "Rebecca Miller",
+    "popularity": 9.601,
+    "profile_path": "/s0jjPvcX4i8yd7IiBuvnrJ7FbT3.jpg"
+  },
+  "42113": {
+    "id": 42113,
+    "movie_count": 3,
+    "name": "Zalman King",
+    "popularity": 10.671,
+    "profile_path": "/7nB4hQFfqMAvW1U1glPOOkrihwK.jpg"
+  },
+  "42171": {
+    "id": 42171,
+    "movie_count": 5,
+    "name": "Jonathan Kaplan",
+    "popularity": 9.587,
+    "profile_path": "/zpaZ3UpWRt3HrnR1Mv8u9Mg54Pa.jpg"
+  },
+  "42175": {
+    "id": 42175,
+    "movie_count": 2,
+    "name": "Richard Stanley",
+    "popularity": 9.368,
+    "profile_path": "/vI3tIvvqUdjC1v8uVtIaDnEDWX4.jpg"
+  },
+  "43468": {
+    "id": 43468,
+    "movie_count": 1,
+    "name": "Guy Ferland",
+    "popularity": 9.55,
+    "profile_path": "/oOBx7tqSGZ5BatZydBYRXfoKsRj.jpg"
+  },
+  "4385": {
+    "id": 4385,
+    "movie_count": 1,
+    "name": "Sergio Leone",
+    "popularity": 19.447,
+    "profile_path": "/2576qoW8l9Z1nKGM10ar60aIwUu.jpg"
+  },
+  "4429": {
+    "id": 4429,
+    "movie_count": 3,
+    "name": "Jim Jarmusch",
+    "popularity": 12.474,
+    "profile_path": "/iMpIrvhoO9SZWhiDkSzaUt9Yd4N.jpg"
+  },
+  "447777": {
+    "id": 447777,
+    "movie_count": 2,
+    "name": "Magnus Martens",
+    "popularity": 10.703,
+    "profile_path": "/tarEJ7CPNK4IsVb4c1kCEDGWbsu.jpg"
+  },
+  "4489": {
+    "id": 4489,
+    "movie_count": 2,
+    "name": "Steve Oedekerk",
+    "popularity": 10.299,
+    "profile_path": "/5iDugCvPGLwaM9wJtSnQ7xkXj1k.jpg"
+  },
+  "44916": {
+    "id": 44916,
+    "movie_count": 1,
+    "name": "Stanley Tong",
+    "popularity": 12.528,
+    "profile_path": "/cunufPnRrZuYwvz8M11c3cr6GVf.jpg"
+  },
+  "44990": {
+    "id": 44990,
+    "movie_count": 1,
+    "name": "Peter Horton",
+    "popularity": 18.545,
+    "profile_path": "/6k6CV4kDL6BBvdCVY04jrJSiC2B.jpg"
+  },
+  "45037": {
+    "id": 45037,
+    "movie_count": 1,
+    "name": "Sam Irvin",
+    "popularity": 9.743,
+    "profile_path": "/1o6j9oNTce1i8G81t8peSfXpfpL.jpg"
+  },
+  "45052": {
+    "id": 45052,
+    "movie_count": 2,
+    "name": "Anton Corbijn",
+    "popularity": 15.361,
+    "profile_path": "/tBr98AlA0vYHX1s2faMeatfab5O.jpg"
   },
   "45400": {
     "id": 45400,
-    "movie_count": 2,
+    "movie_count": 3,
     "name": "Greta Gerwig",
-    "popularity": 13.36,
+    "popularity": 16.859,
     "profile_path": "/3H0xzU12GTNJyQTpGysEuI9KyiQ.jpg"
   },
-  "4587": {
-    "id": 4587,
+  "45459": {
+    "id": 45459,
     "movie_count": 1,
-    "name": "Halle Berry",
-    "popularity": 12.682,
-    "profile_path": "/iwFIGOO9jSwymlJdYhTOdmJqciz.jpg"
+    "name": "Mike Cahill",
+    "popularity": 9.893,
+    "profile_path": "/izBZvC9phEVxcMIaKxjer4eaNeu.jpg"
   },
-  "4600": {
-    "id": 4600,
-    "movie_count": 11,
-    "name": "Joe Dante",
-    "popularity": 3.539,
-    "profile_path": "/AghJPGRamlgJCPJYgX92Utehcak.jpg"
+  "4610": {
+    "id": 4610,
+    "movie_count": 9,
+    "name": "John Landis",
+    "popularity": 17.166,
+    "profile_path": "/nXKdxxELgAaGecCpxAWCoj6TV3f.jpg"
   },
-  "4762": {
-    "id": 4762,
-    "movie_count": 8,
-    "name": "Paul Thomas Anderson",
-    "popularity": 12.478,
-    "profile_path": "/29DHpRKddqTwo2NU162Y49JoQYa.jpg"
+  "46611": {
+    "id": 46611,
+    "movie_count": 1,
+    "name": "James Clavell",
+    "popularity": 17.217,
+    "profile_path": "/nbtd7UDWLHmJ059FrnEG9sQxsz6.jpg"
+  },
+  "47005": {
+    "id": 47005,
+    "movie_count": 2,
+    "name": "Alan Taylor",
+    "popularity": 17.798,
+    "profile_path": "/sXC2wNRo7lshghNnNaPdWQ9sqKe.jpg"
+  },
+  "47333": {
+    "id": 47333,
+    "movie_count": 2,
+    "name": "John Wells",
+    "popularity": 12.615,
+    "profile_path": "/j1cEQmFdSkew87UjO354qeppo1G.jpg"
+  },
+  "47506": {
+    "id": 47506,
+    "movie_count": 2,
+    "name": "Drew Goddard",
+    "popularity": 9.605,
+    "profile_path": "/rcxxyIGDgPkXVgAQb9LLXfR89pv.jpg"
+  },
+  "4782": {
+    "id": 4782,
+    "movie_count": 2,
+    "name": "Michael Crichton",
+    "popularity": 14.596,
+    "profile_path": "/ezJhrvxetdIntBHlc3drJ0NXkW7.jpg"
+  },
+  "4786": {
+    "id": 4786,
+    "movie_count": 4,
+    "name": "Richard Attenborough",
+    "popularity": 13.788,
+    "profile_path": "/gNfQNsx9SrQpHt8Eq6CUwycH9Iu.jpg"
+  },
+  "47893": {
+    "id": 47893,
+    "movie_count": 2,
+    "name": "Gary Nelson",
+    "popularity": 10.031,
+    "profile_path": "/2ntne6Iv23gfDnsdWzkCD7pIDUo.jpg"
   },
   "488": {
     "id": 488,
-    "movie_count": 28,
+    "movie_count": 30,
     "name": "Steven Spielberg",
-    "popularity": 23.379,
+    "popularity": 38.031,
     "profile_path": "/tZxcg19YQ3e8fJ0pOs7hjlnmmr6.jpg"
+  },
+  "48965": {
+    "id": 48965,
+    "movie_count": 1,
+    "name": "Anthony Hickox",
+    "popularity": 9.644,
+    "profile_path": "/oVhvHfrAsTdZn8i5NOnHwt1Eg2W.jpg"
+  },
+  "4955": {
+    "id": 4955,
+    "movie_count": 1,
+    "name": "Dario Argento",
+    "popularity": 9.529,
+    "profile_path": "/2WjQlcLxhvmO9NtCfNh2npMVYqp.jpg"
+  },
+  "4956": {
+    "id": 4956,
+    "movie_count": 4,
+    "name": "Bernardo Bertolucci",
+    "popularity": 14.914,
+    "profile_path": "/b0W7CtXxbo24sX8TPnDlLTYfc2E.jpg"
+  },
+  "50099": {
+    "id": 50099,
+    "movie_count": 1,
+    "name": "Shuki Levy",
+    "popularity": 10.266,
+    "profile_path": "/4fzlZFMAFiWzjAuUt583uZmqTTZ.jpg"
+  },
+  "5029": {
+    "id": 5029,
+    "movie_count": 3,
+    "name": "Robert Siodmak",
+    "popularity": 10.157,
+    "profile_path": "/6Az7VLGpET7wtVLQPfsrCJGPaL8.jpg"
+  },
+  "504": {
+    "id": 504,
+    "movie_count": 1,
+    "name": "Tim Robbins",
+    "popularity": 22.965,
+    "profile_path": "/djLVFETFTvPyVUdrd7aLVykobof.jpg"
+  },
+  "5045": {
+    "id": 5045,
+    "movie_count": 1,
+    "name": "Dan O'Bannon",
+    "popularity": 9.957,
+    "profile_path": "/k52NrI4p37oboVIMqxLA05Qr4rl.jpg"
   },
   "510": {
     "id": 510,
-    "movie_count": 17,
+    "movie_count": 16,
     "name": "Tim Burton",
-    "popularity": 12.041,
-    "profile_path": "/gRM4lGpiBINAyiXaxEeJFDKzmge.jpg"
+    "popularity": 29.249,
+    "profile_path": "/wcjuY5vD1nlfwWNbvvTGg5dGoRR.jpg"
+  },
+  "51298": {
+    "id": 51298,
+    "movie_count": 1,
+    "name": "Dax Shepard",
+    "popularity": 10.713,
+    "profile_path": "/aaUGRjfghjgysn5grVdm8kyYN4V.jpg"
   },
   "51329": {
     "id": 51329,
-    "movie_count": 1,
+    "movie_count": 2,
     "name": "Bradley Cooper",
-    "popularity": 31.584,
-    "profile_path": "/pLD2XvxqHueLWOuqXoFngJU3A5H.jpg"
+    "popularity": 30.498,
+    "profile_path": "/DPnessSsWqVXRbKm93PtMjB4Us.jpg"
+  },
+  "5133": {
+    "id": 5133,
+    "movie_count": 1,
+    "name": "Bo Welch",
+    "popularity": 11.402,
+    "profile_path": "/lYSuKR7b8aNYnZmzVQh4CPk5YMe.jpg"
   },
   "5140": {
     "id": 5140,
-    "movie_count": 12,
+    "movie_count": 17,
     "name": "Wes Craven",
-    "popularity": 4.752,
+    "popularity": 9.983,
     "profile_path": "/eqwl6owrYykeTGTpKxwcAkbEJmg.jpg"
+  },
+  "5174": {
+    "id": 5174,
+    "movie_count": 10,
+    "name": "Barry Sonnenfeld",
+    "popularity": 6.607,
+    "profile_path": "/n6y6vaAFfSqsJodgkwTxAey4NoG.jpg"
   },
   "518": {
     "id": 518,
-    "movie_count": 1,
+    "movie_count": 2,
     "name": "Danny DeVito",
-    "popularity": 26.966,
-    "profile_path": "/uLW4Y9yjtwxtVmcJfwHZ7sKJai4.jpg"
+    "popularity": 15.891,
+    "profile_path": "/gNHF2SNXFFCRqwIQ2Xv6r6aV6UD.jpg"
+  },
+  "51965": {
+    "id": 51965,
+    "movie_count": 1,
+    "name": "Kevin Sorbo",
+    "popularity": 19.922,
+    "profile_path": "/a6rDi3tkNJwaVoP7VGbdGelwtYw.jpg"
   },
   "52139": {
     "id": 52139,
     "movie_count": 3,
     "name": "Seth MacFarlane",
-    "popularity": 13.833,
+    "popularity": 19.777,
     "profile_path": "/8oQJqM51Z0Qtdb7sE6ZfX1peNCB.jpg"
+  },
+  "524": {
+    "id": 524,
+    "movie_count": 1,
+    "name": "Natalie Portman",
+    "popularity": 31.222,
+    "profile_path": "/edPU5HxncLWa1YkgRPNkSd68ONG.jpg"
   },
   "525": {
     "id": 525,
-    "movie_count": 10,
+    "movie_count": 11,
     "name": "Christopher Nolan",
-    "popularity": 14.432,
+    "popularity": 27.771,
     "profile_path": "/xuAIuYSmsUzKlUMBFGVZaWsY3DZ.jpg"
+  },
+  "52605": {
+    "id": 52605,
+    "movie_count": 1,
+    "name": "Eva Longoria",
+    "popularity": 15.802,
+    "profile_path": "/1u26GLWK1DE7gBugyI9P3OMFq4A.jpg"
+  },
+  "52779": {
+    "id": 52779,
+    "movie_count": 2,
+    "name": "Ryan Murphy",
+    "popularity": 25.782,
+    "profile_path": "/uPojf0hEIpud1huRC9NY7R55OSy.jpg"
+  },
+  "5281": {
+    "id": 5281,
+    "movie_count": 7,
+    "name": "Spike Lee",
+    "popularity": 12.001,
+    "profile_path": "/2KOHXgk2uoRXl6u7V9xpAIo3uay.jpg"
+  },
+  "52842": {
+    "id": 52842,
+    "movie_count": 3,
+    "name": "Garth Jennings",
+    "popularity": 9.118,
+    "profile_path": "/zl6ZWijGySSIYJRFalleAiGkxyQ.jpg"
   },
   "5292": {
     "id": 5292,
-    "movie_count": 1,
-    "name": "Denzel Washington",
-    "popularity": 60.49,
-    "profile_path": "/semwsON3dN3np6cyzlCw7F2YDGe.jpg"
-  },
-  "52935": {
-    "id": 52935,
     "movie_count": 2,
-    "name": "John Francis Daley",
-    "popularity": 16.573,
-    "profile_path": "/rKZL3e8gI2tQD6Kv0QojXK5sG4u.jpg"
+    "name": "Denzel Washington",
+    "popularity": 51.956,
+    "profile_path": "/jj2Gcobpopokal0YstuCQW0ldJ4.jpg"
+  },
+  "52934": {
+    "id": 52934,
+    "movie_count": 6,
+    "name": "Nicholas Stoller",
+    "popularity": 17.363,
+    "profile_path": "/247iI9VZHnKB9QteCIUheKAAZtI.jpg"
   },
   "5294": {
     "id": 5294,
-    "movie_count": 1,
+    "movie_count": 2,
     "name": "Chiwetel Ejiofor",
-    "popularity": 47.117,
+    "popularity": 14.395,
     "profile_path": "/kq5DDnqqofoRI0t6ddtRlsJnNPT.jpg"
+  },
+  "52961": {
+    "id": 52961,
+    "movie_count": 1,
+    "name": "Dennis Gansel",
+    "popularity": 11.084,
+    "profile_path": "/tf34YKOXKKzE3ib21FSFiACCWi2.jpg"
+  },
+  "5306": {
+    "id": 5306,
+    "movie_count": 8,
+    "name": "Lasse Hallström",
+    "popularity": 12.425,
+    "profile_path": "/zEz9LphkDBcGAAYGdjIU5QzjB9C.jpg"
+  },
+  "53068": {
+    "id": 53068,
+    "movie_count": 1,
+    "name": "Ryan Fleck",
+    "popularity": 12.159,
+    "profile_path": "/28EMTivPGStNxDivgUP8PSpOrof.jpg"
+  },
+  "53069": {
+    "id": 53069,
+    "movie_count": 1,
+    "name": "Anna Boden",
+    "popularity": 9.832,
+    "profile_path": "/i75ESF5oge5ELfBoBhcJymkvqNW.jpg"
+  },
+  "53120": {
+    "id": 53120,
+    "movie_count": 3,
+    "name": "James DeMonaco",
+    "popularity": 12.334,
+    "profile_path": "/nH0LS98m3ZiAgIqROLYrr9H5DnD.jpg"
+  },
+  "53178": {
+    "id": 53178,
+    "movie_count": 1,
+    "name": "Michael Tollin",
+    "popularity": 13.278,
+    "profile_path": "/zZEUZh2Oh20wFBXaEfGvwqCBWmv.jpg"
+  },
+  "53348": {
+    "id": 53348,
+    "movie_count": 1,
+    "name": "Petr Jákl",
+    "popularity": 9.355,
+    "profile_path": "/8zi7MXdHXWBIP6IuMFZB1HdWnGX.jpg"
+  },
+  "5344": {
+    "id": 5344,
+    "movie_count": 1,
+    "name": "Meg Ryan",
+    "popularity": 16.286,
+    "profile_path": "/mC2AEB7X99pZYaPZvbVgdb4G52B.jpg"
   },
   "5367": {
     "id": 5367,
-    "movie_count": 1,
+    "movie_count": 3,
     "name": "Zach Braff",
-    "popularity": 20.487,
-    "profile_path": "/l7Z2HWaU1DtwvSMXNKIoINz1lo7.jpg"
+    "popularity": 14.721,
+    "profile_path": "/wUAj6juL6HErqEJ1GtuI63rbVea.jpg"
   },
-  "54697": {
-    "id": 54697,
+  "53684": {
+    "id": 53684,
     "movie_count": 1,
-    "name": "Dave Franco",
-    "popularity": 27.967,
-    "profile_path": "/j48eRArsXapbfXZfw9Fik7PlJSo.jpg"
+    "name": "Robert Smigel",
+    "popularity": 10.32,
+    "profile_path": "/xGlGVcLhiZ4a7GIGlLzGmZtbvUF.jpg"
+  },
+  "54025": {
+    "id": 54025,
+    "movie_count": 2,
+    "name": "Karyn Kusama",
+    "popularity": 15.27,
+    "profile_path": "/pfVHh9OEfgYPouqO3aSOxwmqoFS.jpg"
+  },
+  "54248": {
+    "id": 54248,
+    "movie_count": 6,
+    "name": "Christopher Landon",
+    "popularity": 10.388,
+    "profile_path": "/7JpvZGiMnGFOs2NhXgONvCfdpH.jpg"
+  },
+  "54441": {
+    "id": 54441,
+    "movie_count": 2,
+    "name": "James Ivory",
+    "popularity": 10.498,
+    "profile_path": "/d3ic5H6tNQUfheDHd8f9IN3Ae7p.jpg"
+  },
+  "54472": {
+    "id": 54472,
+    "movie_count": 3,
+    "name": "Martin McDonagh",
+    "popularity": 15.032,
+    "profile_path": "/pyDaAVKa8akTLHXzeTyF8oGymXN.jpg"
+  },
+  "54525": {
+    "id": 54525,
+    "movie_count": 2,
+    "name": "Jaume Balagueró",
+    "popularity": 10.291,
+    "profile_path": "/geO40SjPO5G7nHn1pRrAGORD7xM.jpg"
+  },
+  "54584": {
+    "id": 54584,
+    "movie_count": 3,
+    "name": "Jesse Dylan",
+    "popularity": 11.178,
+    "profile_path": "/iKtSezKKjWHMqd1VDtuJNUEj1xl.jpg"
+  },
+  "54597": {
+    "id": 54597,
+    "movie_count": 3,
+    "name": "Joe Nussbaum",
+    "popularity": 10.947,
+    "profile_path": "/24TedWAIXRxhjVh9SNwlWGUeuMp.jpg"
+  },
+  "54645": {
+    "id": 54645,
+    "movie_count": 1,
+    "name": "Nia Vardalos",
+    "popularity": 19.687,
+    "profile_path": "/vEsVp3bbVG72BBPJW3ciIcsUOX5.jpg"
+  },
+  "54649": {
+    "id": 54649,
+    "movie_count": 1,
+    "name": "Louis Mandylor",
+    "popularity": 15.236,
+    "profile_path": "/skvNBR83wxjbFj6XuLxWAhCZTmh.jpg"
+  },
+  "54710": {
+    "id": 54710,
+    "movie_count": 1,
+    "name": "Jody Hill",
+    "popularity": 9.644,
+    "profile_path": "/ch0paHlLOeUz1jfhzyOtohyjEpg.jpg"
+  },
+  "54733": {
+    "id": 54733,
+    "movie_count": 4,
+    "name": "Greg Mottola",
+    "popularity": 13.558,
+    "profile_path": "/A5gy0fV3ndwkaCKnX017CKPNXve.jpg"
+  },
+  "54734": {
+    "id": 54734,
+    "movie_count": 2,
+    "name": "Evan Goldberg",
+    "popularity": 17.779,
+    "profile_path": "/uKZFcTB7FS47WvRFcp5wv3f7hJM.jpg"
+  },
+  "54789": {
+    "id": 54789,
+    "movie_count": 1,
+    "name": "Sean Patrick Flanery",
+    "popularity": 12.259,
+    "profile_path": "/aHQtxIjMEDWdXqvFJplx0Kcwdn6.jpg"
+  },
+  "54827": {
+    "id": 54827,
+    "movie_count": 1,
+    "name": "Dave Meyers",
+    "popularity": 13.292,
+    "profile_path": "/lKi1NYkcoW8arybXyw1s3LyW1Lo.jpg"
+  },
+  "54868": {
+    "id": 54868,
+    "movie_count": 1,
+    "name": "Christian Gudegast",
+    "popularity": 9.493,
+    "profile_path": "/36PHfwA6XsnAVrJ6aXC1xDEipVE.jpg"
+  },
+  "54869": {
+    "id": 54869,
+    "movie_count": 1,
+    "name": "Paul T. Scheuring",
+    "popularity": 13.533,
+    "profile_path": "/2hNYumD0sMCDezKvTtDwginHP4L.jpg"
+  },
+  "549310": {
+    "id": 549310,
+    "movie_count": 2,
+    "name": "Justin Kurzel",
+    "popularity": 10.732,
+    "profile_path": "/ukcExjQvlPu6pfnYOOVQm3kSYK4.jpg"
+  },
+  "5501": {
+    "id": 5501,
+    "movie_count": 5,
+    "name": "Gary Fleder",
+    "popularity": 10.104,
+    "profile_path": "/w7P8UyWeyB2CB4Eq9wHlMVj7bQk.jpg"
+  },
+  "55116": {
+    "id": 55116,
+    "movie_count": 1,
+    "name": "Joe Chappelle",
+    "popularity": 10.865,
+    "profile_path": ""
+  },
+  "551463": {
+    "id": 551463,
+    "movie_count": 4,
+    "name": "Mike Flanagan",
+    "popularity": 9.816,
+    "profile_path": "/85q5HSDoltjvg1ES0eToNlLjfPB.jpg"
+  },
+  "55251": {
+    "id": 55251,
+    "movie_count": 3,
+    "name": "Asif Kapadia",
+    "popularity": 10.529,
+    "profile_path": "/5FuAWpePS3R5UcIysUrmeNZEGFe.jpg"
   },
   "55252": {
     "id": 55252,
     "movie_count": 2,
     "name": "Tim Miller",
-    "popularity": 9.417,
+    "popularity": 17.766,
     "profile_path": "/dCyBYwhO76j5wA96HPb6k5xk2Le.jpg"
+  },
+  "55464": {
+    "id": 55464,
+    "movie_count": 1,
+    "name": "Kelly Blatz",
+    "popularity": 16.391,
+    "profile_path": "/2PPGAQGFluZRHxdU8HPkEzM8Lvx.jpg"
+  },
+  "55476": {
+    "id": 55476,
+    "movie_count": 1,
+    "name": "Nicholas Hytner",
+    "popularity": 9.515,
+    "profile_path": "/vlwfo2dxVaq1kWaeIAFS6owRDJb.jpg"
+  },
+  "55493": {
+    "id": 55493,
+    "movie_count": 1,
+    "name": "Brady Corbet",
+    "popularity": 15.91,
+    "profile_path": "/oZtrpo2tEQsO0gpoR6nrmyyOqxy.jpg"
+  },
+  "55499": {
+    "id": 55499,
+    "movie_count": 7,
+    "name": "Scott Derrickson",
+    "popularity": 10.74,
+    "profile_path": "/nOQkRTC6OPkUHebBfjIgtiZ0hvE.jpg"
   },
   "55615": {
     "id": 55615,
-    "movie_count": 1,
+    "movie_count": 2,
     "name": "Megan Park",
-    "popularity": 20.108,
+    "popularity": 18.848,
     "profile_path": "/gKRr9DaU91WMh9BAAM3HgkauJhf.jpg"
+  },
+  "55710": {
+    "id": 55710,
+    "movie_count": 7,
+    "name": "Adam McKay",
+    "popularity": 19.001,
+    "profile_path": "/vOyZXNJq7Oo01LPtSD5AZHjctgH.jpg"
   },
   "5572": {
     "id": 5572,
-    "movie_count": 13,
+    "movie_count": 11,
     "name": "Joel Schumacher",
-    "popularity": 2.249,
+    "popularity": 6.03,
     "profile_path": "/ttXniaNjekrOBjLQpZqTv89AakA.jpg"
   },
   "5575": {
     "id": 5575,
     "movie_count": 1,
     "name": "Akiva Goldsman",
-    "popularity": 11.307,
+    "popularity": 9.824,
     "profile_path": "/zjnY7yoXZifRJR9x8hdGIm9ducG.jpg"
   },
-  "55789": {
-    "id": 55789,
-    "movie_count": 5,
-    "name": "Tate Taylor",
-    "popularity": 9.703,
-    "profile_path": "/zJaLbNHLoQMhCAeJhn1J1B0xrup.jpg"
+  "55785": {
+    "id": 55785,
+    "movie_count": 1,
+    "name": "Shunji Iwai",
+    "popularity": 14.67,
+    "profile_path": "/iRz0WnbUKP9qwKRRho6ObmZEoGy.jpg"
   },
   "55934": {
     "id": 55934,
-    "movie_count": 6,
+    "movie_count": 7,
     "name": "Taika Waititi",
-    "popularity": 36.368,
-    "profile_path": "/zCLBXGo5BS2e27srDBa5WpRnKul.jpg"
+    "popularity": 22.602,
+    "profile_path": "/1VKIyTfxBOjxnVb6jVWvRNlRdm2.jpg"
   },
   "55936": {
     "id": 55936,
     "movie_count": 1,
     "name": "Jemaine Clement",
-    "popularity": 10.895,
-    "profile_path": "/6eiNbeurpHb2fxIeT0RrJ0wRI25.jpg"
+    "popularity": 28.905,
+    "profile_path": "/nFAD9b0MzFmujo8k4jXbhr5GQpq.jpg"
+  },
+  "55948": {
+    "id": 55948,
+    "movie_count": 1,
+    "name": "Alan Smithee",
+    "popularity": 10.438,
+    "profile_path": ""
+  },
+  "55983": {
+    "id": 55983,
+    "movie_count": 3,
+    "name": "Jim Henson",
+    "popularity": 16.824,
+    "profile_path": "/93vzGW2kWwmAJ8HpbErzKMHXDME.jpg"
   },
   "5602": {
     "id": 5602,
     "movie_count": 8,
     "name": "David Lynch",
-    "popularity": 13.398,
-    "profile_path": "/9xRmptsf4kuEbDpCwl80VpnGg4K.jpg"
+    "popularity": 20.706,
+    "profile_path": "/wwBzRDoIW6Ld64h6OkQ6ImCZKsR.jpg"
   },
-  "56322": {
-    "id": 56322,
+  "56106": {
+    "id": 56106,
+    "movie_count": 3,
+    "name": "Charles Shyer",
+    "popularity": 11.68,
+    "profile_path": "/stcwg4mJKGQo0UBfWcXVQy6fOdP.jpg"
+  },
+  "56198": {
+    "id": 56198,
     "movie_count": 1,
-    "name": "Amy Poehler",
-    "popularity": 13.788,
-    "profile_path": "/k62oL10bNtPShjtHuLlKllwxva9.jpg"
+    "name": "Ari Folman",
+    "popularity": 11.109,
+    "profile_path": "/cFTSHi8YSWBB81MIWsN8vzhaaMg.jpg"
+  },
+  "56263": {
+    "id": 56263,
+    "movie_count": 2,
+    "name": "Mary Lambert",
+    "popularity": 13.004,
+    "profile_path": "/q8Fir0mq5t0iBbwjaERCvYPofzI.jpg"
+  },
+  "56370": {
+    "id": 56370,
+    "movie_count": 1,
+    "name": "Ruben Östlund",
+    "popularity": 12.796,
+    "profile_path": "/o4SdiMI5CyF1BrYL9aUhRQl58Xw.jpg"
+  },
+  "56383": {
+    "id": 56383,
+    "movie_count": 1,
+    "name": "Kelly Reichardt",
+    "popularity": 9.661,
+    "profile_path": "/j97hMhlRhcaHWgn9MQ78E0ft57U.jpg"
+  },
+  "564": {
+    "id": 564,
+    "movie_count": 9,
+    "name": "Richard Linklater",
+    "popularity": 9.688,
+    "profile_path": "/mNoP4U6cwtBGcjAFoSRylxaJCZQ.jpg"
+  },
+  "56411": {
+    "id": 56411,
+    "movie_count": 2,
+    "name": "Glenn Ficarra",
+    "popularity": 10.075,
+    "profile_path": "/23EaR6q7B1wcg9trxtr7xHzKu7q.jpg"
+  },
+  "56412": {
+    "id": 56412,
+    "movie_count": 2,
+    "name": "John Requa",
+    "popularity": 13.939,
+    "profile_path": "/us2MW8nuMI0NuH6BCFoN6Gdoahn.jpg"
+  },
+  "56512": {
+    "id": 56512,
+    "movie_count": 5,
+    "name": "Tarsem Singh",
+    "popularity": 16.079,
+    "profile_path": "/cI8hJZeVWuILXZRYMmzQ4hVtUvc.jpg"
   },
   "5655": {
     "id": 5655,
-    "movie_count": 6,
+    "movie_count": 11,
     "name": "Wes Anderson",
-    "popularity": 11.233,
-    "profile_path": "/oKDlhTjORiTQriqoUFJMTgGiwPg.jpg"
+    "popularity": 12.627,
+    "profile_path": "/b1LH059EGnU01rsZwcqYzNjY7w9.jpg"
   },
-  "56857": {
-    "id": 56857,
+  "5656": {
+    "id": 5656,
+    "movie_count": 2,
+    "name": "Noah Baumbach",
+    "popularity": 12.322,
+    "profile_path": "/wRfV5qYIJHk4NH9gkKQnk99E5Qn.jpg"
+  },
+  "56661": {
+    "id": 56661,
+    "movie_count": 3,
+    "name": "Jonathan Levine",
+    "popularity": 17.92,
+    "profile_path": "/pPUkEsZZgO4CFQhcGfs2fOoXLdh.jpg"
+  },
+  "56789": {
+    "id": 56789,
     "movie_count": 1,
-    "name": "Peter Facinelli",
-    "popularity": 27.551,
-    "profile_path": "/dedS4MpictN0kjQsPjjZSQwZoee.jpg"
+    "name": "Thomas Bezucha",
+    "popularity": 9.994,
+    "profile_path": "/uTWVZBasLQpJpdg9gXN89rNvHIT.jpg"
+  },
+  "568322": {
+    "id": 568322,
+    "movie_count": 2,
+    "name": "Dan Trachtenberg",
+    "popularity": 9.814,
+    "profile_path": "/ce3rCLjSPyvq89D9kd2pyIlLny1.jpg"
+  },
+  "56891": {
+    "id": 56891,
+    "movie_count": 3,
+    "name": "Rachel Talalay",
+    "popularity": 22.577,
+    "profile_path": "/2R8t47gW1tLAG1ZNl13pTpi6YYl.jpg"
+  },
+  "57055": {
+    "id": 57055,
+    "movie_count": 2,
+    "name": "Mitchell Lichtenstein",
+    "popularity": 9.071,
+    "profile_path": "/zRBvjaF1fLop9dBqYloOsvtSZ1m.jpg"
   },
   "57082": {
     "id": 57082,
-    "movie_count": 5,
+    "movie_count": 2,
     "name": "John Stockwell",
-    "popularity": 12.751,
-    "profile_path": "/6m4x7tzIwg38K8h3czfPmepi3O3.jpg"
+    "popularity": 13.721,
+    "profile_path": "/5XmsOQP1fdsELSPmCFuFWUVElfr.jpg"
   },
-  "5713": {
-    "id": 5713,
-    "movie_count": 4,
-    "name": "Chris Wedge",
-    "popularity": 9.139,
-    "profile_path": "/bYiy2vcXgJq5XZdZ15uIhBhnBF8.jpg"
+  "57090": {
+    "id": 57090,
+    "movie_count": 2,
+    "name": "Brett Leonard",
+    "popularity": 11.252,
+    "profile_path": "/vumJ0PLhcmbd34qKscrQGAjUg8v.jpg"
+  },
+  "57113": {
+    "id": 57113,
+    "movie_count": 1,
+    "name": "Dan Gilroy",
+    "popularity": 12.88,
+    "profile_path": "/am569DiWC0blnbM98ZphiwBItsS.jpg"
   },
   "57130": {
     "id": 57130,
-    "movie_count": 9,
+    "movie_count": 10,
     "name": "Todd Phillips",
-    "popularity": 10.259,
+    "popularity": 12.059,
     "profile_path": "/A6FPht87DiqXzp456WjakLi2AtP.jpg"
+  },
+  "57138": {
+    "id": 57138,
+    "movie_count": 1,
+    "name": "Tony Bill",
+    "popularity": 22.407,
+    "profile_path": "/h7nmFEeYu6GrtWWpHCKI66ppdPy.jpg"
+  },
+  "57199": {
+    "id": 57199,
+    "movie_count": 3,
+    "name": "Mark Mylod",
+    "popularity": 12.892,
+    "profile_path": "/6Nwg31BrgPkCjZ054Pso3ctg3Ov.jpg"
+  },
+  "57314": {
+    "id": 57314,
+    "movie_count": 7,
+    "name": "Wolfgang Reitherman",
+    "popularity": 9.426,
+    "profile_path": "/vPQ0Hpf5mtlIcBKQcyKxExio8b0.jpg"
+  },
+  "57359": {
+    "id": 57359,
+    "movie_count": 1,
+    "name": "Neal Israel",
+    "popularity": 9.743,
+    "profile_path": "/ta6GivAxCQotJz2eMpmD0zhVy40.jpg"
+  },
+  "57370": {
+    "id": 57370,
+    "movie_count": 5,
+    "name": "Frank Coraci",
+    "popularity": 9.923,
+    "profile_path": "/z280cWJmhWgPmR9HrTXUn4BK06o.jpg"
+  },
+  "57405": {
+    "id": 57405,
+    "movie_count": 1,
+    "name": "Jeff Schaffer",
+    "popularity": 13.413,
+    "profile_path": "/zjGUb5c4k6UiM3lyOwNk7GS04ED.jpg"
+  },
+  "57434": {
+    "id": 57434,
+    "movie_count": 5,
+    "name": "Amy Heckerling",
+    "popularity": 11.354,
+    "profile_path": "/hIc3bQxLOPAcpGJ1CVFuzpzJRZ0.jpg"
+  },
+  "57446": {
+    "id": 57446,
+    "movie_count": 1,
+    "name": "Mark Romanek",
+    "popularity": 9.66,
+    "profile_path": "/sMYvm3gPkRHi3MG8Qw0WZlGfsyN.jpg"
+  },
+  "57581": {
+    "id": 57581,
+    "movie_count": 6,
+    "name": "Neil Marshall",
+    "popularity": 17.553,
+    "profile_path": "/niiQO8m2fEIdmEBYdawulBSIzwY.jpg"
+  },
+  "57646": {
+    "id": 57646,
+    "movie_count": 4,
+    "name": "Henry Selick",
+    "popularity": 10.112,
+    "profile_path": "/2LvtcpV8njWrp2W9eXmTNjsAWev.jpg"
+  },
+  "57741": {
+    "id": 57741,
+    "movie_count": 3,
+    "name": "Mark Osborne",
+    "popularity": 11.68,
+    "profile_path": "/6mIJet9Jhpwd2PuVlBzG4VqItAj.jpg"
   },
   "578": {
     "id": 578,
-    "movie_count": 22,
+    "movie_count": 23,
     "name": "Ridley Scott",
-    "popularity": 16.718,
+    "popularity": 22.527,
     "profile_path": "/zABJmN9opmqD4orWl3KSdCaSo7Q.jpg"
   },
-  "58021": {
-    "id": 58021,
+  "58072": {
+    "id": 58072,
+    "movie_count": 2,
+    "name": "John Pasquin",
+    "popularity": 10.835,
+    "profile_path": "/xWFzQthcWx0PoBa7VLKu02GvN1d.jpg"
+  },
+  "58164": {
+    "id": 58164,
     "movie_count": 1,
-    "name": "Tinto Brass",
-    "popularity": 14.796,
-    "profile_path": "/80Uuq79rcYL1FgBPHAEHzAACQFa.jpg"
+    "name": "Annabel Jankel",
+    "popularity": 9.341,
+    "profile_path": "/ugOy8P88dTClGt2AeIRg36c5eZk.jpg"
+  },
+  "58189": {
+    "id": 58189,
+    "movie_count": 4,
+    "name": "Justin Lin",
+    "popularity": 15.68,
+    "profile_path": "/w0ryazdt8iS3GBrjXfv0FIwvUGY.jpg"
+  },
+  "58245": {
+    "id": 58245,
+    "movie_count": 5,
+    "name": "Don Coscarelli",
+    "popularity": 9.103,
+    "profile_path": "/o7AzSUdMQ17auJnfb95QVeGEXHn.jpg"
+  },
+  "58251": {
+    "id": 58251,
+    "movie_count": 1,
+    "name": "Elaine May",
+    "popularity": 13.495,
+    "profile_path": "/vDx1oJb6UIGAVmtJ2sItcyEZG77.jpg"
+  },
+  "583479": {
+    "id": 583479,
+    "movie_count": 1,
+    "name": "Aaron Moorhead",
+    "popularity": 13.245,
+    "profile_path": "/plvZ27ya8yxyyqSCHbwBMjFfJwS.jpg"
+  },
+  "58375": {
+    "id": 58375,
+    "movie_count": 7,
+    "name": "Andy Fickman",
+    "popularity": 12.683,
+    "profile_path": "/iNj0z0q08sC2j1D8NCBKkkAeNyF.jpg"
+  },
+  "58448": {
+    "id": 58448,
+    "movie_count": 3,
+    "name": "Penelope Spheeris",
+    "popularity": 13.449,
+    "profile_path": "/7juDUTAEyAKKfDmkOD9q24kjrei.jpg"
+  },
+  "585406": {
+    "id": 585406,
+    "movie_count": 1,
+    "name": "Shaji Kailas",
+    "popularity": 10.529,
+    "profile_path": "/3ZJ4ZGvzyZxHvkyA6JTgUKbhE23.jpg"
+  },
+  "58552": {
+    "id": 58552,
+    "movie_count": 3,
+    "name": "Burr Steers",
+    "popularity": 16.215,
+    "profile_path": "/k9rAVWornL0SUIykpjd3K3IfSll.jpg"
+  },
+  "585933": {
+    "id": 585933,
+    "movie_count": 3,
+    "name": "François Simard",
+    "popularity": 9.757,
+    "profile_path": "/1PcolFNwwOQ5mXrEhCDtNoKcTiD.jpg"
+  },
+  "586002": {
+    "id": 586002,
+    "movie_count": 1,
+    "name": "Andrew Haigh",
+    "popularity": 12.209,
+    "profile_path": "/pJAv105SAZiQ3lGY2wGURz4bENp.jpg"
+  },
+  "58689": {
+    "id": 58689,
+    "movie_count": 4,
+    "name": "Neil LaBute",
+    "popularity": 10.681,
+    "profile_path": "/vc1Cm2RcSdk8F2L427Fp2aQ0P3K.jpg"
+  },
+  "587": {
+    "id": 587,
+    "movie_count": 1,
+    "name": "Edward James Olmos",
+    "popularity": 15.223,
+    "profile_path": "/mXnilUrQBIMLHSQkPjQk99mX70x.jpg"
+  },
+  "58712": {
+    "id": 58712,
+    "movie_count": 9,
+    "name": "Steve Miner",
+    "popularity": 12.412,
+    "profile_path": "/jI202evRSMXDHCugyWvrAaUuVO4.jpg"
+  },
+  "58728": {
+    "id": 58728,
+    "movie_count": 2,
+    "name": "Andrei Konchalovsky",
+    "popularity": 16.965,
+    "profile_path": "/Utw2YAYrLxZNvdlC83YbIdCrWt.jpg"
+  },
+  "587699": {
+    "id": 587699,
+    "movie_count": 3,
+    "name": "Troy Quane",
+    "popularity": 13.803,
+    "profile_path": "/vX50drpiPKbY6ZNqIGPREyAWjLH.jpg"
+  },
+  "587823": {
+    "id": 587823,
+    "movie_count": 1,
+    "name": "Alice Englert",
+    "popularity": 16.204,
+    "profile_path": "/lEXLJpH29u2fTTqOIEsxEtSQP8C.jpg"
   },
   "59": {
     "id": 59,
-    "movie_count": 8,
+    "movie_count": 6,
     "name": "Luc Besson",
-    "popularity": 9.297,
-    "profile_path": "/dXJdczT1NcvcZtnoWVGT0NmG11v.jpg"
+    "popularity": 17.764,
+    "profile_path": "/bLVPnHMVFZ7wrF6ovMVF5U1UX89.jpg"
+  },
+  "59023": {
+    "id": 59023,
+    "movie_count": 3,
+    "name": "Stewart Raffill",
+    "popularity": 10.315,
+    "profile_path": "/4WnWqViSbLR2kTejMLuI5Bi7JrA.jpg"
+  },
+  "592493": {
+    "id": 592493,
+    "movie_count": 5,
+    "name": "David Lowery",
+    "popularity": 12.92,
+    "profile_path": "/86QPrv9y0Ienk6sqPmxz7HYqkJf.jpg"
+  },
+  "59261": {
+    "id": 59261,
+    "movie_count": 1,
+    "name": "Hannah Marks",
+    "popularity": 18.383,
+    "profile_path": "/sy5AUrXXeaRYnz0qE3azrZxY0M6.jpg"
+  },
+  "59265": {
+    "id": 59265,
+    "movie_count": 1,
+    "name": "Adam Cooper",
+    "popularity": 12.663,
+    "profile_path": "/7AddkFlFahwxjb3o8WjehT64lMI.jpg"
+  },
+  "59291": {
+    "id": 59291,
+    "movie_count": 6,
+    "name": "Alexandre Aja",
+    "popularity": 10.185,
+    "profile_path": "/qODWbFXeWk3quoDKzhfmAhxn4Dx.jpg"
   },
   "59315": {
     "id": 59315,
-    "movie_count": 1,
+    "movie_count": 2,
     "name": "Olivia Wilde",
-    "popularity": 20.899,
-    "profile_path": "/3C7ogDK7ZrpQezMxG8ILO2ILY9a.jpg"
+    "popularity": 33.048,
+    "profile_path": "/p8uodLtdvM9nhAh5At4ChoZdKPf.jpg"
   },
-  "59521": {
-    "id": 59521,
-    "movie_count": 10,
-    "name": "Jaume Collet-Serra",
-    "popularity": 5.655,
-    "profile_path": "/s1MdlS2wnzfKevPfXK63V1qkwfI.jpg"
+  "59410": {
+    "id": 59410,
+    "movie_count": 1,
+    "name": "Bob Odenkirk",
+    "popularity": 42.217,
+    "profile_path": "/rF0Lb6SBhGSTvjRffmlKRSeI3jE.jpg"
   },
   "5953": {
     "id": 5953,
-    "movie_count": 3,
+    "movie_count": 4,
     "name": "Spike Jonze",
-    "popularity": 9.002,
+    "popularity": 12.955,
     "profile_path": "/x2QeqEXvi3QjgTybvZ4mmqUf4qO.jpg"
+  },
+  "60261": {
+    "id": 60261,
+    "movie_count": 2,
+    "name": "Stan Winston",
+    "popularity": 12.968,
+    "profile_path": "/k1L7O1pIQ1fveNnKBcLNICL2cIm.jpg"
   },
   "6046": {
     "id": 6046,
-    "movie_count": 12,
+    "movie_count": 10,
     "name": "Roland Emmerich",
-    "popularity": 7.913,
+    "popularity": 16.912,
     "profile_path": "/mN8x74uv9yQ7dJl8nh2q26mkY8v.jpg"
+  },
+  "607": {
+    "id": 607,
+    "movie_count": 1,
+    "name": "Zhang Yimou",
+    "popularity": 9.494,
+    "profile_path": "/uU5vECl94jDQYjiRk4eOpVRMEi9.jpg"
   },
   "60949": {
     "id": 60949,
     "movie_count": 1,
     "name": "Rob Schneider",
-    "popularity": 21.732,
+    "popularity": 25.669,
     "profile_path": "/kVHNFDOGDrC3LjDyYf5RaCd6auK.jpg"
   },
   "6159": {
     "id": 6159,
-    "movie_count": 14,
+    "movie_count": 24,
     "name": "Ron Howard",
-    "popularity": 9.113,
+    "popularity": 21.827,
     "profile_path": "/tDKn6gAgvARdQRfuem2JwyNcP3B.jpg"
   },
-  "6201": {
-    "id": 6201,
-    "movie_count": 5,
-    "name": "Baz Luhrmann",
-    "popularity": 10.115,
-    "profile_path": "/6Dqs2hmcj2UtTON5FfjlRvKdbuF.jpg"
+  "61677": {
+    "id": 61677,
+    "movie_count": 3,
+    "name": "Burny Mattinson",
+    "popularity": 14.247,
+    "profile_path": "/pSLTXjV6rkhEFFsRUW101tuHpQz.jpg"
+  },
+  "61703": {
+    "id": 61703,
+    "movie_count": 1,
+    "name": "Ron Yuan",
+    "popularity": 10.157,
+    "profile_path": "/7Co2MdR8T5zlXTrdZ9Z3qjlmKdV.jpg"
+  },
+  "61824": {
+    "id": 61824,
+    "movie_count": 1,
+    "name": "Mick Garris",
+    "popularity": 14.642,
+    "profile_path": "/mZUsXhL7H5DgaQL98qslFrgp1yl.jpg"
+  },
+  "62047": {
+    "id": 62047,
+    "movie_count": 6,
+    "name": "Gary Trousdale",
+    "popularity": 9.669,
+    "profile_path": "/yczbyaRGnhWYGU5OeFtTrzVaR87.jpg"
+  },
+  "62064": {
+    "id": 62064,
+    "movie_count": 1,
+    "name": "Chris Pine",
+    "popularity": 22.479,
+    "profile_path": "/c3t25zVaWD3IzsMdCDqg4FsoHFl.jpg"
+  },
+  "62854": {
+    "id": 62854,
+    "movie_count": 4,
+    "name": "Akiva Schaffer",
+    "popularity": 17.842,
+    "profile_path": "/1Om7CQXHoUr4rrVrsmyutDwWfck.jpg"
+  },
+  "62863": {
+    "id": 62863,
+    "movie_count": 1,
+    "name": "Jorma Taccone",
+    "popularity": 18.37,
+    "profile_path": "/x7x4NvDauuQ7HA6psLZYZ6m3zTd.jpg"
+  },
+  "63306": {
+    "id": 63306,
+    "movie_count": 4,
+    "name": "James Watkins",
+    "popularity": 13.176,
+    "profile_path": "/ik0bbpMrqAaaJlOYB1DbdslQHwh.jpg"
+  },
+  "63713": {
+    "id": 63713,
+    "movie_count": 1,
+    "name": "Martha Coolidge",
+    "popularity": 18.44,
+    "profile_path": "/pvJGxWwdPaUCvu9YojlwA7D3FY1.jpg"
   },
   "638": {
     "id": 638,
-    "movie_count": 8,
+    "movie_count": 9,
     "name": "Michael Mann",
-    "popularity": 11.93,
-    "profile_path": "/1nRqwMyQuCkvNPAzDY5oOSfGZ6b.jpg"
+    "popularity": 10.847,
+    "profile_path": "/syowcptZIOosLMwVWbXFOU8jVvd.jpg"
   },
-  "6384": {
-    "id": 6384,
+  "63937": {
+    "id": 63937,
+    "movie_count": 3,
+    "name": "Albert Pyun",
+    "popularity": 12.981,
+    "profile_path": "/c1lkhBrHiqn5pD0Cm0zg0UU7hHF.jpg"
+  },
+  "64140": {
+    "id": 64140,
     "movie_count": 1,
-    "name": "Keanu Reeves",
-    "popularity": 35.299,
-    "profile_path": "/4D0PpNI0kmP58hgrwGC3wCjxhnm.jpg"
+    "name": "Sanaa Hamri",
+    "popularity": 10.514,
+    "profile_path": "/okhNJtBQkrMg8rcu3Xk0TbRJc0S.jpg"
+  },
+  "64151": {
+    "id": 64151,
+    "movie_count": 7,
+    "name": "Mike Mitchell",
+    "popularity": 15.137,
+    "profile_path": "/w6ibMbbw7KBrcWxUb7N7h3GEQGO.jpg"
+  },
+  "64211": {
+    "id": 64211,
+    "movie_count": 3,
+    "name": "Franck Khalfoun",
+    "popularity": 9.31,
+    "profile_path": "/nzXKV3T7fHMBzRWzfYozVl8ZfwQ.jpg"
   },
   "64295": {
     "id": 64295,
     "movie_count": 1,
     "name": "Alan Ritchson",
-    "popularity": 43.878,
-    "profile_path": "/iV4XpUEsvnncbRv1SJKasRY05cK.jpg"
+    "popularity": 45.601,
+    "profile_path": "/wdmLUSPEC7dXuqnjTM4NgbjvTKk.jpg"
   },
-  "6449": {
-    "id": 6449,
-    "movie_count": 1,
-    "name": "Warren Beatty",
-    "popularity": 14.037,
-    "profile_path": "/4IDilrr21iRKv75QOwNKJPC3WgW.jpg"
+  "6431": {
+    "id": 6431,
+    "movie_count": 7,
+    "name": "Darren Aronofsky",
+    "popularity": 18.502,
+    "profile_path": "/tOjz8mVI2HeQBvU6KNjIExMBsXL.jpg"
+  },
+  "64796": {
+    "id": 64796,
+    "movie_count": 3,
+    "name": "Tom Holland",
+    "popularity": 14.876,
+    "profile_path": "/dWkwc5b0OjJSpk5oUZd6dEDnBlu.jpg"
+  },
+  "6482": {
+    "id": 6482,
+    "movie_count": 7,
+    "name": "John Singleton",
+    "popularity": 10.23,
+    "profile_path": "/akcugIHTLKZajrsq51uGGGzHEdv.jpg"
   },
   "64856": {
     "id": 64856,
     "movie_count": 2,
     "name": "Michael Jai White",
-    "popularity": 14.529,
+    "popularity": 24.044,
     "profile_path": "/YPoHYuzR37wFpPpwEXZYQlhLln.jpg"
+  },
+  "65133": {
+    "id": 65133,
+    "movie_count": 1,
+    "name": "Marcus Raboy",
+    "popularity": 10.906,
+    "profile_path": "/kKl5cOGuiWRPx228Kg2eIgZrlbi.jpg"
+  },
+  "65134": {
+    "id": 65134,
+    "movie_count": 1,
+    "name": "DJ Pooh",
+    "popularity": 12.115,
+    "profile_path": "/hSE9l2mVy6V6bN6QnzTBoduvLt6.jpg"
+  },
+  "65167": {
+    "id": 65167,
+    "movie_count": 4,
+    "name": "Scott Cooper",
+    "popularity": 10.563,
+    "profile_path": "/zuT4LxFrGq2fCHYD8R6441OmRym.jpg"
+  },
+  "65310": {
+    "id": 65310,
+    "movie_count": 8,
+    "name": "Kenny Ortega",
+    "popularity": 16.912,
+    "profile_path": "/cZrsOBr1tp1nNPJ5xj3uao2XQbJ.jpg"
+  },
+  "65531": {
+    "id": 65531,
+    "movie_count": 2,
+    "name": "Eric Goldberg",
+    "popularity": 10.2,
+    "profile_path": "/pqulcFpHW4dBLNUeflN5BY21yTA.jpg"
+  },
+  "65630": {
+    "id": 65630,
+    "movie_count": 5,
+    "name": "Rob Letterman",
+    "popularity": 11.581,
+    "profile_path": "/bgsnUXYPWsRDuo3B0f9wthXKxll.jpg"
+  },
+  "65677": {
+    "id": 65677,
+    "movie_count": 3,
+    "name": "Don Mancini",
+    "popularity": 9.264,
+    "profile_path": "/bp7vtf9n9uOPOK1WzdITpwFZqbQ.jpg"
+  },
+  "6593": {
+    "id": 6593,
+    "movie_count": 13,
+    "name": "John Huston",
+    "popularity": 9.87,
+    "profile_path": "/YBUv8xD8GNL0Tv1vzcBSf5Smhs.jpg"
+  },
+  "66190": {
+    "id": 66190,
+    "movie_count": 2,
+    "name": "Tony Bancroft",
+    "popularity": 13.544,
+    "profile_path": "/mMptwiAxSTm8nLV8chWIphePi69.jpg"
   },
   "66193": {
     "id": 66193,
-    "movie_count": 4,
+    "movie_count": 5,
     "name": "Chris Sanders",
-    "popularity": 10.747,
-    "profile_path": "/mrUm1agSL9Kj6dhV6ABVJvrwlie.jpg"
+    "popularity": 23.587,
+    "profile_path": "/6CtrIOCxggJ5eIAWeFQqd4Hs9FP.jpg"
   },
-  "67075": {
-    "id": 67075,
+  "66203": {
+    "id": 66203,
     "movie_count": 1,
-    "name": "Sion Sono",
-    "popularity": 9.021,
-    "profile_path": "/nuPRCFqZRmw8qYLfoLUxJPtcwjX.jpg"
+    "name": "Moustapha Akkad",
+    "popularity": 11.453,
+    "profile_path": "/yYc9M8a6YG7gNgDbJYD1Ulx2Uou.jpg"
   },
-  "6979": {
-    "id": 6979,
+  "66219": {
+    "id": 66219,
     "movie_count": 1,
-    "name": "Romola Garai",
-    "popularity": 11.606,
-    "profile_path": "/xLNhomrHLIB5CY5lvmlsKAqBzlk.jpg"
+    "name": "Mark Levin",
+    "popularity": 11.768,
+    "profile_path": "/2ecb1Xvl4lldCsxciPlek3hYD9x.jpg"
+  },
+  "66222": {
+    "id": 66222,
+    "movie_count": 2,
+    "name": "James Fargo",
+    "popularity": 9.614,
+    "profile_path": "/kj9CqBSvwh51BAJR97lu6hZlBEH.jpg"
+  },
+  "66563": {
+    "id": 66563,
+    "movie_count": 1,
+    "name": "Fred Wolf",
+    "popularity": 9.804,
+    "profile_path": "/64Klcur18Q3eTZ4tTPiOnWrufU5.jpg"
+  },
+  "66605": {
+    "id": 66605,
+    "movie_count": 1,
+    "name": "Todd Solondz",
+    "popularity": 10.25,
+    "profile_path": "/yXWcxibUGfvUSGY0M69ZohyLKNT.jpg"
+  },
+  "66633": {
+    "id": 66633,
+    "movie_count": 1,
+    "name": "Vince Gilligan",
+    "popularity": 25.886,
+    "profile_path": "/z3E0DhBg1V1PZVEtS9vfFPzOWYB.jpg"
+  },
+  "66739": {
+    "id": 66739,
+    "movie_count": 5,
+    "name": "Jonathan Liebesman",
+    "popularity": 11.342,
+    "profile_path": "/bF6RT5FvdzCRxRc6Ud6FC9JgcIh.jpg"
+  },
+  "66777": {
+    "id": 66777,
+    "movie_count": 2,
+    "name": "Bob Fosse",
+    "popularity": 14.404,
+    "profile_path": "/yVJUJgLMkF2KWGUmIOP0RIESEld.jpg"
+  },
+  "67316": {
+    "id": 67316,
+    "movie_count": 1,
+    "name": "Masayuki Ochiai",
+    "popularity": 9.429,
+    "profile_path": "/bLM5d8GIm3dQrCA1CheUIi0lo9z.jpg"
+  },
+  "67367": {
+    "id": 67367,
+    "movie_count": 5,
+    "name": "Rian Johnson",
+    "popularity": 11.524,
+    "profile_path": "/uPWwvdppeZVKPbYcjXKU8zyuAVh.jpg"
+  },
+  "67589": {
+    "id": 67589,
+    "movie_count": 1,
+    "name": "Alastair Fothergill",
+    "popularity": 12.412,
+    "profile_path": "/l2fqoPIjMxVLRgb8BU9AwCrDJJA.jpg"
+  },
+  "67607": {
+    "id": 67607,
+    "movie_count": 2,
+    "name": "Art Stevens",
+    "popularity": 10.36,
+    "profile_path": "/aWqF7H6iRN9wmNyPAbHRG4qguiN.jpg"
+  },
+  "6767": {
+    "id": 6767,
+    "movie_count": 4,
+    "name": "Larry Charles",
+    "popularity": 13.005,
+    "profile_path": "/rt48JIfeIJPNNZftESWnMEuzAXN.jpg"
+  },
+  "67767": {
+    "id": 67767,
+    "movie_count": 2,
+    "name": "Hal Needham",
+    "popularity": 14.866,
+    "profile_path": "/9nObbakzuM5aeCMIgY5yRASnkNQ.jpg"
+  },
+  "67813": {
+    "id": 67813,
+    "movie_count": 5,
+    "name": "Baltasar Kormákur",
+    "popularity": 17.124,
+    "profile_path": "/bpWHj7MUtv0bNRuCET69UWQRa0o.jpg"
+  },
+  "68": {
+    "id": 68,
+    "movie_count": 3,
+    "name": "Fritz Lang",
+    "popularity": 9.461,
+    "profile_path": "/zb7VF00t04zBaU4OJEihrD5O56s.jpg"
+  },
+  "6818": {
+    "id": 6818,
+    "movie_count": 4,
+    "name": "Werner Herzog",
+    "popularity": 14.138,
+    "profile_path": "/qKlz1oM482Xf0jTPfLiR6qXlLYK.jpg"
+  },
+  "68212": {
+    "id": 68212,
+    "movie_count": 2,
+    "name": "Carroll Ballard",
+    "popularity": 9.624,
+    "profile_path": "/r9OuiXaiR9no1ZOEAtHQMRSVCWM.jpg"
+  },
+  "68215": {
+    "id": 68215,
+    "movie_count": 3,
+    "name": "Reginald Hudlin",
+    "popularity": 9.331,
+    "profile_path": "/z2O30pOwkKpZBCyZpwZ80ouKcQA.jpg"
+  },
+  "68770": {
+    "id": 68770,
+    "movie_count": 2,
+    "name": "Mark Rosman",
+    "popularity": 11.55,
+    "profile_path": "/3KA9SpAAWfwUDlz0WcH938gHVsr.jpg"
+  },
+  "68843": {
+    "id": 68843,
+    "movie_count": 2,
+    "name": "Jon Hurwitz",
+    "popularity": 9.153,
+    "profile_path": "/fl3yAMOLbQFF86m8amwH2Ufntjs.jpg"
+  },
+  "69237": {
+    "id": 69237,
+    "movie_count": 2,
+    "name": "Joe Berlinger",
+    "popularity": 9.449,
+    "profile_path": "/yvCTSlShNLmaq9NNlFKpFOLrVeJ.jpg"
+  },
+  "69797": {
+    "id": 69797,
+    "movie_count": 4,
+    "name": "Dean DeBlois",
+    "popularity": 13.296,
+    "profile_path": "/miMZ0l4rY81NiyMviWz1BeTGtuE.jpg"
   },
   "7": {
     "id": 7,
-    "movie_count": 4,
+    "movie_count": 5,
     "name": "Andrew Stanton",
-    "popularity": 12.249,
-    "profile_path": "/gasNitCwepbqNcYBmDHpsCgZH0I.jpg"
+    "popularity": 11.069,
+    "profile_path": "/fo6ePCWEVB0L1sccrvB99Iaoqcg.jpg"
+  },
+  "7018": {
+    "id": 7018,
+    "movie_count": 2,
+    "name": "Richard Curtis",
+    "popularity": 13.739,
+    "profile_path": "/dLhFfcHJvOLzzykO3LYkinXJUA1.jpg"
+  },
+  "70238": {
+    "id": 70238,
+    "movie_count": 3,
+    "name": "Chris Williams",
+    "popularity": 21.615,
+    "profile_path": "/eE2NDdeKN1DC3XuV6L4xuEbVaS.jpg"
+  },
+  "70651": {
+    "id": 70651,
+    "movie_count": 1,
+    "name": "Stephen Hillenburg",
+    "popularity": 22.874,
+    "profile_path": "/vDTwuiqM6BR9xv3eNOCXbEZl1gg.jpg"
+  },
+  "707": {
+    "id": 707,
+    "movie_count": 2,
+    "name": "Dan Aykroyd",
+    "popularity": 21.628,
+    "profile_path": "/iVMmeVJx8IpCEjlGBZWzIWvX5Qo.jpg"
+  },
+  "70707": {
+    "id": 70707,
+    "movie_count": 1,
+    "name": "John Halas",
+    "popularity": 10.647,
+    "profile_path": ""
+  },
+  "70862": {
+    "id": 70862,
+    "movie_count": 1,
+    "name": "Richard Thorpe",
+    "popularity": 13.859,
+    "profile_path": "/szbaqa5qggPXjaLbNGb2JMgsoi3.jpg"
   },
   "7087": {
     "id": 7087,
-    "movie_count": 6,
+    "movie_count": 7,
     "name": "Brad Bird",
-    "popularity": 10.341,
-    "profile_path": "/ZX1hAfWK1zslpB6ifwgDP2uBqn.jpg"
+    "popularity": 14.114,
+    "profile_path": "/z73rItPBDoRUowY5kuWDMlue3DB.jpg"
+  },
+  "70890": {
+    "id": 70890,
+    "movie_count": 3,
+    "name": "Adam Green",
+    "popularity": 12.701,
+    "profile_path": "/b6L3KHNumlumhySfspBaeOA7Zxr.jpg"
+  },
+  "71538": {
+    "id": 71538,
+    "movie_count": 1,
+    "name": "Dave Filoni",
+    "popularity": 11.321,
+    "profile_path": "/iMpXDe7D3eimy3Y8esJcF9czVbm.jpg"
   },
   "7187": {
     "id": 7187,
-    "movie_count": 13,
+    "movie_count": 15,
     "name": "Richard Donner",
-    "popularity": 4.471,
+    "popularity": 12.135,
     "profile_path": "/wjRecQiVLUAm6jwyT5craxhg3lD.jpg"
   },
-  "7256": {
-    "id": 7256,
-    "movie_count": 5,
-    "name": "Lee Tamahori",
-    "popularity": 17.639,
-    "profile_path": "/lkivtT9U7gLXVnhq5qF9GL3k7NN.jpg"
+  "71872": {
+    "id": 71872,
+    "movie_count": 2,
+    "name": "Jeff Nichols",
+    "popularity": 13.928,
+    "profile_path": "/owzt6vQR141PbV3Xi8zdERyH4zw.jpg"
+  },
+  "72258": {
+    "id": 72258,
+    "movie_count": 1,
+    "name": "Steve Boyum",
+    "popularity": 10.203,
+    "profile_path": "/ynYjf5M7zUYgvhp0V9Q1RGd2yMv.jpg"
+  },
+  "72450": {
+    "id": 72450,
+    "movie_count": 1,
+    "name": "Bob Saget",
+    "popularity": 13.975,
+    "profile_path": "/yxTuHygLUF8h2927bP3dYDEYwwP.jpg"
   },
   "7395": {
     "id": 7395,
-    "movie_count": 11,
+    "movie_count": 12,
     "name": "Bobby Farrelly",
-    "popularity": 1.845,
+    "popularity": 8.048,
     "profile_path": "/i5mt42m2MjMpFVrVYlYmp5ylLDy.jpg"
   },
   "7396": {
     "id": 7396,
-    "movie_count": 14,
+    "movie_count": 16,
     "name": "Peter Farrelly",
-    "popularity": 5.98,
-    "profile_path": "/8vLjukhhj4dKQSbtZ8qFr2Ybf5T.jpg"
+    "popularity": 12.437,
+    "profile_path": "/3PDYOFfk5NLmNcEz6SFZmdmqVZr.jpg"
   },
   "7399": {
     "id": 7399,
     "movie_count": 5,
     "name": "Ben Stiller",
-    "popularity": 13.579,
+    "popularity": 32.231,
     "profile_path": "/scgpxhI05JpdNXXfmpK6z0rPOWN.jpg"
+  },
+  "74619": {
+    "id": 74619,
+    "movie_count": 7,
+    "name": "Sean Anders",
+    "popularity": 12.219,
+    "profile_path": "/vWO1FiGZPOL4FdhbxeykOXRfcXJ.jpg"
+  },
+  "74655": {
+    "id": 74655,
+    "movie_count": 5,
+    "name": "Jeremy Saulnier",
+    "popularity": 16.161,
+    "profile_path": "/tTvAWJQFg0uMTCpIb3QphrQQMZA.jpg"
   },
   "7467": {
     "id": 7467,
     "movie_count": 11,
     "name": "David Fincher",
-    "popularity": 8.236,
+    "popularity": 15.259,
     "profile_path": "/tpEczFclQZeKAiCeKZZ0adRvtfz.jpg"
   },
   "7623": {
     "id": 7623,
-    "movie_count": 12,
+    "movie_count": 14,
     "name": "Sam Raimi",
-    "popularity": 31.136,
-    "profile_path": "/8gssvwiPrFRuFRlr5ruKx68k1Jl.jpg"
+    "popularity": 17.443,
+    "profile_path": "/ljNw0AjMKzXRvnQbgoKOsfQoVDu.jpg"
   },
-  "7767": {
-    "id": 7767,
-    "movie_count": 3,
-    "name": "Sam Peckinpah",
-    "popularity": 9.335,
-    "profile_path": "/hXrHVHdNivFu8dMbyp40ds5YXYD.jpg"
-  },
-  "7904": {
-    "id": 7904,
+  "76230": {
+    "id": 76230,
     "movie_count": 1,
-    "name": "Billy Crystal",
-    "popularity": 10.391,
-    "profile_path": "/6QNyXn8NPQDEctSuDLgg5AHmsiR.jpg"
+    "name": "Diane English",
+    "popularity": 11.034,
+    "profile_path": "/9sU9YrfxWDeu4zFq5apD3iCBM6E.jpg"
+  },
+  "76595": {
+    "id": 76595,
+    "movie_count": 6,
+    "name": "Byron Howard",
+    "popularity": 26.207,
+    "profile_path": "/ePJXkxrD44nM0VB7Xx9Q4ityzfT.jpg"
+  },
+  "76788": {
+    "id": 76788,
+    "movie_count": 1,
+    "name": "Dev Patel",
+    "popularity": 20.828,
+    "profile_path": "/1g07SUVwZHvKgM1Z7H4RYIEOXcm.jpg"
+  },
+  "76813": {
+    "id": 76813,
+    "movie_count": 1,
+    "name": "Ram Gopal Varma",
+    "popularity": 9.378,
+    "profile_path": "/sDUxXdz3RPeKISyfkMfR9iiphNH.jpg"
+  },
+  "76882": {
+    "id": 76882,
+    "movie_count": 2,
+    "name": "Cy Endfield",
+    "popularity": 9.039,
+    "profile_path": "/jrYeWyXZPgwMHTfYKMc8A6VoREC.jpg"
+  },
+  "76981": {
+    "id": 76981,
+    "movie_count": 3,
+    "name": "Delmer Daves",
+    "popularity": 13.968,
+    "profile_path": "/vD8HCP04NbxS4Tb6AoRjBtHb3qA.jpg"
+  },
+  "77089": {
+    "id": 77089,
+    "movie_count": 1,
+    "name": "Ken Marino",
+    "popularity": 21.206,
+    "profile_path": "/wLYkhmy0Cp1MeLmc4l3FZRuWly4.jpg"
+  },
+  "77162": {
+    "id": 77162,
+    "movie_count": 1,
+    "name": "Rodrigo García",
+    "popularity": 15.168,
+    "profile_path": "/zmA2z8rbGEUX5A7TqQWeKgEIZnm.jpg"
+  },
+  "77300": {
+    "id": 77300,
+    "movie_count": 2,
+    "name": "Michael Schultz",
+    "popularity": 10.524,
+    "profile_path": "/ubDK1oZPTG1ygGldz3Lp5AMLHAE.jpg"
+  },
+  "77515": {
+    "id": 77515,
+    "movie_count": 1,
+    "name": "Deborah Kampmeier",
+    "popularity": 10.341,
+    "profile_path": ""
+  },
+  "77965": {
+    "id": 77965,
+    "movie_count": 2,
+    "name": "Morten Tyldum",
+    "popularity": 16.082,
+    "profile_path": "/yTAUscziHY7mVGQ2BdBCflGYLde.jpg"
+  },
+  "78021": {
+    "id": 78021,
+    "movie_count": 1,
+    "name": "Lloyd Kaufman",
+    "popularity": 15.812,
+    "profile_path": "/jOkuLNusxT07mxTIJ3ApAdjPy6M.jpg"
+  },
+  "78040": {
+    "id": 78040,
+    "movie_count": 6,
+    "name": "Alex Kendrick",
+    "popularity": 10.177,
+    "profile_path": "/9n7UKpTp7KNjL2qm2k0qAOuiNCC.jpg"
+  },
+  "78108": {
+    "id": 78108,
+    "movie_count": 5,
+    "name": "Isaac Florentine",
+    "popularity": 11.808,
+    "profile_path": "/4PJrg3l105M2GMNazhu2DXZ1Wce.jpg"
+  },
+  "78160": {
+    "id": 78160,
+    "movie_count": 5,
+    "name": "Luca Guadagnino",
+    "popularity": 14.351,
+    "profile_path": "/lO2GD4s6fRloZLEhsZgBlhJQasE.jpg"
+  },
+  "78188": {
+    "id": 78188,
+    "movie_count": 1,
+    "name": "Whit Stillman",
+    "popularity": 9.512,
+    "profile_path": "/95CNDCxxPPwG12eTe4wtGPz7rbl.jpg"
+  },
+  "78336": {
+    "id": 78336,
+    "movie_count": 1,
+    "name": "Nick Vallelonga",
+    "popularity": 13.694,
+    "profile_path": "/h0GwAHN1J5lDysqgWxMIg66LNBW.jpg"
+  },
+  "7879": {
+    "id": 7879,
+    "movie_count": 9,
+    "name": "John Lasseter",
+    "popularity": 13.019,
+    "profile_path": "/xlrE4VD2VbZCDpaNdWCpH1ZihPS.jpg"
+  },
+  "78914": {
+    "id": 78914,
+    "movie_count": 1,
+    "name": "Noam Murro",
+    "popularity": 10.354,
+    "profile_path": "/6j021ZfF0abpaJbKWExpbWNacrk.jpg"
   },
   "7908": {
     "id": 7908,
-    "movie_count": 5,
+    "movie_count": 8,
     "name": "Frank Oz",
-    "popularity": 13.049,
+    "popularity": 17.049,
     "profile_path": "/mb2JbT8s6LIgaxj6QTph0NW1pmI.jpg"
+  },
+  "79082": {
+    "id": 79082,
+    "movie_count": 1,
+    "name": "Randall Park",
+    "popularity": 18.754,
+    "profile_path": "/5bDlNgwsSKAFjBdSWOwRzyMdJ0E.jpg"
+  },
+  "8": {
+    "id": 8,
+    "movie_count": 2,
+    "name": "Lee Unkrich",
+    "popularity": 11.572,
+    "profile_path": "/crb297utC6W4HSstOe5djDPTwEN.jpg"
+  },
+  "80219": {
+    "id": 80219,
+    "movie_count": 1,
+    "name": "James Roday Rodriguez",
+    "popularity": 14.35,
+    "profile_path": "/1iRFSkNsB45BHUMyWww2h6K9B8Z.jpg"
+  },
+  "80570": {
+    "id": 80570,
+    "movie_count": 1,
+    "name": "Walter Lang",
+    "popularity": 11.317,
+    "profile_path": "/l5dJgokkaid1ZjQvdUW9lNpfb2B.jpg"
+  },
+  "80602": {
+    "id": 80602,
+    "movie_count": 11,
+    "name": "Tyler Perry",
+    "popularity": 27.901,
+    "profile_path": "/8KU0OizemVLrERXt5HJIa0PAkIN.jpg"
   },
   "80948": {
     "id": 80948,
     "movie_count": 14,
     "name": "William Lau",
-    "popularity": 3.992,
-    "profile_path": "/ylTV4P2CGVqyjEPZiNJhTS3iOoV.jpg"
+    "popularity": 5.659,
+    "profile_path": "/mYJDV7ddvx2ErQHAyn68SFanL6Q.jpg"
   },
-  "81850": {
-    "id": 81850,
-    "movie_count": 4,
-    "name": "Duncan Jones",
-    "popularity": 9.78,
-    "profile_path": "/1YD0ODUMoibJTNbgWwN0l0d1sT0.jpg"
-  },
-  "819": {
-    "id": 819,
+  "80978": {
+    "id": 80978,
     "movie_count": 1,
-    "name": "Edward Norton",
-    "popularity": 13.284,
-    "profile_path": "/5XBzD5WuTyVQZeS4VI25z2moMeY.jpg"
+    "name": "Brian Goodman",
+    "popularity": 15.238,
+    "profile_path": "/kvRS1QA7YuYhlFO3M8GbnOtvXts.jpg"
+  },
+  "83762": {
+    "id": 83762,
+    "movie_count": 1,
+    "name": "Yasuomi Umetsu",
+    "popularity": 12.96,
+    "profile_path": ""
+  },
+  "84223": {
+    "id": 84223,
+    "movie_count": 1,
+    "name": "Anna Kendrick",
+    "popularity": 36.793,
+    "profile_path": "/cyGjHMJO7C6kQTq36n9hkLThY4G.jpg"
+  },
+  "84496": {
+    "id": 84496,
+    "movie_count": 2,
+    "name": "Josh Cooley",
+    "popularity": 10.644,
+    "profile_path": "/rw6TQFIv9L5McYtRLyfTjfeeQfS.jpg"
+  },
+  "84617": {
+    "id": 84617,
+    "movie_count": 1,
+    "name": "Zelda Williams",
+    "popularity": 10.679,
+    "profile_path": "/7yrcJ50kn9OnnxgduoaUOlUxhqq.jpg"
+  },
+  "85138": {
+    "id": 85138,
+    "movie_count": 1,
+    "name": "Demi Lovato",
+    "popularity": 20.032,
+    "profile_path": "/3a0ejgsn5Xyilie24KZTLifKlzU.jpg"
+  },
+  "8635": {
+    "id": 8635,
+    "movie_count": 2,
+    "name": "Buster Keaton",
+    "popularity": 18.736,
+    "profile_path": "/kEybBFkO5AX83o3WKyNDfuvfVrn.jpg"
   },
   "865": {
     "id": 865,
     "movie_count": 15,
     "name": "Michael Bay",
-    "popularity": 13.346,
-    "profile_path": "/8I9H9IKROECFEn7usvyChbRMhbI.jpg"
+    "popularity": 17.255,
+    "profile_path": "/thkrvZJqUbA265Y16sKj7HAmXwV.jpg"
+  },
+  "879": {
+    "id": 879,
+    "movie_count": 1,
+    "name": "Billy Bob Thornton",
+    "popularity": 17.039,
+    "profile_path": "/uJBFml6efjg34u2jvT5ugVa1cPI.jpg"
   },
   "880": {
     "id": 880,
-    "movie_count": 3,
+    "movie_count": 5,
     "name": "Ben Affleck",
-    "popularity": 29.274,
+    "popularity": 37.54,
     "profile_path": "/aTcqu8cI4wMohU17xTdqmXKTGrw.jpg"
+  },
+  "8858": {
+    "id": 8858,
+    "movie_count": 10,
+    "name": "Ivan Reitman",
+    "popularity": 7.131,
+    "profile_path": "/qMyAjmRVihGFbJPhMTsqvpeOKfX.jpg"
+  },
+  "88675": {
+    "id": 88675,
+    "movie_count": 2,
+    "name": "Justin Baldoni",
+    "popularity": 23.978,
+    "profile_path": "/2sc6iUWljADnqtjsaKU3s6f0DGW.jpg"
+  },
+  "88967": {
+    "id": 88967,
+    "movie_count": 2,
+    "name": "Greg Berlanti",
+    "popularity": 12.629,
+    "profile_path": "/1T24SiIIDMa9gAmq7QaYwZywq4y.jpg"
   },
   "893": {
     "id": 893,
     "movie_count": 14,
     "name": "Tony Scott",
-    "popularity": 9.319,
-    "profile_path": "/5PYRgW97xk9iNVC8dS0seoIliRR.jpg"
-  },
-  "9032": {
-    "id": 9032,
-    "movie_count": 7,
-    "name": "Bryan Singer",
-    "popularity": 9.401,
-    "profile_path": "/ts06thbCv9Ug2mNpcbcrmLGRL4Q.jpg"
-  },
-  "9033": {
-    "id": 9033,
-    "movie_count": 3,
-    "name": "Christopher McQuarrie",
-    "popularity": 9.363,
-    "profile_path": "/82W339V8turXUdaCajqOyekxhmD.jpg"
+    "popularity": 8.414,
+    "profile_path": "/zEEbiNa8Pqw3U6pZ8Z2y3dlJJnC.jpg"
   },
   "90367": {
     "id": 90367,
-    "movie_count": 21,
+    "movie_count": 10,
     "name": "Sam Liu",
-    "popularity": 6.227,
-    "profile_path": "/3u01dPeS4Us9sUFzwS8DzjA3udr.jpg"
+    "popularity": 4.602,
+    "profile_path": "/cJRXmsIxWuzXn6bA9N0IiEu6A9H.jpg"
   },
-  "90609": {
-    "id": 90609,
+  "9048": {
+    "id": 9048,
     "movie_count": 1,
-    "name": "Oz Perkins",
-    "popularity": 13.507,
-    "profile_path": "/fCEfHXkvkKNPnySxlHvukgVOeTw.jpg"
+    "name": "Clark Gregg",
+    "popularity": 13.522,
+    "profile_path": "/nbxFbr2SaF4Sdc6HdsF193GInvJ.jpg"
   },
-  "9108": {
-    "id": 9108,
-    "movie_count": 3,
-    "name": "Don Taylor",
-    "popularity": 10.503,
-    "profile_path": "/tFQYFlFtOwK5ueiXiuQyWVXG9SJ.jpg"
+  "92591": {
+    "id": 92591,
+    "movie_count": 2,
+    "name": "Peter Sullivan",
+    "popularity": 14.155,
+    "profile_path": "/hXFy4ygelHJovKvMx37EJeHwvbm.jpg"
+  },
+  "92784": {
+    "id": 92784,
+    "movie_count": 2,
+    "name": "Barry Jenkins",
+    "popularity": 18.165,
+    "profile_path": "/6nld5eQwiJmuLmyesk4EUeCaoo3.jpg"
   },
   "9281": {
     "id": 9281,
-    "movie_count": 3,
+    "movie_count": 4,
     "name": "Elizabeth Banks",
-    "popularity": 15.942,
-    "profile_path": "/waV5oRuBHpAnfjThZB6KGzd9q7J.jpg"
+    "popularity": 36.51,
+    "profile_path": "/szqEXmC0oAqRnN7zt1XAsbHpJfW.jpg"
   },
-  "9340": {
-    "id": 9340,
-    "movie_count": 8,
-    "name": "Lana Wachowski",
-    "popularity": 26.506,
-    "profile_path": "/5KNV7YBSPTBUAIXGfIcPmbhho9w.jpg"
-  },
-  "95024": {
-    "id": 95024,
+  "932076": {
+    "id": 932076,
     "movie_count": 1,
-    "name": "Bobcat Goldthwait",
-    "popularity": 9.148,
-    "profile_path": "/dvx9ykvmZnpLJhXqdMx3rF00Mx7.jpg"
+    "name": "Kate Siegel",
+    "popularity": 17.218,
+    "profile_path": "/jJJGmVKvMFHMJEwyfiHgxXEFePO.jpg"
+  },
+  "932248": {
+    "id": 932248,
+    "movie_count": 4,
+    "name": "Fede Álvarez",
+    "popularity": 19.288,
+    "profile_path": "/f8KjBkmqAyNGTUkZh1oYIURP4id.jpg"
+  },
+  "933176": {
+    "id": 933176,
+    "movie_count": 6,
+    "name": "Damien Leone",
+    "popularity": 13.327,
+    "profile_path": "/nX2kkYD32x2PC9rRU7DrYCRPjFE.jpg"
+  },
+  "9339": {
+    "id": 9339,
+    "movie_count": 7,
+    "name": "Lilly Wachowski",
+    "popularity": 11.747,
+    "profile_path": "/rCScAjSpeKA19BLNR07MqNNeeTT.jpg"
+  },
+  "934": {
+    "id": 934,
+    "movie_count": 2,
+    "name": "Russell Crowe",
+    "popularity": 44.524,
+    "profile_path": "/rsxGCRtPu42uKDJZlz7qknvz8h6.jpg"
+  },
+  "935266": {
+    "id": 935266,
+    "movie_count": 2,
+    "name": "Tammy Klein",
+    "popularity": 9.692,
+    "profile_path": "/rpdP6Jr4YfQSySHH0AJcFfz5lou.jpg"
+  },
+  "936584": {
+    "id": 936584,
+    "movie_count": 4,
+    "name": "Laurent Bouzereau",
+    "popularity": 10.498,
+    "profile_path": "/1gVpS5EGGwXXry6xSXo8xfkDlBu.jpg"
+  },
+  "94011": {
+    "id": 94011,
+    "movie_count": 3,
+    "name": "Bill Melendez",
+    "popularity": 15.174,
+    "profile_path": "/se2qF1kdaKTwDa69xjzA3j2gKaG.jpg"
+  },
+  "94075": {
+    "id": 94075,
+    "movie_count": 5,
+    "name": "David Soren",
+    "popularity": 10.889,
+    "profile_path": "/8tpISIgfN3sdV2oZIYW8ol6m8xa.jpg"
   },
   "956": {
     "id": 956,
-    "movie_count": 11,
+    "movie_count": 15,
     "name": "Guy Ritchie",
-    "popularity": 18.435,
+    "popularity": 25.309,
     "profile_path": "/9pLUnjMgIEWXi0mlHYzie9cKUTD.jpg"
   },
   "957": {
     "id": 957,
-    "movie_count": 6,
+    "movie_count": 7,
     "name": "Matthew Vaughn",
-    "popularity": 9.783,
+    "popularity": 9.761,
     "profile_path": "/Dnbz3B7yy4u0abixuD5LakZgsy.jpg"
   },
-  "9577": {
-    "id": 9577,
-    "movie_count": 2,
-    "name": "George Roy Hill",
-    "popularity": 9.113,
-    "profile_path": "/aU5lUbXfIH6IHOXZzPlqPaHJabf.jpg"
-  },
-  "96172": {
-    "id": 96172,
-    "movie_count": 2,
-    "name": "Sam Levinson",
-    "popularity": 9.476,
-    "profile_path": "/unyjIDs02a9ghtZhnajoAKKGzhW.jpg"
-  },
-  "97555": {
-    "id": 97555,
-    "movie_count": 11,
-    "name": "Roel Reiné",
-    "popularity": 5.403,
-    "profile_path": "/nOc53uSl8bBNfkuLGlXnOZwbYdu.jpg"
-  },
-  "9778": {
-    "id": 9778,
+  "965770": {
+    "id": 965770,
     "movie_count": 1,
-    "name": "Ice Cube",
-    "popularity": 14.149,
-    "profile_path": "/9EghwabQ1wIQT4oN69qtPlzqGn4.jpg"
+    "name": "Carlson Young",
+    "popularity": 9.963,
+    "profile_path": "/bOSYNvEGbBuBhhZpGLdt4mHkdS.jpg"
+  },
+  "974": {
+    "id": 974,
+    "movie_count": 3,
+    "name": "Dexter Fletcher",
+    "popularity": 12.02,
+    "profile_path": "/yRI8MDB5sg8b8EZkzFz5cCBrnKL.jpg"
+  },
+  "97618": {
+    "id": 97618,
+    "movie_count": 1,
+    "name": "David DeCoteau",
+    "popularity": 10.72,
+    "profile_path": "/1Fc6s4IJHpB94FmuLvBydty6I2.jpg"
+  },
+  "9789": {
+    "id": 9789,
+    "movie_count": 5,
+    "name": "Robert Altman",
+    "popularity": 20.971,
+    "profile_path": "/wB1R6patGi35oaxKU5PWEGJlIZg.jpg"
+  },
+  "98103": {
+    "id": 98103,
+    "movie_count": 1,
+    "name": "Richard Ayoade",
+    "popularity": 24.171,
+    "profile_path": "/pdekQJx34S9mfUM356kXHPIzoCK.jpg"
+  },
+  "98631": {
+    "id": 98631,
+    "movie_count": 9,
+    "name": "Adam Wingard",
+    "popularity": 19.11,
+    "profile_path": "/csunrewJCACuvM3Ntd9kIi31twa.jpg"
   }
 }

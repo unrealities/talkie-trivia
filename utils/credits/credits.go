@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 )
@@ -77,13 +77,13 @@ type MovieOrder struct {
 }
 
 func main() {
-	jsonFile, err := os.Open("credits.json")
+	jsonFile, err := os.Open("../../data/credits.json")
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer jsonFile.Close()
 
-	byteValue, _ := ioutil.ReadAll(jsonFile)
+	byteValue, _ := io.ReadAll(jsonFile)
 
 	var movies []TMDBCreditsResponse
 	json.Unmarshal([]byte(byteValue), &movies)
@@ -193,44 +193,44 @@ func main() {
 		}
 	}
 
-	// pd, err := json.MarshalIndent(popularDirectors, "", "  ")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	pd, err := json.MarshalIndent(popularDirectors, "", "  ")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// f, err := os.Create("popularDirectors.json")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// defer f.Close()
+	f, err := os.Create("popularDirectors.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
 
-	// _, err = f.WriteString(string(pd))
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	_, err = f.WriteString(string(pd))
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// pa, err := json.MarshalIndent(popularActors, "", "  ")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	pa, err := json.MarshalIndent(popularActors, "", "  ")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// f, err := os.Create("popularActors.json")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// defer f.Close()
+	f, err = os.Create("popularActors.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
 
-	// _, err = f.WriteString(string(pa))
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	_, err = f.WriteString(string(pa))
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	md, err := json.MarshalIndent(movieDirectors, "", "  ")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	f, err := os.Create("movieDirectors.json")
+	f, err = os.Create("movieDirectors.json")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -241,19 +241,19 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// ma, err := json.MarshalIndent(movieActors, "", "  ")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	ma, err := json.MarshalIndent(movieActors, "", "  ")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// f, err := os.Create("movieActors.json")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// defer f.Close()
+	f, err = os.Create("movieActors.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
 
-	// _, err = f.WriteString(string(ma))
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	_, err = f.WriteString(string(ma))
+	if err != nil {
+		log.Fatal(err)
+	}
 }
