@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 )
@@ -85,35 +85,35 @@ type MovieDirector struct {
 }
 
 func main() {
-	actorFile, err := os.Open("movieActors.json")
+	actorFile, err := os.Open("../../data/movieActors.json")
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer actorFile.Close()
 
-	actorByteValue, _ := ioutil.ReadAll(actorFile)
+	actorByteValue, _ := io.ReadAll(actorFile)
 
 	var actors map[int][]MovieActor
 	json.Unmarshal([]byte(actorByteValue), &actors)
 
-	directorFile, err := os.Open("movieDirectors.json")
+	directorFile, err := os.Open("../../data/movieDirectors.json")
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer actorFile.Close()
 
-	directorByteValue, _ := ioutil.ReadAll(directorFile)
+	directorByteValue, _ := io.ReadAll(directorFile)
 
 	var directors map[int]MovieDirector
 	json.Unmarshal([]byte(directorByteValue), &directors)
 
-	jsonFile, err := os.Open("movies.json")
+	jsonFile, err := os.Open("../../data/movies.json")
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer jsonFile.Close()
 
-	byteValue, _ := ioutil.ReadAll(jsonFile)
+	byteValue, _ := io.ReadAll(jsonFile)
 
 	var movies []DetailedMovie
 	json.Unmarshal([]byte(byteValue), &movies)
