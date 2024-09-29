@@ -37,9 +37,9 @@ const Actors = (props: ActorsProps) => {
 
 const styles = StyleSheet.create({
     ActorsContainer: {
+        color: colors.primary,
         flex: 1,
         flexDirection: 'row',
-        fontColor: colors.primary,
         justifyContent: 'space-evenly',
         minWidth: 300,
         paddingBottom: 12,
@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
     },
     ActorText: {
         flex: 1,
+        flexWrap: 'wrap',
         fontFamily: 'Arvo-Regular',
         fontSize: 12,
         paddingTop: 4,
