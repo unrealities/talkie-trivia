@@ -49,17 +49,15 @@ const PickerContainer = (props: PickerContainerProps) => {
     const filter = (text) => {
         setSearchText(text)
 
-        if (searchText !== '') {
+        if (text !== '') {
             let results = props.movies.filter((movie) => {
-                return movie.title.toLowerCase().includes(searchText.toLowerCase())
+                return movie.title.toLowerCase().includes(text.toLowerCase())
             })
+            
             if (selectedMovieID > 0) {
-                results = results.filter((movie) => {
-                    if (movie.id != selectedMovieID) {
-                        return movie.title.toLowerCase().includes(searchText.toLowerCase())
-                    }
-                })
+                results = results.filter((movie) => movie.id !== selectedMovieID)
             }
+
             setFoundMovies(results)
         } else {
             setFoundMovies(props.movies)
