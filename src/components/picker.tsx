@@ -11,97 +11,85 @@ interface PickerContainerProps {
     playerGame: PlayerGame
     updatePlayerGame: Dispatch<SetStateAction<PlayerGame>>
 }
+
 const PickerContainer = (props: PickerContainerProps) => {
     const defaultButtonText = 'Select a Movie'
-    const [foundMovies, setFoundMovies] = useState(props.movies)
-    const [inputActive, setInputActive] = useState(false)
+    const [foundMovies, setFoundMovies] = useState<BasicMovie[]>(props.movies)
     const [selectedMovieID, setSelectedMovieID] = useState<number>(0)
     const [selectedMovieTitle, setSelectedMovieTitle] = useState<string>(defaultButtonText)
     const [searchText, setSearchText] = useState<string>('')
-
-    // TODO: Do not update playerGame until guess is confirmed
-    let onPressCheck = () => {
-        if (selectedMovieID > 0) {
-            props.updatePlayerGame({
-                ...props.playerGame,
-                guesses: [...props.playerGame.guesses, selectedMovieID]
-            })
-        }
-        if (props.playerGame.game.movie.id == selectedMovieID) {
-            props.updatePlayerGame({ ...props.playerGame,
-                correctAnswer: true,
-                guesses: [...props.playerGame.guesses, selectedMovieID] })
-        } 
-    }
+    const [inputActive, setInputActive] = useState<boolean>(false)
 
     useEffect(() => {
         setFoundMovies(props.movies)
-        setSelectedMovieID(0)
-        setSelectedMovieTitle(defaultButtonText)
-        setSearchText('')
-        setInputActive(true)
-    }, [props.playerGame.guesses.length])
+    }, [props.movies])
 
-    useEffect(() => {
-        filter(searchText)
-    }, [searchText])
-
-    const filter = (text) => {
+    const filterMovies = (text: string) => {
         setSearchText(text)
 
-        if (text !== '') {
-            let results = props.movies.filter((movie) => {
-                return movie.title.toLowerCase().includes(text.toLowerCase())
-            })
-            
-            if (selectedMovieID > 0) {
-                results = results.filter((movie) => movie.id !== selectedMovieID)
-            }
-
-            setFoundMovies(results)
-        } else {
+        if (text === '') {
             setFoundMovies(props.movies)
             setSelectedMovieID(0)
             setSelectedMovieTitle(defaultButtonText)
+        } else {
+            const results = props.movies.filter((movie) =>
+                movie.title.toLowerCase().includes(text.toLowerCase())
+            )
+            setFoundMovies(results)
+        }
+    }
+
+    const onPressCheck = () => {
+        if (selectedMovieID > 0) {
+            props.updatePlayerGame({
+                ...props.playerGame,
+                guesses: [...props.playerGame.guesses, selectedMovieID],
+                correctAnswer: props.playerGame.game.movie.id === selectedMovieID,
+            })
         }
     }
 
     return (
         <View style={styles.container}>
             <TextInput
-                clearTextOnFocus={true}
+                clearTextOnFocus={false}
                 maxLength={100}
-                onChangeText={text => filter(text)}
-                onFocus={() => setInputActive(true)}
+                onChangeText={filterMovies}
                 placeholder="search for a movie title"
                 placeholderTextColor={colors.tertiary}
                 style={styles.input}
                 value={searchText}
+                onBlur={() => setInputActive(false)} 
+                onFocus={() => setInputActive(true)}
             />
             <View style={styles.text}>
-                {foundMovies && foundMovies.length > 0 && (
-                    <ScrollView style={inputActive ? styles.resultsShow : styles.resultsHide}>
+                {foundMovies.length > 0 && (
+                    <ScrollView style={styles.resultsShow}>
                         {foundMovies.map((movie) => (
                             <Pressable
                                 key={movie.id}
                                 onPress={() => {
                                     setSelectedMovieID(movie.id)
                                     setSelectedMovieTitle(movie.title)
-                                    setSearchText(movie.title)
-                                    setInputActive(false)
                                 }}
-                                style={styles.pressableText}>
-                                <Text numberOfLines={1} ellipsizeMode='tail' style={styles.unselected}>{movie.title}</Text>
+                                style={styles.pressableText}
+                            >
+                                <Text numberOfLines={1} ellipsizeMode='tail' style={styles.unselected}>
+                                    {movie.title}
+                                </Text>
                             </Pressable>
                         ))}
                     </ScrollView>
                 )}
             </View>
             <Pressable
-                disabled={!props.enableSubmit}
+                disabled={selectedMovieID === 0}
                 onPress={onPressCheck}
-                style={props.enableSubmit ? styles.button : styles.buttonDisabled}>
-                <Text numberOfLines={1} ellipsizeMode='tail' style={styles.buttonText}>{selectedMovieTitle}</Text>
+                style={selectedMovieID > 0 ? styles.button : styles.buttonDisabled}
+            >
+                <Text numberOfLines={1} ellipsizeMode='tail' style={styles.buttonText}>
+                    {selectedMovieTitle}
+                </Text>
             </Pressable>
         </View>
     )
