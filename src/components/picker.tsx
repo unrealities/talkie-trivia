@@ -24,21 +24,6 @@ const PickerContainer = (props: PickerContainerProps) => {
         setFoundMovies(props.movies)
     }, [props.movies])
 
-    const filterMovies = (text: string) => {
-        setSearchText(text)
-
-        if (text === '') {
-            setFoundMovies(props.movies)
-            setSelectedMovieID(0)
-            setSelectedMovieTitle(defaultButtonText)
-        } else {
-            const results = props.movies.filter((movie) =>
-                movie.title.toLowerCase().includes(text.toLowerCase())
-            )
-            setFoundMovies(results)
-        }
-    }
-
     const onPressCheck = () => {
         if (selectedMovieID > 0) {
             props.updatePlayerGame({
@@ -54,7 +39,20 @@ const PickerContainer = (props: PickerContainerProps) => {
             <TextInput
                 clearTextOnFocus={false}
                 maxLength={100}
-                onChangeText={filterMovies}
+                onChangeText={(text) => {
+                    setSearchText(text)
+
+                    if (text.trim() === '') {
+                        setFoundMovies(props.movies)
+                        setSelectedMovieID(0)
+                        setSelectedMovieTitle(defaultButtonText)
+                    } else {
+                        const results = props.movies.filter((movie) =>
+                            movie.title.toLowerCase().includes(text.toLowerCase())
+                        )
+                        setFoundMovies(results)
+                    }
+                }}
                 placeholder="search for a movie title"
                 placeholderTextColor={colors.tertiary}
                 style={styles.input}
@@ -67,7 +65,7 @@ const PickerContainer = (props: PickerContainerProps) => {
                     <ScrollView style={styles.resultsShow}>
                         {foundMovies.map((movie) => (
                             <Pressable
-                                key={movie.id}
+                                key={movie.title}
                                 onPress={() => {
                                     setSelectedMovieID(movie.id)
                                     setSelectedMovieTitle(movie.title)
