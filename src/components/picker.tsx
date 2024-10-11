@@ -1,6 +1,5 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
-
 import { BasicMovie } from '../models/movie'
 import { PlayerGame } from '../models/game'
 import { colors } from '../styles/global'
@@ -18,11 +17,21 @@ const PickerContainer = (props: PickerContainerProps) => {
     const [selectedMovieID, setSelectedMovieID] = useState<number>(0)
     const [selectedMovieTitle, setSelectedMovieTitle] = useState<string>(defaultButtonText)
     const [searchText, setSearchText] = useState<string>('')
-    const [inputActive, setInputActive] = useState<boolean>(false)
 
     useEffect(() => {
         setFoundMovies(props.movies)
     }, [props.movies])
+
+    useEffect(() => {
+        if (searchText.trim() === '') {
+            setFoundMovies(props.movies)
+        } else {
+            const filteredMovies = props.movies.filter((movie) =>
+                movie.title.toLowerCase().includes(searchText.toLowerCase())
+            )
+            setFoundMovies(filteredMovies)
+        }
+    }, [searchText, props.movies])
 
     const onPressCheck = () => {
         if (selectedMovieID > 0) {
@@ -39,29 +48,14 @@ const PickerContainer = (props: PickerContainerProps) => {
             <TextInput
                 clearTextOnFocus={false}
                 maxLength={100}
-                onChangeText={(text) => {
-                    setSearchText(text)
-
-                    if (text.trim() === '') {
-                        setFoundMovies(props.movies)
-                        setSelectedMovieID(0)
-                        setSelectedMovieTitle(defaultButtonText)
-                    } else {
-                        const results = props.movies.filter((movie) =>
-                            movie.title.toLowerCase().includes(text.toLowerCase())
-                        )
-                        setFoundMovies(results)
-                    }
-                }}
+                onChangeText={(text) => setSearchText(text)}
                 placeholder="search for a movie title"
                 placeholderTextColor={colors.tertiary}
                 style={styles.input}
                 value={searchText}
-                onBlur={() => setInputActive(false)} 
-                onFocus={() => setInputActive(true)}
             />
             <View style={styles.text}>
-                {foundMovies.length > 0 && (
+                {foundMovies.length > 0 ? (
                     <ScrollView style={styles.resultsShow}>
                         {foundMovies.map((movie) => (
                             <Pressable
@@ -78,6 +72,8 @@ const PickerContainer = (props: PickerContainerProps) => {
                             </Pressable>
                         ))}
                     </ScrollView>
+                ) : (
+                    <Text style={styles.noResultsText}>No movies found</Text>
                 )}
             </View>
             <Pressable
@@ -149,6 +145,12 @@ const styles = StyleSheet.create({
         padding: 10,
         lineHeight: 16,
         marginBottom: 10
+    },
+    noResultsText: {
+        fontFamily: 'Arvo-Regular',
+        fontSize: 14,
+        color: colors.tertiary,
+        textAlign: 'center',
     },
     unselected: {
         color: colors.secondary,
