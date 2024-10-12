@@ -1,5 +1,5 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import React, { Dispatch, SetStateAction, useEffect, useState, useCallback } from 'react'
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import { BasicMovie } from '../models/movie'
 import { PlayerGame } from '../models/game'
 import { colors } from '../styles/global'
@@ -17,9 +17,12 @@ const PickerContainer = (props: PickerContainerProps) => {
     const [selectedMovieID, setSelectedMovieID] = useState<number>(0)
     const [selectedMovieTitle, setSelectedMovieTitle] = useState<string>(defaultButtonText)
     const [searchText, setSearchText] = useState<string>('')
+    const [loading, setLoading] = useState<boolean>(true)
+    const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true)
 
     useEffect(() => {
         setFoundMovies(props.movies)
+        setLoading(false)
     }, [props.movies])
 
     useEffect(() => {
@@ -33,6 +36,20 @@ const PickerContainer = (props: PickerContainerProps) => {
         }
     }, [searchText, props.movies])
 
+    const debounce = (func: Function, delay: number) => {
+        let timer: NodeJS.Timeout
+        return (...args: any[]) => {
+            clearTimeout(timer)
+            timer = setTimeout(() => func(...args), delay)
+        }
+    }
+
+    const handleSearchChange = useCallback(
+        debounce((text: string) => {
+            setSearchText(text)
+        }, 100), []
+    )
+
     const onPressCheck = () => {
         if (selectedMovieID > 0) {
             props.updatePlayerGame({
@@ -43,45 +60,57 @@ const PickerContainer = (props: PickerContainerProps) => {
         }
     }
 
+    const handleMovieSelection = (movie: BasicMovie) => {
+        setSelectedMovieID(movie.id)
+        setSelectedMovieTitle(movie.title)
+        setIsButtonDisabled(false)
+    }
+
     return (
         <View style={styles.container}>
             <TextInput
                 clearTextOnFocus={false}
                 maxLength={100}
-                onChangeText={(text) => setSearchText(text)}
-                placeholder="search for a movie title"
+                onChangeText={(text) => handleSearchChange(text)}
+                placeholder="Search for a movie title"
                 placeholderTextColor={colors.tertiary}
                 style={styles.input}
                 value={searchText}
             />
-            <View style={styles.text}>
-                {foundMovies.length > 0 ? (
-                    <ScrollView style={styles.resultsShow}>
-                        {foundMovies.map((movie) => (
-                            <Pressable
-                                key={movie.title}
-                                onPress={() => {
-                                    setSelectedMovieID(movie.id)
-                                    setSelectedMovieTitle(movie.title)
-                                }}
-                                style={styles.pressableText}
-                            >
-                                <Text numberOfLines={1} ellipsizeMode='tail' style={styles.unselected}>
-                                    {movie.title}
-                                </Text>
-                            </Pressable>
-                        ))}
-                    </ScrollView>
-                ) : (
-                    <Text style={styles.noResultsText}>No movies found</Text>
-                )}
-            </View>
+
+            {loading ? (
+                <ActivityIndicator size="large" color={colors.primary} />
+            ) : (
+                <View style={styles.text}>
+                    {foundMovies.length > 0 ? (
+                        <ScrollView style={styles.resultsShow}>
+                            {foundMovies.map((movie) => (
+                                <Pressable
+                                    key={movie.id}
+                                    onPress={() => handleMovieSelection(movie)}
+                                    style={[
+                                        styles.pressableText,
+                                        selectedMovieID === movie.id && styles.selectedMovie, // Highlight selected movie
+                                    ]}
+                                >
+                                    <Text numberOfLines={1} ellipsizeMode="tail" style={styles.unselected}>
+                                        {movie.title}
+                                    </Text>
+                                </Pressable>
+                            ))}
+                        </ScrollView>
+                    ) : (
+                        <Text style={styles.noResultsText}>No movies found</Text>
+                    )}
+                </View>
+            )}
+
             <Pressable
-                disabled={selectedMovieID === 0}
+                disabled={isButtonDisabled}
                 onPress={onPressCheck}
-                style={selectedMovieID > 0 ? styles.button : styles.buttonDisabled}
+                style={isButtonDisabled ? styles.buttonDisabled : styles.button}
             >
-                <Text numberOfLines={1} ellipsizeMode='tail' style={styles.buttonText}>
+                <Text numberOfLines={1} ellipsizeMode="tail" style={styles.buttonText}>
                     {selectedMovieTitle}
                 </Text>
             </Pressable>
@@ -97,10 +126,18 @@ const styles = StyleSheet.create({
         maxHeight: 40,
         minHeight: 40,
         padding: 10,
-        width: 300
+        width: 300,
+        opacity: 1
     },
     buttonDisabled: {
-        display: 'none'
+        backgroundColor: colors.primary,
+        borderRadius: 10,
+        flex: 1,
+        maxHeight: 40,
+        minHeight: 40,
+        padding: 10,
+        width: 300,
+        opacity: 0.5
     },
     buttonText: {
         color: colors.secondary,
@@ -127,11 +164,12 @@ const styles = StyleSheet.create({
     pressableText: {
         flex: 1,
         flexWrap: 'nowrap',
-        fontFamily: 'Arvo-Regular'
+        fontFamily: 'Arvo-Regular',
+        padding: 5,
+        borderRadius: 5
     },
-    resultsHide: {
-        display: 'none',
-        height: 0
+    selectedMovie: {
+        backgroundColor: colors.quinary
     },
     resultsShow: {
         flex: 1,
