@@ -11,6 +11,14 @@ interface PickerContainerProps {
     updatePlayerGame: Dispatch<SetStateAction<PlayerGame>>
 }
 
+const debounce = (func: Function, delay: number) => {
+    let timer: NodeJS.Timeout
+    return (...args: any[]) => {
+        clearTimeout(timer)
+        timer = setTimeout(() => func(...args), delay)
+    }
+}
+
 const PickerContainer = (props: PickerContainerProps) => {
     const defaultButtonText = 'Select a Movie'
     const [foundMovies, setFoundMovies] = useState<BasicMovie[]>(props.movies)
@@ -21,34 +29,33 @@ const PickerContainer = (props: PickerContainerProps) => {
     const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true)
 
     useEffect(() => {
-        setFoundMovies(props.movies)
-        setLoading(false)
+        if (props.movies.length === 0) {
+            setFoundMovies([])
+            setLoading(false)
+        } else {
+            setFoundMovies(props.movies)
+            setLoading(false)
+        }
     }, [props.movies])
 
-    useEffect(() => {
-        if (searchText.trim() === '') {
-            setFoundMovies(props.movies)
-        } else {
-            const filteredMovies = props.movies.filter((movie) =>
-                movie.title.toLowerCase().includes(searchText.toLowerCase())
-            )
-            setFoundMovies(filteredMovies)
-        }
-    }, [searchText, props.movies])
-
-    const debounce = (func: Function, delay: number) => {
-        let timer: NodeJS.Timeout
-        return (...args: any[]) => {
-            clearTimeout(timer)
-            timer = setTimeout(() => func(...args), delay)
-        }
-    }
-
-    const handleSearchChange = useCallback(
+    const debouncedFilterMovies = useCallback(
         debounce((text: string) => {
-            setSearchText(text)
-        }, 100), []
+            if (text.trim() === '') {
+                setFoundMovies(props.movies)
+            } else {
+                const filteredMovies = props.movies.filter((movie) =>
+                    movie.title.toLowerCase().includes(text.toLowerCase())
+                )
+                setFoundMovies(filteredMovies)
+            }
+        }, 300),
+        [props.movies]
     )
+
+    const handleSearchChange = (text: string) => {
+        setSearchText(text)
+        debouncedFilterMovies(text)
+    }
 
     const onPressCheck = () => {
         if (selectedMovieID > 0) {
@@ -69,6 +76,8 @@ const PickerContainer = (props: PickerContainerProps) => {
     return (
         <View style={styles.container}>
             <TextInput
+                accessible
+                accessibilityLabel="Movie search input"
                 clearTextOnFocus={false}
                 maxLength={100}
                 onChangeText={(text) => handleSearchChange(text)}
@@ -76,6 +85,7 @@ const PickerContainer = (props: PickerContainerProps) => {
                 placeholderTextColor={colors.tertiary}
                 style={styles.input}
                 value={searchText}
+                editable={props.movies.length > 0}
             />
 
             {loading ? (
@@ -86,11 +96,13 @@ const PickerContainer = (props: PickerContainerProps) => {
                         <ScrollView style={styles.resultsShow}>
                             {foundMovies.map((movie) => (
                                 <Pressable
+                                    accessible
+                                    accessibilityLabel={`Select movie: ${movie.title}`}
                                     key={movie.id}
                                     onPress={() => handleMovieSelection(movie)}
                                     style={[
                                         styles.pressableText,
-                                        selectedMovieID === movie.id && styles.selectedMovie, // Highlight selected movie
+                                        selectedMovieID === movie.id && styles.selectedMovie
                                     ]}
                                 >
                                     <Text numberOfLines={1} ellipsizeMode="tail" style={styles.unselected}>
@@ -106,6 +118,8 @@ const PickerContainer = (props: PickerContainerProps) => {
             )}
 
             <Pressable
+                accessible
+                accessibilityLabel={isButtonDisabled ? "Submit button disabled" : "Submit button enabled"}
                 disabled={isButtonDisabled}
                 onPress={onPressCheck}
                 style={isButtonDisabled ? styles.buttonDisabled : styles.button}
