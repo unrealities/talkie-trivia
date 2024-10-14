@@ -26,15 +26,18 @@ const PickerContainer = (props: PickerContainerProps) => {
     const [selectedMovieTitle, setSelectedMovieTitle] = useState<string>(defaultButtonText)
     const [searchText, setSearchText] = useState<string>('')
     const [loading, setLoading] = useState<boolean>(true)
+    const [error, setError] = useState<string | null>(null)
     const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true)
 
     useEffect(() => {
         if (props.movies.length === 0) {
             setFoundMovies([])
             setLoading(false)
+            setError('Failed to load movies. Please try again.')
         } else {
             setFoundMovies(props.movies)
             setLoading(false)
+            setError(null)
         }
     }, [props.movies])
 
@@ -48,16 +51,16 @@ const PickerContainer = (props: PickerContainerProps) => {
                 )
                 setFoundMovies(filteredMovies)
             }
-        }, 300),
+        }, 50),
         [props.movies]
     )
 
-    const handleSearchChange = (text: string) => {
+    const handleSearchChange = useCallback((text: string) => {
         setSearchText(text)
         debouncedFilterMovies(text)
-    }
+    }, [debouncedFilterMovies])
 
-    const onPressCheck = () => {
+    const onPressCheck = useCallback(() => {
         if (selectedMovieID > 0) {
             props.updatePlayerGame({
                 ...props.playerGame,
@@ -65,7 +68,7 @@ const PickerContainer = (props: PickerContainerProps) => {
                 correctAnswer: props.playerGame.game.movie.id === selectedMovieID,
             })
         }
-    }
+    }, [selectedMovieID, props.playerGame, props.updatePlayerGame])
 
     const handleMovieSelection = (movie: BasicMovie) => {
         setSelectedMovieID(movie.id)
@@ -85,11 +88,13 @@ const PickerContainer = (props: PickerContainerProps) => {
                 placeholderTextColor={colors.tertiary}
                 style={styles.input}
                 value={searchText}
-                editable={props.movies.length > 0}
+                editable={!loading && props.movies.length > 0}
             />
 
             {loading ? (
                 <ActivityIndicator size="large" color={colors.primary} />
+            ) : error ? (
+                <Text style={styles.errorText}>{error}</Text>
             ) : (
                 <View style={styles.text}>
                     {foundMovies.length > 0 ? (
@@ -104,6 +109,7 @@ const PickerContainer = (props: PickerContainerProps) => {
                                         styles.pressableText,
                                         selectedMovieID === movie.id && styles.selectedMovie
                                     ]}
+                                    android_ripple={{ color: colors.quinary }}
                                 >
                                     <Text numberOfLines={1} ellipsizeMode="tail" style={styles.unselected}>
                                         {movie.title}
@@ -180,7 +186,8 @@ const styles = StyleSheet.create({
         flexWrap: 'nowrap',
         fontFamily: 'Arvo-Regular',
         padding: 5,
-        borderRadius: 5
+        borderRadius: 5,
+        opacity: 1,
     },
     selectedMovie: {
         backgroundColor: colors.quinary
@@ -203,6 +210,13 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: colors.tertiary,
         textAlign: 'center',
+    },
+    errorText: {
+        fontFamily: 'Arvo-Regular',
+        fontSize: 14,
+        color: 'red',
+        textAlign: 'center',
+        padding: 10
     },
     unselected: {
         color: colors.secondary,
