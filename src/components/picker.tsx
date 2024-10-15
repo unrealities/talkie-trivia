@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useState, useCallback } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState, useCallback, useRef } from 'react'
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import { BasicMovie } from '../models/movie'
 import { PlayerGame } from '../models/game'
@@ -11,11 +11,12 @@ interface PickerContainerProps {
     updatePlayerGame: Dispatch<SetStateAction<PlayerGame>>
 }
 
-const debounce = (func: Function, delay: number) => {
-    let timer: NodeJS.Timeout
+const useDebounce = (func: Function, delay: number) => {
+    const timer = useRef<NodeJS.Timeout | null>(null)
+
     return (...args: any[]) => {
-        clearTimeout(timer)
-        timer = setTimeout(() => func(...args), delay)
+        if (timer.current) clearTimeout(timer.current)
+        timer.current = setTimeout(() => func(...args), delay)
     }
 }
 
@@ -41,24 +42,21 @@ const PickerContainer = (props: PickerContainerProps) => {
         }
     }, [props.movies])
 
-    const debouncedFilterMovies = useCallback(
-        debounce((text: string) => {
-            if (text.trim() === '') {
-                setFoundMovies(props.movies)
-            } else {
-                const filteredMovies = props.movies.filter((movie) =>
-                    movie.title.toLowerCase().includes(text.toLowerCase())
-                )
-                setFoundMovies(filteredMovies)
-            }
-        }, 50),
-        [props.movies]
-    )
+    const debouncedFilterMovies = useDebounce((text: string) => {
+        if (text.trim() === '') {
+            setFoundMovies(props.movies)
+        } else {
+            const filteredMovies = props.movies.filter((movie) =>
+                movie.title.toLowerCase().includes(text.toLowerCase())
+            )
+            setFoundMovies(filteredMovies)
+        }
+    }, 50)
 
-    const handleSearchChange = useCallback((text: string) => {
+    const handleSearchChange = (text: string) => {
         setSearchText(text)
         debouncedFilterMovies(text)
-    }, [debouncedFilterMovies])
+    }
 
     const onPressCheck = useCallback(() => {
         if (selectedMovieID > 0) {
@@ -80,7 +78,7 @@ const PickerContainer = (props: PickerContainerProps) => {
         <View style={styles.container}>
             <TextInput
                 accessible
-                accessibilityLabel="Movie search input"
+                accessibilityLabel="Search for a movie"
                 clearTextOnFocus={false}
                 maxLength={100}
                 onChangeText={(text) => handleSearchChange(text)}
@@ -118,7 +116,7 @@ const PickerContainer = (props: PickerContainerProps) => {
                             ))}
                         </ScrollView>
                     ) : (
-                        <Text style={styles.noResultsText}>No movies found</Text>
+                        <Text style={styles.noResultsText}>No movies found for "{searchText}"</Text>
                     )}
                 </View>
             )}
