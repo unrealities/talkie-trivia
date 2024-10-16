@@ -42,16 +42,26 @@ const PickerContainer = (props: PickerContainerProps) => {
         }
     }, [props.movies])
 
-    const debouncedFilterMovies = useDebounce((text: string) => {
-        if (text.trim() === '') {
-            setFoundMovies(props.movies)
-        } else {
-            const filteredMovies = props.movies.filter((movie) =>
-                movie.title.toLowerCase().includes(text.toLowerCase())
-            )
-            setFoundMovies(filteredMovies)
-        }
-    }, 50)
+    const debouncedFilterMovies = useCallback(
+        useDebounce((text: string) => {
+            if (text.trim() === '') {
+                setFoundMovies(props.movies)
+                setError(null)
+            } else {
+                const filteredMovies = props.movies.filter((movie) =>
+                    movie.title.toLowerCase().includes(text.toLowerCase())
+                )
+                setFoundMovies(filteredMovies)
+
+                if (filteredMovies.length === 0) {
+                    setError(`No movies found for "${text}"`)
+                } else {
+                    setError(null)
+                }
+            }
+        }, 300),
+        [props.movies]
+    )
 
     const handleSearchChange = (text: string) => {
         setSearchText(text)
@@ -100,7 +110,7 @@ const PickerContainer = (props: PickerContainerProps) => {
                             {foundMovies.map((movie) => (
                                 <Pressable
                                     accessible
-                                    accessibilityLabel={`Select movie: ${movie.title}`}
+                                    accessibilityLabel={`Select movie: ${movie.title}, ID: ${movie.id}`}
                                     key={movie.id}
                                     onPress={() => handleMovieSelection(movie)}
                                     style={[
@@ -116,7 +126,9 @@ const PickerContainer = (props: PickerContainerProps) => {
                             ))}
                         </ScrollView>
                     ) : (
-                        <Text style={styles.noResultsText}>No movies found for "{searchText}"</Text>
+                        <Text style={styles.noResultsText}>
+                            {searchText ? `No movies found for "${searchText}"` : 'No movies available'}
+                        </Text>
                     )}
                 </View>
             )}
@@ -212,7 +224,7 @@ const styles = StyleSheet.create({
     errorText: {
         fontFamily: 'Arvo-Regular',
         fontSize: 14,
-        color: 'red',
+        color: colors.quaternary,
         textAlign: 'center',
         padding: 10
     },
