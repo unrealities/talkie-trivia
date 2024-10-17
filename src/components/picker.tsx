@@ -12,7 +12,7 @@ interface PickerContainerProps {
 }
 
 const useDebounce = (func: Function, delay: number) => {
-    const timer = useRef<NodeJS.Timeout | null>(null)
+    const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
     return (...args: any[]) => {
         if (timer.current) clearTimeout(timer.current)
@@ -22,7 +22,7 @@ const useDebounce = (func: Function, delay: number) => {
 
 const PickerContainer = (props: PickerContainerProps) => {
     const defaultButtonText = 'Select a Movie'
-    const [foundMovies, setFoundMovies] = useState<BasicMovie[]>(props.movies)
+    const [foundMovies, setFoundMovies] = useState<BasicMovie[]>([])
     const [selectedMovieID, setSelectedMovieID] = useState<number>(0)
     const [selectedMovieTitle, setSelectedMovieTitle] = useState<string>(defaultButtonText)
     const [searchText, setSearchText] = useState<string>('')
@@ -36,24 +36,36 @@ const PickerContainer = (props: PickerContainerProps) => {
             setLoading(false)
             setError('Failed to load movies. Please try again.')
         } else {
-            setFoundMovies(props.movies)
+            const uniqueMovies = removeDuplicates(props.movies)
+            setFoundMovies(uniqueMovies)
             setLoading(false)
             setError(null)
         }
     }, [props.movies])
 
+    const removeDuplicates = (movies: BasicMovie[]): BasicMovie[] => {
+        return movies.filter((movie, index, self) =>
+            index === self.findIndex((m) => m.title.toLowerCase() === movie.title.toLowerCase())
+        )
+    }
+
     const debouncedFilterMovies = useCallback(
         useDebounce((text: string) => {
-            if (text.trim() === '') {
-                setFoundMovies(props.movies)
+            const searchTerm = text.trim().toLowerCase()
+
+            if (searchTerm === '') {
+                setFoundMovies(removeDuplicates(props.movies))
                 setError(null)
             } else {
+                const regex = new RegExp(searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')
                 const filteredMovies = props.movies.filter((movie) =>
-                    movie.title.toLowerCase().includes(text.toLowerCase())
+                    regex.test(movie.title)
                 )
-                setFoundMovies(filteredMovies)
 
-                if (filteredMovies.length === 0) {
+                const uniqueFilteredMovies = removeDuplicates(filteredMovies)
+                setFoundMovies(uniqueFilteredMovies)
+
+                if (uniqueFilteredMovies.length === 0) {
                     setError(`No movies found for "${text}"`)
                 } else {
                     setError(null)
@@ -76,7 +88,7 @@ const PickerContainer = (props: PickerContainerProps) => {
                 correctAnswer: props.playerGame.game.movie.id === selectedMovieID,
             })
         }
-    }, [selectedMovieID, props.playerGame, props.updatePlayerGame])
+    }, [selectedMovieID, selectedMovieTitle, props.playerGame, props.updatePlayerGame])
 
     const handleMovieSelection = (movie: BasicMovie) => {
         setSelectedMovieID(movie.id)
@@ -136,6 +148,7 @@ const PickerContainer = (props: PickerContainerProps) => {
             <Pressable
                 accessible
                 accessibilityLabel={isButtonDisabled ? "Submit button disabled" : "Submit button enabled"}
+                accessibilityRole="button"
                 disabled={isButtonDisabled}
                 onPress={onPressCheck}
                 style={isButtonDisabled ? styles.buttonDisabled : styles.button}
