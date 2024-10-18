@@ -46,14 +46,14 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-evenly',
-        minWidth: 300,
+        minWidth: 240,
         paddingBottom: 12,
         paddingTop: 12
     },
     ActorContainer: {
         alignItems: 'center',
         flex: 1,
-        maxWidth: 90,
+        maxWidth: 60,
         minHeight: 120
     },
     ActorImage: {
