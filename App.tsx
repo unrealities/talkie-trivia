@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, Text } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { NavigationContainer } from '@react-navigation/native'
 
@@ -39,16 +39,14 @@ SplashScreen.preventAutoHideAsync()
 export default function App() {
   const { user } = useAuthentication()
 
+  const [isAppReady, setIsAppReady] = useState(false)
+  const [isNetworkConnected, setIsNetworkConnected] = useState<boolean>(true)
+  
   let [fontsLoaded] = useFonts({
     'Arvo-Bold': require('./assets/fonts/Arvo-Bold.ttf'),
     'Arvo-Italic': require('./assets/fonts/Arvo-Italic.ttf'),
     'Arvo-Regular': require('./assets/fonts/Arvo-Regular.ttf')
   })
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync()
-    }
-  }, [fontsLoaded])
 
   // init new movie
   let movies: Movie[] = require('./data/popularMovies.json')
@@ -57,7 +55,6 @@ export default function App() {
   const [movie] = useState<Movie>(newMovie)
 
   // init new game
-  // TODO: This should be initiated separately on a global level for all users
   let game: Game = {
     date: new Date,
     guessesMax: 5,
@@ -90,23 +87,30 @@ export default function App() {
   const [player, setPlayer] = useState<Player>(p)
   const [playerGame, setPlayerGame] = useState<PlayerGame>(pg)
   const [playerStats, setPlayerStats] = useState<PlayerStats>(ps)
-  const [isNetworkConnected, setIsNetworkConnected] = useState<boolean>(true)
 
-  useEffect(() => {
-    const networkConnected = async () => {
-      try {
-        await Network.getNetworkStateAsync().then((networkState) => {
-          networkState.isInternetReachable ? setIsNetworkConnected(true) : setIsNetworkConnected(false)
-        })
-      } catch (e) {
-        console.error("No network connection")
+  const loadResources = useCallback(async () => {
+    try {
+      const networkState = await Network.getNetworkStateAsync()
+      setIsNetworkConnected(networkState.isInternetReachable)
+
+      const playerData = player;
+      const playerGameData = playerGame;
+
+      if (fontsLoaded && networkState.isInternetReachable && playerData && playerGameData) {
+        setIsAppReady(true)
+        await SplashScreen.hideAsync()
       }
+    } catch (error) {
+      console.error("Error loading resources: ", error)
     }
-    networkConnected()
-  })
+  }, [fontsLoaded])
 
   useEffect(() => {
-    const updatePlayer = async (playerToUpdate:Player) => {
+    loadResources()
+  }, [loadResources])
+
+  useEffect(() => {
+    const updatePlayer = async (playerToUpdate: Player) => {
       const docRef = doc(db, 'players', playerToUpdate.id).withConverter(playerConverter)
       const docSnap = await getDoc(docRef)
 
@@ -126,7 +130,7 @@ export default function App() {
       }
     }
 
-    const updatePlayerGame = async (playerGameToUpdate) => {
+    const updatePlayerGame = async (playerGameToUpdate: PlayerGame) => {
       const docRef = doc(db, 'playerGames', playerGameToUpdate.id).withConverter(playerGameConverter)
       const docSnap = await getDoc(docRef)
 
@@ -140,7 +144,7 @@ export default function App() {
       }
     }
 
-    const updatePlayerStats = async (playerStatsToUpdate) => {
+    const updatePlayerStats = async (playerStatsToUpdate: PlayerStats) => {
       const docRef = doc(db, 'playerStats', playerStatsToUpdate.id).withConverter(playerStatsConverter)
       const docSnap = await getDoc(docRef)
 
@@ -166,29 +170,29 @@ export default function App() {
     updatePlayer(player)
     updatePlayerGame(playerGame)
 
-    // TODO: for debugging
-    console.log(playerGame.game.movie.title)
-  }, [player, playerGame, playerStats])
+    console.log(playerGame.game.movie.title) // Debugging purposes
+  }, [player, playerGame, playerStats, user])
 
   const Tab = createBottomTabNavigator()
 
   function Game() {
     return (
-      <View style={styles.container} onLayout={onLayoutRootView}>
+      <View style={styles.container}>
         <MoviesContainer
           isNetworkConnected={isNetworkConnected}
           movies={basicMovies}
           player={player}
           playerGame={playerGame}
           playerStats={playerStats}
-          updatePlayerGame={setPlayerGame} />
+          updatePlayerGame={setPlayerGame}
+        />
       </View>
     )
   }
 
   function Profile() {
     return (
-      <View style={styles.container} onLayout={onLayoutRootView}>
+      <View style={styles.container}>
         <GoogleLogin player={player} />
         <PlayerStatsContainer player={player} playerStats={playerStats} />
       </View>
@@ -196,34 +200,29 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer onReady={onLayoutRootView}>
+    <NavigationContainer>
       <StatusBar style="auto" />
-      <Tab.Navigator screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: colors.primary,
-        tabBarIconStyle: {
-          display: 'none'
-        },
-        tabBarInactiveTintColor: colors.tertiary,
-        tabBarLabelStyle: {
-          fontFamily: 'Arvo-Bold',
-          fontSize: 16,
-          paddingBottom: 8
-        },
-        tabBarStyle: {
-          backgroundColor: colors.secondary,
-          height: 40,
-        }
-      }}>
-        <Tab.Screen
-          name="Game"
-          component={Game}
-        />
-        <Tab.Screen
-          name="Profile"
-          component={Profile}
-        />
-      </Tab.Navigator>
+      {isAppReady ? (
+        <Tab.Navigator screenOptions={{
+          headerShown: false,
+          tabBarActiveTintColor: colors.primary,
+          tabBarIconStyle: { display: 'none' },
+          tabBarInactiveTintColor: colors.tertiary,
+          tabBarLabelStyle: {
+            fontFamily: 'Arvo-Bold',
+            fontSize: 16,
+            paddingBottom: 8
+          },
+          tabBarStyle: { backgroundColor: colors.secondary, height: 40 },
+        }}>
+          <Tab.Screen name="Game" component={Game} />
+          <Tab.Screen name="Profile" component={Profile} />
+        </Tab.Navigator>
+      ) : (
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>Loading...</Text>
+        </View>
+      )}
     </NavigationContainer>
   )
 }
@@ -232,6 +231,17 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     backgroundColor: colors.background,
-    flex: 1
-  }
+    flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.background,
+  },
+  loadingText: {
+    fontFamily: 'Arvo-Regular',
+    fontSize: 20,
+    color: colors.primary,
+  },
 })
