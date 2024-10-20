@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { StyleSheet, View, Text } from 'react-native'
+import { StyleSheet, View, Text, ActivityIndicator } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { NavigationContainer } from '@react-navigation/native'
 
@@ -41,6 +41,7 @@ export default function App() {
 
   const [isAppReady, setIsAppReady] = useState(false)
   const [isNetworkConnected, setIsNetworkConnected] = useState<boolean>(true)
+  const [loadingError, setLoadingError] = useState<string | null>(null)
   
   let [fontsLoaded] = useFonts({
     'Arvo-Bold': require('./assets/fonts/Arvo-Bold.ttf'),
@@ -48,15 +49,13 @@ export default function App() {
     'Arvo-Regular': require('./assets/fonts/Arvo-Regular.ttf')
   })
 
-  // init new movie
   let movies: Movie[] = require('./data/popularMovies.json')
   let basicMovies: BasicMovie[] = require('./data/basicMovies.json')
   let newMovie = movies[Math.floor(Math.random() * movies.length)]
   const [movie] = useState<Movie>(newMovie)
 
-  // init new game
   let game: Game = {
-    date: new Date,
+    date: new Date(),
     guessesMax: 5,
     id: uuid.v4().toString(),
     movie: movie
@@ -69,12 +68,12 @@ export default function App() {
 
   let pg: PlayerGame = {
     correctAnswer: false,
-    endDate: new Date,
+    endDate: new Date(),
     game: game,
     guesses: [],
     id: uuid.v4().toString(),
     playerID: p.id,
-    startDate: new Date,
+    startDate: new Date(),
   }
 
   let ps: PlayerStats = {
@@ -101,13 +100,31 @@ export default function App() {
         await SplashScreen.hideAsync()
       }
     } catch (error) {
+      setLoadingError("Error loading resources. Please try again.")
       console.error("Error loading resources: ", error)
     }
   }, [fontsLoaded])
 
   useEffect(() => {
-    loadResources()
+    const fetchData = async () => {
+      await loadResources()
+    }
+    fetchData()
   }, [loadResources])
+
+  useEffect(() => {
+    if (isAppReady) {
+      SplashScreen.hideAsync()
+    }
+  }, [isAppReady])
+
+  if (!isNetworkConnected) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>No Internet Connection</Text>
+      </View>
+    )
+  }
 
   useEffect(() => {
     const updatePlayer = async (playerToUpdate: Player) => {
@@ -137,8 +154,9 @@ export default function App() {
       try {
         if (docSnap.exists()) {
           await updateDoc(doc(db, 'playerGames', playerGameToUpdate.id).withConverter(playerGameConverter), playerGameToUpdate)
+        } else {
+          await setDoc(doc(db, 'playerGames', playerGameToUpdate.id).withConverter(playerGameConverter), playerGameToUpdate)
         }
-        await setDoc(doc(db, 'playerGames', playerGameToUpdate.id).withConverter(playerGameConverter), playerGameToUpdate)
       } catch (e) {
         console.error("Error adding document: ", e)
       }
@@ -220,7 +238,7 @@ export default function App() {
         </Tab.Navigator>
       ) : (
         <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>Loading...</Text>
+          <ActivityIndicator size="large" color={colors.primary} />
         </View>
       )}
     </NavigationContainer>
@@ -239,9 +257,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.background,
   },
-  loadingText: {
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.background,
+  },
+  errorText: {
     fontFamily: 'Arvo-Regular',
     fontSize: 20,
-    color: colors.primary,
+    color: 'red',
   },
 })
