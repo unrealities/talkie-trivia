@@ -24,7 +24,7 @@ const Facts = (props: FactsProps) => {
                 <Genres genres={movie.genres} />
                 <Image
                     source={{ uri: `${imageURI}${movie.poster_path}` }}
-                    style={{ width: '60%', height: '40%' }}
+                    style={{ width: '80%', height: '60%' }}
                 />
                 <Text style={styles.text}>Directed by {movie.director.name}</Text>
                 <Actors actors={movie.actors} />
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'space-evenly',
         paddingBottom: 20,
-        width: 320
+        width: 260
     },
     header: {
         flexWrap: 'wrap',
@@ -55,13 +55,14 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'space-evenly',
         paddingBottom: 20,
-        width: 320
+        width: 260
     },
     subHeader: {
         flexWrap: 'wrap',
         fontFamily: 'Arvo-Italic',
         fontSize: 14,
-        textAlign: 'center'
+        textAlign: 'center',
+        width: 220
     },
     text: {
         flexWrap: 'wrap',

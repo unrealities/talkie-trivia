@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
         maxHeight: 44,
         minHeight: 26,
         minWidth: 80,
+        maxWidth: 220,
         padding: 6
     },
     GenresContainer: {
