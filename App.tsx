@@ -90,7 +90,7 @@ export default function App() {
   const loadResources = useCallback(async () => {
     try {
       const networkState = await Network.getNetworkStateAsync()
-      setIsNetworkConnected(networkState.isInternetReachable)
+      setIsNetworkConnected(networkState.isInternetReachable ?? false)
 
       const playerData = player;
       const playerGameData = playerGame;
