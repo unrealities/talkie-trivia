@@ -65,9 +65,10 @@ const styles = StyleSheet.create({
         flex: 1,
         fontFamily: 'Arvo-Regular',
         fontSize: 12,
-        height: 30,
+        minHeight: 34,
         paddingTop: 4,
-        textAlign: 'center'
+        textAlign: 'center',
+        flexWrap: 'wrap'
     }
 })
 
