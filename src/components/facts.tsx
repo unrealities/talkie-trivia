@@ -21,10 +21,9 @@ const Facts = (props: FactsProps) => {
             </TouchableOpacity>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <Text style={styles.subHeader}>{movie.tagline}</Text>
-                <Genres genres={movie.genres} />
                 <Image
                     source={{ uri: `${imageURI}${movie.poster_path}` }}
-                    style={{ width: '80%', height: '60%' }}
+                    style={{ width: '90%', height: '60%' }}
                 />
                 <Text style={styles.text}>Directed by {movie.director.name}</Text>
                 <Actors actors={movie.actors} />
@@ -37,24 +36,20 @@ const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
         flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'space-evenly',
         paddingBottom: 20,
-        width: 260
+        width: 260,
     },
     header: {
         flexWrap: 'wrap',
         fontFamily: 'Arvo-Bold',
         fontSize: 24,
-        paddingBottom: 6,
+        paddingBottom: 10,
         textAlign: 'center'
     },
     scrollContainer: {
         alignItems: 'center',
         flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'space-evenly',
-        paddingBottom: 20,
+        paddingVertical: 20,
         width: 260
     },
     subHeader: {
@@ -62,15 +57,17 @@ const styles = StyleSheet.create({
         fontFamily: 'Arvo-Italic',
         fontSize: 14,
         textAlign: 'center',
-        width: 220
+        width: 220,
+        marginBottom: 10
     },
     text: {
         flexWrap: 'wrap',
         fontFamily: 'Arvo-Regular',
         fontSize: 14,
         paddingTop: 10,
-        textAlign: 'center'
-    }
+        textAlign: 'center',
+        marginBottom: 10
+    },
 })
 
 export default Facts

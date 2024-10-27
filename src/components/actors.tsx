@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-evenly',
-        minWidth: 240,
+        minWidth: 270,
         paddingBottom: 12,
         paddingTop: 12
     },
