@@ -1,5 +1,5 @@
 export default class PlayerStats {
-    id: number
+    id: string
     currentStreak: number
     games: number // number of games attempted (at least one guess made)
     maxStreak: number

@@ -59,18 +59,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: colors.secondary,
         borderRadius: 20,
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
         elevation: 5,
         flex: 1,
         justifyContent: 'space-evenly',
         margin: 8,
-        padding: 16,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
+        padding: 16
     },
     textStyle: {
         color: colors.secondary,
