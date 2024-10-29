@@ -100,7 +100,7 @@ const PickerContainer = (props: PickerContainerProps) => {
         <View style={styles.container}>
             <TextInput
                 accessible
-                accessibilityLabel="Search for a movie"
+                aria-label="Search for a movie"
                 clearTextOnFocus={false}
                 maxLength={100}
                 onChangeText={(text) => handleSearchChange(text)}
@@ -108,7 +108,7 @@ const PickerContainer = (props: PickerContainerProps) => {
                 placeholderTextColor={colors.tertiary}
                 style={styles.input}
                 value={searchText}
-                editable={!loading && props.movies.length > 0}
+                readOnly={!loading && props.movies.length > 0}
             />
 
             {loading ? (
@@ -122,7 +122,7 @@ const PickerContainer = (props: PickerContainerProps) => {
                             {foundMovies.map((movie) => (
                                 <Pressable
                                     accessible
-                                    accessibilityLabel={`Select movie: ${movie.title}, ID: ${movie.id}`}
+                                    aria-label={`Select movie: ${movie.title}, ID: ${movie.id}`}
                                     key={movie.id}
                                     onPress={() => handleMovieSelection(movie)}
                                     style={[
@@ -147,8 +147,8 @@ const PickerContainer = (props: PickerContainerProps) => {
 
             <Pressable
                 accessible
-                accessibilityLabel={isButtonDisabled ? "Submit button disabled" : "Submit button enabled"}
-                accessibilityRole="button"
+                aria-label={isButtonDisabled ? "Submit button disabled" : "Submit button enabled"}
+                role="button"
                 disabled={isButtonDisabled}
                 onPress={onPressCheck}
                 style={isButtonDisabled ? styles.buttonDisabled : styles.button}
