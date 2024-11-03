@@ -1,2 +1,2 @@
-import * as Victory from 'victory'
+import * as Victory from "victory"
 export default Victory

@@ -1,40 +1,40 @@
 export interface Actor {
-    id: number
-    order: number
-    name: string
-    popularity: number
-    profile_path: string
+  id: number
+  order: number
+  name: string
+  popularity: number
+  profile_path: string
 }
 
 export interface BasicMovie {
-    id: number
-    title: string
+  id: number
+  title: string
 }
 
 export interface Director {
-    id: number
-    name: string
-    popularity: number
-    profile_path: string
+  id: number
+  name: string
+  popularity: number
+  profile_path: string
 }
 
 export interface Genre {
-    id: number
-    name: string
+  id: number
+  name: string
 }
 
 export class Movie {
-    actors: Actor[]
-    director: Director
-    genres: Genre[]
-    id: number
-    imdb_id: number
-    overview: string
-    poster_path: string
-    popularity: number
-    release_date: string
-    tagline: string
-    title: string
-    vote_average: number
-    vote_count: number
+  actors: Actor[]
+  director: Director
+  genres: Genre[]
+  id: number
+  imdb_id: number
+  overview: string
+  poster_path: string
+  popularity: number
+  release_date: string
+  tagline: string
+  title: string
+  vote_average: number
+  vote_count: number
 }

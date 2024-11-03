@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     GenresContainer: {
         flex: 1,
         flexDirection: 'row',
-        flexWarp: 'wrap',
+        flexWrap: 'wrap',
         marginBottom: 10,
         marginTop: 10,
         minHeight: 20,

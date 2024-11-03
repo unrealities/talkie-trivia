@@ -1,24 +1,30 @@
-import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
-import { StyleSheet, View } from 'react-native'
-import ConfettiCannon from 'react-native-confetti-cannon'
-import { initializeApp } from 'firebase/app'
-import { doc, getFirestore, setDoc } from 'firebase/firestore'
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
+import { StyleSheet, View } from "react-native"
+import ConfettiCannon from "react-native-confetti-cannon"
+import { initializeApp } from "firebase/app"
+import { doc, getFirestore, setDoc } from "firebase/firestore"
 
-import CluesContainer from './clues'
-import GuessesContainer from './guesses'
-import NetworkContainer from './network'
-import MovieModal from './modal'
-import PickerContainer from './picker'
-import TitleHeader from './titleHeader'
-import ResetContainer from './reset'
-import { BasicMovie } from '../models/movie'
-import { PlayerGame } from '../models/game'
-import Player from '../models/player'
-import PlayerStats from '../models/playerStats'
-import { firebaseConfig } from '../config/firebase'
-import { playerStatsConverter } from '../utils/firestore/converters/playerStats'
-import { playerGameConverter } from '../utils/firestore/converters/playerGame'
-import { colors } from '../styles/global'
+import CluesContainer from "./clues"
+import GuessesContainer from "./guesses"
+import NetworkContainer from "./network"
+import MovieModal from "./modal"
+import PickerContainer from "./picker"
+import TitleHeader from "./titleHeader"
+import ResetContainer from "./reset"
+import { BasicMovie } from "../models/movie"
+import { PlayerGame } from "../models/game"
+import Player from "../models/player"
+import PlayerStats from "../models/playerStats"
+import { firebaseConfig } from "../config/firebase"
+import { playerStatsConverter } from "../utils/firestore/converters/playerStats"
+import { playerGameConverter } from "../utils/firestore/converters/playerGame"
+import { colors } from "../styles/global"
 
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
@@ -41,7 +47,12 @@ const MoviesContainer = (props: MovieContainerProps) => {
   useEffect(() => {
     const setPlayerGame = async (playerGame: PlayerGame) => {
       try {
-        await setDoc(doc(db, 'playerGames', playerGame.id).withConverter(playerGameConverter), playerGame)
+        await setDoc(
+          doc(db, "playerGames", playerGame.id).withConverter(
+            playerGameConverter
+          ),
+          playerGame
+        )
       } catch (e) {
         console.error("Error adding document: ", e)
       }
@@ -61,7 +72,12 @@ const MoviesContainer = (props: MovieContainerProps) => {
       }
 
       try {
-        await setDoc(doc(db, 'playerStats', props.player.id).withConverter(playerStatsConverter), ps)
+        await setDoc(
+          doc(db, "playerStats", props.player.id).withConverter(
+            playerStatsConverter
+          ),
+          ps
+        )
       } catch (e) {
         console.error("Error adding document: ", e)
       }
@@ -81,7 +97,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
       }
     }
 
-    if (props.player.name != '') {
+    if (props.player.name != "") {
       setPlayerGame(props.playerGame)
     }
   })
@@ -93,23 +109,28 @@ const MoviesContainer = (props: MovieContainerProps) => {
       <CluesContainer
         correctGuess={props.playerGame.correctAnswer}
         guesses={props.playerGame.guesses}
-        summary={props.playerGame.game.movie.overview} />
+        summary={props.playerGame.game.movie.overview}
+      />
       <PickerContainer
         enableSubmit={enableSubmit}
         playerGame={props.playerGame}
         movies={props.movies}
-        updatePlayerGame={props.updatePlayerGame} />
+        updatePlayerGame={props.updatePlayerGame}
+      />
       <GuessesContainer
         guesses={props.playerGame.guesses}
         movie={props.playerGame.game.movie}
-        movies={props.movies} />
+        movies={props.movies}
+      />
       <ResetContainer
         playerGame={props.playerGame}
-        updatePlayerGame={props.updatePlayerGame} />
+        updatePlayerGame={props.updatePlayerGame}
+      />
       <MovieModal
         movie={props.playerGame.game.movie}
         show={showModal}
-        toggleModal={setShowModal} />
+        toggleModal={setShowModal}
+      />
       <ConfettiCannon
         autoStart={false}
         colors={Object.values(colors)}
@@ -118,19 +139,20 @@ const MoviesContainer = (props: MovieContainerProps) => {
         fadeOut={true}
         fallSpeed={2000}
         origin={{ x: 100, y: -20 }}
-        ref={confettiRef} />
+        ref={confettiRef}
+      />
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
+    alignItems: "center",
     flex: 1,
-    flexDirection: 'column',
+    flexDirection: "column",
     marginTop: 24,
-    width: '90%'
-  }
+    width: "90%",
+  },
 })
 
 export default MoviesContainer

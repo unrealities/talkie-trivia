@@ -1,8 +1,8 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import uuid from 'react-native-uuid'
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import uuid from "react-native-uuid"
 
-const userID = 'userID'
-const userName = 'userName'
+const userID = "userID"
+const userName = "userName"
 
 async function setUserID(id: string) {
   await AsyncStorage.setItem(userID, id)
@@ -29,7 +29,7 @@ export async function getUserName() {
   if (name) {
     return name
   } else {
-    let newUserName = 'Guest'
+    let newUserName = "Guest"
     setUserID(newUserName)
     return newUserName
   }
