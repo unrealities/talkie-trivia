@@ -18,8 +18,10 @@ import { updatePlayer, updatePlayerGame, updatePlayerStats } from './src/utils/f
 import GoogleLogin from './src/components/googleLogin'
 import MoviesContainer from './src/components/movie'
 import PlayerStatsContainer from './src/components/playerStats'
-import { Game, Player, PlayerGame, PlayerStats } from './src/models'
-import movies from './data/popularMovies.json'
+import Player from './src/models/player'
+import PlayerStats from './src/models/playerStats'
+import { BasicMovie, Movie } from './src/models/movie'
+import { Game, PlayerGame } from './src/models/game'
 
 initializeApp(firebaseConfig)
 const db = getFirestore()
@@ -30,12 +32,39 @@ const App = () => {
   const { user } = useAuthentication()
   const [isAppReady, setIsAppReady] = useState(false)
   const [isNetworkConnected, setIsNetworkConnected] = useState(true)
-  const [loadingError, setLoadingError] = useState(null)
+  const [loadingError, setLoadingError] = useState<string | null>(null)
   const [player, setPlayer] = useState<Player>({ id: uuid.v4().toString(), name: '' })
-  
+
+  let movies: Movie[] = require('./data/popularMovies.json')
+  let basicMovies: BasicMovie[] = require('./data/basicMovies.json')
   const [movie, setMovie] = useState<Movie>(movies[new Date().getDate() % movies.length])
-  const [playerGame, setPlayerGame] = useState<PlayerGame>({ /* initial PlayerGame values */ })
-  const [playerStats, setPlayerStats] = useState<PlayerStats>({ /* initial PlayerStats values */ })
+
+  let game: Game = {
+    date: new Date(),
+    guessesMax: 5,
+    id: uuid.v4().toString(),
+    movie: movie
+  }
+  let p: Player = {
+    id: uuid.v4().toString(),
+    name: ''
+  }
+  const [playerGame, setPlayerGame] = useState<PlayerGame>({
+    correctAnswer: false,
+    endDate: new Date(),
+    game: game,
+    guesses: [],
+    id: uuid.v4().toString(),
+    playerID: p.id,
+    startDate: new Date(),
+  })
+  const [playerStats, setPlayerStats] = useState<PlayerStats>({
+    id: p.id,
+    currentStreak: 0,
+    games: 1,
+    maxStreak: 0,
+    wins: [0, 0, 0, 0, 0]
+  })
 
   let [fontsLoaded] = useFonts({
     'Arvo-Bold': require('./assets/fonts/Arvo-Bold.ttf'),
@@ -101,7 +130,14 @@ const App = () => {
         }}>
           <Tab.Screen name="Game" component={() => (
             <View style={styles.container}>
-              <MoviesContainer player={player} playerGame={playerGame} playerStats={playerStats} />
+              <MoviesContainer
+                isNetworkConnected={isNetworkConnected}
+                movies={basicMovies}
+                player={player}
+                playerGame={playerGame}
+                playerStats={playerStats}
+                updatePlayerGame={setPlayerGame}
+              />
             </View>
           )} />
           <Tab.Screen name="Profile" component={() => (
