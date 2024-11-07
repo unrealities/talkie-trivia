@@ -1,6 +1,8 @@
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 import { db } from '../config/firebase'
-import { playerConverter, playerGameConverter, playerStatsConverter } from './firestore/converters'
+import { playerConverter } from './firestore/converters/player'
+import { playerGameConverter } from './firestore/converters/playerGame'
+import { playerStatsConverter } from './firestore/converters/playerStats'
 
 export const updatePlayer = async (player, getUserID, getUserName, setUserName) => {
   const docRef = doc(db, 'players', player.id).withConverter(playerConverter)
