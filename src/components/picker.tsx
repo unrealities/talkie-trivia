@@ -131,12 +131,11 @@ const PickerContainer = (props: PickerContainerProps) => {
         aria-label="Search for a movie"
         clearTextOnFocus={false}
         maxLength={100}
-        onChangeText={(text) => handleSearchChange(text)}
+        onChangeText={handleSearchChange}
         placeholder="Search for a movie title"
         placeholderTextColor={colors.tertiary}
         style={styles.input}
         value={searchText}
-        readOnly={!loading && props.movies.length > 0}
       />
 
       {loading ? (

@@ -1,27 +1,35 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { StyleSheet, View, Text, ActivityIndicator, Button } from 'react-native'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { NavigationContainer } from '@react-navigation/native'
-import { useFonts } from 'expo-font'
-import * as Network from 'expo-network'
-import * as SplashScreen from 'expo-splash-screen'
-import { StatusBar } from 'expo-status-bar'
-import uuid from 'react-native-uuid'
-import { useAuthentication } from './src/utils/hooks/useAuthentication'
-import { getUserID, getUserName, setUserName } from './src/utils/hooks/localStore'
-import { colors } from './src/styles/global'
-import { firebaseConfig } from './src/config/firebase'
-import { initializeApp } from 'firebase/app'
-import { getFirestore } from 'firebase/firestore'
-import { updatePlayer, updatePlayerGame, updatePlayerStats } from './src/utils/firebaseService'
+import React, { useCallback, useEffect, useState } from "react"
+import { StyleSheet, View, Text, ActivityIndicator, Button } from "react-native"
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
+import { NavigationContainer } from "@react-navigation/native"
+import { useFonts } from "expo-font"
+import * as Network from "expo-network"
+import * as SplashScreen from "expo-splash-screen"
+import { StatusBar } from "expo-status-bar"
+import uuid from "react-native-uuid"
+import { useAuthentication } from "./src/utils/hooks/useAuthentication"
+import {
+  getUserID,
+  getUserName,
+  setUserName,
+} from "./src/utils/hooks/localStore"
+import { colors } from "./src/styles/global"
+import { firebaseConfig } from "./src/config/firebase"
+import { initializeApp } from "firebase/app"
+import { getFirestore } from "firebase/firestore"
+import {
+  updatePlayer,
+  updatePlayerGame,
+  updatePlayerStats,
+} from "./src/utils/firebaseService"
 
-import GoogleLogin from './src/components/googleLogin'
-import MoviesContainer from './src/components/movie'
-import PlayerStatsContainer from './src/components/playerStats'
-import Player from './src/models/player'
-import PlayerStats from './src/models/playerStats'
-import { BasicMovie, Movie } from './src/models/movie'
-import { Game, PlayerGame } from './src/models/game'
+import GoogleLogin from "./src/components/googleLogin"
+import MoviesContainer from "./src/components/movie"
+import PlayerStatsContainer from "./src/components/playerStats"
+import Player from "./src/models/player"
+import PlayerStats from "./src/models/playerStats"
+import { BasicMovie, Movie } from "./src/models/movie"
+import { Game, PlayerGame } from "./src/models/game"
 
 initializeApp(firebaseConfig)
 const db = getFirestore()
@@ -33,21 +41,26 @@ const App = () => {
   const [isAppReady, setIsAppReady] = useState(false)
   const [isNetworkConnected, setIsNetworkConnected] = useState(true)
   const [loadingError, setLoadingError] = useState<string | null>(null)
-  const [player, setPlayer] = useState<Player>({ id: uuid.v4().toString(), name: '' })
+  const [player, setPlayer] = useState<Player>({
+    id: uuid.v4().toString(),
+    name: "",
+  })
 
-  let movies: Movie[] = require('./data/popularMovies.json')
-  let basicMovies: BasicMovie[] = require('./data/basicMovies.json')
-  const [movie, setMovie] = useState<Movie>(movies[new Date().getDate() % movies.length])
+  let movies: Movie[] = require("./data/popularMovies.json")
+  let basicMovies: BasicMovie[] = require("./data/basicMovies.json")
+  const [movie, setMovie] = useState<Movie>(
+    movies[new Date().getDate() % movies.length]
+  )
 
   let game: Game = {
     date: new Date(),
     guessesMax: 5,
     id: uuid.v4().toString(),
-    movie: movie
+    movie: movie,
   }
   let p: Player = {
     id: uuid.v4().toString(),
-    name: ''
+    name: "",
   }
   const [playerGame, setPlayerGame] = useState<PlayerGame>({
     correctAnswer: false,
@@ -63,12 +76,12 @@ const App = () => {
     currentStreak: 0,
     games: 1,
     maxStreak: 0,
-    wins: [0, 0, 0, 0, 0]
+    wins: [0, 0, 0, 0, 0],
   })
 
   let [fontsLoaded] = useFonts({
-    'Arvo-Bold': require('./assets/fonts/Arvo-Bold.ttf'),
-    'Arvo-Regular': require('./assets/fonts/Arvo-Regular.ttf'),
+    "Arvo-Bold": require("./assets/fonts/Arvo-Bold.ttf"),
+    "Arvo-Regular": require("./assets/fonts/Arvo-Regular.ttf"),
   })
 
   const loadResources = useCallback(async () => {
@@ -98,7 +111,7 @@ const App = () => {
   useEffect(() => {
     const updateData = async () => {
       if (user) {
-        player.name = user?.displayName ?? ''
+        player.name = user?.displayName ?? ""
       }
       const updatedStats = await updatePlayerStats(playerStats, player.id)
       if (updatedStats) setPlayerStats(updatedStats)
@@ -123,29 +136,38 @@ const App = () => {
     <NavigationContainer>
       <StatusBar style="auto" />
       {isAppReady ? (
-        <Tab.Navigator screenOptions={{
-          headerShown: false,
-          tabBarActiveTintColor: colors.primary,
-          tabBarLabelStyle: { fontFamily: 'Arvo-Bold', fontSize: 16 },
-        }}>
-          <Tab.Screen name="Game" component={() => (
-            <View style={styles.container}>
-              <MoviesContainer
-                isNetworkConnected={isNetworkConnected}
-                movies={basicMovies}
-                player={player}
-                playerGame={playerGame}
-                playerStats={playerStats}
-                updatePlayerGame={setPlayerGame}
-              />
-            </View>
-          )} />
-          <Tab.Screen name="Profile" component={() => (
-            <View style={styles.container}>
-              <GoogleLogin player={player} />
-              <PlayerStatsContainer player={player} playerStats={playerStats} />
-            </View>
-          )} />
+        <Tab.Navigator
+          screenOptions={{
+            headerShown: false,
+            tabBarActiveTintColor: colors.primary,
+            tabBarLabelStyle: { fontFamily: "Arvo-Bold", fontSize: 16 },
+          }}
+        >
+          <Tab.Screen name="Game">
+            {() => (
+              <View style={styles.container}>
+                <MoviesContainer
+                  isNetworkConnected={isNetworkConnected}
+                  movies={basicMovies}
+                  player={player}
+                  playerGame={playerGame}
+                  playerStats={playerStats}
+                  updatePlayerGame={setPlayerGame}
+                />
+              </View>
+            )}
+          </Tab.Screen>
+          <Tab.Screen name="Profile">
+            {() => (
+              <View style={styles.container}>
+                <GoogleLogin player={player} />
+                <PlayerStatsContainer
+                  player={player}
+                  playerStats={playerStats}
+                />
+              </View>
+            )}
+          </Tab.Screen>
         </Tab.Navigator>
       ) : (
         <View style={styles.loadingContainer}>
@@ -158,26 +180,26 @@ const App = () => {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: colors.background,
     flex: 1,
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: colors.background,
   },
   errorContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: colors.background,
   },
   errorText: {
-    fontFamily: 'Arvo-Regular',
+    fontFamily: "Arvo-Regular",
     fontSize: 20,
-    color: 'red',
+    color: "red",
   },
 })
 
