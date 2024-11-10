@@ -1,11 +1,12 @@
 import React from "react"
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { Image, StyleSheet, Text, Pressable, View } from "react-native"
 import * as Linking from "expo-linking"
 import { colors } from "../styles/global"
 import { Actor } from "../models/movie"
 
 interface ActorProps {
   actor: Actor
+  imdbId: string // Add IMDb ID prop for more accurate linking
 }
 
 interface ActorsProps {
@@ -14,15 +15,19 @@ interface ActorsProps {
 
 const ActorContainer = (props: ActorProps) => {
   let imageURI = "https://image.tmdb.org/t/p/original"
-  // TODO: This link structure is incorrect. The ID we have for actor does not match the name ID
   let imdbURI = "https://www.imdb.com/name/"
 
   return (
     <View style={styles.ActorContainer}>
-      <TouchableOpacity
+      <Pressable
         onPress={() => {
-          Linking.openURL(`${imdbURI}${props.actor.id}`)
+          Linking.openURL(`${imdbURI}${props.imdbId}`)
         }}
+        style={({ pressed }) => [
+          {
+            opacity: pressed ? 0.6 : 1.0,
+          },
+        ]}
       >
         <Image
           source={{ uri: `${imageURI}${props.actor.profile_path}` }}
@@ -31,7 +36,7 @@ const ActorContainer = (props: ActorProps) => {
         <Text style={styles.ActorText} numberOfLines={2}>
           {props.actor.name}
         </Text>
-      </TouchableOpacity>
+      </Pressable>
     </View>
   )
 }
@@ -39,9 +44,13 @@ const ActorContainer = (props: ActorProps) => {
 const Actors = (props: ActorsProps) => {
   return (
     <View style={styles.ActorsContainer}>
-      <ActorContainer actor={props.actors[0]} />
-      <ActorContainer actor={props.actors[1]} />
-      <ActorContainer actor={props.actors[2]} />
+      {props.actors.map((actor, index) => (
+        <ActorContainer
+          key={index}
+          actor={actor}
+          imdbId={actor.imdbId} // Pass IMDb ID here
+        />
+      ))}
     </View>
   )
 }
