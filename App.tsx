@@ -58,21 +58,17 @@ const App = () => {
     id: uuid.v4().toString(),
     movie: movie,
   }
-  let p: Player = {
-    id: uuid.v4().toString(),
-    name: "",
-  }
   const [playerGame, setPlayerGame] = useState<PlayerGame>({
     correctAnswer: false,
     endDate: new Date(),
     game: game,
     guesses: [],
     id: uuid.v4().toString(),
-    playerID: p.id,
+    playerID: player.id,
     startDate: new Date(),
   })
   const [playerStats, setPlayerStats] = useState<PlayerStats>({
-    id: p.id,
+    id: player.id,
     currentStreak: 0,
     games: 1,
     maxStreak: 0,
@@ -109,17 +105,38 @@ const App = () => {
   }
 
   useEffect(() => {
-    const updateData = async () => {
-      if (user) {
-        player.name = user?.displayName ?? ""
+    const updatePlayerData = async () => {
+      if (user && player.name !== user.displayName) {
+        const result = await updatePlayer(
+          player,
+          getUserID,
+          getUserName,
+          setUserName
+        )
+        if (result) console.log("Player data updated.")
       }
-      const updatedStats = await updatePlayerStats(playerStats, player.id)
-      if (updatedStats) setPlayerStats(updatedStats)
-      await updatePlayer(player, getUserID, getUserName, setUserName)
-      await updatePlayerGame(playerGame)
     }
-    updateData()
-  }, [player, playerGame, playerStats, user])
+    updatePlayerData()
+  }, [user, player.name])
+
+  useEffect(() => {
+    const updateStats = async () => {
+      const updatedStats = await updatePlayerStats(playerStats, player.id)
+      if (updatedStats.updated) {
+        setPlayerStats(updatedStats.stats)
+        console.log("Player stats updated.")
+      }
+    }
+    updateStats()
+  }, [playerStats, player.id])
+
+  useEffect(() => {
+    const updateGame = async () => {
+      const updated = await updatePlayerGame(playerGame)
+      if (updated) console.log("Player game data updated.")
+    }
+    updateGame()
+  }, [playerGame])
 
   const Tab = createBottomTabNavigator()
 
