@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react"
 import { Animated, StyleSheet, Text, View } from "react-native"
-
 import { colors } from "../styles/global"
 
 interface CluesProps {
@@ -15,11 +14,31 @@ interface CountContainerProps {
   totalWordLength: number
 }
 
-const CluesContainer = (props: CluesProps) => {
-  const mountedRef = useRef()
-  let [fadeAnim] = useState<Animated.Value>(new Animated.Value(0))
+const splitSummary = (summary: string, splits: number) => {
+  const summarySplit = summary.split(" ")
+  const summarySubLength = Math.floor(summarySplit.length / splits)
+  const clues = Array(splits).fill("")
+  let wordTrack = 0
 
-  let fadeAnimTiming = Animated.timing(fadeAnim, {
+  for (let i = 0; i < splits; i++) {
+    for (let j = 0; j < summarySubLength; j++) {
+      if (wordTrack >= summarySplit.length) break
+      clues[i] += `${summarySplit[wordTrack]} `
+      wordTrack++
+    }
+  }
+
+  while (wordTrack < summarySplit.length) {
+    clues[splits - 1] += `${summarySplit[wordTrack]} `
+    wordTrack++
+  }
+
+  return clues.map((clue) => clue.trim())
+}
+
+const CluesContainer = (props: CluesProps) => {
+  const fadeAnim = useRef(new Animated.Value(0)).current
+  const fadeAnimTiming = Animated.timing(fadeAnim, {
     duration: 1000,
     toValue: 1,
     useNativeDriver: false,
@@ -29,40 +48,8 @@ const CluesContainer = (props: CluesProps) => {
     fadeAnimTiming.start()
   }, [props.guesses])
 
-  // TODO: summary splitting should be done before the app loads and just pulled from a datastore
-  let splits = 5
-  let summarySplit = props.summary.split(" ")
-  let summarySubLength = Math.floor(summarySplit.length / splits)
-  let clueLength = summarySubLength
-  let clues: string[] = ["", "", "", "", ""]
-  let wordTrack = 0
-  let wordCount = [0, 0, 0, 0, 0]
-  for (let i = 0; i < splits; i++) {
-    for (let j = 0; j < clueLength; j++) {
-      if (wordTrack >= summarySplit.length) {
-        clueLength = summarySubLength
-        break
-      }
-      if (
-        j > clueLength - 2 &&
-        (summarySplit[wordTrack].endsWith(".") ||
-          summarySplit[wordTrack].endsWith(","))
-      ) {
-        clues[i] = clues[i] + summarySplit[wordTrack] + " "
-        wordTrack++
-        clueLength += clueLength - j
-        break
-      }
-      clues[i] = clues[i] + summarySplit[wordTrack] + " "
-      wordTrack++
-    }
-    wordCount[i] = wordTrack
-  }
-
-  while (wordTrack < summarySplit.length) {
-    clues[splits - 1] = clues[splits - 1] + summarySplit[wordTrack] + " "
-    wordTrack++
-  }
+  const clues = splitSummary(props.summary, 5)
+  const wordCount = clues.map((clue) => clue.split(" ").length)
 
   return (
     <View style={styles.container}>
@@ -79,39 +66,36 @@ const CluesContainer = (props: CluesProps) => {
                       ? colors.primary
                       : colors.secondary,
                   fontFamily:
-                    props.guesses.length == i && !props.correctGuess
+                    props.guesses.length === i && !props.correctGuess
                       ? "Arvo-Bold"
                       : "Arvo-Regular",
-                  opacity: props.guesses.length == i ? fadeAnim : 1,
+                  opacity: props.guesses.length === i ? fadeAnim : 1,
                 }}
               >
                 {clue}
               </Animated.Text>
             )
           }
+          return null
         })}
       </Text>
       <CountContainer
         currentWordLength={wordCount[props.guesses.length]}
         guessNumber={props.guesses.length}
-        totalWordLength={summarySplit.length}
+        totalWordLength={props.summary.split(" ").length}
       />
     </View>
   )
 }
 
-const CountContainer = (props: CountContainerProps) => {
-  return (
-    <View style={styles.countContainer}>
-      <Text style={styles.wordCountText}>
-        {props.guessNumber < 4
-          ? props.currentWordLength
-          : props.totalWordLength}
-        /{props.totalWordLength}
-      </Text>
-    </View>
-  )
-}
+const CountContainer = (props: CountContainerProps) => (
+  <View style={styles.countContainer}>
+    <Text style={styles.wordCountText}>
+      {props.guessNumber < 4 ? props.currentWordLength : props.totalWordLength}/
+      {props.totalWordLength}
+    </Text>
+  </View>
+)
 
 const styles = StyleSheet.create({
   container: {
@@ -124,11 +108,9 @@ const styles = StyleSheet.create({
     minHeight: 250,
   },
   countContainer: {
-    flex: 1,
     alignSelf: "flex-end",
     marginTop: 0,
     maxHeight: 16,
-    textAlign: "right",
     justifyContent: "flex-end",
   },
   text: {
@@ -137,16 +119,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   textContainer: {
-    flex: 1,
     flexWrap: "wrap",
-    margin: "auto",
     minWidth: 280,
     textAlign: "left",
     width: 280,
   },
   wordCountText: {
     color: colors.primary,
-    flex: 1,
     fontFamily: "Arvo-Regular",
     fontSize: 10,
     textAlign: "right",

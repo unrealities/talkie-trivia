@@ -8,8 +8,7 @@ import {
   View,
 } from "react-native"
 import * as Linking from "expo-linking"
-import Actors from "./actors"
-import Genres from "./genres"
+import { Actors } from "./actors"
 import { Movie } from "../models/movie"
 
 interface FactsProps {
@@ -17,9 +16,9 @@ interface FactsProps {
 }
 
 const Facts = (props: FactsProps) => {
-  let imdbURI = "https://www.imdb.com/title/"
-  let imageURI = "https://image.tmdb.org/t/p/original"
-  let movie = props.movie
+  const imdbURI = "https://www.imdb.com/title/"
+  const imageURI = "https://image.tmdb.org/t/p/original"
+  const movie = props.movie
 
   return (
     <View style={styles.container}>
@@ -32,11 +31,13 @@ const Facts = (props: FactsProps) => {
           <Text style={styles.header}>{movie.title}</Text>
         </View>
       </TouchableWithoutFeedback>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView
+        contentContainerStyle={[styles.scrollContainer, { flexGrow: 1 }]}
+      >
         <Text style={styles.subHeader}>{movie.tagline}</Text>
         <Image
           source={{ uri: `${imageURI}${movie.poster_path}` }}
-          style={{ width: "90%", height: "60%" }}
+          style={styles.posterImage}
         />
         <Text style={styles.text}>Directed by {movie.director.name}</Text>
         <Actors actors={movie.actors} />
@@ -64,6 +65,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 20,
     width: 260,
+  },
+  posterImage: {
+    width: "100%",
+    height: undefined,
+    aspectRatio: 2 / 3,
+    marginBottom: 10,
   },
   subHeader: {
     flexWrap: "wrap",

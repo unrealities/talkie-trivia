@@ -6,85 +6,74 @@ import { Actor } from "../models/movie"
 
 interface ActorProps {
   actor: Actor
-  imdbId: string // Add IMDb ID prop for more accurate linking
+  imdbId: string
 }
 
 interface ActorsProps {
   actors: Actor[]
 }
 
-const ActorContainer = (props: ActorProps) => {
-  let imageURI = "https://image.tmdb.org/t/p/original"
-  let imdbURI = "https://www.imdb.com/name/"
+const ActorContainer = ({ actor, imdbId }: ActorProps) => {
+  const imageURI = "https://image.tmdb.org/t/p/original"
+  const imdbURI = imdbId ? `https://www.imdb.com/name/${imdbId}` : null
 
   return (
     <View style={styles.ActorContainer}>
       <Pressable
         onPress={() => {
-          Linking.openURL(`${imdbURI}${props.imdbId}`)
+          if (imdbURI) Linking.openURL(imdbURI)
         }}
-        style={({ pressed }) => [
-          {
-            opacity: pressed ? 0.6 : 1.0,
-          },
-        ]}
+        style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1.0 }]}
       >
         <Image
-          source={{ uri: `${imageURI}${props.actor.profile_path}` }}
+          source={{ uri: `${imageURI}${actor.profile_path}` }}
+          defaultSource={require("../../assets/actor_default.png")}
           style={styles.ActorImage}
         />
-        <Text style={styles.ActorText} numberOfLines={2}>
-          {props.actor.name}
+        <Text style={styles.ActorText} numberOfLines={2} ellipsizeMode="tail">
+          {actor.name}
         </Text>
       </Pressable>
     </View>
   )
 }
 
-const Actors = (props: ActorsProps) => {
-  return (
-    <View style={styles.ActorsContainer}>
-      {props.actors.map((actor, index) => (
-        <ActorContainer
-          key={index}
-          actor={actor}
-          imdbId={actor.imdbId} // Pass IMDb ID here
-        />
-      ))}
-    </View>
-  )
-}
+export const Actors = ({ actors }: ActorsProps) => (
+  <View style={styles.ActorsContainer}>
+    {actors.slice(0, 3).map((actor) => (
+      <ActorContainer
+        key={actor.imdbId || actor.name}
+        actor={actor}
+        imdbId={actor.imdbId}
+      />
+    ))}
+  </View>
+)
 
 const styles = StyleSheet.create({
   ActorsContainer: {
-    color: colors.primary,
-    flex: 1,
     flexDirection: "row",
-    justifyContent: "space-evenly",
-    minWidth: 270,
-    paddingBottom: 12,
-    paddingTop: 12,
+    justifyContent: "space-between",
+    paddingVertical: 12,
+    width: "100%",
   },
   ActorContainer: {
     alignItems: "center",
     flex: 1,
-    maxWidth: 60,
-    minHeight: 120,
+    maxWidth: 80,
+    minHeight: 140,
   },
   ActorImage: {
-    flex: 1,
     height: 90,
     width: 60,
+    borderRadius: 4,
   },
   ActorText: {
-    flex: 1,
     fontFamily: "Arvo-Regular",
-    fontSize: 12,
-    minHeight: 34,
+    fontSize: 10,
     paddingTop: 4,
     textAlign: "center",
-    flexWrap: "wrap",
+    color: colors.primary,
+    width: 60,
   },
 })
-
-export default Actors
