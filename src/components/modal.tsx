@@ -63,9 +63,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
     elevation: 5,
-    flex: 1,
     justifyContent: "space-evenly",
     margin: 8,
+    maxHeight: "80%",
     padding: 16,
   },
   textStyle: {

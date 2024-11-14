@@ -71,6 +71,7 @@ const PickerContainer = (props: PickerContainerProps) => {
 
   const debouncedFilterMovies = useCallback(
     useDebounce((text: string) => {
+      setLoading(true)
       const searchTerm = text.trim().toLowerCase()
 
       if (searchTerm === "") {
@@ -94,6 +95,7 @@ const PickerContainer = (props: PickerContainerProps) => {
           setError(null)
         }
       }
+      setLoading(false)
     }, 300),
     [props.movies]
   )
@@ -104,7 +106,7 @@ const PickerContainer = (props: PickerContainerProps) => {
   }
 
   const onPressCheck = useCallback(() => {
-    if (selectedMovieID > 0) {
+    if (selectedMovieID > 0 && props.playerGame.game.movie?.id) {
       props.updatePlayerGame({
         ...props.playerGame,
         guesses: [...props.playerGame.guesses, selectedMovieID],
@@ -128,6 +130,7 @@ const PickerContainer = (props: PickerContainerProps) => {
     <View style={styles.container}>
       <TextInput
         accessible
+        accessibilityRole="search"
         aria-label="Search for a movie"
         clearTextOnFocus={false}
         maxLength={100}
@@ -141,7 +144,9 @@ const PickerContainer = (props: PickerContainerProps) => {
       {loading ? (
         <ActivityIndicator size="large" color={colors.primary} />
       ) : error ? (
-        <Text style={styles.errorText}>{error}</Text>
+        <Text accessibilityRole="text" style={styles.errorText}>
+          {error}
+        </Text>
       ) : (
         <View style={styles.text}>
           {foundMovies.length > 0 ? (
@@ -149,6 +154,7 @@ const PickerContainer = (props: PickerContainerProps) => {
               {foundMovies.map((movie) => (
                 <Pressable
                   accessible
+                  accessibilityRole="button"
                   aria-label={`Select movie: ${movie.title}, ID: ${movie.id}`}
                   key={movie.id}
                   onPress={() => handleMovieSelection(movie)}

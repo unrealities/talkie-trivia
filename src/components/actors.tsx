@@ -18,7 +18,7 @@ const ActorContainer = ({ actor, imdbId }: ActorProps) => {
   const imdbURI = imdbId ? `https://www.imdb.com/name/${imdbId}` : null
 
   return (
-    <View style={styles.ActorContainer}>
+    <View style={styles.actorContainer}>
       <Pressable
         onPress={() => {
           if (imdbURI) Linking.openURL(imdbURI)
@@ -26,11 +26,15 @@ const ActorContainer = ({ actor, imdbId }: ActorProps) => {
         style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1.0 }]}
       >
         <Image
-          source={{ uri: `${imageURI}${actor.profile_path}` }}
+          source={{
+            uri: actor.profile_path
+              ? `${imageURI}${actor.profile_path}`
+              : undefined,
+          }}
           defaultSource={require("../../assets/actor_default.png")}
-          style={styles.ActorImage}
+          style={styles.actorImage}
         />
-        <Text style={styles.ActorText} numberOfLines={2} ellipsizeMode="tail">
+        <Text style={styles.actorText} numberOfLines={2} ellipsizeMode="tail">
           {actor.name}
         </Text>
       </Pressable>
@@ -39,7 +43,7 @@ const ActorContainer = ({ actor, imdbId }: ActorProps) => {
 }
 
 export const Actors = ({ actors }: ActorsProps) => (
-  <View style={styles.ActorsContainer}>
+  <View style={styles.actorsContainer}>
     {actors.slice(0, 3).map((actor) => (
       <ActorContainer
         key={actor.imdbId || actor.name}
@@ -51,29 +55,31 @@ export const Actors = ({ actors }: ActorsProps) => (
 )
 
 const styles = StyleSheet.create({
-  ActorsContainer: {
+  actorsContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     paddingVertical: 12,
     width: "100%",
   },
-  ActorContainer: {
+  actorContainer: {
     alignItems: "center",
     flex: 1,
     maxWidth: 80,
     minHeight: 140,
   },
-  ActorImage: {
+  actorImage: {
     height: 90,
     width: 60,
     borderRadius: 4,
+    resizeMode: "cover",
   },
-  ActorText: {
+  actorText: {
     fontFamily: "Arvo-Regular",
     fontSize: 10,
     paddingTop: 4,
     textAlign: "center",
     color: colors.primary,
     width: 60,
+    lineHeight: 12,
   },
 })
