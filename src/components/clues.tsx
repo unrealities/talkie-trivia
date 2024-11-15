@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { Animated, StyleSheet, Text, View } from "react-native"
 import { colors } from "../styles/global"
 
@@ -23,58 +23,38 @@ const splitSummary = (summary: string, splits: number) => {
 }
 
 const CluesContainer = ({ correctGuess, guesses, summary }: CluesProps) => {
-  const fadeAnim = useRef(new Animated.Value(0)).current
+  const fadeAnim = useRef(new Animated.Value(1)).current
+  const [revealedClues, setRevealedClues] = useState("")
+
+  const clues = splitSummary(summary, 5)
 
   useEffect(() => {
+    // Calculate the number of clues to reveal based on guesses and correct answer
+    const cluesToReveal = Math.min(guesses.length + 1, clues.length)
+    const newRevealedClues = clues.slice(0, cluesToReveal).join(" ")
+    setRevealedClues(newRevealedClues)
+
+    // Reset animation and fade in each time clues are updated
+    fadeAnim.setValue(0)
     Animated.timing(fadeAnim, {
       duration: 1000,
       toValue: 1,
-      useNativeDriver: true,
+      useNativeDriver: false,
     }).start()
-  }, [guesses.length])
-
-  const clues = splitSummary(summary, 5)
-  const wordCounts = clues.map((clue) => clue.split(" ").length)
+  }, [guesses, correctGuess]) // Update when guesses or correct answer changes
 
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        {clues.map((clue, index) => {
-          const isLastGuess = guesses.length === index
-          const shouldShowClue = index <= guesses.length || correctGuess
-
-          if (shouldShowClue) {
-            return (
-              <Animated.Text
-                key={index}
-                style={[
-                  styles.text,
-                  {
-                    color:
-                      index < guesses.length && !correctGuess
-                        ? colors.primary
-                        : colors.secondary,
-                    fontFamily:
-                      isLastGuess && !correctGuess
-                        ? "Arvo-Bold"
-                        : "Arvo-Regular",
-                    opacity: isLastGuess ? fadeAnim : 1,
-                  },
-                ]}
-              >
-                {clue}
-              </Animated.Text>
-            )
-          }
-          return null
-        })}
+        <Animated.Text style={[styles.text, { opacity: fadeAnim }]}>
+          {revealedClues}
+        </Animated.Text>
       </View>
       <CountContainer
-        currentWordLength={
-          wordCounts[guesses.length] || wordCounts.slice(-1)[0]
-        }
+        currentWordLength={revealedClues.split(" ").length}
         guessNumber={guesses.length}
         totalWordLength={summary.split(" ").length}
+        correctGuess={correctGuess}
       />
     </View>
   )
@@ -84,10 +64,11 @@ const CountContainer = ({
   currentWordLength,
   guessNumber,
   totalWordLength,
-}: CountContainerProps) => (
+  correctGuess,
+}: CountContainerProps & { correctGuess: boolean }) => (
   <View style={styles.countContainer}>
     <Text style={styles.wordCountText}>
-      {guessNumber < 4 ? currentWordLength : totalWordLength}/{totalWordLength}
+      {correctGuess ? totalWordLength : currentWordLength}/{totalWordLength}
     </Text>
   </View>
 )
@@ -109,6 +90,7 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flexWrap: "wrap",
+    maxWidth: 300,
     minWidth: 280,
     textAlign: "left",
     paddingHorizontal: 10,

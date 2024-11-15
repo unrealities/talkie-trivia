@@ -4,7 +4,6 @@ import { BasicMovie, Movie } from "../models/movie"
 
 import { colors } from "../styles/global"
 
-// TODO: Final guess is not displaying if correct answer is given
 interface GuessesContainerProps {
   guesses: number[]
   movie: Movie
@@ -12,10 +11,10 @@ interface GuessesContainerProps {
 }
 
 const GuessesContainer = (props: GuessesContainerProps) => {
-  let getMovieTitle = (id: number) => {
-    if (id > 0) {
-      let movie = props.movies.find((m) => m.id == id) as Movie
-      return movie.title
+  const getMovieTitle = (id: number | undefined) => {
+    if (id && id > 0) {
+      let movie = props.movies.find((m) => m.id === id) as Movie
+      return movie ? movie.title : ""
     } else {
       return ""
     }
@@ -23,36 +22,14 @@ const GuessesContainer = (props: GuessesContainerProps) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.guessContainer}>
-        <Text style={styles.guessNumber}>1</Text>
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.guess}>
-          {getMovieTitle(props.guesses[0])}
-        </Text>
-      </View>
-      <View style={styles.guessContainer}>
-        <Text style={styles.guessNumber}>2</Text>
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.guess}>
-          {getMovieTitle(props.guesses[1])}
-        </Text>
-      </View>
-      <View style={styles.guessContainer}>
-        <Text style={styles.guessNumber}>3</Text>
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.guess}>
-          {getMovieTitle(props.guesses[2])}
-        </Text>
-      </View>
-      <View style={styles.guessContainer}>
-        <Text style={styles.guessNumber}>4</Text>
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.guess}>
-          {getMovieTitle(props.guesses[3])}
-        </Text>
-      </View>
-      <View style={styles.guessContainer}>
-        <Text style={styles.guessNumber}>5</Text>
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.guess}>
-          {getMovieTitle(props.guesses[4])}
-        </Text>
-      </View>
+      {Array.from({ length: 5 }).map((_, index) => (
+        <View key={index} style={styles.guessContainer}>
+          <Text style={styles.guessNumber}>{index + 1}</Text>
+          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.guess}>
+            {getMovieTitle(props.guesses[index]) || ""}
+          </Text>
+        </View>
+      ))}
     </View>
   )
 }
