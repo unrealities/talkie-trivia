@@ -34,6 +34,9 @@ import { Game, PlayerGame } from "./src/models/game"
 initializeApp(firebaseConfig)
 const db = getFirestore()
 
+const movies: Movie[] = require("./data/popularMovies.json")
+const basicMovies: BasicMovie[] = require("./data/basicMovies.json")
+
 SplashScreen.preventAutoHideAsync()
 
 const App = () => {
@@ -46,27 +49,18 @@ const App = () => {
     name: "",
   })
 
-  let movies: Movie[] = require("./data/popularMovies.json")
-  let basicMovies: BasicMovie[] = require("./data/basicMovies.json")
-  const [movie, setMovie] = useState<Movie>(
-    movies[new Date().getDate() % movies.length]
-  )
+  const [movie] = useState<Movie>(movies[new Date().getDate() % movies.length])
 
-  let game: Game = {
-    date: new Date(),
-    guessesMax: 5,
-    id: uuid.v4().toString(),
-    movie: movie,
-  }
   const [playerGame, setPlayerGame] = useState<PlayerGame>({
     correctAnswer: false,
     endDate: new Date(),
-    game: game,
+    game: { date: new Date(), guessesMax: 5, id: uuid.v4().toString(), movie },
     guesses: [],
     id: uuid.v4().toString(),
     playerID: player.id,
     startDate: new Date(),
   })
+
   const [playerStats, setPlayerStats] = useState<PlayerStats>({
     id: player.id,
     currentStreak: 0,
@@ -116,7 +110,7 @@ const App = () => {
         if (result) console.log("Player data updated.")
       }
     }
-    updatePlayerData()
+    if (user) updatePlayerData()
   }, [user, player.name])
 
   useEffect(() => {
@@ -127,7 +121,7 @@ const App = () => {
         console.log("Player stats updated.")
       }
     }
-    updateStats()
+    if (playerStats) updateStats()
   }, [playerStats, player.id])
 
   useEffect(() => {
@@ -135,24 +129,20 @@ const App = () => {
       const updated = await updatePlayerGame(playerGame)
       if (updated) console.log("Player game data updated.")
     }
-    updateGame()
+    if (playerGame) updateGame()
   }, [playerGame])
 
   const Tab = createBottomTabNavigator()
 
-  if (!isNetworkConnected) {
-    return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>No Internet Connection</Text>
-        <Button title="Retry" onPress={retryLoadResources} />
-      </View>
-    )
-  }
-
   return (
     <NavigationContainer>
       <StatusBar style="auto" />
-      {isAppReady ? (
+      {!isNetworkConnected ? (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>No Internet Connection</Text>
+          <Button title="Retry" onPress={retryLoadResources} />
+        </View>
+      ) : isAppReady ? (
         <Tab.Navigator
           screenOptions={{
             headerShown: false,
@@ -189,6 +179,7 @@ const App = () => {
       ) : (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.primary} />
+          {loadingError && <Text style={styles.errorText}>{loadingError}</Text>}
         </View>
       )}
     </NavigationContainer>

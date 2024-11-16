@@ -37,40 +37,33 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "flex-start",
     flex: 1,
-    minWidth: 140,
     padding: 8,
     textAlign: "center",
-    width: 300,
+    width: "90%"
   },
   header: {
     color: colors.primary,
-    flex: 1,
-    flexDirection: "row",
     fontFamily: "Arvo-Bold",
     fontSize: 12,
     minWidth: 100,
-    textAlign: "left",
+    textAlign: "left"
   },
   statContainer: {
-    flex: 1,
     flexDirection: "row",
-    maxHeight: 20,
+    alignItems: "center",
+    paddingVertical: 4
   },
   statsContainer: {
     alignItems: "center",
-    flex: 1,
-    flexDirection: "column",
     paddingTop: 10,
-    width: 300,
+    width: "100%"
   },
   text: {
     color: colors.secondary,
-    flex: 1,
-    flexDirection: "row",
     fontFamily: "Arvo-Regular",
     fontSize: 12,
     paddingLeft: 12,
-    textAlign: "left",
+    textAlign: "left"
   },
 })
 
