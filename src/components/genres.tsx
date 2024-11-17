@@ -10,29 +10,28 @@ interface GenresProps {
     genres: Genre[]
 }
 
-const GenreContainer = (props: GenreProps) => {
-    return (
-        <View key={props.genre.id} style={styles.GenreContainer}>
-            <Text key={props.genre.id} style={styles.GenreText}>{props.genre.name}</Text>
-        </View>
-    )
-}
+const GenreContainer = ({ genre }: GenreProps) => (
+    <View style={styles.genreContainer}>
+        <Text style={styles.genreText}>{genre.name}</Text>
+    </View>
+)
 
-const Genres = (props: GenresProps) => {
-    return (
-        <View style={styles.GenresContainer}>
-            {props.genres.map((genre) => { return <GenreContainer genre={genre} /> })}
-        </View>
-    )
-}
+const Genres = ({ genres }: GenresProps) => (
+    <View style={styles.genresContainer}>
+        {genres.length > 0 ? (
+            genres.map((genre) => <GenreContainer key={genre.id} genre={genre} />)
+        ) : (
+            <Text style={styles.noGenresText}>No genres available</Text>
+        )}
+    </View>
+)
 
 const styles = StyleSheet.create({
-    GenreContainer: {
+    genreContainer: {
         alignItems: 'center',
         alignSelf: 'center',
         backgroundColor: colors.quaternary,
         borderRadius: 8,
-        flex: 1,
         margin: 6,
         maxHeight: 44,
         minHeight: 26,
@@ -40,23 +39,23 @@ const styles = StyleSheet.create({
         maxWidth: 220,
         padding: 6
     },
-    GenresContainer: {
-        flex: 1,
+    genresContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        marginBottom: 10,
-        marginTop: 10,
-        minHeight: 20,
-        minWidth: 80
+        marginVertical: 10,
     },
-    GenreText: {
-        alignItems: 'center',
-        alignSelf: 'center',
+    genreText: {
         color: colors.secondary,
-        flex: 1,
         fontFamily: 'Arvo-Bold',
         fontSize: 12,
         textAlign: 'center'
+    },
+    noGenresText: {
+        color: colors.secondary,
+        fontFamily: 'Arvo-Italic',
+        fontSize: 12,
+        textAlign: 'center',
+        marginVertical: 10,
     }
 })
 

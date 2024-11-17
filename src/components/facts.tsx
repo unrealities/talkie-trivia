@@ -6,6 +6,7 @@ import {
   Text,
   Pressable,
   View,
+  Alert,
 } from "react-native"
 import * as Linking from "expo-linking"
 import { Actors } from "./actors"
@@ -21,29 +22,34 @@ const Facts = ({ movie }: FactsProps) => {
     : null
   const imageURI = movie.poster_path
     ? `https://image.tmdb.org/t/p/original${movie.poster_path}`
-    : null
+    : Image.resolveAssetSource(require("../../assets/movie_default.png")).uri
+
+  const handlePressIMDb = () => {
+    if (imdbURI) {
+      Linking.openURL(imdbURI)
+    } else {
+      Alert.alert("IMDb link is unavailable for this movie.")
+    }
+  }
 
   return (
     <View style={styles.container}>
       <Pressable
-        onPress={() => imdbURI && Linking.openURL(imdbURI)}
+        onPress={handlePressIMDb}
         style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1 }]}
+        accessibilityLabel="Open IMDb page"
+        accessibilityRole="button"
       >
         <Text style={styles.header}>{movie.title}</Text>
       </Pressable>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {movie.tagline ? (
+        {movie.tagline && (
           <Text style={styles.subHeader}>{movie.tagline}</Text>
-        ) : null}
-        {imageURI ? (
-          <Image source={{ uri: imageURI }} style={styles.posterImage} />
-        ) : (
-          <Image
-            source={require("../../assets/movie_default.png")}
-            style={styles.posterImage}
-          />
         )}
-        <Text style={styles.text}>Directed by {movie.director.name}</Text>
+        <Image source={{ uri: imageURI }} style={styles.posterImage} />
+        <Text style={styles.text}>
+          Directed by {movie.director?.name || "Unknown"}
+        </Text>
         <Actors actors={movie.actors} />
       </ScrollView>
     </View>
@@ -70,6 +76,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 20,
     width: "100%",
+    flexGrow: 1,
   },
   posterImage: {
     width: "100%",

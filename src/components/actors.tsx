@@ -1,5 +1,5 @@
 import React from "react"
-import { Image, StyleSheet, Text, Pressable, View } from "react-native"
+import { Image, StyleSheet, Text, Pressable, View, Alert } from "react-native"
 import * as Linking from "expo-linking"
 import { colors } from "../styles/global"
 import { Actor } from "../models/movie"
@@ -17,21 +17,27 @@ const ActorContainer = ({ actor, imdbId }: ActorProps) => {
   const imageURI = "https://image.tmdb.org/t/p/original"
   const imdbURI = imdbId ? `https://www.imdb.com/name/${imdbId}` : null
 
+  const handlePress = () => {
+    if (imdbURI) {
+      Linking.openURL(imdbURI)
+    } else {
+      Alert.alert("IMDb link unavailable for this actor.")
+    }
+  }
+
   return (
-    <View style={styles.actorContainer}>
+    <View style={styles.actorContainer} accessible>
       <Pressable
-        onPress={() => {
-          if (imdbURI) Linking.openURL(imdbURI)
-        }}
+        onPress={handlePress}
         style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1.0 }]}
+        accessibilityRole="button"
       >
         <Image
           source={{
             uri: actor.profile_path
               ? `${imageURI}${actor.profile_path}`
-              : undefined,
+              : Image.resolveAssetSource(require("../../assets/actor_default.png")).uri,
           }}
-          defaultSource={require("../../assets/actor_default.png")}
           style={styles.actorImage}
         />
         <Text style={styles.actorText} numberOfLines={2} ellipsizeMode="tail">

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState, useMemo } from "react"
 import { Animated, StyleSheet, Text, View } from "react-native"
 import { colors } from "../styles/global"
 
@@ -16,6 +16,7 @@ interface CountContainerProps {
 
 const splitSummary = (summary: string, splits: number) => {
   const words = summary.split(" ")
+  if (words.length === 0) return Array(splits).fill("")
   const avgLength = Math.ceil(words.length / splits)
   return Array.from({ length: splits }, (_, i) =>
     words.slice(i * avgLength, (i + 1) * avgLength).join(" ")
@@ -26,22 +27,20 @@ const CluesContainer = ({ correctGuess, guesses, summary }: CluesProps) => {
   const fadeAnim = useRef(new Animated.Value(1)).current
   const [revealedClues, setRevealedClues] = useState("")
 
-  const clues = splitSummary(summary, 5)
+  const clues = useMemo(() => splitSummary(summary, 5), [summary])
 
   useEffect(() => {
-    // Calculate the number of clues to reveal based on guesses and correct answer
     const cluesToReveal = Math.min(guesses.length + 1, clues.length)
     const newRevealedClues = clues.slice(0, cluesToReveal).join(" ")
     setRevealedClues(newRevealedClues)
 
-    // Reset animation and fade in each time clues are updated
     fadeAnim.setValue(0)
     Animated.timing(fadeAnim, {
       duration: 1000,
       toValue: 1,
-      useNativeDriver: false,
+      useNativeDriver: false
     }).start()
-  }, [guesses, correctGuess]) // Update when guesses or correct answer changes
+  }, [guesses, correctGuess, clues])
 
   return (
     <View style={styles.container}>
