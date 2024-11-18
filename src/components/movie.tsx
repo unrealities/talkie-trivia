@@ -41,66 +41,64 @@ interface MovieContainerProps {
 const MoviesContainer = (props: MovieContainerProps) => {
   const [enableSubmit, setEnableSubmit] = useState<boolean>(true)
   const [showModal, setShowModal] = useState<boolean>(false)
-
   const confettiRef = useRef<ConfettiCannon>(null)
 
+  const setPlayerStats = async (correctAnswer: boolean) => {
+    let ps = { ...props.playerStats }
+
+    if (correctAnswer) {
+      ps.currentStreak++
+      if (ps.currentStreak > ps.maxStreak) {
+        ps.maxStreak = ps.currentStreak
+      }
+      ps.wins[props.playerGame.guesses.length]++
+    } else {
+      ps.currentStreak = 0
+    }
+
+    try {
+      await setDoc(
+        doc(db, "playerStats", props.player.id).withConverter(
+          playerStatsConverter
+        ),
+        ps
+      )
+    } catch (e) {
+      console.error("Error updating player stats: ", e)
+    }
+  }
+
+  const setPlayerGame = async (playerGame: PlayerGame) => {
+    try {
+      await setDoc(
+        doc(db, "playerGames", playerGame.id).withConverter(
+          playerGameConverter
+        ),
+        playerGame
+      )
+    } catch (e) {
+      console.error("Error updating player game: ", e)
+    }
+  }
+
   useEffect(() => {
-    const setPlayerGame = async (playerGame: PlayerGame) => {
-      try {
-        await setDoc(
-          doc(db, "playerGames", playerGame.id).withConverter(
-            playerGameConverter
-          ),
-          playerGame
-        )
-      } catch (e) {
-        console.error("Error adding document: ", e)
-      }
-    }
+    const { guesses, correctAnswer } = props.playerGame
 
-    const setPlayerStats = async (correctAnswer: boolean) => {
-      let ps = props.playerStats
-
-      if (correctAnswer) {
-        ps.currentStreak++
-        if (ps.currentStreak > ps.maxStreak) {
-          ps.maxStreak = ps.currentStreak
-        }
-        ps.wins[props.playerGame.guesses.length]++
-      } else {
-        ps.currentStreak = 0
-      }
-
-      try {
-        await setDoc(
-          doc(db, "playerStats", props.player.id).withConverter(
-            playerStatsConverter
-          ),
-          ps
-        )
-      } catch (e) {
-        console.error("Error adding document: ", e)
-      }
-    }
-
-    if (props.playerGame.guesses.length > 4 && enableSubmit) {
+    if (guesses.length > 4 && enableSubmit) {
       setEnableSubmit(false)
       setPlayerStats(false)
       setShowModal(true)
-    }
-    if (props.playerGame.correctAnswer) {
-      confettiRef?.current?.start()
-      if (enableSubmit) {
-        setPlayerStats(true)
-        setShowModal(true)
-        setEnableSubmit(false)
-      }
+    } else if (correctAnswer && enableSubmit) {
+      confettiRef.current?.start()
+      setEnableSubmit(false)
+      setPlayerStats(true)
+      setShowModal(true)
     }
 
-    if (props.player.name != "") {
+    if (props.player.name) {
       setPlayerGame(props.playerGame)
     }
-  })
+  }, [props.playerGame, enableSubmit])
 
   return (
     <View style={styles.container}>

@@ -10,26 +10,30 @@ interface GuessesContainerProps {
   movies: BasicMovie[]
 }
 
-const GuessesContainer = (props: GuessesContainerProps) => {
+const GuessesContainer = ({ guesses, movies }: GuessesContainerProps) => {
   const getMovieTitle = (id: number | undefined) => {
     if (id && id > 0) {
-      let movie = props.movies.find((m) => m.id === id) as Movie
+      const movie = movies.find((m) => m.id === id)
       return movie ? movie.title : ""
-    } else {
-      return ""
     }
+    return ""
   }
 
   return (
     <View style={styles.container}>
-      {Array.from({ length: 5 }).map((_, index) => (
-        <View key={index} style={styles.guessContainer}>
-          <Text style={styles.guessNumber}>{index + 1}</Text>
-          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.guess}>
-            {getMovieTitle(props.guesses[index]) || ""}
-          </Text>
-        </View>
-      ))}
+      {Array.from({ length: 5 }).map((_, index) => {
+        const guessId = guesses[index]
+        const guessTitle = getMovieTitle(guessId) || "-"
+
+        return (
+          <View key={index} style={styles.guessContainer}>
+            <Text style={styles.guessNumber}>{index + 1}</Text>
+            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.guess}>
+              {guessTitle}
+            </Text>
+          </View>
+        )
+      })}
     </View>
   )
 }
@@ -60,7 +64,7 @@ const styles = StyleSheet.create({
   },
   guess: {
     color: colors.secondary,
-    flex: 1,
+    flex: 3,
     fontFamily: "Arvo-Regular",
     fontSize: 14,
     minHeight: 18,

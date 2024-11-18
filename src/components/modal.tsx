@@ -11,30 +11,31 @@ interface MovieModalProps {
   toggleModal: Dispatch<SetStateAction<boolean>>
 }
 
-const MovieModal = (props: MovieModalProps) => {
+const MovieModal = ({ movie, show, toggleModal }: MovieModalProps) => {
   return (
-    <View style={styles.centeredView}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={props.show}
-        onRequestClose={() => {
-          props.toggleModal(false)
-        }}
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={show}
+      onRequestClose={() => toggleModal(false)}
+    >
+      <Pressable
+        style={styles.centeredView}
+        onPress={() => toggleModal(false)}
+        accessibilityLabel="Close modal by tapping outside"
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Facts movie={props.movie} />
-            <Pressable
-              style={styles.button}
-              onPress={() => props.toggleModal(false)}
-            >
-              <Text style={styles.textStyle}>Close</Text>
-            </Pressable>
-          </View>
+        <View style={styles.modalView}>
+          {movie ? <Facts movie={movie} /> : <Text>Loading...</Text>}
+          <Pressable
+            style={styles.button}
+            onPress={() => toggleModal(false)}
+            accessibilityLabel="Close modal"
+          >
+            <Text style={styles.buttonText}>Close</Text>
+          </Pressable>
         </View>
-      </Modal>
-    </View>
+      </Pressable>
+    </Modal>
   )
 }
 
@@ -47,29 +48,24 @@ const styles = StyleSheet.create({
     padding: 12,
     elevation: 2,
   },
-  container: {
-    flex: 1,
-    padding: 8,
-    justifyContent: "center",
-  },
   centeredView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalView: {
     alignItems: "center",
     backgroundColor: colors.secondary,
     borderRadius: 20,
-    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
     elevation: 5,
     justifyContent: "space-evenly",
     margin: 8,
     maxHeight: "80%",
     padding: 16,
   },
-  textStyle: {
-    color: colors.secondary,
+  buttonText: {
+    color: colors.white,
     fontFamily: "Arvo-Bold",
     textAlign: "center",
   },
