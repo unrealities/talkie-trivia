@@ -94,11 +94,13 @@ const MoviesContainer = (props: MovieContainerProps) => {
       setPlayerStats(true)
       setShowModal(true)
     }
+  }, [props.playerGame, enableSubmit])
 
+  useEffect(() => {
     if (props.player.name) {
       setPlayerGame(props.playerGame)
     }
-  }, [props.playerGame, enableSubmit])
+  }, [props.playerGame.id])
 
   return (
     <View style={styles.container}>

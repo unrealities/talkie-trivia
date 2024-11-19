@@ -37,25 +37,40 @@ const useDebounce = (func: Function, delay: number) => {
 
 const PickerContainer = (props: PickerContainerProps) => {
   const defaultButtonText = "Select a Movie"
-  const [foundMovies, setFoundMovies] = useState<BasicMovie[]>([])
+  const [searchState, setSearchState] = useState({
+    foundMovies: [] as BasicMovie[],
+    searchText: "",
+    loading: true,
+    error: null as string | null,
+  })
   const [selectedMovieID, setSelectedMovieID] = useState<number>(0)
   const [selectedMovieTitle, setSelectedMovieTitle] =
     useState<string>(defaultButtonText)
-  const [searchText, setSearchText] = useState<string>("")
-  const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string | null>(null)
-  const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true)
+  const [disableInteractions, setDisableInteractions] = useState<boolean>(false)
 
   useEffect(() => {
-    if (props.movies.length === 0) {
-      setFoundMovies([])
-      setLoading(false)
-      setError("Failed to load movies. Please try again.")
+    const isCorrectAnswer = props.playerGame.correctAnswer
+    const guessesExhausted =
+      props.playerGame.guesses.length >= props.playerGame.maxGuesses
+    setDisableInteractions(isCorrectAnswer || guessesExhausted)
+  }, [props.playerGame.correctAnswer, props.playerGame.guesses])
+
+  useEffect(() => {
+    const uniqueMovies = removeDuplicates(props.movies)
+    if (uniqueMovies.length === 0) {
+      setSearchState({
+        ...searchState,
+        foundMovies: [],
+        loading: false,
+        error: "Failed to load movies. Please try again.",
+      })
     } else {
-      const uniqueMovies = removeDuplicates(props.movies)
-      setFoundMovies(uniqueMovies)
-      setLoading(false)
-      setError(null)
+      setSearchState({
+        ...searchState,
+        foundMovies: uniqueMovies,
+        loading: false,
+        error: null,
+      })
     }
   }, [props.movies])
 
@@ -71,12 +86,16 @@ const PickerContainer = (props: PickerContainerProps) => {
 
   const debouncedFilterMovies = useCallback(
     useDebounce((text: string) => {
-      setLoading(true)
+      setSearchState((prev) => ({ ...prev, loading: true }))
       const searchTerm = text.trim().toLowerCase()
 
       if (searchTerm === "") {
-        setFoundMovies(removeDuplicates(props.movies))
-        setError(null)
+        setSearchState((prev) => ({
+          ...prev,
+          foundMovies: removeDuplicates(props.movies),
+          error: null,
+          loading: false,
+        }))
       } else {
         const regex = new RegExp(
           searchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
@@ -87,26 +106,33 @@ const PickerContainer = (props: PickerContainerProps) => {
         )
 
         const uniqueFilteredMovies = removeDuplicates(filteredMovies)
-        setFoundMovies(uniqueFilteredMovies)
-
-        if (uniqueFilteredMovies.length === 0) {
-          setError(`No movies found for "${text}"`)
-        } else {
-          setError(null)
-        }
+        setSearchState((prev) => ({
+          ...prev,
+          foundMovies: uniqueFilteredMovies,
+          error:
+            uniqueFilteredMovies.length === 0
+              ? `No movies found for "${text}"`
+              : null,
+          loading: false,
+        }))
       }
-      setLoading(false)
     }, 300),
     [props.movies]
   )
 
   const handleSearchChange = (text: string) => {
-    setSearchText(text)
-    debouncedFilterMovies(text)
+    if (!disableInteractions) {
+      setSearchState((prev) => ({ ...prev, searchText: text }))
+      debouncedFilterMovies(text)
+    }
   }
 
   const onPressCheck = useCallback(() => {
-    if (selectedMovieID > 0 && props.playerGame.game.movie?.id) {
+    if (
+      !disableInteractions &&
+      selectedMovieID > 0 &&
+      props.playerGame.game.movie?.id
+    ) {
       props.updatePlayerGame({
         ...props.playerGame,
         guesses: [...props.playerGame.guesses, selectedMovieID],
@@ -114,16 +140,17 @@ const PickerContainer = (props: PickerContainerProps) => {
       })
     }
   }, [
+    disableInteractions,
     selectedMovieID,
-    selectedMovieTitle,
     props.playerGame,
     props.updatePlayerGame,
   ])
 
   const handleMovieSelection = (movie: BasicMovie) => {
-    setSelectedMovieID(movie.id)
-    setSelectedMovieTitle(movie.title)
-    setIsButtonDisabled(false)
+    if (!disableInteractions) {
+      setSelectedMovieID(movie.id)
+      setSelectedMovieTitle(movie.title) // Update the button text to the selected movie title
+    }
   }
 
   return (
@@ -132,26 +159,26 @@ const PickerContainer = (props: PickerContainerProps) => {
         accessible
         accessibilityRole="search"
         aria-label="Search for a movie"
-        clearTextOnFocus={false}
         maxLength={100}
         onChangeText={handleSearchChange}
         placeholder="Search for a movie title"
         placeholderTextColor={colors.tertiary}
         style={styles.input}
-        value={searchText}
+        value={searchState.searchText}
+        editable={!disableInteractions}
       />
 
-      {loading ? (
+      {searchState.loading ? (
         <ActivityIndicator size="large" color={colors.primary} />
-      ) : error ? (
+      ) : searchState.error ? (
         <Text accessibilityRole="text" style={styles.errorText}>
-          {error}
+          {searchState.error}
         </Text>
       ) : (
         <View style={styles.text}>
-          {foundMovies.length > 0 ? (
+          {searchState.foundMovies.length > 0 ? (
             <ScrollView style={styles.resultsShow}>
-              {foundMovies.map((movie) => (
+              {searchState.foundMovies.map((movie) => (
                 <Pressable
                   accessible
                   accessibilityRole="button"
@@ -163,6 +190,7 @@ const PickerContainer = (props: PickerContainerProps) => {
                     selectedMovieID === movie.id && styles.selectedMovie,
                   ]}
                   android_ripple={{ color: colors.quinary }}
+                  disabled={disableInteractions}
                 >
                   <Text
                     numberOfLines={1}
@@ -176,8 +204,8 @@ const PickerContainer = (props: PickerContainerProps) => {
             </ScrollView>
           ) : (
             <Text style={styles.noResultsText}>
-              {searchText
-                ? `No movies found for "${searchText}"`
+              {searchState.searchText
+                ? `No movies found for "${searchState.searchText}"`
                 : "No movies available"}
             </Text>
           )}
@@ -187,15 +215,17 @@ const PickerContainer = (props: PickerContainerProps) => {
       <Pressable
         accessible
         aria-label={
-          isButtonDisabled ? "Submit button disabled" : "Submit button enabled"
+          disableInteractions
+            ? "Submit button disabled"
+            : "Submit button enabled"
         }
         role="button"
-        disabled={isButtonDisabled}
+        disabled={disableInteractions}
         onPress={onPressCheck}
-        style={isButtonDisabled ? styles.buttonDisabled : styles.button}
+        style={[styles.button, disableInteractions && { opacity: 0.5 }]}
       >
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.buttonText}>
-          {selectedMovieTitle}
+          {selectedMovieTitle} {/* Display the selected movie title */}
         </Text>
       </Pressable>
     </View>
@@ -206,22 +236,10 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: colors.primary,
     borderRadius: 10,
-    flex: 1,
     maxHeight: 40,
     minHeight: 40,
     padding: 10,
     width: 300,
-    opacity: 1,
-  },
-  buttonDisabled: {
-    backgroundColor: colors.primary,
-    borderRadius: 10,
-    flex: 1,
-    maxHeight: 40,
-    minHeight: 40,
-    padding: 10,
-    width: 300,
-    opacity: 0.5,
   },
   buttonText: {
     color: colors.secondary,
@@ -247,11 +265,9 @@ const styles = StyleSheet.create({
   },
   pressableText: {
     flex: 1,
-    flexWrap: "nowrap",
     fontFamily: "Arvo-Regular",
     padding: 5,
     borderRadius: 5,
-    opacity: 1,
   },
   selectedMovie: {
     backgroundColor: colors.quinary,
@@ -284,8 +300,6 @@ const styles = StyleSheet.create({
   },
   unselected: {
     color: colors.secondary,
-    flex: 1,
-    flexWrap: "nowrap",
     fontFamily: "Arvo-Italic",
   },
 })

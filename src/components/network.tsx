@@ -1,21 +1,17 @@
 import React, { useEffect, useState } from "react"
 import { StyleSheet, Text, View } from "react-native"
-
 import { colors } from "../styles/global"
 
 interface NetworkContainerProps {
   isConnected: boolean
 }
 
-const NetworkContainer = (props: NetworkContainerProps) => {
-  const [isConnected, setIsConnected] = useState<boolean>(props.isConnected)
+const NetworkContainer = ({ isConnected }: NetworkContainerProps) => {
   const [text, setText] = useState<string>("not connected")
 
   useEffect(() => {
-    setIsConnected(props.isConnected)
-    let connectionStatus = isConnected ? "connected" : "not connected"
-    setText(connectionStatus)
-  })
+    setText(isConnected ? "connected" : "not connected")
+  }, [isConnected])
 
   return (
     <View
