@@ -9,9 +9,10 @@ const firebaseConfig = {
   storageBucket: `${Constants?.expoConfig?.extra?.firebaseProjectId}.appspot.com`,
   messagingSenderId: Constants?.expoConfig?.extra?.firebaseMessagingSenderId,
   appId: Constants?.expoConfig?.extra?.firebaseAppId,
-  measurementId: Constants?.expoConfig?.extra?.firebaseAppId,
+  measurementId: Constants?.expoConfig?.extra?.firebaseMeasurementId,
 }
 
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig)
 const db = getFirestore(app)
+
 export { db, firebaseConfig }

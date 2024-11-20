@@ -1,13 +1,13 @@
-require("dotenv").config();
+require("dotenv").config()
 
-const myValue = 'talkie-trivia';
+const myValue = "talkie-trivia"
 
 export default ({ config }) => ({
   ...config,
   expo: {
     name: myValue,
     slug: "talkie-trivia",
-    version: process.env.MY_CUSTOM_PROJECT_VERSION || '1.0.0',
+    version: process.env.MY_CUSTOM_PROJECT_VERSION || "1.0.0",
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "light",
@@ -45,10 +45,10 @@ export default ({ config }) => ({
       firebaseMeasurementId: process.env.FIREBASE_MEASUREMENTID,
       firebaseMessagingSenderId: process.env.FIREBASE_MESSAGING_SENDERID,
       firebaseProjectId: process.env.FIREBASE_PROJECTID,
-      themoviedb_key: process.env.THEMOVIEDB_APIKEY,
+      themoviedbKey: process.env.THEMOVIEDB_APIKEY,
       expoClientId: process.env.CLIENTID_EXPO,
       iosClientId: process.env.CLIENTID_IOS,
       webClientId: process.env.CLIENTID_WEB
-    }
-  }
-});
+    },
+  },
+})
