@@ -2,7 +2,17 @@ import Constants from "expo-constants"
 import { initializeApp, getApps, getApp } from "firebase/app"
 import { getFirestore } from "firebase/firestore"
 
-const firebaseConfig = {
+interface FirebaseConfig {
+  apiKey: string
+  authDomain: string
+  projectId: string
+  storageBucket: string
+  messagingSenderId: string
+  appId: string
+  measurementId: string
+}
+
+const firebaseConfig: FirebaseConfig = {
   apiKey: Constants?.expoConfig?.extra?.firebaseApiKey,
   authDomain: `${Constants?.expoConfig?.extra?.firebaseProjectId}.firebaseapp.com`,
   projectId: Constants?.expoConfig?.extra?.firebaseProjectId,

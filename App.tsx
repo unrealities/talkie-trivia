@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react"
-import { StyleSheet, View, Text, ActivityIndicator, Button } from "react-native"
+import { View, Text, ActivityIndicator, Button } from "react-native"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { NavigationContainer } from "@react-navigation/native"
 import { useFonts } from "expo-font"
@@ -14,6 +14,7 @@ import {
   setUserName,
 } from "./src/utils/hooks/localStore"
 import { colors } from "./src/styles/global"
+import { appStyles } from "./src/styles/AppStyles"
 import { firebaseConfig } from "./src/config/firebase"
 import { initializeApp } from "firebase/app"
 import { getFirestore } from "firebase/firestore"
@@ -29,7 +30,7 @@ import PlayerStatsContainer from "./src/components/playerStats"
 import Player from "./src/models/player"
 import PlayerStats from "./src/models/playerStats"
 import { BasicMovie, Movie } from "./src/models/movie"
-import { Game, PlayerGame } from "./src/models/game"
+import { PlayerGame } from "./src/models/game"
 
 initializeApp(firebaseConfig)
 const db = getFirestore()
@@ -138,8 +139,8 @@ const App = () => {
     <NavigationContainer>
       <StatusBar style="auto" />
       {!isNetworkConnected ? (
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>No Internet Connection</Text>
+        <View style={appStyles.errorContainer}>
+          <Text style={appStyles.errorText}>No Internet Connection</Text>
           <Button title="Retry" onPress={retryLoadResources} />
         </View>
       ) : isAppReady ? (
@@ -152,7 +153,7 @@ const App = () => {
         >
           <Tab.Screen name="Game">
             {() => (
-              <View style={styles.container}>
+              <View style={appStyles.container}>
                 <MoviesContainer
                   isNetworkConnected={isNetworkConnected}
                   movies={basicMovies}
@@ -166,7 +167,7 @@ const App = () => {
           </Tab.Screen>
           <Tab.Screen name="Profile">
             {() => (
-              <View style={styles.container}>
+              <View style={appStyles.container}>
                 <GoogleLogin player={player} />
                 <PlayerStatsContainer
                   player={player}
@@ -177,38 +178,15 @@ const App = () => {
           </Tab.Screen>
         </Tab.Navigator>
       ) : (
-        <View style={styles.loadingContainer}>
+        <View style={appStyles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.primary} />
-          {loadingError && <Text style={styles.errorText}>{loadingError}</Text>}
+          {loadingError && (
+            <Text style={appStyles.errorText}>{loadingError}</Text>
+          )}
         </View>
       )}
     </NavigationContainer>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    backgroundColor: colors.background,
-    flex: 1,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: colors.background,
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: colors.background,
-  },
-  errorText: {
-    fontFamily: "Arvo-Regular",
-    fontSize: 20,
-    color: "red",
-  },
-})
 
 export default App
