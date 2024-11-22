@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from "react"
-import { Pressable, StyleSheet, Text, View, Alert } from "react-native"
+import { Pressable, Text, View, Alert } from "react-native"
 import {
   GoogleAuthProvider,
   getAuth,
   signInWithCredential,
   signOut,
-  User,
 } from "firebase/auth"
 import * as Google from "expo-auth-session/providers/google"
 import Constants from "expo-constants"
 
-import { colors } from "../styles/global"
 import Player from "../models/player"
+import { googleLoginStyles } from "../styles/googleLoginStyles"
 
 interface GoogleLoginProps {
   player: Player
@@ -41,7 +40,7 @@ const GoogleLogin = (props: GoogleLoginProps) => {
       setIsSigningIn(true)
       signInWithCredential(auth, credential)
         .then(() => setIsSigningIn(false))
-        .catch(error => {
+        .catch((error) => {
           setIsSigningIn(false)
           Alert.alert("Error", "Failed to sign in. Please try again.")
           console.error("Sign in error:", error)
@@ -55,25 +54,25 @@ const GoogleLogin = (props: GoogleLoginProps) => {
       .then(() => {
         console.log("Signed out successfully")
       })
-      .catch(error => {
+      .catch((error) => {
         Alert.alert("Error", "Failed to sign out. Please try again.")
         console.error("Sign out error:", error)
       })
   }
 
   return (
-    <View style={styles.container}>
+    <View style={googleLoginStyles.container}>
       <Pressable
         onPress={() => {
           props.player.name != "" ? handleSignOut() : promptAsync()
         }}
         style={({ pressed }) => [
-          styles.button,
+          googleLoginStyles.button,
           { opacity: pressed || isSigningIn ? 0.7 : 1 },
         ]}
         disabled={isSigningIn}
       >
-        <Text style={styles.buttonText}>
+        <Text style={googleLoginStyles.buttonText}>
           {props.player.name != ""
             ? "Sign Out " + props.player.name
             : isSigningIn
@@ -84,29 +83,5 @@ const GoogleLogin = (props: GoogleLoginProps) => {
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: colors.primary,
-    borderRadius: 10,
-    flex: 1,
-    maxHeight: 40,
-    padding: 10,
-    width: 280,
-  },
-  buttonText: {
-    color: colors.secondary,
-    fontFamily: "Arvo-Bold",
-    textAlign: "center",
-  },
-  container: {
-    alignItems: "center",
-    alignSelf: "center",
-    flex: 1,
-    maxHeight: 60,
-    padding: 8,
-    width: 300,
-  },
-})
 
 export default GoogleLogin

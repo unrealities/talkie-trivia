@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo } from "react"
-import { Animated, StyleSheet, Text, View } from "react-native"
-import { colors } from "../styles/global"
+import { Animated, Text, View } from "react-native"
+import { cluesStyles } from "../styles/cluesStyles"
 
 interface CluesProps {
   correctGuess: boolean
@@ -38,14 +38,14 @@ const CluesContainer = ({ correctGuess, guesses, summary }: CluesProps) => {
     Animated.timing(fadeAnim, {
       duration: 1000,
       toValue: 1,
-      useNativeDriver: false
+      useNativeDriver: false,
     }).start()
   }, [guesses, correctGuess, clues])
 
   return (
-    <View style={styles.container}>
-      <View style={styles.textContainer}>
-        <Animated.Text style={[styles.text, { opacity: fadeAnim }]}>
+    <View style={cluesStyles.container}>
+      <View style={cluesStyles.textContainer}>
+        <Animated.Text style={[cluesStyles.text, { opacity: fadeAnim }]}>
           {revealedClues}
         </Animated.Text>
       </View>
@@ -65,47 +65,11 @@ const CountContainer = ({
   totalWordLength,
   correctGuess,
 }: CountContainerProps & { correctGuess: boolean }) => (
-  <View style={styles.countContainer}>
-    <Text style={styles.wordCountText}>
+  <View style={cluesStyles.countContainer}>
+    <Text style={cluesStyles.wordCountText}>
       {correctGuess ? totalWordLength : currentWordLength}/{totalWordLength}
     </Text>
   </View>
 )
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    marginVertical: 10,
-    minWidth: 300,
-    minHeight: 250,
-  },
-  countContainer: {
-    alignSelf: "flex-end",
-    marginTop: 8,
-    maxHeight: 16,
-    justifyContent: "flex-end",
-  },
-  textContainer: {
-    flexWrap: "wrap",
-    maxWidth: 300,
-    minWidth: 280,
-    textAlign: "left",
-    paddingHorizontal: 10,
-  },
-  text: {
-    color: colors.secondary,
-    fontFamily: "Arvo-Regular",
-    fontSize: 16,
-    paddingBottom: 4,
-  },
-  wordCountText: {
-    color: colors.primary,
-    fontFamily: "Arvo-Regular",
-    fontSize: 10,
-    textAlign: "right",
-  },
-})
 
 export default CluesContainer

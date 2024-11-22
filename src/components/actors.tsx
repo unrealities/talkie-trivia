@@ -1,12 +1,12 @@
 import React from "react"
-import { Image, StyleSheet, Text, Pressable, View, Alert } from "react-native"
+import { Image, Text, Pressable, View, Alert } from "react-native"
 import * as Linking from "expo-linking"
-import { colors } from "../styles/global"
+import { actorsStyles } from "../styles/ActorsStyles"
 import { Actor } from "../models/movie"
 
 interface ActorProps {
   actor: Actor
-  imdbId: string
+  imdbId: number
 }
 
 interface ActorsProps {
@@ -26,7 +26,7 @@ const ActorContainer = ({ actor, imdbId }: ActorProps) => {
   }
 
   return (
-    <View style={styles.actorContainer} accessible>
+    <View style={actorsStyles.actorContainer} accessible>
       <Pressable
         onPress={handlePress}
         style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1.0 }]}
@@ -36,11 +36,17 @@ const ActorContainer = ({ actor, imdbId }: ActorProps) => {
           source={{
             uri: actor.profile_path
               ? `${imageURI}${actor.profile_path}`
-              : Image.resolveAssetSource(require("../../assets/actor_default.png")).uri,
+              : Image.resolveAssetSource(
+                  require("../../assets/actor_default.png")
+                ).uri,
           }}
-          style={styles.actorImage}
+          style={actorsStyles.actorImage}
         />
-        <Text style={styles.actorText} numberOfLines={2} ellipsizeMode="tail">
+        <Text
+          style={actorsStyles.actorText}
+          numberOfLines={2}
+          ellipsizeMode="tail"
+        >
           {actor.name}
         </Text>
       </Pressable>
@@ -49,43 +55,13 @@ const ActorContainer = ({ actor, imdbId }: ActorProps) => {
 }
 
 export const Actors = ({ actors }: ActorsProps) => (
-  <View style={styles.actorsContainer}>
+  <View style={actorsStyles.actorsContainer}>
     {actors.slice(0, 3).map((actor) => (
       <ActorContainer
-        key={actor.imdbId || actor.name}
+        key={actor.id || actor.name}
         actor={actor}
-        imdbId={actor.imdbId}
+        imdbId={actor.id}
       />
     ))}
   </View>
 )
-
-const styles = StyleSheet.create({
-  actorsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    paddingVertical: 12,
-    width: "100%",
-  },
-  actorContainer: {
-    alignItems: "center",
-    flex: 1,
-    maxWidth: 80,
-    minHeight: 140,
-  },
-  actorImage: {
-    height: 90,
-    width: 60,
-    borderRadius: 4,
-    resizeMode: "cover",
-  },
-  actorText: {
-    fontFamily: "Arvo-Regular",
-    fontSize: 10,
-    paddingTop: 4,
-    textAlign: "center",
-    color: colors.primary,
-    width: 60,
-    lineHeight: 12,
-  },
-})
