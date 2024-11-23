@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
-import { StyleSheet, Text, View } from "react-native"
-import { colors } from "../styles/global"
+import { Text, View } from "react-native"
+
+import { networkStyles } from "../styles/networkStyles"
 
 interface NetworkContainerProps {
   isConnected: boolean
@@ -16,51 +17,20 @@ const NetworkContainer = ({ isConnected }: NetworkContainerProps) => {
   return (
     <View
       style={
-        isConnected ? styles.containerConnected : styles.containerNotConnected
+        isConnected
+          ? networkStyles.containerConnected
+          : networkStyles.containerNotConnected
       }
     >
-      <Text style={isConnected ? styles.connected : styles.notConnected}>
+      <Text
+        style={
+          isConnected ? networkStyles.connected : networkStyles.notConnected
+        }
+      >
         Network is {text}
       </Text>
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  containerConnected: {
-    display: "none",
-  },
-  containerNotConnected: {
-    borderBottomColor: colors.quaternary,
-    borderBottomWidth: 2,
-    borderTopColor: colors.quaternary,
-    borderTopWidth: 2,
-    borderStyle: "solid",
-    flex: 1,
-    justifyContent: "center",
-    paddingBottom: 4,
-    paddingTop: 4,
-    marginTop: 20,
-    maxHeight: 75,
-    minHeight: 20,
-    minWidth: 300,
-  },
-  connected: {
-    color: colors.primary,
-    flex: 1,
-    fontFamily: "Arvo-Bold",
-    fontSize: 24,
-    marginTop: 6,
-    textAlign: "center",
-  },
-  notConnected: {
-    color: colors.quaternary,
-    flex: 1,
-    fontFamily: "Arvo-Bold",
-    fontSize: 24,
-    marginTop: 6,
-    textAlign: "center",
-  },
-})
 
 export default NetworkContainer

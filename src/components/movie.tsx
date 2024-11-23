@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react"
-import { StyleSheet, View } from "react-native"
+import { View } from "react-native"
 import ConfettiCannon from "react-native-confetti-cannon"
 import { initializeApp } from "firebase/app"
 import { doc, getFirestore, setDoc } from "firebase/firestore"
@@ -25,6 +25,7 @@ import { firebaseConfig } from "../config/firebase"
 import { playerStatsConverter } from "../utils/firestore/converters/playerStats"
 import { playerGameConverter } from "../utils/firestore/converters/playerGame"
 import { colors } from "../styles/global"
+import { movieStyles } from "../styles/movieStyles"
 
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
@@ -103,7 +104,7 @@ const MoviesContainer = (props: MovieContainerProps) => {
   }, [props.playerGame.id])
 
   return (
-    <View style={styles.container}>
+    <View style={movieStyles.container}>
       <NetworkContainer isConnected={props.isNetworkConnected} />
       <TitleHeader />
       <CluesContainer
@@ -144,15 +145,5 @@ const MoviesContainer = (props: MovieContainerProps) => {
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    flex: 1,
-    flexDirection: "column",
-    marginTop: 24,
-    width: "90%",
-  },
-})
 
 export default MoviesContainer

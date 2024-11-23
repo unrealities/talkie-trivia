@@ -1,7 +1,7 @@
 import React from "react"
 import { Text, View } from "react-native"
 import { BasicMovie, Movie } from "../models/movie"
-import { guessesStyles } from "../styles/GuessesStyles"
+import { guessesStyles } from "../styles/guessesStyles"
 
 interface GuessesContainerProps {
   guesses: number[]

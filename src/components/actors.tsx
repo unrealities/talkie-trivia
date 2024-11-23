@@ -1,7 +1,7 @@
 import React from "react"
 import { Image, Text, Pressable, View, Alert } from "react-native"
 import * as Linking from "expo-linking"
-import { actorsStyles } from "../styles/ActorsStyles"
+import { actorsStyles } from "../styles/actorsStyles"
 import { Actor } from "../models/movie"
 
 interface ActorProps {

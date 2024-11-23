@@ -1,7 +1,9 @@
 import React from "react"
-import { StyleSheet, View } from "react-native"
+import { View } from "react-native"
 import Victory from "../utils/victory/victory"
+
 import { colors } from "../styles/global"
+import { winChartStyles } from "../styles/winChartStyles"
 
 const VictoryPie = Victory.VictoryPie
 const VictoryTheme = Victory.VictoryTheme
@@ -23,7 +25,7 @@ const WinChart = (props: WinChartProps) => {
   })
 
   return (
-    <View style={styles.container}>
+    <View style={winChartStyles.container}>
       <VictoryPie
         colorScale={[
           colors.primary,
@@ -34,27 +36,14 @@ const WinChart = (props: WinChartProps) => {
         ]}
         data={data}
         innerRadius={({ datum }) => datum.y * 25}
-        style={{ labels: styles.victoryLabels }}
+        style={{
+          labels: winChartStyles.victoryLabels,
+          data: { fill: colors.white },
+        }}
         theme={VictoryTheme.material}
       />
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    alignSelf: "center",
-    flex: 1,
-    flexDirection: "column",
-    padding: 12,
-    width: "100%",
-  },
-  victoryLabels: {
-    fill: colors.white,
-    fontFamily: "Arvo-Bold",
-    fontSize: 20,
-  },
-})
 
 export default WinChart

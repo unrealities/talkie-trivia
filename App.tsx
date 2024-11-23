@@ -72,6 +72,7 @@ const App = () => {
 
   let [fontsLoaded] = useFonts({
     "Arvo-Bold": require("./assets/fonts/Arvo-Bold.ttf"),
+    "Arvo-Italic": require("./assets/fonts/Arvo-Italic.ttf"),
     "Arvo-Regular": require("./assets/fonts/Arvo-Regular.ttf"),
   })
 

@@ -18,6 +18,7 @@ import {
 import { BasicMovie } from "../models/movie"
 import { PlayerGame } from "../models/game"
 import { colors } from "../styles/global"
+import { pickerStyles } from "../styles/pickerStyles"
 
 interface PickerContainerProps {
   enableSubmit: boolean
@@ -149,12 +150,12 @@ const PickerContainer = (props: PickerContainerProps) => {
   const handleMovieSelection = (movie: BasicMovie) => {
     if (!disableInteractions) {
       setSelectedMovieID(movie.id)
-      setSelectedMovieTitle(movie.title) // Update the button text to the selected movie title
+      setSelectedMovieTitle(movie.title)
     }
   }
 
   return (
-    <View style={styles.container}>
+    <View style={pickerStyles.container}>
       <TextInput
         accessible
         accessibilityRole="search"
@@ -163,7 +164,7 @@ const PickerContainer = (props: PickerContainerProps) => {
         onChangeText={handleSearchChange}
         placeholder="Search for a movie title"
         placeholderTextColor={colors.tertiary}
-        style={styles.input}
+        style={pickerStyles.input}
         value={searchState.searchText}
         editable={!disableInteractions}
       />
@@ -171,13 +172,13 @@ const PickerContainer = (props: PickerContainerProps) => {
       {searchState.loading ? (
         <ActivityIndicator size="large" color={colors.primary} />
       ) : searchState.error ? (
-        <Text accessibilityRole="text" style={styles.errorText}>
+        <Text accessibilityRole="text" style={pickerStyles.errorText}>
           {searchState.error}
         </Text>
       ) : (
-        <View style={styles.text}>
+        <View style={pickerStyles.text}>
           {searchState.foundMovies.length > 0 ? (
-            <ScrollView style={styles.resultsShow}>
+            <ScrollView style={pickerStyles.resultsShow}>
               {searchState.foundMovies.map((movie) => (
                 <Pressable
                   accessible
@@ -186,8 +187,8 @@ const PickerContainer = (props: PickerContainerProps) => {
                   key={movie.id}
                   onPress={() => handleMovieSelection(movie)}
                   style={[
-                    styles.pressableText,
-                    selectedMovieID === movie.id && styles.selectedMovie,
+                    pickerStyles.pressableText,
+                    selectedMovieID === movie.id && pickerStyles.selectedMovie,
                   ]}
                   android_ripple={{ color: colors.quinary }}
                   disabled={disableInteractions}
@@ -195,7 +196,7 @@ const PickerContainer = (props: PickerContainerProps) => {
                   <Text
                     numberOfLines={1}
                     ellipsizeMode="tail"
-                    style={styles.unselected}
+                    style={pickerStyles.unselected}
                   >
                     {movie.title}
                   </Text>
@@ -203,7 +204,7 @@ const PickerContainer = (props: PickerContainerProps) => {
               ))}
             </ScrollView>
           ) : (
-            <Text style={styles.noResultsText}>
+            <Text style={pickerStyles.noResultsText}>
               {searchState.searchText
                 ? `No movies found for "${searchState.searchText}"`
                 : "No movies available"}
@@ -222,86 +223,18 @@ const PickerContainer = (props: PickerContainerProps) => {
         role="button"
         disabled={disableInteractions}
         onPress={onPressCheck}
-        style={[styles.button, disableInteractions && { opacity: 0.5 }]}
+        style={[pickerStyles.button, disableInteractions && { opacity: 0.5 }]}
       >
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.buttonText}>
+        <Text
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          style={pickerStyles.buttonText}
+        >
           {selectedMovieTitle} {/* Display the selected movie title */}
         </Text>
       </Pressable>
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: colors.primary,
-    borderRadius: 10,
-    maxHeight: 40,
-    minHeight: 40,
-    padding: 10,
-    width: 300,
-  },
-  buttonText: {
-    color: colors.secondary,
-    fontFamily: "Arvo-Regular",
-    fontSize: 16,
-    textAlign: "center",
-  },
-  container: {
-    flex: 1,
-    minHeight: 180,
-  },
-  input: {
-    alignSelf: "flex-start",
-    borderColor: colors.primary,
-    borderRadius: 10,
-    borderWidth: 2,
-    color: colors.secondary,
-    fontFamily: "Arvo-Regular",
-    maxWidth: 300,
-    padding: 5,
-    textAlign: "center",
-    width: 300,
-  },
-  pressableText: {
-    flex: 1,
-    fontFamily: "Arvo-Regular",
-    padding: 5,
-    borderRadius: 5,
-  },
-  selectedMovie: {
-    backgroundColor: colors.quinary,
-  },
-  resultsShow: {
-    flex: 1,
-    maxHeight: 82,
-    maxWidth: 280,
-    minHeight: 82,
-  },
-  text: {
-    fontFamily: "Arvo-Regular",
-    fontSize: 12,
-    padding: 10,
-    lineHeight: 16,
-    marginBottom: 10,
-  },
-  noResultsText: {
-    fontFamily: "Arvo-Regular",
-    fontSize: 14,
-    color: colors.tertiary,
-    textAlign: "center",
-  },
-  errorText: {
-    fontFamily: "Arvo-Regular",
-    fontSize: 14,
-    color: colors.quaternary,
-    textAlign: "center",
-    padding: 10,
-  },
-  unselected: {
-    color: colors.secondary,
-    fontFamily: "Arvo-Italic",
-  },
-})
 
 export default PickerContainer

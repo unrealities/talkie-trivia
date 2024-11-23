@@ -2,9 +2,9 @@ import React, { Dispatch, SetStateAction } from "react"
 import { Pressable, StyleSheet, Text, View } from "react-native"
 import uuid from "react-native-uuid"
 
-import { colors } from "../styles/global"
 import { Movie } from "../models/movie"
 import { Game, PlayerGame } from "../models/game"
+import { resetStyles } from "../styles/resetStyles"
 
 export interface ResetContainerProps {
   playerGame: PlayerGame
@@ -36,31 +36,16 @@ const ResetContainer = (props: ResetContainerProps) => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={resetStyles.container}>
       <Pressable
         onPress={() => {
           props.updatePlayerGame(playerGame)
         }}
       >
-        <Text style={styles.text}>Play Again?</Text>
+        <Text style={resetStyles.text}>Play Again?</Text>
       </Pressable>
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    marginTop: 16,
-    padding: 8,
-  },
-  text: {
-    color: colors.secondary,
-    flex: 1,
-    fontFamily: "Arvo-Italic",
-    fontSize: 20,
-  },
-})
 
 export default ResetContainer
