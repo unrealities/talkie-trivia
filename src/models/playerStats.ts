@@ -1,4 +1,4 @@
-export default class PlayerStats {
+export class PlayerStats {
   id: string
   currentStreak: number
   games: number // number of games attempted (at least one guess made)

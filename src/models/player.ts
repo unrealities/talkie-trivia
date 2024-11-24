@@ -1,4 +1,4 @@
-export default class Player {
+export class Player {
   id: string
   name: string
 }
