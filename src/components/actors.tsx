@@ -1,46 +1,77 @@
 import React from "react"
-import { Image, Text, Pressable, View, Alert } from "react-native"
+import {
+  Image,
+  Text,
+  Pressable,
+  View,
+  Alert,
+  StyleProp,
+  ViewStyle,
+} from "react-native"
 import * as Linking from "expo-linking"
 import { actorsStyles } from "../styles/actorsStyles"
 import { Actor } from "../models/movie"
 
 interface ActorProps {
   actor: Actor
-  imdbId: number
+  imdbId?: string
+  style?: StyleProp<ViewStyle>
+  onActorPress?: (actor: Actor) => void
 }
 
 interface ActorsProps {
   actors: Actor[]
+  maxDisplay?: number
+  containerStyle?: StyleProp<ViewStyle>
 }
 
-const ActorContainer = ({ actor, imdbId }: ActorProps) => {
+const ActorContainer = ({ actor, imdbId, style, onActorPress }: ActorProps) => {
   const imageURI = "https://image.tmdb.org/t/p/original"
   const imdbURI = imdbId ? `https://www.imdb.com/name/${imdbId}` : null
 
   const handlePress = () => {
+    if (onActorPress) {
+      onActorPress(actor)
+      return
+    }
+
     if (imdbURI) {
-      Linking.openURL(imdbURI)
+      Linking.canOpenURL(imdbURI)
+        .then((supported) => {
+          if (supported) {
+            Linking.openURL(imdbURI)
+          } else {
+            Alert.alert("Unable to open IMDb link")
+          }
+        })
+        .catch(() => {
+          Alert.alert("Error opening link")
+        })
     } else {
-      Alert.alert("IMDb link unavailable for this actor.")
+      Alert.alert("IMDb link unavailable", "No link found for this actor.")
     }
   }
 
+  const actorImage = actor.profile_path
+    ? { uri: `${imageURI}${actor.profile_path}` }
+    : require("../../assets/actor_default.png")
+
   return (
-    <View style={actorsStyles.actorContainer} accessible>
+    <View style={[actorsStyles.actorContainer, style]} accessible>
       <Pressable
         onPress={handlePress}
-        style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1.0 }]}
+        style={({ pressed }) => [
+          { opacity: pressed ? 0.6 : 1.0 },
+          actorsStyles.actorPressable,
+        ]}
         accessibilityRole="button"
+        accessibilityLabel={`View details for ${actor.name}`}
       >
         <Image
-          source={{
-            uri: actor.profile_path
-              ? `${imageURI}${actor.profile_path}`
-              : Image.resolveAssetSource(
-                  require("../../assets/actor_default.png")
-                ).uri,
-          }}
+          source={actorImage}
           style={actorsStyles.actorImage}
+          resizeMode="cover"
+          defaultSource={require("../../assets/actor_default.png")}
         />
         <Text
           style={actorsStyles.actorText}
@@ -54,14 +85,26 @@ const ActorContainer = ({ actor, imdbId }: ActorProps) => {
   )
 }
 
-export const Actors = ({ actors }: ActorsProps) => (
-  <View style={actorsStyles.actorsContainer}>
-    {actors.slice(0, 3).map((actor) => (
-      <ActorContainer
-        key={actor.id || actor.name}
-        actor={actor}
-        imdbId={actor.id}
-      />
-    ))}
-  </View>
-)
+export const Actors = ({
+  actors,
+  maxDisplay = 3,
+  containerStyle,
+}: ActorsProps) => {
+  if (!actors || actors.length === 0) {
+    return null
+  }
+
+  return (
+    <View style={[actorsStyles.actorsContainer, containerStyle]}>
+      {actors.slice(0, maxDisplay).map((actor) => (
+        <ActorContainer
+          key={`${actor.id}-${actor.name}`}
+          actor={actor}
+          imdbId={actor.imdb_id} // TODO: this data is not available
+        />
+      ))}
+    </View>
+  )
+}
+
+export default Actors

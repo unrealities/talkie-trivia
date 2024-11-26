@@ -14,6 +14,13 @@ export const actorsStyles = StyleSheet.create({
     maxWidth: 80,
     minHeight: 140,
   },
+  actorPressable: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 4,
+    padding: 4,
+    width: '100%',
+  },
   actorImage: {
     height: 90,
     width: 60,
