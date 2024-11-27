@@ -13,25 +13,21 @@ import { Actors } from "./actors"
 import { Movie } from "../models/movie"
 import { factsStyles } from "../styles/factsStyles"
 
-// Enhanced Props Interface
 interface FactsProps {
   movie: Movie
   isLoading?: boolean
   error?: string
 }
 
-// Memoized Component with Multiple Improvements
 const Facts = React.memo(({
   movie,
   isLoading = false,
   error
 }: FactsProps) => {
-  // Loading State
   if (isLoading) {
     return <ActivityIndicator size="large" color="#0000ff" />
   }
 
-  // Error State
   if (error) {
     return (
       <View style={factsStyles.errorContainer}>
@@ -40,17 +36,14 @@ const Facts = React.memo(({
     )
   }
 
-  // IMDb Link URI
   const imdbURI = movie.imdb_id
     ? `https://www.imdb.com/title/${movie.imdb_id}`
     : null
 
-  // Image URI with Fallback
   const imageURI = movie.poster_path
     ? `https://image.tmdb.org/t/p/original${movie.poster_path}`
     : Image.resolveAssetSource(require("../../assets/movie_default.png")).uri
 
-  // Memoized IMDb Link Handler with Improved Error Handling
   const handlePressIMDb = useCallback(() => {
     if (imdbURI) {
       try {
