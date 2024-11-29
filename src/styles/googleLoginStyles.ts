@@ -5,10 +5,11 @@ export const googleLoginStyles = StyleSheet.create({
   button: {
     backgroundColor: colors.primary,
     borderRadius: 10,
-    flex: 1,
-    maxHeight: 40,
-    padding: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    height: 40,
     width: 280,
+    alignSelf: "center",
   },
   buttonText: {
     color: colors.secondary,
@@ -17,10 +18,14 @@ export const googleLoginStyles = StyleSheet.create({
   },
   container: {
     alignItems: "center",
-    alignSelf: "center",
-    flex: 1,
-    maxHeight: 60,
-    padding: 8,
+    justifyContent: "center",
     width: 300,
+    alignSelf: "center",
   },
+  errorText: {
+    color: "red",
+    fontFamily: "Arvo-Regular",
+    marginTop: 8,
+    textAlign: "center",
+  }
 })
