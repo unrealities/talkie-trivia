@@ -23,7 +23,7 @@ const GuessesContainer = ({ guesses, movies }: GuessesContainerProps) => {
       {Array.from({ length: 5 }).map((_, index) => {
         const guessId = guesses[index]
         const guessTitle = getMovieTitle(guessId) || "-"
-
+        
         return (
           <View key={index} style={guessesStyles.guessContainer}>
             <Text style={guessesStyles.guessNumber}>{index + 1}</Text>
