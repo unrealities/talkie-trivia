@@ -1,42 +1,70 @@
-import React, { Dispatch, SetStateAction } from "react"
+import React from "react"
 import { Modal, Pressable, Text, View } from "react-native"
-
 import { modalStyles } from "../styles/modalStyles"
 import Facts from "./facts"
 import { Movie } from "../models/movie"
 
 interface MovieModalProps {
-  movie: Movie
+  movie: Movie | null
   show: boolean
-  toggleModal: Dispatch<SetStateAction<boolean>>
+  toggleModal: (show: boolean) => void
 }
 
-const MovieModal = ({ movie, show, toggleModal }: MovieModalProps) => {
-  return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={show}
-      onRequestClose={() => toggleModal(false)}
-    >
-      <Pressable
-        style={modalStyles.centeredView}
-        onPress={() => toggleModal(false)}
-        accessibilityLabel="Close modal by tapping outside"
-      >
+const MovieModal: React.FC<MovieModalProps> = React.memo(
+  ({ movie, show, toggleModal }) => {
+    const renderContent = () => {
+      if (!movie) {
+        return (
+          <View style={modalStyles.modalView}>
+            <Text style={modalStyles.errorText}>
+              No movie information available
+            </Text>
+            <Pressable
+              style={modalStyles.button}
+              onPress={() => toggleModal(false)}
+            >
+              <Text style={modalStyles.buttonText}>Dismiss</Text>
+            </Pressable>
+          </View>
+        )
+      }
+
+      return (
         <View style={modalStyles.modalView}>
-          {movie ? <Facts movie={movie} /> : <Text>Loading...</Text>}
+          <Facts movie={movie} />
           <Pressable
             style={modalStyles.button}
             onPress={() => toggleModal(false)}
-            accessibilityLabel="Close modal"
           >
             <Text style={modalStyles.buttonText}>Close</Text>
           </Pressable>
         </View>
-      </Pressable>
-    </Modal>
-  )
-}
+      )
+    }
+
+    return (
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={show}
+        onRequestClose={() => toggleModal(false)}
+        hardwareAccelerated
+        statusBarTranslucent
+      >
+        <Pressable
+          style={modalStyles.centeredView}
+          onPress={() => toggleModal(false)}
+          accessible={true}
+          accessibilityLabel="Close modal by tapping outside"
+        >
+          {/* Prevent touch events from propagating to the background Pressable */}
+          <Pressable onPress={(e) => e.stopPropagation()} accessible={false}>
+            {renderContent()}
+          </Pressable>
+        </Pressable>
+      </Modal>
+    )
+  }
+)
 
 export default MovieModal
