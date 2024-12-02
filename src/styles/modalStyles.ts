@@ -30,7 +30,7 @@ export const modalStyles = StyleSheet.create({
 
   modalView: {
     width: width * 0.9,
-    maxWidth: 500,
+    maxWidth: 300,
     alignItems: "center",
     backgroundColor: colors.secondary,
     borderRadius: 20,

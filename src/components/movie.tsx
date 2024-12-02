@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useRef,
   useState,
+  useCallback,
 } from "react"
 import { View } from "react-native"
 import ConfettiCannon from "react-native-confetti-cannon"
@@ -39,96 +40,105 @@ interface MovieContainerProps {
   updatePlayerGame: Dispatch<SetStateAction<PlayerGame>>
 }
 
-const MoviesContainer = (props: MovieContainerProps) => {
+const MoviesContainer = ({
+  isNetworkConnected,
+  movies,
+  player,
+  playerGame,
+  playerStats,
+  updatePlayerGame,
+}: MovieContainerProps) => {
   const [enableSubmit, setEnableSubmit] = useState<boolean>(true)
   const [showModal, setShowModal] = useState<boolean>(false)
   const confettiRef = useRef<ConfettiCannon>(null)
 
-  const setPlayerStats = async (correctAnswer: boolean) => {
-    let ps = { ...props.playerStats }
+  const updatePlayerStatsInFirestore = useCallback(
+    async (correctAnswer: boolean) => {
+      const updatedStats = { ...playerStats }
 
-    if (correctAnswer) {
-      ps.currentStreak++
-      if (ps.currentStreak > ps.maxStreak) {
-        ps.maxStreak = ps.currentStreak
+      if (correctAnswer) {
+        updatedStats.currentStreak++
+        updatedStats.maxStreak = Math.max(
+          updatedStats.currentStreak,
+          updatedStats.maxStreak
+        )
+        updatedStats.wins[playerGame.guesses.length]++
+      } else {
+        updatedStats.currentStreak = 0
       }
-      ps.wins[props.playerGame.guesses.length]++
-    } else {
-      ps.currentStreak = 0
-    }
 
+      try {
+        await setDoc(
+          doc(db, "playerStats", player.id).withConverter(playerStatsConverter),
+          updatedStats
+        )
+        return updatedStats
+      } catch (e) {
+        console.error("Error updating player stats: ", e)
+        return playerStats
+      }
+    },
+    [player.id, playerGame.guesses.length, playerStats]
+  )
+
+  const updatePlayerGameInFirestore = useCallback(async (game: PlayerGame) => {
     try {
       await setDoc(
-        doc(db, "playerStats", props.player.id).withConverter(
-          playerStatsConverter
-        ),
-        ps
-      )
-    } catch (e) {
-      console.error("Error updating player stats: ", e)
-    }
-  }
-
-  const setPlayerGame = async (playerGame: PlayerGame) => {
-    try {
-      await setDoc(
-        doc(db, "playerGames", playerGame.id).withConverter(
-          playerGameConverter
-        ),
-        playerGame
+        doc(db, "playerGames", game.id).withConverter(playerGameConverter),
+        game
       )
     } catch (e) {
       console.error("Error updating player game: ", e)
     }
-  }
+  }, [])
 
   useEffect(() => {
-    const { guesses, correctAnswer } = props.playerGame
+    const { guesses, correctAnswer } = playerGame
 
     if (guesses.length > 4 && enableSubmit) {
       setEnableSubmit(false)
-      setPlayerStats(false)
+      updatePlayerStatsInFirestore(false)
       setShowModal(true)
     } else if (correctAnswer && enableSubmit) {
       confettiRef.current?.start()
       setEnableSubmit(false)
-      setPlayerStats(true)
+      updatePlayerStatsInFirestore(true)
       setShowModal(true)
     }
-  }, [props.playerGame, enableSubmit])
+  }, [playerGame, enableSubmit, updatePlayerStatsInFirestore])
 
   useEffect(() => {
-    if (props.player.name) {
-      setPlayerGame(props.playerGame)
+    if (player.name) {
+      updatePlayerGameInFirestore(playerGame)
     }
-  }, [props.playerGame.id])
+  }, [playerGame.id, player.name, updatePlayerGameInFirestore])
 
   return (
     <View style={movieStyles.container}>
-      <NetworkContainer isConnected={props.isNetworkConnected} />
+      <NetworkContainer isConnected={isNetworkConnected} />
       <TitleHeader />
       <CluesContainer
-        correctGuess={props.playerGame.correctAnswer}
-        guesses={props.playerGame.guesses}
-        summary={props.playerGame.game.movie.overview}
+        correctGuess={playerGame.correctAnswer}
+        guesses={playerGame.guesses}
+        summary={playerGame.game.movie.overview}
       />
       <PickerContainer
         enableSubmit={enableSubmit}
-        playerGame={props.playerGame}
-        movies={props.movies}
-        updatePlayerGame={props.updatePlayerGame}
+        playerGame={playerGame}
+        movies={movies}
+        updatePlayerGame={updatePlayerGame}
       />
       <GuessesContainer
-        guesses={props.playerGame.guesses}
-        movie={props.playerGame.game.movie}
-        movies={props.movies}
+        guesses={playerGame.guesses}
+        movie={playerGame.game.movie}
+        movies={movies}
       />
       <ResetContainer
-        playerGame={props.playerGame}
-        updatePlayerGame={props.updatePlayerGame}
+        playerGame={playerGame}
+        updatePlayerGame={updatePlayerGame}
       />
       <MovieModal
-        movie={props.playerGame.game.movie}
+        movie={playerGame.game.movie}
         show={showModal}
         toggleModal={setShowModal}
       />
