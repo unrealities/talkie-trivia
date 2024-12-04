@@ -5,6 +5,7 @@ import React, {
   useState,
   useCallback,
   useRef,
+  useMemo,
 } from "react"
 import {
   ActivityIndicator,
@@ -27,130 +28,135 @@ interface PickerContainerProps {
   updatePlayerGame: Dispatch<SetStateAction<PlayerGame>>
 }
 
-const useDebounce = (func: Function, delay: number) => {
+const useDebounce = <T extends (...args: any[]) => any>(
+  func: T,
+  delay: number
+): T => {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  return (...args: any[]) => {
+  return ((...args: Parameters<T>) => {
     if (timer.current) clearTimeout(timer.current)
     timer.current = setTimeout(() => func(...args), delay)
-  }
+  }) as T
 }
 
-const PickerContainer = (props: PickerContainerProps) => {
-  const defaultButtonText = "Select a Movie"
+const PickerContainer: React.FC<PickerContainerProps> = ({
+  movies,
+  playerGame,
+  updatePlayerGame,
+}) => {
+  const DEFAULT_BUTTON_TEXT = "Select a Movie"
+
   const [searchState, setSearchState] = useState({
     foundMovies: [] as BasicMovie[],
     searchText: "",
     loading: true,
     error: null as string | null,
   })
-  const [selectedMovieID, setSelectedMovieID] = useState<number>(0)
-  const [selectedMovieTitle, setSelectedMovieTitle] =
-    useState<string>(defaultButtonText)
-  const [disableInteractions, setDisableInteractions] = useState<boolean>(false)
 
-  useEffect(() => {
-    const isCorrectAnswer = props.playerGame.correctAnswer
-    const guessesExhausted =
-      props.playerGame.guesses.length >= props.playerGame.maxGuesses
-    setDisableInteractions(isCorrectAnswer || guessesExhausted)
-  }, [props.playerGame.correctAnswer, props.playerGame.guesses])
+  const [selectedMovie, setSelectedMovie] = useState<{
+    id: number;
+    title: string;
+  }>({ id: 0, title: DEFAULT_BUTTON_TEXT })
 
-  useEffect(() => {
-    const uniqueMovies = removeDuplicates(props.movies)
-    if (uniqueMovies.length === 0) {
-      setSearchState({
-        ...searchState,
-        foundMovies: [],
-        loading: false,
-        error: "Failed to load movies. Please try again.",
-      })
-    } else {
-      setSearchState({
-        ...searchState,
-        foundMovies: uniqueMovies,
-        loading: false,
-        error: null,
-      })
-    }
-  }, [props.movies])
-
-  const removeDuplicates = (movies: BasicMovie[]): BasicMovie[] => {
-    return movies.filter(
+  const removeDuplicates = useCallback((movieList: BasicMovie[]): BasicMovie[] => {
+    return movieList.filter(
       (movie, index, self) =>
         index ===
         self.findIndex(
           (m) => m.title.toLowerCase() === movie.title.toLowerCase()
         )
     )
-  }
+  }, [])
+
+  const isInteractionsDisabled = useMemo(() =>
+    playerGame.correctAnswer ||
+    playerGame.guesses.length >= playerGame.game.guessesMax,
+    [playerGame.correctAnswer, playerGame.guesses, playerGame.game.guessesMax]
+  )
+
+  const filterMovies = useCallback((searchTerm: string) => {
+    const trimmedTerm = searchTerm.trim().toLowerCase()
+
+    if (trimmedTerm === "") {
+      return removeDuplicates(movies)
+    }
+
+    const regex = new RegExp(
+      trimmedTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+      "i"
+    )
+
+    const filteredMovies = movies.filter((movie) =>
+      regex.test(movie.title)
+    )
+
+    return removeDuplicates(filteredMovies)
+  }, [movies, removeDuplicates])
 
   const debouncedFilterMovies = useCallback(
     useDebounce((text: string) => {
-      setSearchState((prev) => ({ ...prev, loading: true }))
-      const searchTerm = text.trim().toLowerCase()
+      setSearchState(prev => ({
+        ...prev,
+        loading: true
+      }))
 
-      if (searchTerm === "") {
-        setSearchState((prev) => ({
-          ...prev,
-          foundMovies: removeDuplicates(props.movies),
-          error: null,
-          loading: false,
-        }))
-      } else {
-        const regex = new RegExp(
-          searchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
-          "i"
-        )
-        const filteredMovies = props.movies.filter((movie) =>
-          regex.test(movie.title)
-        )
+      const filteredMovies = filterMovies(text)
 
-        const uniqueFilteredMovies = removeDuplicates(filteredMovies)
-        setSearchState((prev) => ({
-          ...prev,
-          foundMovies: uniqueFilteredMovies,
-          error:
-            uniqueFilteredMovies.length === 0
-              ? `No movies found for "${text}"`
-              : null,
-          loading: false,
-        }))
-      }
+      setSearchState(prev => ({
+        ...prev,
+        foundMovies: filteredMovies,
+        error: filteredMovies.length === 0
+          ? `No movies found for "${text}"`
+          : null,
+        loading: false,
+      }))
     }, 300),
-    [props.movies]
+    [filterMovies]
   )
 
+  // Initial movies loading effect
+  useEffect(() => {
+    const uniqueMovies = removeDuplicates(movies)
+    setSearchState(prev => ({
+      ...prev,
+      foundMovies: uniqueMovies,
+      loading: false,
+      error: uniqueMovies.length === 0
+        ? "Failed to load movies. Please try again."
+        : null,
+    }))
+  }, [movies, removeDuplicates])
+
   const handleSearchChange = (text: string) => {
-    if (!disableInteractions) {
-      setSearchState((prev) => ({ ...prev, searchText: text }))
+    if (!isInteractionsDisabled) {
+      setSearchState(prev => ({ ...prev, searchText: text }))
       debouncedFilterMovies(text)
     }
   }
 
   const onPressCheck = useCallback(() => {
     if (
-      !disableInteractions &&
-      selectedMovieID > 0 &&
-      props.playerGame.game.movie?.id
+      !isInteractionsDisabled &&
+      selectedMovie.id > 0 &&
+      playerGame.game.movie?.id
     ) {
-      props.updatePlayerGame({
-        ...props.playerGame,
-        guesses: [...props.playerGame.guesses, selectedMovieID],
-        correctAnswer: props.playerGame.game.movie.id === selectedMovieID,
+      updatePlayerGame({
+        ...playerGame,
+        guesses: [...playerGame.guesses, selectedMovie.id],
+        correctAnswer: playerGame.game.movie.id === selectedMovie.id,
       })
     }
   }, [
-    disableInteractions,
-    selectedMovieID,
-    props.playerGame,
-    props.updatePlayerGame,
+    isInteractionsDisabled,
+    selectedMovie.id,
+    playerGame,
+    updatePlayerGame,
   ])
 
   const handleMovieSelection = (movie: BasicMovie) => {
-    if (!disableInteractions) {
-      setSelectedMovieID(movie.id)
-      setSelectedMovieTitle(movie.title)
+    if (!isInteractionsDisabled) {
+      setSelectedMovie({ id: movie.id, title: movie.title })
     }
   }
 
@@ -166,13 +172,16 @@ const PickerContainer = (props: PickerContainerProps) => {
         placeholderTextColor={colors.tertiary}
         style={pickerStyles.input}
         value={searchState.searchText}
-        editable={!disableInteractions}
+        editable={!isInteractionsDisabled}
       />
 
       {searchState.loading ? (
         <ActivityIndicator size="large" color={colors.primary} />
       ) : searchState.error ? (
-        <Text accessibilityRole="text" style={pickerStyles.errorText}>
+        <Text
+          accessibilityRole="text"
+          style={pickerStyles.errorText}
+        >
           {searchState.error}
         </Text>
       ) : (
@@ -188,10 +197,10 @@ const PickerContainer = (props: PickerContainerProps) => {
                   onPress={() => handleMovieSelection(movie)}
                   style={[
                     pickerStyles.pressableText,
-                    selectedMovieID === movie.id && pickerStyles.selectedMovie,
+                    selectedMovie.id === movie.id && pickerStyles.selectedMovie,
                   ]}
                   android_ripple={{ color: colors.quinary }}
-                  disabled={disableInteractions}
+                  disabled={isInteractionsDisabled}
                 >
                   <Text
                     numberOfLines={1}
@@ -216,21 +225,24 @@ const PickerContainer = (props: PickerContainerProps) => {
       <Pressable
         accessible
         aria-label={
-          disableInteractions
+          isInteractionsDisabled
             ? "Submit button disabled"
             : "Submit button enabled"
         }
         role="button"
-        disabled={disableInteractions}
+        disabled={isInteractionsDisabled}
         onPress={onPressCheck}
-        style={[pickerStyles.button, disableInteractions && { opacity: 0.5 }]}
+        style={[
+          pickerStyles.button,
+          isInteractionsDisabled && { opacity: 0.5 }
+        ]}
       >
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
           style={pickerStyles.buttonText}
         >
-          {selectedMovieTitle} {/* Display the selected movie title */}
+          {selectedMovie.title}
         </Text>
       </Pressable>
     </View>
