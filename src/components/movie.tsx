@@ -9,7 +9,7 @@ import React, {
 import { View } from "react-native"
 import ConfettiCannon from "react-native-confetti-cannon"
 import { initializeApp } from "firebase/app"
-import { doc, getFirestore, setDoc } from "firebase/firestore"
+import { getFirestore } from "firebase/firestore"
 
 import CluesContainer from "./clues"
 import GuessesContainer from "./guesses"
@@ -23,10 +23,9 @@ import { PlayerGame } from "../models/game"
 import Player from "../models/player"
 import PlayerStats from "../models/playerStats"
 import { firebaseConfig } from "../config/firebase"
-import { playerStatsConverter } from "../utils/firestore/converters/playerStats"
-import { playerGameConverter } from "../utils/firestore/converters/playerGame"
 import { colors } from "../styles/global"
 import { movieStyles } from "../styles/movieStyles"
+import { batchUpdatePlayerData } from "../utils/firebaseService"
 
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
@@ -38,6 +37,7 @@ interface MovieContainerProps {
   playerGame: PlayerGame
   playerStats: PlayerStats
   updatePlayerGame: Dispatch<SetStateAction<PlayerGame>>
+  updatePlayerStats: Dispatch<SetStateAction<PlayerStats>>
 }
 
 const MoviesContainer = ({
@@ -47,71 +47,36 @@ const MoviesContainer = ({
   playerGame,
   playerStats,
   updatePlayerGame,
+  updatePlayerStats,
 }: MovieContainerProps) => {
   const [enableSubmit, setEnableSubmit] = useState<boolean>(true)
   const [showModal, setShowModal] = useState<boolean>(false)
   const confettiRef = useRef<ConfettiCannon>(null)
 
-  const updatePlayerStatsInFirestore = useCallback(
-    async (correctAnswer: boolean) => {
-      const updatedStats = { ...playerStats }
+  useEffect(() => {
+    const { guesses, correctAnswer } = playerGame
 
+    if ((guesses.length > 4 || correctAnswer) && enableSubmit) {
+      setEnableSubmit(false)
+      const updatedStats = { ...playerStats }
       if (correctAnswer) {
         updatedStats.currentStreak++
         updatedStats.maxStreak = Math.max(
           updatedStats.currentStreak,
           updatedStats.maxStreak
         )
-        updatedStats.wins[playerGame.guesses.length]++
+        updatedStats.wins[guesses.length - 1]++
       } else {
         updatedStats.currentStreak = 0
       }
 
-      try {
-        await setDoc(
-          doc(db, "playerStats", player.id).withConverter(playerStatsConverter),
-          updatedStats
-        )
-        return updatedStats
-      } catch (e) {
-        console.error("Error updating player stats: ", e)
-        return playerStats
-      }
-    },
-    [player.id, playerGame.guesses.length, playerStats]
-  )
-
-  const updatePlayerGameInFirestore = useCallback(async (game: PlayerGame) => {
-    try {
-      await setDoc(
-        doc(db, "playerGames", game.id).withConverter(playerGameConverter),
-        game
-      )
-    } catch (e) {
-      console.error("Error updating player game: ", e)
+      batchUpdatePlayerData(updatedStats, playerGame, player.id).then(() => {
+        updatePlayerStats(updatedStats)
+        setShowModal(true)
+        if (correctAnswer) confettiRef.current?.start()
+      })
     }
-  }, [])
-
-  useEffect(() => {
-    const { guesses, correctAnswer } = playerGame
-
-    if (guesses.length > 4 && enableSubmit) {
-      setEnableSubmit(false)
-      updatePlayerStatsInFirestore(false)
-      setShowModal(true)
-    } else if (correctAnswer && enableSubmit) {
-      confettiRef.current?.start()
-      setEnableSubmit(false)
-      updatePlayerStatsInFirestore(true)
-      setShowModal(true)
-    }
-  }, [playerGame, enableSubmit, updatePlayerStatsInFirestore])
-
-  useEffect(() => {
-    if (player.name) {
-      updatePlayerGameInFirestore(playerGame)
-    }
-  }, [playerGame.id, player.name, updatePlayerGameInFirestore])
+  }, [playerGame, enableSubmit, playerStats, player.id, updatePlayerStats])
 
   return (
     <View style={movieStyles.container}>

@@ -18,11 +18,7 @@ import { appStyles } from "./src/styles/AppStyles"
 import { firebaseConfig } from "./src/config/firebase"
 import { initializeApp } from "firebase/app"
 import { getFirestore } from "firebase/firestore"
-import {
-  updatePlayer,
-  updatePlayerGame,
-  updatePlayerStats,
-} from "./src/utils/firebaseService"
+import { batchUpdatePlayerData } from "./src/utils/firebaseService"
 
 import GoogleLogin from "./src/components/googleLogin"
 import MoviesContainer from "./src/components/movie"
@@ -46,7 +42,7 @@ const App = () => {
   const [isNetworkConnected, setIsNetworkConnected] = useState(true)
   const [loadingError, setLoadingError] = useState<string | null>(null)
   const [player, setPlayer] = useState<Player>({
-    id: uuid.v4().toString(),
+    id: "",
     name: "",
   })
 
@@ -58,12 +54,12 @@ const App = () => {
     game: { date: new Date(), guessesMax: 5, id: uuid.v4().toString(), movie },
     guesses: [],
     id: uuid.v4().toString(),
-    playerID: player.id,
+    playerID: "",
     startDate: new Date(),
   })
 
   const [playerStats, setPlayerStats] = useState<PlayerStats>({
-    id: player.id,
+    id: "",
     currentStreak: 0,
     games: 1,
     maxStreak: 0,
@@ -92,6 +88,17 @@ const App = () => {
   }, [fontsLoaded])
 
   useEffect(() => {
+    const initializePlayerData = async () => {
+      const id = await getUserID()
+      const name = await getUserName()
+      setPlayer((prevPlayer) => ({ ...prevPlayer, id, name }))
+      setPlayerGame((prevGame) => ({ ...prevGame, playerID: id }))
+      setPlayerStats((prevStats) => ({ ...prevStats, id }))
+    }
+    initializePlayerData()
+  }, [])
+
+  useEffect(() => {
     loadResources()
   }, [loadResources])
 
@@ -103,23 +110,26 @@ const App = () => {
   useEffect(() => {
     const updatePlayerData = async () => {
       if (user && player.name !== user.displayName) {
-        const result = await updatePlayer(
-          player,
-          getUserID,
-          getUserName,
-          setUserName
+        await setUserName(user.displayName)
+        const result = await batchUpdatePlayerData(
+          playerStats,
+          { name: user.displayName },
+          user.uid
         )
-        if (result) console.log("Player data updated.")
+        if (result.success) console.log("Player data updated.")
       }
     }
     if (user) updatePlayerData()
-  }, [user, player.name])
+  }, [user, player, playerStats])
 
   useEffect(() => {
     const updateStats = async () => {
-      const updatedStats = await updatePlayerStats(playerStats, player.id)
-      if (updatedStats.updated) {
-        setPlayerStats(updatedStats.stats)
+      const result = await batchUpdatePlayerData(
+        playerStats,
+        playerGame,
+        player.id
+      )
+      if (result.success) {
         console.log("Player stats updated.")
       }
     }
@@ -128,8 +138,12 @@ const App = () => {
 
   useEffect(() => {
     const updateGame = async () => {
-      const updated = await updatePlayerGame(playerGame)
-      if (updated) console.log("Player game data updated.")
+      const result = await batchUpdatePlayerData(
+        playerStats,
+        playerGame,
+        player.id
+      )
+      if (result.success) console.log("Player game data updated.")
     }
     if (playerGame) updateGame()
   }, [playerGame])
