@@ -110,7 +110,7 @@ const App = () => {
   useEffect(() => {
     const updatePlayerData = async () => {
       if (user && player.name !== user.displayName) {
-        await setUserName(user.displayName)
+        await setUserName(user.displayName || "Guest")
         const result = await batchUpdatePlayerData(
           playerStats,
           { name: user.displayName },
@@ -124,13 +124,15 @@ const App = () => {
 
   useEffect(() => {
     const updateStats = async () => {
-      const result = await batchUpdatePlayerData(
-        playerStats,
-        playerGame,
-        player.id
-      )
-      if (result.success) {
-        console.log("Player stats updated.")
+      if (player.id) {
+        const result = await batchUpdatePlayerData(
+          playerStats,
+          playerGame,
+          player.id
+        )
+        if (result.success) {
+          console.log("Player stats updated.")
+        }
       }
     }
     if (playerStats) updateStats()
@@ -138,15 +140,17 @@ const App = () => {
 
   useEffect(() => {
     const updateGame = async () => {
-      const result = await batchUpdatePlayerData(
-        playerStats,
-        playerGame,
-        player.id
-      )
-      if (result.success) console.log("Player game data updated.")
+      if (player.id) {
+        const result = await batchUpdatePlayerData(
+          playerStats,
+          playerGame,
+          player.id
+        )
+        if (result.success) console.log("Player game data updated.")
+      }
     }
     if (playerGame) updateGame()
-  }, [playerGame])
+  }, [playerGame, player.id])
 
   const Tab = createBottomTabNavigator()
 
@@ -176,6 +180,7 @@ const App = () => {
                   playerGame={playerGame}
                   playerStats={playerStats}
                   updatePlayerGame={setPlayerGame}
+                  updatePlayerStats={setPlayerStats}
                 />
               </View>
             )}

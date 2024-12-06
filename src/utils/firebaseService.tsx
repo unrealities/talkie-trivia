@@ -1,4 +1,4 @@
-import { doc, setDoc, writeBatch } from "firebase/firestore"
+import { doc, writeBatch } from "firebase/firestore"
 import { db } from "../config/firebase"
 import { playerStatsConverter } from "./firestore/converters/playerStats"
 import { playerGameConverter } from "./firestore/converters/playerGame"
@@ -8,6 +8,10 @@ export const batchUpdatePlayerData = async (
   playerGame,
   playerId
 ) => {
+  if (!playerId) {
+    throw new Error("Player ID is required for updating player data.")
+  }
+
   const batch = writeBatch(db)
   const statsDocRef = doc(db, "playerStats", playerId).withConverter(
     playerStatsConverter
