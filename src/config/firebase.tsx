@@ -1,6 +1,11 @@
 import Constants from "expo-constants"
 import { initializeApp, getApps, getApp } from "firebase/app"
-import { getFirestore } from "firebase/firestore"
+import {
+  initializeFirestore,
+  CACHE_SIZE_UNLIMITED,
+  persistentLocalCache,
+} from "firebase/firestore"
+import { getPerformance } from "firebase/performance"
 
 interface FirebaseConfig {
   apiKey: string
@@ -22,7 +27,15 @@ const firebaseConfig: FirebaseConfig = {
   measurementId: Constants?.expoConfig?.extra?.firebaseMeasurementId,
 }
 
+// Initialize Firebase app
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig)
-const db = getFirestore(app)
 
-export { db, firebaseConfig }
+// Initialize Firestore with unlimited cache size
+const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({ cacheSizeBytes: CACHE_SIZE_UNLIMITED }), // 100 MB cache size
+})
+
+// Enable Firebase Performance Monitoring
+const perf = getPerformance(app)
+
+export { db, firebaseConfig, perf }
