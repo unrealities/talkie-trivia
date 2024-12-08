@@ -1,5 +1,5 @@
-import { StyleSheet, Dimensions } from "react-native"
-import { colors } from "./global"
+import { StyleSheet, Dimensions, Platform } from "react-native"
+import { colors, responsive } from "./global"
 
 const { width, height } = Dimensions.get("window")
 
@@ -7,18 +7,25 @@ export const modalStyles = StyleSheet.create({
   button: {
     backgroundColor: colors.primary,
     borderColor: colors.primary,
-    borderRadius: 20,
+    borderRadius: responsive.scale(10), // Reduced from 20
     borderWidth: 2,
-    padding: 12,
+    padding: responsive.scale(8), // Reduced padding
     elevation: 2,
-    minWidth: 120,
-    minHeight: 50,
+    minWidth: responsive.scale(80), // Reduced width
+    minHeight: responsive.scale(40), // Reduced height
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
   },
 
   centeredView: {
@@ -29,36 +36,42 @@ export const modalStyles = StyleSheet.create({
   },
 
   modalView: {
-    width: width * 0.9,
-    maxWidth: 300,
+    width: responsive.isTablet ? width * 0.6 : width * 0.9,
+    maxWidth: responsive.scale(400),
     alignItems: "center",
     backgroundColor: colors.secondary,
-    borderRadius: 20,
-    elevation: 5,
+    borderRadius: responsive.scale(20),
     justifyContent: "space-between",
-    margin: 8,
+    margin: responsive.scale(8),
     maxHeight: height * 0.8,
-    padding: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
+    padding: responsive.scale(16),
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
   },
 
   buttonText: {
     color: colors.white,
     fontFamily: "Arvo-Bold",
     textAlign: "center",
-    fontSize: 16,
+    fontSize: responsive.responsiveFontSize(14), // Reduced font size
     letterSpacing: 0.5,
   },
 
   errorText: {
     color: colors.primary,
     fontFamily: "Arvo-Regular",
-    fontSize: 16,
+    fontSize: responsive.responsiveFontSize(16),
     textAlign: "center",
-    marginBottom: 15,
+    marginBottom: responsive.scale(15),
   },
 
   modalContainer: {

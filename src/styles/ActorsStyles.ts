@@ -1,39 +1,39 @@
 import { StyleSheet } from "react-native"
-import { colors } from "./global"
+import { colors, responsive } from "./global"
 
 export const actorsStyles = StyleSheet.create({
   actorsContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    paddingVertical: 12,
+    paddingVertical: responsive.scale(12),
     width: "100%",
   },
   actorContainer: {
     alignItems: "center",
     flex: 1,
-    maxWidth: 80,
-    minHeight: 140,
+    maxWidth: responsive.scale(80),
+    minHeight: responsive.scale(140),
   },
   actorPressable: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 4,
-    padding: 4,
-    width: '100%',
+    padding: responsive.scale(4),
+    width: "100%",
   },
   actorImage: {
-    height: 90,
-    width: 60,
+    height: responsive.scale(90),
+    width: responsive.scale(60),
     borderRadius: 4,
     resizeMode: "cover",
   },
   actorText: {
     fontFamily: "Arvo-Regular",
-    fontSize: 10,
-    paddingTop: 4,
+    fontSize: responsive.responsiveFontSize(10),
+    paddingTop: responsive.scale(4),
     textAlign: "center",
     color: colors.primary,
-    width: 60,
-    lineHeight: 12,
+    width: responsive.scale(60),
+    lineHeight: responsive.scale(12),
   },
 })
