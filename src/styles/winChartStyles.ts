@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native"
-import { colors } from "./global"
+import { responsive } from "./global"
 
 export const winChartStyles = StyleSheet.create({
   container: {
@@ -7,11 +7,11 @@ export const winChartStyles = StyleSheet.create({
     alignSelf: "center",
     flex: 1,
     flexDirection: "column",
-    padding: 12,
+    padding: responsive.scale(12),
     width: "100%",
   },
   victoryLabels: {
     fontFamily: "Arvo-Bold",
-    fontSize: 20,
+    fontSize: responsive.responsiveFontSize(20),
   },
 })

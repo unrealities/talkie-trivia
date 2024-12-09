@@ -1,17 +1,17 @@
 import { StyleSheet } from "react-native"
-import { colors } from "./global"
+import { colors, responsive } from "./global"
 
 export const resetStyles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    marginTop: 16,
-    padding: 8,
+    marginTop: responsive.scale(16),
+    padding: responsive.scale(8),
   },
   text: {
     color: colors.secondary,
     flex: 1,
     fontFamily: "Arvo-Italic",
-    fontSize: 20,
+    fontSize: responsive.responsiveFontSize(20),
   },
 })

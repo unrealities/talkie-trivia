@@ -1,14 +1,14 @@
 import { StyleSheet } from "react-native"
-import { colors } from "../styles/global"
+import { colors, responsive } from "./global"
 
 export const googleLoginStyles = StyleSheet.create({
   button: {
     backgroundColor: colors.primary,
-    borderRadius: 10,
+    borderRadius: responsive.scale(10),
     justifyContent: "center",
     alignItems: "center",
-    height: 40,
-    width: 280,
+    height: responsive.scale(40),
+    width: responsive.scale(280),
     alignSelf: "center",
   },
   buttonText: {
@@ -19,13 +19,13 @@ export const googleLoginStyles = StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
-    width: 300,
+    width: responsive.scale(300),
     alignSelf: "center",
   },
   errorText: {
     color: "red",
     fontFamily: "Arvo-Regular",
-    marginTop: 8,
+    marginTop: responsive.scale(8),
     textAlign: "center",
-  }
+  },
 })

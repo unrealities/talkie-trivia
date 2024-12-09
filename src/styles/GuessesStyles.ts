@@ -1,14 +1,14 @@
 import { StyleSheet, Dimensions } from "react-native"
-import { colors } from "./global"
+import { colors, responsive } from "./global"
 
-const { width } = Dimensions.get('window')
+const { width } = Dimensions.get("window")
 
 export const guessesStyles = StyleSheet.create({
   container: {
     flex: 1,
-    minHeight: 90,
-    paddingBottom: 10,
-    paddingTop: 10,
+    minHeight: responsive.scale(90),
+    paddingBottom: responsive.scale(10),
+    paddingTop: responsive.scale(10),
   },
   guessContainer: {
     flexDirection: "row",
@@ -21,16 +21,16 @@ export const guessesStyles = StyleSheet.create({
     color: colors.primary,
     flex: 1,
     fontFamily: "Arvo-Bold",
-    fontSize: Math.min(14, width * 0.1), 
-    paddingRight: 20,
+    fontSize: responsive.responsiveFontSize(14),
+    paddingRight: responsive.scale(20),
     textAlign: "right",
   },
   guess: {
     color: colors.secondary,
     flex: 3,
     fontFamily: "Arvo-Regular",
-    fontSize: Math.min(14, width * 0.1),
-    minHeight: 18,
+    fontSize: responsive.responsiveFontSize(14),
+    minHeight: responsive.scale(18),
     textAlign: "left",
   },
 })

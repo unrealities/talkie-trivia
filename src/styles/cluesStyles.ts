@@ -1,38 +1,38 @@
 import { StyleSheet } from "react-native"
-import { colors } from "../styles/global"
+import { colors, responsive } from "./global"
 
 export const cluesStyles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
     justifyContent: "flex-start",
-    marginVertical: 10,
-    minWidth: 300,
-    minHeight: 250,
+    marginVertical: responsive.scale(10),
+    minWidth: responsive.scale(300),
+    minHeight: responsive.scale(250),
   },
   countContainer: {
     alignSelf: "flex-end",
-    marginTop: 8,
-    maxHeight: 16,
+    marginTop: responsive.scale(8),
+    maxHeight: responsive.scale(16),
     justifyContent: "flex-end",
   },
   textContainer: {
     flexWrap: "wrap",
-    maxWidth: 300,
-    minWidth: 280,
+    maxWidth: responsive.scale(300),
+    minWidth: responsive.scale(280),
     textAlign: "left",
-    paddingHorizontal: 10,
+    paddingHorizontal: responsive.scale(10),
   },
   text: {
     color: colors.secondary,
     fontFamily: "Arvo-Regular",
-    fontSize: 16,
-    paddingBottom: 4,
+    fontSize: responsive.responsiveFontSize(14),
+    paddingBottom: responsive.scale(4),
   },
   wordCountText: {
     color: colors.primary,
     fontFamily: "Arvo-Regular",
-    fontSize: 10,
+    fontSize: responsive.responsiveFontSize(8),
     textAlign: "right",
   },
 })

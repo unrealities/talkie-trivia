@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native"
-import { colors } from "./global"
+import { colors, responsive } from "./global"
 
 export const titleHeaderStyles = StyleSheet.create({
   container: {
@@ -10,23 +10,23 @@ export const titleHeaderStyles = StyleSheet.create({
     borderStyle: "solid",
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 6,
-    marginTop: 30,
-    minHeight: 60,
-    minWidth: 300,
+    paddingVertical: responsive.scale(6),
+    marginTop: responsive.scale(30),
+    minHeight: responsive.scale(60),
+    minWidth: responsive.scale(300),
   },
   header: {
     color: colors.primary,
     fontFamily: "Arvo-Bold",
-    fontSize: 24,
-    paddingTop: 6,
+    fontSize: responsive.responsiveFontSize(24),
+    paddingTop: responsive.scale(6),
     textAlign: "center",
   },
   subHeader: {
     color: colors.secondary,
     fontFamily: "Arvo-Italic",
-    fontSize: 14,
-    paddingBottom: 6,
+    fontSize: responsive.responsiveFontSize(12),
+    paddingBottom: responsive.scale(6),
     textAlign: "center",
   },
 })

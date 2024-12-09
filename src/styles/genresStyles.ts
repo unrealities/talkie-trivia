@@ -1,35 +1,35 @@
 import { StyleSheet } from "react-native"
-import { colors } from "../styles/global"
+import { colors, responsive } from "./global"
 
 export const genresStyles = StyleSheet.create({
   genreContainer: {
     alignItems: "center",
     alignSelf: "center",
     backgroundColor: colors.quaternary,
-    borderRadius: 8,
-    margin: 6,
-    maxHeight: 44,
-    minHeight: 26,
-    minWidth: 80,
-    maxWidth: 220,
-    padding: 6,
+    borderRadius: responsive.scale(8),
+    margin: responsive.scale(6),
+    maxHeight: responsive.scale(44),
+    minHeight: responsive.scale(26),
+    minWidth: responsive.scale(80),
+    maxWidth: responsive.scale(220),
+    padding: responsive.scale(6),
   },
   genresContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    marginVertical: 10,
+    marginVertical: responsive.scale(10),
   },
   genreText: {
     color: colors.secondary,
     fontFamily: "Arvo-Bold",
-    fontSize: 12,
+    fontSize: responsive.responsiveFontSize(12),
     textAlign: "center",
   },
   noGenresText: {
     color: colors.secondary,
     fontFamily: "Arvo-Italic",
-    fontSize: 12,
+    fontSize: responsive.responsiveFontSize(12),
     textAlign: "center",
-    marginVertical: 10,
+    marginVertical: responsive.scale(10),
   },
 })

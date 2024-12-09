@@ -17,14 +17,14 @@ export const actorsStyles = StyleSheet.create({
   actorPressable: {
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 4,
+    borderRadius: responsive.scale(4),
     padding: responsive.scale(4),
     width: "100%",
   },
   actorImage: {
     height: responsive.scale(90),
     width: responsive.scale(60),
-    borderRadius: 4,
+    borderRadius: responsive.scale(4),
     resizeMode: "cover",
   },
   actorText: {

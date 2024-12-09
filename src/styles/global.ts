@@ -16,7 +16,7 @@ const scale = (size: number) => {
 
 // Responsive font size
 const responsiveFontSize = (size: number) => {
-  const scaleFactor = SCREEN_WIDTH / baseWidth
+  const scaleFactor = Math.min(SCREEN_WIDTH / baseWidth, 1.2) // Cap scaling at 20% increase
   return PixelRatio.roundToNearestPixel(size * scaleFactor)
 }
 
