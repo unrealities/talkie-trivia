@@ -8,7 +8,6 @@ import NetworkContainer from "./network"
 import MovieModal from "./modal"
 import PickerContainer from "./picker"
 import TitleHeader from "./titleHeader"
-import ResetContainer from "./reset"
 import { colors } from "../styles/global"
 import { movieStyles } from "../styles/movieStyles"
 import { batchUpdatePlayerData } from "../utils/firebaseService"
@@ -74,10 +73,6 @@ const MoviesContainer = ({
         guesses={playerGame.guesses}
         movie={playerGame.game.movie}
         movies={movies}
-      />
-      <ResetContainer
-        playerGame={playerGame}
-        updatePlayerGame={updatePlayerGame}
       />
       <MovieModal
         movie={playerGame.game.movie}

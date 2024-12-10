@@ -1,5 +1,5 @@
-import { StyleSheet } from "react-native"
-import { responsive } from "./global"
+import { StyleSheet } from "react-native";
+import { responsive } from "./global";
 
 export const winChartStyles = StyleSheet.create({
   container: {

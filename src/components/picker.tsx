@@ -4,7 +4,6 @@ import React, {
   useEffect,
   useState,
   useCallback,
-  useRef,
   useMemo,
 } from "react"
 import {
@@ -27,16 +26,20 @@ interface PickerContainerProps {
   updatePlayerGame: Dispatch<SetStateAction<PlayerGame>>
 }
 
-const useDebounce = <T extends (...args: any[]) => any>(
-  func: T,
-  delay: number
-): T => {
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
+function useDebounce<T>(value: T, delay: number = 300): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value)
 
-  return ((...args: Parameters<T>) => {
-    if (timer.current) clearTimeout(timer.current)
-    timer.current = setTimeout(() => func(...args), delay)
-  }) as T
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value)
+    }, delay)
+
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [value, delay])
+
+  return debouncedValue
 }
 
 const PickerContainer: React.FC<PickerContainerProps> = ({
@@ -46,91 +49,64 @@ const PickerContainer: React.FC<PickerContainerProps> = ({
 }) => {
   const DEFAULT_BUTTON_TEXT = "Select a Movie"
 
-  const [searchState, setSearchState] = useState({
-    foundMovies: [] as BasicMovie[],
-    searchText: "",
-    loading: true,
-    error: null as string | null,
-  })
-
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [foundMovies, setFoundMovies] = useState<BasicMovie[]>([])
   const [selectedMovie, setSelectedMovie] = useState<{
-    id: number;
-    title: string;
+    id: number
+    title: string
   }>({ id: 0, title: DEFAULT_BUTTON_TEXT })
+  const [searchText, setSearchText] = useState<string>("")
 
-  const removeDuplicates = useCallback((movieList: BasicMovie[]): BasicMovie[] => {
-    return movieList.filter(
-      (movie, index, self) =>
-        index ===
-        self.findIndex(
-          (m) => m.title.toLowerCase() === movie.title.toLowerCase()
-        )
-    )
-  }, [])
+  const debouncedSearchText = useDebounce(searchText, 300)
 
-  const isInteractionsDisabled = useMemo(() =>
-    playerGame.correctAnswer ||
-    playerGame.guesses.length >= playerGame.game.guessesMax,
+  const isInteractionsDisabled = useMemo(
+    () =>
+      playerGame.correctAnswer ||
+      playerGame.guesses.length >= playerGame.game.guessesMax,
     [playerGame.correctAnswer, playerGame.guesses, playerGame.game.guessesMax]
   )
 
-  const filterMovies = useCallback((searchTerm: string) => {
-    const trimmedTerm = searchTerm.trim().toLowerCase()
+  // Optimized filterMovies function using useMemo for caching
+  const filterMovies = useMemo(() => {
+    return (searchTerm: string) => {
+      const trimmedTerm = searchTerm.trim().toLowerCase()
 
-    if (trimmedTerm === "") {
-      return removeDuplicates(movies)
+      if (trimmedTerm === "") {
+        return movies // Return all movies when the search term is empty
+      }
+
+      // Return filtered movies
+      return movies.filter((movie) =>
+        movie.title.toLowerCase().includes(trimmedTerm)
+      )
     }
+  }, [movies]) // `movies` is a dependency because the function will be recreated when movies change
 
-    const regex = new RegExp(
-      trimmedTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
-      "i"
-    )
-
-    const filteredMovies = movies.filter((movie) =>
-      regex.test(movie.title)
-    )
-
-    return removeDuplicates(filteredMovies)
-  }, [movies, removeDuplicates])
-
-  const debouncedFilterMovies = useCallback(
-    useDebounce((text: string) => {
-      setSearchState(prev => ({
-        ...prev,
-        loading: true
-      }))
-
-      const filteredMovies = filterMovies(text)
-
-      setSearchState(prev => ({
-        ...prev,
-        foundMovies: filteredMovies,
-        error: filteredMovies.length === 0
-          ? `No movies found for "${text}"`
-          : null,
-        loading: false,
-      }))
-    }, 300),
-    [filterMovies]
-  )
-
-  // Initial movies loading effect
+  // Load all movies initially, only runs once on mount or when 'movies' prop changes
   useEffect(() => {
-    const uniqueMovies = removeDuplicates(movies)
-    setSearchState(prev => ({
-      ...prev,
-      foundMovies: uniqueMovies,
-      loading: false,
-      error: uniqueMovies.length === 0
-        ? "Failed to load movies. Please try again."
-        : null,
-    }))
-  }, [movies, removeDuplicates])
+    setIsLoading(true)
+    setFoundMovies(movies)
+    setError(null)
+    setIsLoading(false)
+  }, [movies])
+
+  // Trigger filtering with debounced search text
+  useEffect(() => {
+    if (debouncedSearchText) {
+      setIsLoading(true) // Set loading only when we have a search term
+      const filteredMovies = filterMovies(debouncedSearchText)
+      setFoundMovies(filteredMovies)
+      setIsLoading(false)
+    } else {
+      setFoundMovies(movies) // Reset to all movies
+      setError(null)
+    }
+  }, [debouncedSearchText, filterMovies, movies])
 
   const handleSearchChange = (text: string) => {
     if (!isInteractionsDisabled) {
-      setSearchState(prev => ({ ...prev, searchText: text }))
-      debouncedFilterMovies(text)
+      setSearchText(text)
     }
   }
 
@@ -146,12 +122,7 @@ const PickerContainer: React.FC<PickerContainerProps> = ({
         correctAnswer: playerGame.game.movie.id === selectedMovie.id,
       })
     }
-  }, [
-    isInteractionsDisabled,
-    selectedMovie.id,
-    playerGame,
-    updatePlayerGame,
-  ])
+  }, [isInteractionsDisabled, selectedMovie.id, playerGame, updatePlayerGame])
 
   const handleMovieSelection = (movie: BasicMovie) => {
     if (!isInteractionsDisabled) {
@@ -170,24 +141,21 @@ const PickerContainer: React.FC<PickerContainerProps> = ({
         placeholder="Search for a movie title"
         placeholderTextColor={colors.tertiary}
         style={pickerStyles.input}
-        value={searchState.searchText}
+        value={searchText}
         editable={!isInteractionsDisabled}
       />
 
-      {searchState.loading ? (
+      {isLoading ? (
         <ActivityIndicator size="large" color={colors.primary} />
-      ) : searchState.error ? (
-        <Text
-          accessibilityRole="text"
-          style={pickerStyles.errorText}
-        >
-          {searchState.error}
+      ) : error ? (
+        <Text accessibilityRole="text" style={pickerStyles.errorText}>
+          {error}
         </Text>
       ) : (
         <View style={pickerStyles.text}>
-          {searchState.foundMovies.length > 0 ? (
+          {foundMovies.length > 0 && (
             <ScrollView style={pickerStyles.resultsShow}>
-              {searchState.foundMovies.map((movie) => (
+              {foundMovies.map((movie) => (
                 <Pressable
                   accessible
                   accessibilityRole="button"
@@ -211,12 +179,6 @@ const PickerContainer: React.FC<PickerContainerProps> = ({
                 </Pressable>
               ))}
             </ScrollView>
-          ) : (
-            <Text style={pickerStyles.noResultsText}>
-              {searchState.searchText
-                ? `No movies found for "${searchState.searchText}"`
-                : "No movies available"}
-            </Text>
           )}
         </View>
       )}
@@ -233,7 +195,7 @@ const PickerContainer: React.FC<PickerContainerProps> = ({
         onPress={onPressCheck}
         style={[
           pickerStyles.button,
-          isInteractionsDisabled && { opacity: 0.5 }
+          isInteractionsDisabled && { opacity: 0.5 },
         ]}
       >
         <Text

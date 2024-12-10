@@ -11,7 +11,7 @@ export const actorsStyles = StyleSheet.create({
   actorContainer: {
     alignItems: "center",
     flex: 1,
-    maxWidth: responsive.scale(80),
+    marginHorizontal: responsive.scale(5),
     minHeight: responsive.scale(140),
   },
   actorPressable: {
@@ -23,7 +23,8 @@ export const actorsStyles = StyleSheet.create({
   },
   actorImage: {
     height: responsive.scale(90),
-    width: responsive.scale(60),
+    width: "100%",
+    aspectRatio: 1 / 1.5,
     borderRadius: responsive.scale(4),
     resizeMode: "cover",
   },
@@ -33,7 +34,7 @@ export const actorsStyles = StyleSheet.create({
     paddingTop: responsive.scale(4),
     textAlign: "center",
     color: colors.primary,
-    width: responsive.scale(60),
-    lineHeight: responsive.scale(12),
+    width: "100%",
+    lineHeight: responsive.responsiveFontSize(12),
   },
 })

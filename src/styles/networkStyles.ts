@@ -1,7 +1,5 @@
-import { StyleSheet, Dimensions } from "react-native"
+import { StyleSheet } from "react-native"
 import { colors, responsive } from "./global"
-
-const { width } = Dimensions.get("window")
 
 export const networkStyles = StyleSheet.create({
   containerConnected: {
@@ -20,15 +18,17 @@ export const networkStyles = StyleSheet.create({
     marginTop: responsive.scale(20),
     maxHeight: responsive.scale(75),
     minHeight: responsive.scale(20),
-    minWidth: width * 0.8,
-    width: width * 0.9,
     alignSelf: "center",
+    width: "90%",
+    maxWidth: responsive.scale(450),
+    marginBottom: responsive.scale(10),
+    paddingVertical: responsive.scale(10),
   },
   connected: {
     color: colors.primary,
     flex: 1,
     fontFamily: "Arvo-Bold",
-    fontSize: responsive.responsiveFontSize(24),
+    fontSize: responsive.responsiveFontSize(20),
     marginTop: responsive.scale(6),
     textAlign: "center",
   },
@@ -36,7 +36,7 @@ export const networkStyles = StyleSheet.create({
     color: colors.quaternary,
     flex: 1,
     fontFamily: "Arvo-Bold",
-    fontSize: responsive.responsiveFontSize(24),
+    fontSize: responsive.responsiveFontSize(20),
     marginTop: responsive.scale(6),
     textAlign: "center",
   },

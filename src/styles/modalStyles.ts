@@ -7,12 +7,12 @@ export const modalStyles = StyleSheet.create({
   button: {
     backgroundColor: colors.primary,
     borderColor: colors.primary,
-    borderRadius: responsive.scale(10), // Reduced from 20
+    borderRadius: responsive.scale(10),
     borderWidth: 2,
-    padding: responsive.scale(8), // Reduced padding
+    padding: responsive.scale(8),
     elevation: 2,
-    minWidth: responsive.scale(80), // Reduced width
-    minHeight: responsive.scale(40), // Reduced height
+    minWidth: responsive.isSmallScreen() ? "40%" : "30%",
+    minHeight: responsive.scale(40),
     justifyContent: "center",
     alignItems: "center",
     ...Platform.select({
@@ -36,14 +36,22 @@ export const modalStyles = StyleSheet.create({
   },
 
   modalView: {
-    width: responsive.isTablet ? width * 0.6 : width * 0.9,
-    maxWidth: responsive.scale(400),
+    width: responsive.isTablet ? "80%" : "95%",
     alignItems: "center",
     backgroundColor: colors.secondary,
     borderRadius: responsive.scale(20),
     justifyContent: "space-between",
     margin: responsive.scale(8),
-    maxHeight: height * 0.8,
+    minWidth: responsive.isSmallScreen()
+      ? width * 0.85
+      : responsive.isTablet
+      ? width * 0.7
+      : width * 0.85,
+    maxHeight: responsive.isSmallScreen()
+      ? height * 0.6
+      : responsive.isTablet
+      ? height * 0.75
+      : height * 0.7,
     padding: responsive.scale(16),
     ...Platform.select({
       ios: {
@@ -62,7 +70,7 @@ export const modalStyles = StyleSheet.create({
     color: colors.white,
     fontFamily: "Arvo-Bold",
     textAlign: "center",
-    fontSize: responsive.responsiveFontSize(14), // Reduced font size
+    fontSize: responsive.responsiveFontSize(14),
     letterSpacing: 0.5,
   },
 

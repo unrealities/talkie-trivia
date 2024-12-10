@@ -6,22 +6,42 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 const baseWidth = 375
 const baseHeight = 812
 
-// Responsive scaling function
+// Screen size categories
+const isSmallScreen = () => SCREEN_WIDTH < 375
+const isMediumScreen = () => SCREEN_WIDTH >= 375 && SCREEN_WIDTH < 768
+const isLargeScreen = () => SCREEN_WIDTH >= 768
+
+// Responsive scaling function (refined)
 const scale = (size: number) => {
   const scaleWidth = SCREEN_WIDTH / baseWidth
   const scaleHeight = SCREEN_HEIGHT / baseHeight
   const scale = Math.min(scaleWidth, scaleHeight)
+
+  // Cap scaling based on screen size
+  if (isLargeScreen()) {
+    return PixelRatio.roundToNearestPixel(size * Math.min(scale, 1.3)) // Cap at 30% increase for large screens
+  }
   return PixelRatio.roundToNearestPixel(size * scale)
 }
 
-// Responsive font size
 const responsiveFontSize = (size: number) => {
-  const scaleFactor = Math.min(SCREEN_WIDTH / baseWidth, 1.2) // Cap scaling at 20% increase
-  return PixelRatio.roundToNearestPixel(size * scaleFactor)
+  let scaleFactor = 1
+
+  if (isSmallScreen()) {
+    scaleFactor = SCREEN_WIDTH / baseWidth
+  } else if (isMediumScreen()) {
+    scaleFactor = 1.1
+  } else {
+    scaleFactor = 1.2
+  }
+
+  return Math.min(
+    PixelRatio.roundToNearestPixel(size * scaleFactor),
+    size * 1.3 // Maximum font size increase
+  )
 }
 
 export const colors = {
-  // Same colors as before
   background: "#003049",
   primary: "#f77f00",
   secondary: "#eae2b7",
@@ -39,4 +59,7 @@ export const responsive = {
   screenWidth: SCREEN_WIDTH,
   screenHeight: SCREEN_HEIGHT,
   platform: Platform.OS,
+  isSmallScreen,
+  isMediumScreen,
+  isLargeScreen,
 }

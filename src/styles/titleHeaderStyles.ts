@@ -1,5 +1,5 @@
-import { StyleSheet } from "react-native"
-import { colors, responsive } from "./global"
+import { StyleSheet } from "react-native";
+import { colors, responsive } from "./global";
 
 export const titleHeaderStyles = StyleSheet.create({
   container: {
@@ -13,7 +13,7 @@ export const titleHeaderStyles = StyleSheet.create({
     paddingVertical: responsive.scale(6),
     marginTop: responsive.scale(30),
     minHeight: responsive.scale(60),
-    minWidth: responsive.scale(300),
+    width: "100%",
   },
   header: {
     color: colors.primary,

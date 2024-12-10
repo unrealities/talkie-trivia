@@ -4,19 +4,19 @@ import { colors, responsive } from "./global"
 export const genresStyles = StyleSheet.create({
   genreContainer: {
     alignItems: "center",
-    alignSelf: "center",
     backgroundColor: colors.quaternary,
     borderRadius: responsive.scale(8),
     margin: responsive.scale(6),
-    maxHeight: responsive.scale(44),
-    minHeight: responsive.scale(26),
-    minWidth: responsive.scale(80),
-    maxWidth: responsive.scale(220),
     padding: responsive.scale(6),
+    flexBasis: "28%",
+    flexGrow: 1,
+    flexShrink: 0,
+    minHeight: responsive.scale(35),
   },
   genresContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
+    justifyContent: "center",
     marginVertical: responsive.scale(10),
   },
   genreText: {

@@ -20,6 +20,7 @@ export const playerStatsStyles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: responsive.scale(4),
+    width: "100%",
   },
   statsContainer: {
     alignItems: "center",
@@ -32,5 +33,6 @@ export const playerStatsStyles = StyleSheet.create({
     fontSize: responsive.responsiveFontSize(12),
     paddingLeft: responsive.scale(12),
     textAlign: "left",
+    flexShrink: 1,
   },
 })

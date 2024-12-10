@@ -31,6 +31,6 @@ export const appStyles = StyleSheet.create({
     fontSize: responsive.responsiveFontSize(20),
     color: "red",
     textAlign: "center",
-    width: "80%",
+    width: "80%"
   },
 })

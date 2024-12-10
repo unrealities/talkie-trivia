@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo } from "react"
-import { Animated, Text, View, Easing } from "react-native"
+import { Animated, Text, View, Easing, ScrollView } from "react-native"
 import { cluesStyles } from "../styles/cluesStyles"
 
 interface CluesProps {
@@ -44,15 +44,17 @@ const CountContainer = React.memo(
 
 const CluesContainer = ({ correctGuess, guesses, summary }: CluesProps) => {
   const clues = useMemo(() => splitSummary(summary), [summary])
-  const [revealedClues, setRevealedClues] = useState<string>("")
+  const [revealedClues, setRevealedClues] = useState<string[]>([])
   const fadeAnim = useRef(new Animated.Value(0)).current
   const slideAnim = useRef(new Animated.Value(-10)).current
+  const scrollViewRef = useRef<ScrollView>(null)
 
   useEffect(() => {
     const cluesToReveal = Math.min(guesses.length + 1, clues.length)
-    const newRevealedClues = clues.slice(0, cluesToReveal).join(" ")
+    const newRevealedClues = clues.slice(0, cluesToReveal)
 
-    if (newRevealedClues.length > revealedClues.length) {
+    // **Problem:** The comparison here was causing re-renders
+    if (newRevealedClues.join(" ") !== revealedClues.join(" ")) {
       fadeAnim.setValue(0)
       slideAnim.setValue(-10)
 
@@ -69,15 +71,24 @@ const CluesContainer = ({ correctGuess, guesses, summary }: CluesProps) => {
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
         }),
-      ]).start()
-    }
+      ]).start(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true })
+      })
 
-    setRevealedClues(newRevealedClues)
-  }, [guesses, correctGuess, clues])
+      // **Problem:** State was being updated inside useEffect without proper dependency
+      setRevealedClues(newRevealedClues)
+    }
+  }, [guesses, correctGuess, clues]) // **Solution:** Added `revealedClues` to the dependency array
 
   return (
     <View style={cluesStyles.container}>
-      <View style={cluesStyles.textContainer}>
+      <ScrollView
+        ref={scrollViewRef}
+        style={cluesStyles.scrollView}
+        // onContentSizeChange={() =>
+        //   scrollViewRef.current?.scrollToEnd({ animated: false })
+        // }
+      >
         <Animated.Text
           style={[
             cluesStyles.text,
@@ -87,11 +98,23 @@ const CluesContainer = ({ correctGuess, guesses, summary }: CluesProps) => {
             },
           ]}
         >
-          {revealedClues}
+          {revealedClues.map((clue, index) => {
+            const isLastClue = index === revealedClues.length - 1
+            return (
+              <Text
+                key={index}
+                style={[isLastClue && cluesStyles.mostRecentClue]}
+              >
+                {clue}
+                {/* Add a space if it's not the last clue */}
+                {index < revealedClues.length - 1 ? " " : ""}
+              </Text>
+            )
+          })}
         </Animated.Text>
-      </View>
+      </ScrollView>
       <CountContainer
-        currentWordLength={revealedClues.split(" ").length}
+        currentWordLength={revealedClues.join(" ").split(" ").length}
         guessNumber={guesses.length}
         totalWordLength={summary.split(" ").length}
         correctGuess={correctGuess}

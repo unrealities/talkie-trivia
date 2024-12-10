@@ -8,7 +8,7 @@ export const pickerStyles = StyleSheet.create({
     maxHeight: responsive.scale(40),
     minHeight: responsive.scale(40),
     padding: responsive.scale(8),
-    width: responsive.scale(300),
+    width: "100%",
   },
   buttonText: {
     color: colors.secondary,
@@ -27,10 +27,10 @@ export const pickerStyles = StyleSheet.create({
     borderWidth: 2,
     color: colors.secondary,
     fontFamily: "Arvo-Regular",
-    maxWidth: responsive.scale(300),
     padding: responsive.scale(5),
     textAlign: "center",
-    width: responsive.scale(300),
+    width: "100%",
+    marginBottom: responsive.scale(10),
   },
   pressableText: {
     flex: 1,
@@ -51,7 +51,7 @@ export const pickerStyles = StyleSheet.create({
     fontFamily: "Arvo-Regular",
     fontSize: responsive.responsiveFontSize(12),
     padding: responsive.scale(10),
-    lineHeight: responsive.scale(16),
+    lineHeight: responsive.responsiveFontSize(16),
     marginBottom: responsive.scale(10),
   },
   noResultsText: {
