@@ -2,23 +2,37 @@ import { StyleSheet } from "react-native"
 import { colors, responsive } from "./global"
 
 export const pickerStyles = StyleSheet.create({
+  activityIndicator: {
+    position: "absolute",
+    right: responsive.scale(10),
+    top: responsive.scale(6),
+  },
   button: {
     backgroundColor: colors.primary,
     borderRadius: responsive.scale(10),
-    maxHeight: responsive.scale(40),
-    minHeight: responsive.scale(40),
     padding: responsive.scale(8),
     width: "100%",
+    height: "auto",
+  },
+  buttonSmall: {
+    minHeight: responsive.scale(55),
   },
   buttonText: {
     color: colors.secondary,
     fontFamily: "Arvo-Regular",
     fontSize: responsive.responsiveFontSize(14),
     textAlign: "center",
+    paddingVertical: responsive.scale(2),
+  },
+  buttonTextSmall: {
+    fontSize: responsive.responsiveFontSize(12),
   },
   container: {
     flex: 1,
     minHeight: responsive.scale(180),
+    maxWidth: responsive.scale(300),
+    width: "100%",
+    alignSelf: "center",
   },
   input: {
     alignSelf: "flex-start",
@@ -31,6 +45,14 @@ export const pickerStyles = StyleSheet.create({
     textAlign: "center",
     width: "100%",
     marginBottom: responsive.scale(10),
+    maxWidth: responsive.scale(300),
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: responsive.scale(10),
+    position: "relative",
   },
   pressableText: {
     flex: 1,
@@ -38,14 +60,20 @@ export const pickerStyles = StyleSheet.create({
     padding: responsive.scale(5),
     borderRadius: responsive.scale(5),
   },
+  searchIndicator: {
+    marginLeft: responsive.scale(-25),
+  },
   selectedMovie: {
     backgroundColor: colors.quinary,
   },
+  resultsContainer: {
+    maxHeight: responsive.scale(82),
+    minHeight: responsive.scale(82),
+    maxWidth: responsive.scale(300),
+    width: "100%",
+  },
   resultsShow: {
     flex: 1,
-    maxHeight: responsive.scale(82),
-    maxWidth: responsive.scale(280),
-    minHeight: responsive.scale(82),
   },
   text: {
     fontFamily: "Arvo-Regular",

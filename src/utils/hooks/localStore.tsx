@@ -1,36 +1,35 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import uuid from "react-native-uuid"
 
-const userID = "userID"
-const userName = "userName"
+const userIDKey = "userID"
+const userNameKey = "userName"
 
-async function setUserID(id: string) {
-  await AsyncStorage.setItem(userID, id)
+export async function setUserID(id: string) {
+  await AsyncStorage.setItem(userIDKey, id)
+}
+
+export async function getUserID(): Promise<string> {
+  let id = await AsyncStorage.getItem(userIDKey)
+  if (!id) {
+    id = uuid.v4().toString()
+    await setUserID(id)
+  }
+  return id
 }
 
 export async function setUserName(name: string) {
-  alert(name)
-  await AsyncStorage.setItem(userName, name)
-}
-
-export async function getUserID() {
-  let id = await AsyncStorage.getItem(userID)
-  if (id) {
-    return id
-  } else {
-    let newUserID = uuid.v4().toString()
-    setUserID(newUserID)
-    return newUserID
+  // Only set the name in local storage if it's different from the current name
+  const currentName = await getUserName()
+  if (currentName !== name) {
+    await AsyncStorage.setItem(userNameKey, name)
   }
 }
 
-export async function getUserName() {
-  let name = await AsyncStorage.getItem(userName)
-  if (name) {
-    return name
-  } else {
-    let newUserName = "Guest"
-    setUserID(newUserName)
-    return newUserName
+export async function getUserName(): Promise<string> {
+  let name = await AsyncStorage.getItem(userNameKey)
+  if (!name) {
+    name = "Guest" // Default name if not found
+    await setUserName(name)
   }
+  return name
 }

@@ -11,8 +11,22 @@ import TitleHeader from "./titleHeader"
 import { colors } from "../styles/global"
 import { movieStyles } from "../styles/movieStyles"
 import { batchUpdatePlayerData } from "../utils/firebaseService"
+import { BasicMovie } from "../models/movie"
+import { PlayerGame } from "../models/game"
+import Player from "../models/player"
+import PlayerStats from "../models/playerStats"
 
-const MoviesContainer = ({
+interface MoviesContainerProps {
+  isNetworkConnected: boolean
+  movies: BasicMovie[]
+  player: Player
+  playerGame: PlayerGame
+  playerStats: PlayerStats
+  updatePlayerGame: React.Dispatch<React.SetStateAction<PlayerGame>>
+  updatePlayerStats: React.Dispatch<React.SetStateAction<PlayerStats>>
+}
+
+const MoviesContainer: React.FC<MoviesContainerProps> = ({
   isNetworkConnected,
   movies,
   player,
@@ -54,6 +68,15 @@ const MoviesContainer = ({
     }
   }, [playerGame, enableSubmit, playerStats, player.id, updatePlayerStats])
 
+  const handleUpdatePlayerGame = (updatedPlayerGame: PlayerGame) => {
+    if (
+      !updatedPlayerGame.correctAnswer &&
+      updatedPlayerGame.guesses.length <= 5
+    ) {
+      updatePlayerGame(updatedPlayerGame)
+    }
+  }
+
   return (
     <View style={movieStyles.container}>
       <NetworkContainer isConnected={isNetworkConnected} />
@@ -62,12 +85,13 @@ const MoviesContainer = ({
         correctGuess={playerGame.correctAnswer}
         guesses={playerGame.guesses}
         summary={playerGame.game.movie.overview}
+        playerGame={playerGame}
       />
       <PickerContainer
         enableSubmit={enableSubmit}
         playerGame={playerGame}
         movies={movies}
-        updatePlayerGame={updatePlayerGame}
+        updatePlayerGame={handleUpdatePlayerGame}
       />
       <GuessesContainer
         guesses={playerGame.guesses}

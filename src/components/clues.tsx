@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState, useMemo } from "react"
 import { Animated, Text, View, Easing, ScrollView } from "react-native"
 import { cluesStyles } from "../styles/cluesStyles"
+import { PlayerGame } from "../models/game"
 
 interface CluesProps {
   correctGuess: boolean
   guesses: number[]
   summary: string
+  playerGame: PlayerGame
 }
 
 interface CountContainerProps {
@@ -42,8 +44,18 @@ const CountContainer = React.memo(
   )
 )
 
-const CluesContainer = ({ correctGuess, guesses, summary }: CluesProps) => {
-  const clues = useMemo(() => splitSummary(summary), [summary])
+const CluesContainer = ({
+  correctGuess,
+  guesses,
+  summary,
+  playerGame,
+}: CluesProps) => {
+  // Memoize the splitSummary function
+  const clues = useMemo(
+    () => splitSummary(playerGame?.game?.movie?.overview || ""),
+    [playerGame?.game?.movie?.overview]
+  )
+
   const [revealedClues, setRevealedClues] = useState<string[]>([])
   const fadeAnim = useRef(new Animated.Value(0)).current
   const slideAnim = useRef(new Animated.Value(-10)).current
@@ -53,8 +65,8 @@ const CluesContainer = ({ correctGuess, guesses, summary }: CluesProps) => {
     const cluesToReveal = Math.min(guesses.length + 1, clues.length)
     const newRevealedClues = clues.slice(0, cluesToReveal)
 
-    // **Problem:** The comparison here was causing re-renders
     if (newRevealedClues.join(" ") !== revealedClues.join(" ")) {
+      // Reset animation values before starting
       fadeAnim.setValue(0)
       slideAnim.setValue(-10)
 
@@ -63,62 +75,63 @@ const CluesContainer = ({ correctGuess, guesses, summary }: CluesProps) => {
           toValue: 1,
           duration: 500,
           easing: Easing.inOut(Easing.ease),
-          useNativeDriver: true,
+          useNativeDriver: true, // Add this line
         }),
         Animated.timing(slideAnim, {
           toValue: 0,
           duration: 500,
           easing: Easing.inOut(Easing.ease),
-          useNativeDriver: true,
+          useNativeDriver: true, // Add this line
         }),
       ]).start(() => {
         scrollViewRef.current?.scrollToEnd({ animated: true })
       })
 
-      // **Problem:** State was being updated inside useEffect without proper dependency
       setRevealedClues(newRevealedClues)
     }
-  }, [guesses, correctGuess, clues]) // **Solution:** Added `revealedClues` to the dependency array
-
+  }, [guesses, clues, revealedClues, fadeAnim, slideAnim]) // Remove playerGame from dependencies
   return (
     <View style={cluesStyles.container}>
-      <ScrollView
-        ref={scrollViewRef}
-        style={cluesStyles.scrollView}
-        // onContentSizeChange={() =>
-        //   scrollViewRef.current?.scrollToEnd({ animated: false })
-        // }
-      >
-        <Animated.Text
-          style={[
-            cluesStyles.text,
-            {
-              opacity: fadeAnim,
-              transform: [{ translateY: slideAnim }],
-            },
-          ]}
-        >
-          {revealedClues.map((clue, index) => {
-            const isLastClue = index === revealedClues.length - 1
-            return (
-              <Text
-                key={index}
-                style={[isLastClue && cluesStyles.mostRecentClue]}
-              >
-                {clue}
-                {/* Add a space if it's not the last clue */}
-                {index < revealedClues.length - 1 ? " " : ""}
-              </Text>
-            )
-          })}
-        </Animated.Text>
-      </ScrollView>
-      <CountContainer
-        currentWordLength={revealedClues.join(" ").split(" ").length}
-        guessNumber={guesses.length}
-        totalWordLength={summary.split(" ").length}
-        correctGuess={correctGuess}
-      />
+      {playerGame?.game?.movie?.overview ? (
+        <>
+          <ScrollView ref={scrollViewRef} style={cluesStyles.scrollView}>
+            <Animated.Text
+              style={[
+                cluesStyles.text,
+                {
+                  opacity: fadeAnim,
+                  transform: [{ translateY: slideAnim }],
+                },
+              ]}
+            >
+              {revealedClues.map((clue, index) => {
+                const isLastClue = index === revealedClues.length - 1
+                return (
+                  <Text
+                    key={index}
+                    style={[isLastClue && cluesStyles.mostRecentClue]}
+                  >
+                    {clue}
+                    {index < revealedClues.length - 1 ? " " : ""}
+                  </Text>
+                )
+              })}
+            </Animated.Text>
+          </ScrollView>
+          <CountContainer
+            currentWordLength={revealedClues.join(" ").split(" ").length}
+            guessNumber={guesses.length}
+            totalWordLength={
+              playerGame?.game?.movie?.overview
+                ? playerGame.game.movie.overview.split(" ").length
+                : 0
+            }
+            correctGuess={correctGuess}
+          />
+        </>
+      ) : (
+        <Text>Loading summary...</Text>
+      )}
     </View>
   )
 }

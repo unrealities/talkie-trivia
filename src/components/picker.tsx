@@ -26,30 +26,16 @@ interface PickerContainerProps {
   updatePlayerGame: Dispatch<SetStateAction<PlayerGame>>
 }
 
-function useDebounce<T>(value: T, delay: number = 300): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value)
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value)
-    }, delay)
-
-    return () => {
-      clearTimeout(handler)
-    }
-  }, [value, delay])
-
-  return debouncedValue
-}
-
 const PickerContainer: React.FC<PickerContainerProps> = ({
   movies,
   playerGame,
   updatePlayerGame,
 }) => {
+  const [isFocused, setIsFocused] = useState(false)
   const DEFAULT_BUTTON_TEXT = "Select a Movie"
 
   const [isLoading, setIsLoading] = useState(false)
+  const [isSearching, setIsSearching] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [foundMovies, setFoundMovies] = useState<BasicMovie[]>([])
   const [selectedMovie, setSelectedMovie] = useState<{
@@ -58,8 +44,6 @@ const PickerContainer: React.FC<PickerContainerProps> = ({
   }>({ id: 0, title: DEFAULT_BUTTON_TEXT })
   const [searchText, setSearchText] = useState<string>("")
 
-  const debouncedSearchText = useDebounce(searchText, 300)
-
   const isInteractionsDisabled = useMemo(
     () =>
       playerGame.correctAnswer ||
@@ -67,48 +51,42 @@ const PickerContainer: React.FC<PickerContainerProps> = ({
     [playerGame.correctAnswer, playerGame.guesses, playerGame.game.guessesMax]
   )
 
-  // Optimized filterMovies function using useMemo for caching
-  const filterMovies = useMemo(() => {
-    return (searchTerm: string) => {
-      const trimmedTerm = searchTerm.trim().toLowerCase()
+  // Simple search using includes
+  const filterMovies = (searchTerm: string) => {
+    const trimmedTerm = searchTerm.trim().toLowerCase()
 
-      if (trimmedTerm === "") {
-        return movies // Return all movies when the search term is empty
-      }
-
-      // Return filtered movies
-      return movies.filter((movie) =>
-        movie.title.toLowerCase().includes(trimmedTerm)
-      )
+    if (trimmedTerm === "") {
+      return [] // Return empty array when search term is empty
     }
-  }, [movies]) // `movies` is a dependency because the function will be recreated when movies change
 
-  // Load all movies initially, only runs once on mount or when 'movies' prop changes
-  useEffect(() => {
-    setIsLoading(true)
-    setFoundMovies(movies)
-    setError(null)
-    setIsLoading(false)
-  }, [movies])
-
-  // Trigger filtering with debounced search text
-  useEffect(() => {
-    if (debouncedSearchText) {
-      setIsLoading(true) // Set loading only when we have a search term
-      const filteredMovies = filterMovies(debouncedSearchText)
-      setFoundMovies(filteredMovies)
-      setIsLoading(false)
-    } else {
-      setFoundMovies(movies) // Reset to all movies
-      setError(null)
-    }
-  }, [debouncedSearchText, filterMovies, movies])
-
-  const handleSearchChange = (text: string) => {
-    if (!isInteractionsDisabled) {
-      setSearchText(text)
-    }
+    // Filter movies based on search term
+    const filteredMovies = movies.filter((movie) =>
+      movie.title.toLowerCase().includes(trimmedTerm)
+    )
+    return filteredMovies
   }
+
+  // Update state directly on input change
+  const handleInputChange = (text: string) => {
+    setSearchText(text)
+    setIsSearching(true)
+  }
+
+  // Debounced effect to trigger search
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (searchText) {
+        const filteredMovies = filterMovies(searchText)
+        setFoundMovies(filteredMovies)
+        setIsSearching(false)
+      } else {
+        setFoundMovies([])
+        setIsSearching(false)
+      }
+    }, 300) // 300ms delay
+
+    return () => clearTimeout(handler) // Clean up the timeout
+  }, [searchText])
 
   const onPressCheck = useCallback(() => {
     if (
@@ -116,34 +94,59 @@ const PickerContainer: React.FC<PickerContainerProps> = ({
       selectedMovie.id > 0 &&
       playerGame.game.movie?.id
     ) {
-      updatePlayerGame({
-        ...playerGame,
-        guesses: [...playerGame.guesses, selectedMovie.id],
-        correctAnswer: playerGame.game.movie.id === selectedMovie.id,
-      })
+      const updatedGuesses = [...playerGame.guesses, selectedMovie.id]
+      const isCorrectAnswer = playerGame.game.movie.id === selectedMovie.id
+
+      updatePlayerGame((prevPlayerGame) => ({
+        ...prevPlayerGame,
+        guesses: updatedGuesses,
+        correctAnswer: isCorrectAnswer,
+      }))
+
+      setSelectedMovie({ id: 0, title: DEFAULT_BUTTON_TEXT })
+      setSearchText("")
     }
-  }, [isInteractionsDisabled, selectedMovie.id, playerGame, updatePlayerGame])
+  }, [isInteractionsDisabled, selectedMovie, playerGame, updatePlayerGame])
 
   const handleMovieSelection = (movie: BasicMovie) => {
     if (!isInteractionsDisabled) {
-      setSelectedMovie({ id: movie.id, title: movie.title })
+      const releaseYear = movie.release_date
+        ? ` (${movie.release_date.toString().substring(0, 4)})`
+        : ""
+      setSelectedMovie({
+        id: movie.id,
+        title: `${movie.title}${releaseYear}`,
+      })
+      // Do not clear searchText here
+      // setSearchText("");
     }
   }
 
   return (
     <View style={pickerStyles.container}>
-      <TextInput
-        accessible
-        accessibilityRole="search"
-        aria-label="Search for a movie"
-        maxLength={100}
-        onChangeText={handleSearchChange}
-        placeholder="Search for a movie title"
-        placeholderTextColor={colors.tertiary}
-        style={pickerStyles.input}
-        value={searchText}
-        editable={!isInteractionsDisabled}
-      />
+      <View style={pickerStyles.inputContainer}>
+        <TextInput
+          accessible
+          accessibilityRole="search"
+          aria-label="Search for a movie"
+          maxLength={100}
+          onBlur={() => setIsFocused(false)}
+          onChangeText={handleInputChange}
+          onFocus={() => setIsFocused(true)}
+          placeholder="Search for a movie title"
+          placeholderTextColor={colors.tertiary}
+          style={pickerStyles.input}
+          value={searchText}
+          editable={!isInteractionsDisabled}
+        />
+        {isSearching && (
+          <ActivityIndicator
+            size="small"
+            color={colors.primary}
+            style={pickerStyles.activityIndicator}
+          />
+        )}
+      </View>
 
       {isLoading ? (
         <ActivityIndicator size="large" color={colors.primary} />
@@ -152,32 +155,43 @@ const PickerContainer: React.FC<PickerContainerProps> = ({
           {error}
         </Text>
       ) : (
-        <View style={pickerStyles.text}>
+        <View style={pickerStyles.resultsContainer}>
           {foundMovies.length > 0 && (
-            <ScrollView style={pickerStyles.resultsShow}>
-              {foundMovies.map((movie) => (
-                <Pressable
-                  accessible
-                  accessibilityRole="button"
-                  aria-label={`Select movie: ${movie.title}, ID: ${movie.id}`}
-                  key={movie.id}
-                  onPress={() => handleMovieSelection(movie)}
-                  style={[
-                    pickerStyles.pressableText,
-                    selectedMovie.id === movie.id && pickerStyles.selectedMovie,
-                  ]}
-                  android_ripple={{ color: colors.quinary }}
-                  disabled={isInteractionsDisabled}
-                >
-                  <Text
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                    style={pickerStyles.unselected}
+            <ScrollView
+              style={pickerStyles.resultsShow}
+              keyboardShouldPersistTaps="handled"
+            >
+              {foundMovies.map((movie) => {
+                const releaseYear = movie.release_date
+                  ? ` (${movie.release_date.toString().substring(0, 4)})`
+                  : ""
+                const titleWithYear = `${movie.title}${releaseYear}`
+
+                return (
+                  <Pressable
+                    accessible
+                    accessibilityRole="button"
+                    aria-label={`Select movie: ${movie.title}, ID: ${movie.id}`}
+                    key={movie.id}
+                    onPress={() => handleMovieSelection(movie)}
+                    style={[
+                      pickerStyles.pressableText,
+                      selectedMovie.id === movie.id &&
+                        pickerStyles.selectedMovie,
+                    ]}
+                    android_ripple={{ color: colors.quinary }}
+                    disabled={isInteractionsDisabled}
                   >
-                    {movie.title}
-                  </Text>
-                </Pressable>
-              ))}
+                    <Text
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                      style={pickerStyles.unselected}
+                    >
+                      {titleWithYear}
+                    </Text>
+                  </Pressable>
+                )
+              })}
             </ScrollView>
           )}
         </View>
@@ -196,12 +210,16 @@ const PickerContainer: React.FC<PickerContainerProps> = ({
         style={[
           pickerStyles.button,
           isInteractionsDisabled && { opacity: 0.5 },
+          selectedMovie.title.length > 35 && pickerStyles.buttonSmall,
         ]}
       >
         <Text
-          numberOfLines={1}
+          numberOfLines={2}
           ellipsizeMode="tail"
-          style={pickerStyles.buttonText}
+          style={[
+            pickerStyles.buttonText,
+            selectedMovie.title.length > 35 && pickerStyles.buttonTextSmall,
+          ]}
         >
           {selectedMovie.title}
         </Text>

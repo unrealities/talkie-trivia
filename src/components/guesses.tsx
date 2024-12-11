@@ -13,7 +13,10 @@ const GuessesContainer = ({ guesses, movies }: GuessesContainerProps) => {
   const getMovieTitle = (id: number | undefined) => {
     if (id && id > 0) {
       const movie = movies.find((m) => m.id === id)
-      return movie ? movie.title : ""
+      const releaseYear = movie?.release_date
+        ? ` (${movie.release_date.toString().substring(0, 4)})`
+        : ""
+      return movie ? `${movie.title}${releaseYear}` : ""
     }
     return ""
   }
@@ -30,7 +33,10 @@ const GuessesContainer = ({ guesses, movies }: GuessesContainerProps) => {
             <Text
               numberOfLines={1}
               ellipsizeMode="tail"
-              style={guessesStyles.guess}
+              style={[
+                guessesStyles.guess,
+                guessTitle.length > 35 && guessesStyles.guessSmall, // Apply smaller font size if title is long
+              ]}
             >
               {guessTitle}
             </Text>
