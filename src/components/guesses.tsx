@@ -16,9 +16,9 @@ const GuessesContainer = ({ guesses, movies }: GuessesContainerProps) => {
       const releaseYear = movie?.release_date
         ? ` (${movie.release_date.toString().substring(0, 4)})`
         : ""
-      return movie ? `${movie.title}${releaseYear}` : ""
+      return movie ? `${movie.title}${releaseYear}` : "-"
     }
-    return ""
+    return "-"
   }
 
   return (

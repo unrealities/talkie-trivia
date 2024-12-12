@@ -101,6 +101,7 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
     case "SET_PLAYER":
       return { ...state, player: action.payload }
     case "SET_PLAYER_GAME":
+      console.log("appReducer: SET_PLAYER_GAME: new playerGame:", action.payload)
       return { ...state, playerGame: action.payload }
     case "SET_PLAYER_STATS":
       return { ...state, playerStats: action.payload }

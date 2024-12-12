@@ -27,7 +27,7 @@ const useMovieData = () => {
     }
 
     loadData()
-  }, [dispatch, setLoading])
+  }, [dispatch])
 
   return {
     movies: state.movies,

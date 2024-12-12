@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { useAuthentication } from "./useAuthentication"
-import { getUserID, getUserName, setUserName, setUserID } from "./localStore" // Import setUserID
+import { getUserID, getUserName, setUserName, setUserID } from "./localStore"
 import { doc, getDoc, setDoc } from "firebase/firestore"
-import { batchUpdatePlayerData } from "../firebaseService"
 import { playerConverter } from "../firestore/converters/player"
 import Player from "../../models/player"
 import { db } from "../../config/firebase"
@@ -64,7 +63,7 @@ const usePlayerData = () => {
         payload: {
           ...playerGame,
           playerID: id,
-          id: playerGame.id || Date.now().toString(), // Ensure playerGame has an ID
+          id: playerGame.id || Date.now().toString(),
         },
       })
       dispatch({
@@ -85,78 +84,6 @@ const usePlayerData = () => {
   useEffect(() => {
     initializePlayer()
   }, [initializePlayer])
-
-  useEffect(() => {
-    const updateStats = async () => {
-      if (player.id) {
-        setLoading(true)
-        try {
-          const result = await batchUpdatePlayerData(
-            playerStats,
-            playerGame,
-            player.id
-          )
-          if (result.success) {
-            console.log("Player stats updated.")
-          }
-        } catch (err) {
-          setError(
-            err instanceof Error
-              ? err.message
-              : "An unexpected error occurred while updating player stats."
-          )
-        } finally {
-          setLoading(false)
-        }
-      }
-    }
-    if (playerStats) updateStats()
-  }, [playerStats, player.id])
-
-  useEffect(() => {
-    console.log("usePlayerData useEffect [updateGame]: Dependencies -", {
-      playerGame,
-      playerId: player.id,
-      playerStats,
-    })
-
-    const updateGame = async () => {
-      if (player.id && playerGame.id && playerGame.guesses.length <= 5) {
-        console.log("usePlayerData useEffect [updateGame]: Calling updateGame")
-        setLoading(true)
-        try {
-          const result = await batchUpdatePlayerData(
-            playerStats,
-            playerGame,
-            player.id
-          )
-          if (result.success) {
-            console.log(
-              "usePlayerData useEffect [updateGame]: Player game data updated."
-            )
-          }
-        } catch (err) {
-          console.error(
-            "usePlayerData useEffect [updateGame]: Error updating game data:",
-            err
-          )
-          setError(
-            err instanceof Error
-              ? err.message
-              : "An unexpected error occurred while updating player game data."
-          )
-        } finally {
-          setLoading(false)
-        }
-      } else {
-        console.log(
-          "usePlayerData useEffect [updateGame]: Skipping updateGame - conditions not met"
-        )
-      }
-    }
-
-    updateGame()
-  }, [playerGame, player.id, playerStats])
 
   return { loading, error, initializePlayer }
 }

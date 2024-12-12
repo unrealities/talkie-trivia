@@ -74,7 +74,7 @@ const Facts = React.memo(
             ]}
             accessible={true}
             accessibilityLabel={`IMDb page for ${movie.title}`}
-            accessibilityRole="button"
+            role="button"
             accessibilityHint="Double tap to open movie's IMDb page"
           >
             <Text style={factsStyles.header}>{movie.title}</Text>

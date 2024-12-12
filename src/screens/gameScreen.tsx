@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect} from "react"
 import { View } from "react-native"
 
 import MoviesContainer from "../components/movie"
@@ -17,6 +17,10 @@ const GameScreen = () => {
   const updatePlayerStats = (newPlayerStats) => {
     dispatch({ type: "SET_PLAYER_STATS", payload: newPlayerStats })
   }
+
+  useEffect(() => {
+    console.log("GameScreen: playerGame:", playerGame)
+  }, [playerGame])
 
   return (
     <View style={appStyles.container}>

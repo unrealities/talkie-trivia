@@ -50,16 +50,22 @@ const CluesContainer = ({
   summary,
   playerGame,
 }: CluesProps) => {
-  // Memoize the splitSummary function
   const clues = useMemo(
     () => splitSummary(playerGame?.game?.movie?.overview || ""),
     [playerGame?.game?.movie?.overview]
   )
 
+  const [isLoading, setIsLoading] = useState(true)
   const [revealedClues, setRevealedClues] = useState<string[]>([])
   const fadeAnim = useRef(new Animated.Value(0)).current
   const slideAnim = useRef(new Animated.Value(-10)).current
   const scrollViewRef = useRef<ScrollView>(null)
+
+  useEffect(() => {
+    if (playerGame?.game?.movie?.overview) {
+      setIsLoading(false)
+    }
+  })
 
   useEffect(() => {
     const cluesToReveal = Math.min(guesses.length + 1, clues.length)
@@ -75,13 +81,13 @@ const CluesContainer = ({
           toValue: 1,
           duration: 500,
           easing: Easing.inOut(Easing.ease),
-          useNativeDriver: true, // Add this line
+          useNativeDriver: true,
         }),
         Animated.timing(slideAnim, {
           toValue: 0,
           duration: 500,
           easing: Easing.inOut(Easing.ease),
-          useNativeDriver: true, // Add this line
+          useNativeDriver: true,
         }),
       ]).start(() => {
         scrollViewRef.current?.scrollToEnd({ animated: true })
@@ -89,10 +95,19 @@ const CluesContainer = ({
 
       setRevealedClues(newRevealedClues)
     }
-  }, [guesses, clues, revealedClues, fadeAnim, slideAnim]) // Remove playerGame from dependencies
+  }, [guesses, clues, revealedClues, fadeAnim, slideAnim])
+
   return (
     <View style={cluesStyles.container}>
-      {playerGame?.game?.movie?.overview ? (
+      {isLoading ? (
+        <View style={cluesStyles.skeletonContainer}>
+          <View style={cluesStyles.skeletonLine} />
+          <View style={cluesStyles.skeletonLine} />
+          <View
+            style={[cluesStyles.skeletonLine, cluesStyles.skeletonLineShort]}
+          />
+        </View>
+      ) : (
         <>
           <ScrollView ref={scrollViewRef} style={cluesStyles.scrollView}>
             <Animated.Text
@@ -129,8 +144,6 @@ const CluesContainer = ({
             correctGuess={correctGuess}
           />
         </>
-      ) : (
-        <Text>Loading summary...</Text>
       )}
     </View>
   )

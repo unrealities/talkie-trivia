@@ -1,3 +1,4 @@
+// src/components/picker.tsx
 import React, {
   Dispatch,
   SetStateAction,
@@ -89,22 +90,34 @@ const PickerContainer: React.FC<PickerContainerProps> = ({
   }, [searchText])
 
   const onPressCheck = useCallback(() => {
+    console.log("onPressCheck: isInteractionsDisabled:", isInteractionsDisabled)
+    console.log("onPressCheck: selectedMovie:", selectedMovie)
+    console.log("onPressCheck: playerGame.game.movie:", playerGame.game.movie)
+
+    const updatedGuesses = Array.isArray(playerGame.guesses)
+      ? [...playerGame.guesses, selectedMovie.id]
+      : [selectedMovie.id]
+
+    const isCorrectAnswer = playerGame.game.movie.id === selectedMovie.id
+
+    // Update playerGame state even if the condition is not met
+    updatePlayerGame((prevPlayerGame) => {
+      return {
+        ...prevPlayerGame,
+        guesses: updatedGuesses,
+        correctAnswer: isCorrectAnswer,
+      }
+    })
+
     if (
       !isInteractionsDisabled &&
       selectedMovie.id > 0 &&
       playerGame.game.movie?.id
     ) {
-      const updatedGuesses = [...playerGame.guesses, selectedMovie.id]
-      const isCorrectAnswer = playerGame.game.movie.id === selectedMovie.id
-
-      updatePlayerGame((prevPlayerGame) => ({
-        ...prevPlayerGame,
-        guesses: updatedGuesses,
-        correctAnswer: isCorrectAnswer,
-      }))
-
       setSelectedMovie({ id: 0, title: DEFAULT_BUTTON_TEXT })
       setSearchText("")
+    } else {
+      console.log("onPressCheck: Condition not met - selection not reset")
     }
   }, [isInteractionsDisabled, selectedMovie, playerGame, updatePlayerGame])
 
@@ -137,7 +150,7 @@ const PickerContainer: React.FC<PickerContainerProps> = ({
           placeholderTextColor={colors.tertiary}
           style={pickerStyles.input}
           value={searchText}
-          editable={!isInteractionsDisabled}
+          readOnly={isInteractionsDisabled}
         />
         {isSearching && (
           <ActivityIndicator

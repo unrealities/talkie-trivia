@@ -64,7 +64,7 @@ const ActorContainer = ({ actor, imdbId, style, onActorPress }: ActorProps) => {
           { opacity: pressed ? 0.6 : 1.0 },
           actorsStyles.actorPressable,
         ]}
-        accessibilityRole="button"
+        role="button"
         accessibilityLabel={`View details for ${actor.name}`}
       >
         <Image

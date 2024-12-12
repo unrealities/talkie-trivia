@@ -10,25 +10,28 @@ export const batchUpdatePlayerData = async (
   playerId,
   playerUpdate = null
 ) => {
-  console.log("batchUpdatePlayerData: Called", {
-    playerStats,
-    playerGame,
-    playerId,
-    playerUpdate,
-  })
-
   if (!playerId) {
     console.error("batchUpdatePlayerData: Error - Player ID is required.")
     throw new Error("Player ID is required for updating player data.")
   }
 
   const batch = writeBatch(db)
-  const statsDocRef = doc(db, "playerStats", playerId).withConverter(
-    playerStatsConverter
-  )
-  const gameDocRef = doc(db, "playerGames", playerGame.id).withConverter(
-    playerGameConverter
-  )
+
+  // Only create statsDocRef if playerStats is not empty
+  if (playerStats && Object.keys(playerStats).length > 0) {
+    const statsDocRef = doc(db, "playerStats", playerId).withConverter(
+      playerStatsConverter
+    )
+    batch.set(statsDocRef, playerStats, { merge: true })
+  }
+
+  // Only create gameDocRef if playerGame is not empty
+  if (playerGame && Object.keys(playerGame).length > 0) {
+    const gameDocRef = doc(db, "playerGames", playerGame.id).withConverter(
+      playerGameConverter
+    )
+    batch.set(gameDocRef, playerGame, { merge: true })
+  }
 
   // Update player document only if playerUpdate is provided
   if (playerUpdate) {
@@ -37,9 +40,6 @@ export const batchUpdatePlayerData = async (
     )
     batch.set(playerDocRef, playerUpdate, { merge: true })
   }
-
-  batch.set(statsDocRef, playerStats, { merge: true })
-  batch.set(gameDocRef, playerGame, { merge: true })
 
   try {
     await batch.commit()

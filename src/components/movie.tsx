@@ -40,37 +40,98 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
   const confettiRef = useRef(null)
 
   useEffect(() => {
-    if (
-      (playerGame.guesses.length > 4 || playerGame.correctAnswer) &&
-      enableSubmit
-    ) {
-      setEnableSubmit(false)
-      const updatedStats = { ...playerStats }
-
-      if (playerGame.correctAnswer) {
-        updatedStats.currentStreak++
-        updatedStats.maxStreak = Math.max(
-          updatedStats.currentStreak,
-          updatedStats.maxStreak
+    const updatePlayerData = async () => {
+      if (!playerGame || Object.keys(playerGame).length === 0) {
+        console.log(
+          "MoviesContainer useEffect [updatePlayerData]: Skipping update - playerGame is empty"
         )
-        updatedStats.wins[playerGame.guesses.length - 1]++
-      } else {
-        updatedStats.currentStreak = 0
+        return
       }
 
-      batchUpdatePlayerData(updatedStats, playerGame, player.id)
-        .then(() => {
-          updatePlayerStats(updatedStats)
-          setShowModal(true)
-          if (playerGame.correctAnswer) confettiRef.current?.start()
-        })
-        .catch((err) => console.error("Error updating player data:", err))
+      if (
+        (playerGame.guesses.length > 4 || playerGame.correctAnswer) &&
+        enableSubmit
+      ) {
+        setEnableSubmit(false)
+        const updatedStats = { ...playerStats }
+
+        if (playerGame.correctAnswer) {
+          updatedStats.currentStreak++
+          updatedStats.maxStreak = Math.max(
+            updatedStats.currentStreak,
+            updatedStats.maxStreak
+          )
+          updatedStats.wins[playerGame.guesses.length - 1]++
+        } else {
+          updatedStats.currentStreak = 0
+        }
+
+        try {
+          console.log(
+            "MoviesContainer useEffect [updatePlayerData]: updating player data"
+          )
+          const result = await batchUpdatePlayerData(
+            updatedStats,
+            playerGame,
+            player.id
+          )
+          if (result.success) {
+            console.log(
+              "MoviesContainer useEffect [updatePlayerData]: updated player data"
+            )
+            updatePlayerStats(updatedStats)
+            setShowModal(true)
+            if (playerGame.correctAnswer) confettiRef.current?.start()
+          }
+        } catch (err) {
+          console.error(
+            "MoviesContainer useEffect [updatePlayerData]: Error updating player data:",
+            err
+          )
+        }
+      } else if (
+        playerGame.guesses.length > 0 &&
+        playerGame.guesses.length < 5 &&
+        !playerGame.correctAnswer
+      ) {
+        // Update playerGame data
+        try {
+          console.log(
+            "MoviesContainer useEffect [updatePlayerData]: updating player game data"
+          )
+          const result = await batchUpdatePlayerData(
+            {}, // No stats update
+            playerGame,
+            player.id
+          )
+          if (result.success) {
+            console.log(
+              "MoviesContainer useEffect [updatePlayerData]: updated player game data"
+            )
+          }
+        } catch (err) {
+          console.error(
+            "MoviesContainer useEffect [updatePlayerData]: Error updating player game data:",
+            err
+          )
+        }
+      }
     }
-  }, [playerGame, enableSubmit, playerStats, player.id, updatePlayerStats])
+
+    updatePlayerData()
+  }, [
+    playerGame,
+    enableSubmit,
+    playerStats,
+    player.id,
+    updatePlayerStats,
+    setShowModal,
+  ])
 
   const handleUpdatePlayerGame = (updatedPlayerGame: PlayerGame) => {
     if (
       !updatedPlayerGame.correctAnswer &&
+      Array.isArray(updatedPlayerGame.guesses) &&
       updatedPlayerGame.guesses.length <= 5
     ) {
       updatePlayerGame(updatedPlayerGame)

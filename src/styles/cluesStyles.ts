@@ -21,6 +21,19 @@ export const cluesStyles = StyleSheet.create({
     maxHeight: responsive.scale(200),
     marginBottom: responsive.scale(8),
   },
+  skeletonContainer: {
+    paddingHorizontal: responsive.scale(10),
+    paddingTop: responsive.scale(10),
+  },
+  skeletonLine: {
+    backgroundColor: colors.tertiary,
+    height: responsive.scale(16),
+    marginBottom: responsive.scale(8),
+    borderRadius: responsive.scale(4),
+  },
+  skeletonLineShort: {
+    width: "60%",
+  },
   text: {
     color: colors.secondary,
     fontFamily: "Arvo-Regular",

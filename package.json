@@ -54,7 +54,8 @@
     "stream": "npm:stream-browserify",
     "victory": "^36.6.8",
     "victory-native": "^36.6.8",
-    "vm": "^0.1.0"
+    "vm": "^0.1.0",
+    "react-native-reanimated": "~3.10.1"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
