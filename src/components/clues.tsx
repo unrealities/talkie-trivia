@@ -1,3 +1,4 @@
+// src/components/clues.tsx
 import React, { useEffect, useRef, useState, useMemo } from "react"
 import { Animated, Text, View, Easing, ScrollView } from "react-native"
 import { cluesStyles } from "../styles/cluesStyles"
@@ -68,6 +69,8 @@ const CluesContainer = ({
   })
 
   useEffect(() => {
+    console.log("CluesContainer: Guesses updated:", guesses) // Add this log
+
     const cluesToReveal = Math.min(guesses.length + 1, clues.length)
     const newRevealedClues = clues.slice(0, cluesToReveal)
 

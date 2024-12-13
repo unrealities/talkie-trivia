@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useReducer } from "react"
 import { BasicMovie, Movie } from "../models/movie"
-import { PlayerGame } from "../models/game"
+import { Game, PlayerGame } from "../models/game"
 import Player from "../models/player"
 import PlayerStats from "../models/playerStats"
 
@@ -19,6 +19,31 @@ const defaultMovie: Movie = {
   title: "",
   vote_average: 0,
   vote_count: 0,
+}
+
+const defaultGame: Game = {
+  date: new Date(),
+  guessesMax: 5,
+  id: "",
+  movie: defaultMovie,
+}
+
+export const defaultPlayerGame: PlayerGame = {
+  correctAnswer: false,
+  endDate: new Date(),
+  game: defaultGame,
+  guesses: [],
+  id: "",
+  playerID: "",
+  startDate: new Date(),
+}
+
+export const defaultPlayerStats: PlayerStats = {
+  id: "",
+  currentStreak: 0,
+  games: 0,
+  maxStreak: 0,
+  wins: [0, 0, 0, 0, 0],
 }
 
 interface AppState {
@@ -46,27 +71,8 @@ const initialState: AppState = {
   basicMovies: [],
   movie: null,
   player: { id: "", name: "" },
-  playerGame: {
-    correctAnswer: false,
-    endDate: new Date(),
-    game: {
-      date: new Date(),
-      guessesMax: 5,
-      id: "",
-      movie: defaultMovie, // Use the default movie object
-    },
-    guesses: [],
-    id: "",
-    playerID: "",
-    startDate: new Date(),
-  },
-  playerStats: {
-    id: "",
-    currentStreak: 0,
-    games: 0,
-    maxStreak: 0,
-    wins: [0, 0, 0, 0, 0],
-  },
+  playerGame: defaultPlayerGame,
+  playerStats: defaultPlayerStats,
 }
 
 const AppContext = createContext<
@@ -100,9 +106,22 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
       return { ...state, movie: action.payload }
     case "SET_PLAYER":
       return { ...state, player: action.payload }
-    case "SET_PLAYER_GAME":
-      console.log("appReducer: SET_PLAYER_GAME: new playerGame:", action.payload)
-      return { ...state, playerGame: action.payload }
+    case "SET_PLAYER_GAME": {
+      // Check if the new playerGame is actually different
+      const isPlayerGameDifferent =
+        JSON.stringify(state.playerGame) !== JSON.stringify(action.payload)
+
+      if (isPlayerGameDifferent) {
+        console.log(
+          "appReducer: SET_PLAYER_GAME: new playerGame:",
+          action.payload
+        )
+        return { ...state, playerGame: action.payload }
+      } else {
+        // If playerGame is not different, return the current state to avoid re-render
+        return state
+      }
+    }
     case "SET_PLAYER_STATS":
       return { ...state, playerStats: action.payload }
     default:

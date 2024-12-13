@@ -54,11 +54,19 @@ const App = () => {
   }, [])
 
   useEffect(() => {
+    let isInitialMovieLoad = true
+    let isInitialBasicMovieLoad = true
     const prepareApp = async () => {
       try {
         if (isNetworkConnected) {
-          dispatch({ type: "SET_MOVIES", payload: movies })
-          dispatch({ type: "SET_BASIC_MOVIES", payload: basicMovies })
+          if (isInitialMovieLoad && movies.length > 0) {
+            dispatch({ type: "SET_MOVIES", payload: movies })
+            isInitialMovieLoad = false
+          }
+          if (isInitialBasicMovieLoad && basicMovies.length > 0) {
+            dispatch({ type: "SET_BASIC_MOVIES", payload: basicMovies })
+            isInitialBasicMovieLoad = false
+          }
         }
       } catch (error) {
         console.error("Error preparing app:", error)
@@ -76,7 +84,8 @@ const App = () => {
     isNetworkConnected,
     movieDataLoading,
     playerDataLoading,
-    dispatch,
+    movies,
+    basicMovies,
   ])
 
   if (!isAppReady) {

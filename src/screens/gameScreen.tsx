@@ -1,4 +1,5 @@
-import React, { useEffect} from "react"
+// src/screens/gameScreen.tsx
+import React, { useEffect } from "react"
 import { View } from "react-native"
 
 import MoviesContainer from "../components/movie"
@@ -10,7 +11,9 @@ const GameScreen = () => {
   const { isNetworkConnected, basicMovies, player, playerGame, playerStats } =
     state
 
+  // Ensure this function updates the context state
   const updatePlayerGame = (newPlayerGame) => {
+    console.log("GameScreen: Dispatching new playerGame:", newPlayerGame)
     dispatch({ type: "SET_PLAYER_GAME", payload: newPlayerGame })
   }
 
@@ -20,7 +23,7 @@ const GameScreen = () => {
 
   useEffect(() => {
     console.log("GameScreen: playerGame:", playerGame)
-  }, [playerGame])
+  }, [playerGame.guesses, playerGame.correctAnswer])
 
   return (
     <View style={appStyles.container}>
@@ -30,7 +33,7 @@ const GameScreen = () => {
         player={player}
         playerGame={playerGame}
         playerStats={playerStats}
-        updatePlayerGame={updatePlayerGame}
+        updatePlayerGame={updatePlayerGame} // Pass updatePlayerGame
         updatePlayerStats={updatePlayerStats}
       />
     </View>

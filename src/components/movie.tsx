@@ -128,15 +128,11 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
     setShowModal,
   ])
 
+  // Make sure updatePlayerGame is correctly updating the state in GameScreen
   const handleUpdatePlayerGame = (updatedPlayerGame: PlayerGame) => {
-    if (
-      !updatedPlayerGame.correctAnswer &&
-      Array.isArray(updatedPlayerGame.guesses) &&
-      updatedPlayerGame.guesses.length <= 5
-    ) {
-      updatePlayerGame(updatedPlayerGame)
-    }
-  }
+    console.log("MoviesContainer: Updating playerGame:", updatedPlayerGame); // Add this log
+    updatePlayerGame(updatedPlayerGame);
+  };
 
   return (
     <View style={movieStyles.container}>

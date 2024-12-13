@@ -1,4 +1,5 @@
-import React from "react"
+// src/components/guesses.tsx
+import React, { useEffect } from "react" // Import useEffect
 import { Text, View } from "react-native"
 import { BasicMovie, Movie } from "../models/movie"
 import { guessesStyles } from "../styles/guessesStyles"
@@ -10,6 +11,11 @@ interface GuessesContainerProps {
 }
 
 const GuessesContainer = ({ guesses, movies }: GuessesContainerProps) => {
+  // Add useEffect to log when guesses are updated
+  useEffect(() => {
+    console.log("GuessesContainer: Guesses updated:", guesses)
+  }, [guesses])
+
   const getMovieTitle = (id: number | undefined) => {
     if (id && id > 0) {
       const movie = movies.find((m) => m.id === id)
