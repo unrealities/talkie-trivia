@@ -25,11 +25,12 @@ export const batchUpdatePlayerData = async (
     batch.set(statsDocRef, playerStats, { merge: true })
   }
 
-  // Only create gameDocRef if playerGame is not empty and has a real movie
+  // Only create gameDocRef if playerGame is not empty, has a real movie, and has an id
   if (
     playerGame &&
     Object.keys(playerGame).length > 0 &&
-    playerGame.game.movie.id !== 0
+    playerGame.game.movie.id !== 0 &&
+    playerGame.id // Ensure playerGame.id is set
   ) {
     const gameDocRef = doc(db, "playerGames", playerGame.id).withConverter(
       playerGameConverter

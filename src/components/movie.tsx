@@ -40,7 +40,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
   const confettiRef = useRef(null)
 
   useEffect(() => {
-    const updatePlayerData = async () => {
+    const updatePlayerData = async (playerGame) => {
       if (!playerGame || Object.keys(playerGame).length === 0) {
         console.log(
           "MoviesContainer useEffect [updatePlayerData]: Skipping update - playerGame is empty"
@@ -118,7 +118,11 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
       }
     }
 
-    updatePlayerData()
+    const timeoutId = setTimeout(() => {
+      updatePlayerData(playerGame)
+    }, 50) // Introduce a 50ms delay
+
+    return () => clearTimeout(timeoutId) // Cleanup the timeout
   }, [
     playerGame,
     enableSubmit,
@@ -130,9 +134,9 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
 
   // Make sure updatePlayerGame is correctly updating the state in GameScreen
   const handleUpdatePlayerGame = (updatedPlayerGame: PlayerGame) => {
-    console.log("MoviesContainer: Updating playerGame:", updatedPlayerGame); // Add this log
-    updatePlayerGame(updatedPlayerGame);
-  };
+    console.log("MoviesContainer: Updating playerGame:", updatedPlayerGame) // Add this log
+    updatePlayerGame(updatedPlayerGame)
+  }
 
   return (
     <View style={movieStyles.container}>

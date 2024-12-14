@@ -24,7 +24,7 @@ interface PickerContainerProps {
   enableSubmit: boolean
   movies: BasicMovie[]
   playerGame: PlayerGame
-  updatePlayerGame: Dispatch<SetStateAction<PlayerGame>>
+  updatePlayerGame: (updatedPlayerGame: PlayerGame) => void
 }
 
 const PickerContainer: React.FC<PickerContainerProps> = ({
@@ -100,18 +100,26 @@ const PickerContainer: React.FC<PickerContainerProps> = ({
       selectedMovie.id > 0 &&
       playerGame.game.movie?.id
     ) {
-      const updatedGuesses = Array.isArray(playerGame.guesses)
+      const newGuesses = Array.isArray(playerGame.guesses)
         ? [...playerGame.guesses, selectedMovie.id]
         : [selectedMovie.id]
 
       const isCorrectAnswer = playerGame.game.movie.id === selectedMovie.id
 
-      // Update playerGame state
-      updatePlayerGame((prevPlayerGame) => ({
-        ...prevPlayerGame,
-        guesses: updatedGuesses,
+      console.log("PickerContainer: onPressCheck - newGuesses:", newGuesses)
+      console.log(
+        "PickerContainer: onPressCheck - isCorrectAnswer:",
+        isCorrectAnswer
+      )
+
+      // Update playerGame state using the new array
+      const updatedPlayerGame = {
+        ...playerGame,
+        guesses: newGuesses,
         correctAnswer: isCorrectAnswer,
-      }))
+      }
+
+      updatePlayerGame(updatedPlayerGame) // Call updatePlayerGame directly
 
       setSelectedMovie({ id: 0, title: DEFAULT_BUTTON_TEXT })
       setSearchText("")

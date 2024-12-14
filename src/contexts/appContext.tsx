@@ -107,16 +107,26 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
     case "SET_PLAYER":
       return { ...state, player: action.payload }
     case "SET_PLAYER_GAME": {
+      const { guesses, correctAnswer } = action.payload
+
       // Check if the new playerGame is actually different
       const isPlayerGameDifferent =
-        JSON.stringify(state.playerGame) !== JSON.stringify(action.payload)
+        JSON.stringify(state.playerGame.guesses) !== JSON.stringify(guesses) ||
+        state.playerGame.correctAnswer !== correctAnswer
 
       if (isPlayerGameDifferent) {
         console.log(
           "appReducer: SET_PLAYER_GAME: new playerGame:",
           action.payload
         )
-        return { ...state, playerGame: action.payload }
+        return {
+          ...state,
+          playerGame: {
+            ...state.playerGame,
+            guesses: guesses,
+            correctAnswer: correctAnswer,
+          },
+        }
       } else {
         // If playerGame is not different, return the current state to avoid re-render
         return state
