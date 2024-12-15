@@ -51,13 +51,13 @@ export const pickerStyles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     width: "100%",
-    marginBottom: responsive.scale(10),
+    marginBottom: responsive.scale(6),
     position: "relative",
   },
   pressableText: {
     flex: 1,
     fontFamily: "Arvo-Regular",
-    padding: responsive.scale(5),
+    padding: responsive.scale(4),
     borderRadius: responsive.scale(5),
   },
   searchIndicator: {
@@ -67,6 +67,7 @@ export const pickerStyles = StyleSheet.create({
     backgroundColor: colors.quinary,
   },
   resultsContainer: {
+    marginBottom: responsive.scale(6),
     maxHeight: responsive.scale(82),
     minHeight: responsive.scale(82),
     maxWidth: responsive.scale(300),
