@@ -1,16 +1,8 @@
-// src/components/picker.tsx
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useState,
-  useCallback,
-  useMemo,
-} from "react"
+import React, { useEffect, useState, useCallback, useMemo } from "react"
 import {
   ActivityIndicator,
   Pressable,
-  ScrollView,
+  FlatList,
   Text,
   TextInput,
   View,
@@ -138,6 +130,38 @@ const PickerContainer: React.FC<PickerContainerProps> = ({
     }
   }
 
+  // Render item for FlatList
+  const renderItem = ({ item: movie }: { item: BasicMovie }) => {
+    const releaseYear = movie.release_date
+      ? ` (${movie.release_date.toString().substring(0, 4)})`
+      : ""
+    const titleWithYear = `${movie.title}${releaseYear}`
+
+    return (
+      <Pressable
+        accessible
+        accessibilityRole="button"
+        aria-label={`Select movie: ${movie.title}, ID: ${movie.id}`}
+        key={movie.id}
+        onPress={() => handleMovieSelection(movie)}
+        style={[
+          pickerStyles.pressableText,
+          selectedMovie.id === movie.id && pickerStyles.selectedMovie,
+        ]}
+        android_ripple={{ color: colors.quinary }}
+        disabled={isInteractionsDisabled}
+      >
+        <Text
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          style={pickerStyles.unselected}
+        >
+          {titleWithYear}
+        </Text>
+      </Pressable>
+    )
+  }
+
   return (
     <View style={pickerStyles.container}>
       <View style={pickerStyles.inputContainer}>
@@ -172,44 +196,17 @@ const PickerContainer: React.FC<PickerContainerProps> = ({
         </Text>
       ) : (
         <View style={pickerStyles.resultsContainer}>
-          {foundMovies.length > 0 && (
-            <ScrollView
-              style={pickerStyles.resultsShow}
-              keyboardShouldPersistTaps="handled"
-            >
-              {foundMovies.map((movie) => {
-                const releaseYear = movie.release_date
-                  ? ` (${movie.release_date.toString().substring(0, 4)})`
-                  : ""
-                const titleWithYear = `${movie.title}${releaseYear}`
-
-                return (
-                  <Pressable
-                    accessible
-                    accessibilityRole="button"
-                    aria-label={`Select movie: ${movie.title}, ID: ${movie.id}`}
-                    key={movie.id}
-                    onPress={() => handleMovieSelection(movie)}
-                    style={[
-                      pickerStyles.pressableText,
-                      selectedMovie.id === movie.id &&
-                        pickerStyles.selectedMovie,
-                    ]}
-                    android_ripple={{ color: colors.quinary }}
-                    disabled={isInteractionsDisabled}
-                  >
-                    <Text
-                      numberOfLines={1}
-                      ellipsizeMode="tail"
-                      style={pickerStyles.unselected}
-                    >
-                      {titleWithYear}
-                    </Text>
-                  </Pressable>
-                )
-              })}
-            </ScrollView>
-          )}
+          {/* Use FlatList instead of ScrollView */}
+          <FlatList
+            data={foundMovies}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+            style={pickerStyles.resultsShow}
+            keyboardShouldPersistTaps="handled"
+            ListEmptyComponent={
+              <Text style={pickerStyles.noResultsText}>No movies found</Text>
+            } // Add a component to display when the list is empty
+          />
         </View>
       )}
 
