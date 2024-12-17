@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useReducer } from "react"
+import React, { createContext, useContext, useReducer } from "react"
 import { BasicMovie, Movie } from "../models/movie"
 import { Game, PlayerGame } from "../models/game"
 import Player from "../models/player"
@@ -48,24 +48,25 @@ export const defaultPlayerStats: PlayerStats = {
 
 interface AppState {
   isNetworkConnected: boolean
-  movies: Movie[]
-  basicMovies: BasicMovie[]
+  movies: readonly Movie[]
+  basicMovies: readonly BasicMovie[]
   movie: Movie | null
   player: Player
   playerGame: PlayerGame
   playerStats: PlayerStats
 }
 
+// Correctly type AppAction with specific payload types for each action
 type AppAction =
   | { type: "SET_NETWORK_CONNECTED"; payload: boolean }
-  | { type: "SET_MOVIES"; payload: Movie[] }
-  | { type: "SET_BASIC_MOVIES"; payload: BasicMovie[] }
+  | { type: "SET_MOVIES"; payload: readonly Movie[] }
+  | { type: "SET_BASIC_MOVIES"; payload: readonly BasicMovie[] }
   | { type: "SET_MOVIE"; payload: Movie | null }
   | { type: "SET_PLAYER"; payload: Player }
   | { type: "SET_PLAYER_GAME"; payload: PlayerGame }
   | { type: "SET_PLAYER_STATS"; payload: PlayerStats }
 
-const initialState: AppState = {
+export const initialState: AppState = {
   isNetworkConnected: true,
   movies: [],
   basicMovies: [],
@@ -80,7 +81,7 @@ const AppContext = createContext<
 >(undefined)
 
 // Reducer function
-const appReducer = (state: AppState, action: AppAction): AppState => {
+export const appReducer = (state: AppState, action: AppAction): AppState => {
   switch (action.type) {
     case "SET_NETWORK_CONNECTED":
       return { ...state, isNetworkConnected: action.payload }
