@@ -21,7 +21,7 @@
     "comlink": "^4.4.2",
     "crypto": "npm:crypto-browserify",
     "dotenv": "^16.4.7",
-    "expo": "^52.0.19",
+    "expo": "~52.0.20",
     "expo-application": "~6.0.1",
     "expo-auth-session": "~6.0.1",
     "expo-constants": "~17.0.3",
@@ -61,6 +61,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
+    "@babel/plugin-transform-typescript": "^7.26.3",
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-flow": "^7.25.9",
     "@testing-library/jest-native": "^5.4.3",
@@ -76,31 +77,6 @@
   },
   "browser": {
     "crypto": false
-  },
-  "jest": {
-    "preset": "jest-expo",
-    "transform": {
-      "^.+\\.tsx?$": [
-        "ts-jest",
-        {
-          "tsconfig": "tsconfig.json"
-        }
-      ]
-    },
-    "setupFilesAfterEnv": [
-      "@testing-library/jest-native/extend-expect"
-    ],
-    "transformIgnorePatterns": [
-      "node_modules/(?!(jest-)?react-native|@react-native(-community)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg)"
-    ],
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ]
   },
   "private": true
 }
