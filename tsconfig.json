@@ -4,6 +4,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "esModuleInterop": true,
+    "isolatedModules": true,
     "jsx": "react-native",
     "strict": false,
     "skipLibCheck": true,
