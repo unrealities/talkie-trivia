@@ -62,7 +62,7 @@
   "devDependencies": {
     "@babel/core": "^7.24.0",
     "@babel/plugin-transform-typescript": "^7.26.3",
-    "@babel/preset-env": "^7.20.2",
+    "@babel/preset-env": "^7.26.0",
     "@babel/preset-flow": "^7.25.9",
     "@testing-library/jest-native": "^5.4.3",
     "@testing-library/react-native": "^12.9.0",

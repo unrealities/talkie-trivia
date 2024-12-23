@@ -10,4 +10,5 @@ module.exports = {
     moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
     testEnvironment: "jsdom",
     setupFiles: ["./jestSetup.js"],
+    setupFilesAfterEnv: ["@testing-library/jest-native/extend-expect"]
 };
