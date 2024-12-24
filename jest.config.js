@@ -1,5 +1,10 @@
 module.exports = {
     preset: "jest-expo",
+    globals: {
+    "process.env": {
+        EXPO_OS: "test"
+    }
+  },
     transform: {
         "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
     },

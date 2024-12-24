@@ -6,7 +6,7 @@ import { colors } from "../styles/global"
 const LoadingIndicator: React.FC = () => {
   return (
     <View style={appStyles.loadingContainer}>
-      <ActivityIndicator size="large" color={colors.primary} />
+      <ActivityIndicator testID="activity-indicator" size="large" color={colors.primary} />
     </View>
   )
 }
