@@ -33,11 +33,7 @@ describe("PlayerStatsContainer", () => {
       <PlayerStatsContainer player={mockPlayer} playerStats={mockPlayerStats} />
     )
 
-    // Assuming the VictoryPie component renders some identifiable text based on the data
-    expect(screen.getByText("1")).toBeTruthy() // Example: Check for label rendered by VictoryPie
-    expect(screen.getByText("3")).toBeTruthy() // Example: Check for label rendered by VictoryPie
-    expect(screen.getByText("4")).toBeTruthy() // Example: Check for label rendered by VictoryPie
-    expect(screen.getByText("3")).toBeTruthy() // Example: Check for label rendered by VictoryPie
-    expect(screen.getByText("7")).toBeTruthy() // Example: Check for label rendered by VictoryPie
+    // Check if the VictoryPie component is rendered within PlayerStatsContainer
+    expect(screen.getByTestId("victory-pie-chart")).toBeTruthy()
   })
 })

@@ -12,20 +12,22 @@ export interface WinChartProps {
   wins: number[]
 }
 
-const WinChart = (props: WinChartProps) => {
-  const keys = ["1", "2", "3", "4", "5"];
-  // Commented out original values line, using hardcoded for demonstration
-  const values = [1, 3, 4, 3, 7];
-  
+const WinChart = ({ wins }: WinChartProps) => {
+  const keys = ["1", "2", "3", "4", "5"]
   const data = keys.map((key, index) => ({
     key: key,
     x: key,
-    y: values[index],
+    y: wins[index] || 0, // Ensure y is 0 for undefined values
+    label:
+      wins[index] > 0
+        ? `${(wins[index] / wins.reduce((a, b) => a + b, 0)) * 100}%`
+        : "",
   }))
 
   return (
     <View style={winChartStyles.container}>
       <VictoryPie
+        testID="victory-pie-chart"
         colorScale={[
           colors.primary,
           colors.secondary,
