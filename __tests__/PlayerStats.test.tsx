@@ -4,6 +4,20 @@ import PlayerStatsContainer from "../src/components/playerStats"
 import Player from "../src/models/player"
 import PlayerStats from "../src/models/playerStats"
 
+jest.mock("victory-native", () => ({
+  VictoryPie: ({ testID, data }) => (
+    <div testID={testID}>
+      {data &&
+        data.map((item) => (
+          <span key={item.key}>{`x: ${item.x}, y: ${item.y}`}</span>
+        ))}
+    </div>
+  ),
+  VictoryTheme: {
+    material: {},
+  },
+}))
+
 describe("PlayerStatsContainer", () => {
   const mockPlayer: Player = { id: "player1", name: "Test Player" }
   const mockPlayerStats: PlayerStats = {

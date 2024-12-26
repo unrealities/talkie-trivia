@@ -1,19 +1,18 @@
 module.exports = {
     preset: "jest-expo",
     globals: {
-    "process.env": {
-        EXPO_OS: "test"
-    }
-  },
+        "process.env": {
+            EXPO_OS: "test",
+        },
+    },
+    testEnvironment: "jsdom",
     transform: {
         "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
     },
     transformIgnorePatterns: [
-        "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg|victory-native|victory|@babel/runtime/helpers/(?!(extends|typeof|jsx)))",
-        "/Users/tomszymanski/Documents/Code/talkie-trivia/node_modules/react-native/Libraries/vendor/emitter/EventEmitter.js"
-    ],
+        "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg|victory-native|victory|@babel/runtime/helpers/(?!(extends|typeof|jsx))|expo-modules-core)",],
     moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
-    testEnvironment: "jsdom",
+    testEnvironment: "jsdom", // Or "node" if you don't need DOM
     setupFiles: ["./jestSetup.js"],
-    setupFilesAfterEnv: ["@testing-library/jest-native/extend-expect"]
+    setupFilesAfterEnv: ["@testing-library/jest-native/extend-expect"],
 };
