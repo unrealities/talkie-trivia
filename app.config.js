@@ -23,6 +23,7 @@ export default ({ config }) => ({
     plugins: [
       "@react-native-google-signin/google-signin",
       "expo-font",
+      "expo-router",
       "expo-secure-store"
     ],
     ios: {

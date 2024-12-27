@@ -1,34 +1,26 @@
+import { Slot, SplashScreen } from "expo-router"
 import React, { useEffect, useState } from "react"
-import { NavigationContainer } from "@react-navigation/native"
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import { useFonts } from "expo-font"
-import * as SplashScreen from "expo-splash-screen"
+import { SafeAreaProvider } from "react-native-safe-area-context"
 import { StatusBar } from "expo-status-bar"
+import { useFonts } from "expo-font"
 import { initializeApp } from "firebase/app"
 import { getFirestore } from "firebase/firestore"
 
 import { firebaseConfig } from "./src/config/firebase"
 import { AppProvider, useAppContext } from "./src/contexts/AppContext"
-import { colors } from "./src/styles/global"
-import ErrorMessage from "./src/components/errorMessage"
 import LoadingIndicator from "./src/components/loadingIndicator"
-import GameScreen from "./src/screens/gameScreen"
-import ProfileScreen from "./src/screens/profileScreen"
+import ErrorMessage from "./src/components/errorMessage"
 import useMovieData from "./src/utils/hooks/useMovieData"
 import useNetworkStatus from "./src/utils/hooks/useNetworkStatus"
 import usePlayerData from "./src/utils/hooks/usePlayerData"
 
 initializeApp(firebaseConfig)
 getFirestore()
-
 SplashScreen.preventAutoHideAsync()
-
-const Tab = createBottomTabNavigator()
 
 const App = () => {
   const { dispatch } = useAppContext()
   const [isAppReady, setIsAppReady] = useState(false)
-
   const { isNetworkConnected } = useNetworkStatus()
   const {
     movies,
@@ -93,23 +85,14 @@ const App = () => {
   }
 
   return (
-    <NavigationContainer>
+    <SafeAreaProvider>
       <StatusBar style="auto" />
       {movieDataError ? (
         <ErrorMessage message={"Error loading movie data"} />
       ) : (
-        <Tab.Navigator
-          screenOptions={{
-            headerShown: false,
-            tabBarActiveTintColor: colors.primary,
-            tabBarLabelStyle: { fontFamily: "Arvo-Bold", fontSize: 16 },
-          }}
-        >
-          <Tab.Screen name="Game" component={GameScreen} />
-          <Tab.Screen name="Profile" component={ProfileScreen} />
-        </Tab.Navigator>
+        <Slot />
       )}
-    </NavigationContainer>
+    </SafeAreaProvider>
   )
 }
 

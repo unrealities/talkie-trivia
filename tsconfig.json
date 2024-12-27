@@ -13,6 +13,6 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*", "__tests__/**/*"],
+  "include": ["src/**/*", "__tests__/**/*", "app/profileScreen.tsx"],
   "exclude": ["node_modules"]
 }

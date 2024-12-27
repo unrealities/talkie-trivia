@@ -1,10 +1,9 @@
-// src/screens/gameScreen.tsx
 import React, { useEffect } from "react"
 import { View } from "react-native"
 
-import MoviesContainer from "../components/movie"
-import { appStyles } from "../styles/AppStyles"
-import { useAppContext } from "../contexts/AppContext"
+import MoviesContainer from "../src/components/movie"
+import { appStyles } from "../src/styles/AppStyles"
+import { useAppContext } from "../src/contexts/AppContext"
 
 const GameScreen = () => {
   const { state, dispatch } = useAppContext()
