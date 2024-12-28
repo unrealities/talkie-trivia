@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import * as Network from "expo-network"
-import { useAppContext } from "../../contexts/AppContext"
+import { useAppContext } from "../../contexts/appContext"
 
 const useNetworkStatus = () => {
   const { dispatch } = useAppContext()

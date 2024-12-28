@@ -27,6 +27,7 @@ export default ({ config }) => ({
       "expo-secure-store"
     ],
     ios: {
+      "bundleIdentifier": "com.unrealities.talkietrivia",
       googleServicesFile: "./GoogleService-Info.plist",
       supportsTablet: true
     },
@@ -35,7 +36,8 @@ export default ({ config }) => ({
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
         backgroundColor: "#FFFFFF"
-      }
+      },
+      "package": "com.unrealities.talkietrivia"
     },
     web: {
       favicon: "./assets/favicon.png"

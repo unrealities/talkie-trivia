@@ -28,7 +28,9 @@ const firebaseConfig: FirebaseConfig = {
 }
 
 // Initialize Firebase app
+console.log("firebase.tsx: attempting to initilize firebase app");
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig)
+console.log("firebase.tsx: firebase app initialized")
 
 // Initialize Firestore with unlimited cache size
 const db = initializeFirestore(app, {

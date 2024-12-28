@@ -9,7 +9,7 @@ import {
   defaultPlayerGame,
   defaultPlayerStats,
   useAppContext,
-} from "../../contexts/AppContext"
+} from "../../contexts/appContext"
 import { Game, PlayerGame } from "../../models/game"
 import { Movie } from "../../models/movie"
 
@@ -47,46 +47,87 @@ const usePlayerData = () => {
   const initializePlayer = useCallback(async () => {
     setLoading(true)
     try {
+      console.log("usePlayerData: Initializing player...")
       let id = await getUserID()
+      console.log("usePlayerData: Fetched id from local store:", id)
       let name = await getUserName()
+      console.log("usePlayerData: Fetched name from local store:", name)
 
       if (user) {
+        console.log("usePlayerData: User is logged in, checking Firestore")
         // If user is logged in, check if Firestore document exists
         const playerDocRef = doc(db, "players", user.uid).withConverter(
           playerConverter
         )
+        console.log("usePlayerData: Firestore player document ref created.")
         const playerDocSnap = await getDoc(playerDocRef)
-
+        console.log(
+          "usePlayerData: Fetched player document snapshot:",
+          playerDocSnap.exists()
+        )
         if (playerDocSnap.exists()) {
+          console.log("usePlayerData: player document exists, fetching data")
           const fetchedPlayer = playerDocSnap.data()
           id = fetchedPlayer.id
           name = fetchedPlayer.name
+          console.log("usePlayerData: Fetched player data from firestore:", {
+            id,
+            name,
+          })
+          console.log("usePlayerData: Setting UserID", id)
           await setUserID(id)
           // Only set the user name if it's different
+          console.log(
+            "usePlayerData: Checking if name needs to be updated from:",
+            await getUserName()
+          )
           if (name !== (await getUserName())) {
+            console.log("usePlayerData: Updating UserName from Firestore", name)
             await setUserName(name)
+            console.log("usePlayerData: updated username", await getUserName())
           }
         } else {
           // If no player document in Firestore and user is logged in, create a new player
+          console.log(
+            "usePlayerData: No player document found in firestore creating new player"
+          )
           const newPlayer = new Player(user.uid, user.displayName || "Guest")
+          console.log("usePlayerData: Creating new player:", newPlayer)
           await setDoc(playerDocRef, newPlayer)
-          console.log("New player created in Firestore.")
+          console.log("usePlayerData: New player created in Firestore.")
           id = newPlayer.id
           name = newPlayer.name
+          console.log("usePlayerData: Setting UserID", id)
           await setUserID(id)
           // Only set the user name if it's different
+          console.log(
+            "usePlayerData: Checking if name needs to be updated from:",
+            await getUserName()
+          )
           if (name !== (await getUserName())) {
+            console.log("usePlayerData: Updating UserName from Firestore", name)
             await setUserName(name)
+            console.log("usePlayerData: updated username", await getUserName())
           }
         }
       }
-
+      console.log("usePlayerData: Setting player state with data:", {
+        id,
+        name,
+      })
       dispatch({
         type: "SET_PLAYER",
         payload: { id, name },
       })
 
+      console.log(
+        "usePlayerData: Checking if player game has been initialized with ID:",
+        playerGame.id
+      )
       if (!playerGame.id) {
+        console.log(
+          "usePlayerData: Player game not initialized setting default"
+        )
         dispatch({
           type: "SET_PLAYER_GAME",
           payload: {
@@ -96,6 +137,10 @@ const usePlayerData = () => {
           },
         })
       } else {
+        console.log(
+          "usePlayerData: Player game initialized using the existing value",
+          playerGame.id
+        )
         dispatch({
           type: "SET_PLAYER_GAME",
           payload: {
@@ -105,16 +150,30 @@ const usePlayerData = () => {
         })
       }
 
+      console.log(
+        "usePlayerData: Checking if player stats has been initialized with ID:",
+        playerStats.id
+      )
       // Initialize playerStats only if it's empty
       if (!playerStats.id) {
+        console.log(
+          "usePlayerData: Player stats are not initialized setting defaults",
+          id
+        )
         dispatch({
           type: "SET_PLAYER_STATS",
           payload: { ...defaultPlayerStats, id }, // Use default values from AppContext
         })
+      } else {
+        console.log(
+          "usePlayerData: Player stats initialized, using existing value"
+        )
       }
     } catch (err) {
-      // ... (error handling)
+      console.error("usePlayerData: Error initializing player data:", err)
+      setError("usePlayerData: Error initializing player data.")
     } finally {
+      console.log("usePlayerData: Initialization complete.")
       setLoading(false)
     }
   }, [
