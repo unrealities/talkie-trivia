@@ -1,11 +1,12 @@
 import React, { useEffect } from "react"
 import { View } from "react-native"
 
-import MoviesContainer from "../src/components/movie"
-import { appStyles } from "../src/styles/AppStyles"
-import { useAppContext } from "../src/contexts/AppContext"
+import MoviesContainer from "../components/movie"
+import { appStyles } from "../styles/AppStyles"
+import { useAppContext } from "../contexts/appContext"
 
 const GameScreen = () => {
+  console.log("GameScreen is rendering")
   const { state, dispatch } = useAppContext()
   const { isNetworkConnected, basicMovies, player, playerGame, playerStats } =
     state

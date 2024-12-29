@@ -1,12 +1,13 @@
 import React from "react"
 import { View } from "react-native"
 
-import GoogleLogin from "../src/components/googleLogin"
-import PlayerStatsContainer from "../src/components/playerStats"
-import { appStyles } from "../src/styles/AppStyles"
-import { useAppContext } from "../src/contexts/AppContext"
+import GoogleLogin from "../components/googleLogin"
+import PlayerStatsContainer from "../components/playerStats"
+import { appStyles } from "../styles/AppStyles"
+import { useAppContext } from "../contexts/appContext"
 
 const ProfileScreen = () => {
+  console.log("ProfileScreen is rendering")
   const { state, dispatch } = useAppContext()
   const { player, playerStats } = state
 

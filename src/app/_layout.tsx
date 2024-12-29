@@ -1,6 +1,6 @@
 import React from "react"
 import { Tabs } from "expo-router"
-import { colors } from "../src/styles/global"
+import { colors } from "../styles/global"
 
 const Layout = () => {
   return (
