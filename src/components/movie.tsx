@@ -18,7 +18,7 @@ import PlayerStats from "../models/playerStats"
 
 interface MoviesContainerProps {
   isNetworkConnected: boolean
-  movies: BasicMovie[]
+  movies: readonly BasicMovie[]
   player: Player
   playerGame: PlayerGame
   playerStats: PlayerStats

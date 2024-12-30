@@ -13,10 +13,10 @@ import ErrorMessage from "./src/components/errorMessage"
 import useMovieData from "./src/utils/hooks/useMovieData"
 import useNetworkStatus from "./src/utils/hooks/useNetworkStatus"
 import usePlayerData from "./src/utils/hooks/usePlayerData"
+import { useAuthentication } from "./src/utils/hooks/useAuthentication"
 
 initializeApp(firebaseConfig)
 getFirestore()
-SplashScreen.preventAutoHideAsync()
 
 const App = () => {
   const { dispatch } = useAppContext()
@@ -33,42 +33,46 @@ const App = () => {
     error: playerDataError,
     initializePlayer,
   } = usePlayerData()
+  const { user, authLoading } = useAuthentication() // Get user and authLoading here
 
-  const [fontsLoaded, setFontsLoaded] = useState(false)
+  // const [fontsLoaded, setFontsLoaded] = useState(false);
+  const fontsLoaded = true // Manually set to true for testing
   const [fontError, setFontError] = useState<Error | null>(null)
 
+  // useEffect(() => {
+  //   const loadFonts = async () => {
+  //     try {
+  //       const [loaded] = await useFonts({
+  //         "Arvo-Bold": require("./assets/fonts/Arvo-Bold.ttf"),
+  //         "Arvo-Italic": require("./assets/fonts/Arvo-Italic.ttf"),
+  //         "Arvo-Regular": require("./assets/fonts/Arvo-Regular.ttf"),
+  //       });
+  //       setFontsLoaded(loaded);
+  //       if (!loaded) {
+  //         setFontError(new Error("Failed to load fonts"));
+  //       }
+  //     } catch (error) {
+  //       setFontError(error);
+  //     }
+  //   };
+
+  //   loadFonts();
+  // }, []);
+
+  // useEffect(() => {
+  //   if (fontsLoaded) {
+  //     console.log("Fonts loaded successfully!");
+  //   } else if (fontError) {
+  //     console.error("Error loading fonts:", fontError);
+  //   }
+  // }, [fontsLoaded, fontError]);
+
   useEffect(() => {
-    const loadFonts = async () => {
-      try {
-        const [loaded] = await useFonts({
-          "Arvo-Bold": require("./assets/fonts/Arvo-Bold.ttf"),
-          "Arvo-Italic": require("./assets/fonts/Arvo-Italic.ttf"),
-          "Arvo-Regular": require("./assets/fonts/Arvo-Regular.ttf"),
-        })
-        setFontsLoaded(loaded)
-        if (!loaded) {
-          setFontError(new Error("Failed to load fonts"))
-        }
-      } catch (error) {
-        setFontError(error)
-      }
+    // Initialize player data only after authentication state is determined
+    if (!authLoading) {
+      initializePlayer()
     }
-
-    loadFonts()
-  }, [])
-
-  useEffect(() => {
-    if (fontsLoaded) {
-      console.log("Fonts loaded successfully!")
-    } else if (fontError) {
-      console.error("Error loading fonts:", fontError)
-    }
-  }, [fontsLoaded, fontError])
-
-  useEffect(() => {
-    // Initialize player data as soon as user is available, even if there's no user
-    initializePlayer()
-  }, [])
+  }, [user, authLoading, initializePlayer]) // Depend on both user and authLoading
 
   useEffect(() => {
     let isInitialMovieLoad = true
@@ -93,7 +97,12 @@ const App = () => {
       }
     }
 
-    if (fontsLoaded && !movieDataLoading && !playerDataLoading) {
+    if (
+      fontsLoaded &&
+      !movieDataLoading &&
+      !playerDataLoading &&
+      !authLoading
+    ) {
       prepareApp()
     }
   }, [
@@ -101,11 +110,12 @@ const App = () => {
     isNetworkConnected,
     movieDataLoading,
     playerDataLoading,
+    authLoading,
     movies,
     basicMovies,
   ])
 
-  if (!isAppReady) {
+  if (!isAppReady || authLoading) {
     return <LoadingIndicator />
   }
 

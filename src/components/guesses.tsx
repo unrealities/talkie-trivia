@@ -1,4 +1,3 @@
-// src/components/guesses.tsx
 import React, { useEffect } from "react" // Import useEffect
 import { Text, View } from "react-native"
 import { BasicMovie, Movie } from "../models/movie"

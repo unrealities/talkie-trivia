@@ -1,6 +1,6 @@
 import React from "react"
 import { Text, View, Button } from "react-native"
-import { appStyles } from "../styles/AppStyles"
+import { appStyles } from "../styles/appStyles"
 
 interface ErrorMessageProps {
   message: string

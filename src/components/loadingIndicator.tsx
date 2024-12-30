@@ -1,6 +1,6 @@
 import React from "react"
 import { View, ActivityIndicator } from "react-native"
-import { appStyles } from "../styles/AppStyles"
+import { appStyles } from "../styles/appStyles"
 import { colors } from "../styles/global"
 
 const LoadingIndicator: React.FC = () => {

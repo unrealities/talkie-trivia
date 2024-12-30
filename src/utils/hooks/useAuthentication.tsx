@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { initializeApp } from "firebase/app"
 import { getAuth, onAuthStateChanged, User } from "firebase/auth"
 import { firebaseConfig } from "../../config/firebase"
@@ -8,7 +8,8 @@ const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
 
 export function useAuthentication() {
-  const [user, setUser] = useState<User>()
+  const [user, setUser] = useState<User | null>(null) // Start with null
+  const [authLoading, setAuthLoading] = useState<boolean>(true)
 
   useEffect(() => {
     const unsubscribeFromAuthStatusChanged = onAuthStateChanged(
@@ -18,8 +19,9 @@ export function useAuthentication() {
           setUser(user)
           setUserName(user.displayName || "no name")
         } else {
-          setUser(undefined)
+          setUser(null) // Explicitly set to null when logged out
         }
+        setAuthLoading(false) // Set loading to false when auth state is known
       }
     )
 
@@ -28,5 +30,6 @@ export function useAuthentication() {
 
   return {
     user,
+    authLoading,
   }
 }

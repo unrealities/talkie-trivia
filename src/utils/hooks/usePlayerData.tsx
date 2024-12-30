@@ -52,94 +52,80 @@ const usePlayerData = () => {
       console.log("usePlayerData: Fetched id from local store:", id)
       let name = await getUserName()
       console.log("usePlayerData: Fetched name from local store:", name)
+      console.log("usePlayerData: User object:", user) // Log the user object
 
       if (user) {
         console.log("usePlayerData: User is logged in, checking Firestore")
-        // If user is logged in, check if Firestore document exists
         const playerDocRef = doc(db, "players", user.uid).withConverter(
           playerConverter
         )
-        console.log("usePlayerData: Firestore player document ref created.")
+        console.log(
+          "usePlayerData: Firestore player document ref created:",
+          playerDocRef.path
+        )
         const playerDocSnap = await getDoc(playerDocRef)
         console.log(
-          "usePlayerData: Fetched player document snapshot:",
+          "usePlayerData: Fetched player document snapshot. Exists?:",
           playerDocSnap.exists()
         )
+
         if (playerDocSnap.exists()) {
-          console.log("usePlayerData: player document exists, fetching data")
+          console.log("usePlayerData: Player document exists, fetching data")
           const fetchedPlayer = playerDocSnap.data()
+          console.log("usePlayerData: Fetched player:", fetchedPlayer)
           id = fetchedPlayer.id
           name = fetchedPlayer.name
-          console.log("usePlayerData: Fetched player data from firestore:", {
-            id,
-            name,
-          })
-          console.log("usePlayerData: Setting UserID", id)
+          console.log("usePlayerData: Using fetched player data:", { id, name })
+
+          console.log("usePlayerData: Setting UserID (fetched):", id)
           await setUserID(id)
-          // Only set the user name if it's different
-          console.log(
-            "usePlayerData: Checking if name needs to be updated from:",
-            await getUserName()
-          )
           if (name !== (await getUserName())) {
-            console.log("usePlayerData: Updating UserName from Firestore", name)
+            console.log("usePlayerData: Updating UserName (fetched):", name)
             await setUserName(name)
-            console.log("usePlayerData: updated username", await getUserName())
           }
         } else {
-          // If no player document in Firestore and user is logged in, create a new player
           console.log(
-            "usePlayerData: No player document found in firestore creating new player"
+            "usePlayerData: No player document found in Firestore, creating new player"
           )
           const newPlayer = new Player(user.uid, user.displayName || "Guest")
-          console.log("usePlayerData: Creating new player:", newPlayer)
-          await setDoc(playerDocRef, newPlayer)
-          console.log("usePlayerData: New player created in Firestore.")
+          console.log("usePlayerData: New player instance:", newPlayer)
+          await setDoc(playerDocRef, newPlayer) // Make sure you're awaiting this
+          console.log("usePlayerData: New player created in Firestore")
           id = newPlayer.id
           name = newPlayer.name
-          console.log("usePlayerData: Setting UserID", id)
+
+          console.log("usePlayerData: Setting UserID (new):", id)
           await setUserID(id)
-          // Only set the user name if it's different
-          console.log(
-            "usePlayerData: Checking if name needs to be updated from:",
-            await getUserName()
-          )
           if (name !== (await getUserName())) {
-            console.log("usePlayerData: Updating UserName from Firestore", name)
+            console.log("usePlayerData: Updating UserName (new):", name)
             await setUserName(name)
-            console.log("usePlayerData: updated username", await getUserName())
           }
         }
+      } else {
+        console.log("usePlayerData: User is NOT logged in. Using local ID:", id)
       }
-      console.log("usePlayerData: Setting player state with data:", {
-        id,
-        name,
-      })
+
+      console.log("usePlayerData: Dispatching SET_PLAYER with:", { id, name })
       dispatch({
         type: "SET_PLAYER",
         payload: { id, name },
       })
 
-      console.log(
-        "usePlayerData: Checking if player game has been initialized with ID:",
-        playerGame.id
-      )
+      console.log("usePlayerData: playerGame before dispatch:", playerGame)
       if (!playerGame.id) {
-        console.log(
-          "usePlayerData: Player game not initialized setting default"
-        )
+        console.log("usePlayerData: Initializing playerGame (new)")
         dispatch({
           type: "SET_PLAYER_GAME",
           payload: {
-            ...defaultPlayerGame, // Use default values from AppContext
+            ...defaultPlayerGame,
             playerID: id,
             id: Date.now().toString(),
           },
         })
       } else {
         console.log(
-          "usePlayerData: Player game initialized using the existing value",
-          playerGame.id
+          "usePlayerData: Initializing playerGame (existing):",
+          playerGame
         )
         dispatch({
           type: "SET_PLAYER_GAME",
@@ -150,40 +136,24 @@ const usePlayerData = () => {
         })
       }
 
-      console.log(
-        "usePlayerData: Checking if player stats has been initialized with ID:",
-        playerStats.id
-      )
-      // Initialize playerStats only if it's empty
+      console.log("usePlayerData: playerStats before dispatch:", playerStats)
       if (!playerStats.id) {
-        console.log(
-          "usePlayerData: Player stats are not initialized setting defaults",
-          id
-        )
+        console.log("usePlayerData: Initializing playerStats (new)")
         dispatch({
           type: "SET_PLAYER_STATS",
-          payload: { ...defaultPlayerStats, id }, // Use default values from AppContext
+          payload: { ...defaultPlayerStats, id },
         })
       } else {
-        console.log(
-          "usePlayerData: Player stats initialized, using existing value"
-        )
+        console.log("usePlayerData: Using existing playerStats")
       }
     } catch (err) {
-      console.error("usePlayerData: Error initializing player data:", err)
-      setError("usePlayerData: Error initializing player data.")
+      console.error("usePlayerData: Error initializing player:", err)
+      setError("usePlayerData: Error initializing player.")
     } finally {
       console.log("usePlayerData: Initialization complete.")
       setLoading(false)
     }
-  }, [
-    user,
-    dispatch,
-    playerGame,
-    playerStats,
-    defaultPlayerGame,
-    defaultPlayerStats,
-  ]) // Include defaultPlayerGame and defaultPlayerStats in dependency array
+  }, [user, dispatch, playerGame, playerStats])
 
   return { loading, error, initializePlayer }
 }

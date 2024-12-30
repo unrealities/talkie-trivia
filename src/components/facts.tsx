@@ -9,7 +9,7 @@ import {
   ScrollView,
 } from "react-native"
 import * as Linking from "expo-linking"
-import { Image } from "expo-image" // Import ImageSourcePropType
+import { Image } from "expo-image"
 import { Actors } from "./actors"
 import { Movie } from "../models/movie"
 import { factsStyles } from "../styles/factsStyles"

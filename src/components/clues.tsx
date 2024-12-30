@@ -1,4 +1,3 @@
-// src/components/clues.tsx
 import React, { useEffect, useRef, useState, useMemo } from "react"
 import { Animated, Text, View, Easing, ScrollView } from "react-native"
 import { cluesStyles } from "../styles/cluesStyles"
