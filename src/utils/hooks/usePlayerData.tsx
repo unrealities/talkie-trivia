@@ -13,46 +13,25 @@ import {
 import { Game, PlayerGame } from "../../models/game"
 import { Movie } from "../../models/movie"
 
-// Define a default movie object to use as a placeholder
-const defaultMovie: Movie = {
-  actors: [],
-  director: { id: 0, name: "", popularity: 0, profile_path: "" },
-  genres: [],
-  id: 0,
-  imdb_id: 0,
-  overview: "", // Ensure overview is never undefined
-  poster_path: "",
-  popularity: 0,
-  release_date: "",
-  tagline: "",
-  title: "",
-  vote_average: 0,
-  vote_count: 0,
-}
-
-const defaultGame: Game = {
-  date: new Date(),
-  guessesMax: 5,
-  id: "",
-  movie: defaultMovie,
-}
+// ... (rest of your defaultMovie and defaultGame definitions)
 
 const usePlayerData = () => {
   const { user } = useAuthentication()
   const { state, dispatch } = useAppContext()
-  const { player, playerGame, playerStats } = state // Destructure from state
+  const { player, playerGame, playerStats } = state
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const initializePlayer = useCallback(async () => {
     setLoading(true)
+    console.log("usePlayerData: initializePlayer called") // Added log
     try {
       console.log("usePlayerData: Initializing player...")
       let id = await getUserID()
       console.log("usePlayerData: Fetched id from local store:", id)
       let name = await getUserName()
       console.log("usePlayerData: Fetched name from local store:", name)
-      console.log("usePlayerData: User object:", user) // Log the user object
+      console.log("usePlayerData: User object:", user)
 
       if (user) {
         console.log("usePlayerData: User is logged in, checking Firestore")
@@ -89,7 +68,7 @@ const usePlayerData = () => {
           )
           const newPlayer = new Player(user.uid, user.displayName || "Guest")
           console.log("usePlayerData: New player instance:", newPlayer)
-          await setDoc(playerDocRef, newPlayer) // Make sure you're awaiting this
+          await setDoc(playerDocRef, newPlayer)
           console.log("usePlayerData: New player created in Firestore")
           id = newPlayer.id
           name = newPlayer.name
@@ -146,9 +125,9 @@ const usePlayerData = () => {
       } else {
         console.log("usePlayerData: Using existing playerStats")
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("usePlayerData: Error initializing player:", err)
-      setError("usePlayerData: Error initializing player.")
+      setError(`usePlayerData: Error initializing player: ${err.message}`) // More specific error
     } finally {
       console.log("usePlayerData: Initialization complete.")
       setLoading(false)

@@ -10,7 +10,6 @@ import { firebaseConfig } from "./src/config/firebase"
 import LoadingIndicator from "./src/components/loadingIndicator"
 import ErrorMessage from "./src/components/errorMessage"
 import useMovieData from "./src/utils/hooks/useMovieData"
-import useNetworkStatus from "./src/utils/hooks/useNetworkStatus"
 import usePlayerData from "./src/utils/hooks/usePlayerData"
 import { useAuthentication } from "./src/utils/hooks/useAuthentication"
 import { Slot } from "expo-router"
@@ -19,21 +18,6 @@ initializeApp(firebaseConfig)
 getFirestore()
 
 const App = () => {
-  const [isAppReady, setIsAppReady] = useState(false)
-  const { isNetworkConnected } = useNetworkStatus()
-  const {
-    movies,
-    basicMovies,
-    loading: movieDataLoading,
-    error: movieDataError,
-  } = useMovieData()
-  const {
-    loading: playerDataLoading,
-    error: playerDataError,
-    initializePlayer,
-  } = usePlayerData()
-  const { user, authLoading } = useAuthentication() // Get user and authLoading here
-
   const [fontsLoaded, setFontsLoaded] = useState(false)
   const [fontError, setFontError] = useState<Error | null>(null)
 
@@ -57,66 +41,75 @@ const App = () => {
     loadFonts()
   }, [])
 
+  if (!fontsLoaded) {
+    return <LoadingIndicator />
+  }
+
+  if (fontError) {
+    return <ErrorMessage message={fontError.message} />
+  }
+
+  return (
+    <AppProviderWrapper /> // Wrap the main logic in a new component
+  )
+}
+
+// New component to handle data loading and context provision
+const AppProviderWrapper: React.FC = () => {
+  console.log("AppProviderWrapper: Rendering")
+  const { authLoading } = useAuthentication()
+  console.log("AppProviderWrapper: authLoading =", authLoading)
+  const {
+    movies,
+    basicMovies,
+    loading: movieDataLoading,
+    error: movieDataError,
+  } = useMovieData()
+  const {
+    loading: playerDataLoading,
+    error: playerDataError,
+    initializePlayer,
+  } = usePlayerData()
+
+  const [isAppReady, setIsAppReady] = useState(false)
+
   useEffect(() => {
-    // Initialize player data only after authentication state is determined
     if (!authLoading) {
       initializePlayer()
     }
-  }, [user, authLoading, initializePlayer])
+  }, [authLoading, initializePlayer])
 
   useEffect(() => {
-    let isInitialMovieLoad = true
-    let isInitialBasicMovieLoad = true
-    const prepareApp = async () => {
-      try {
-        if (isNetworkConnected) {
-          if (isInitialMovieLoad && movies.length > 0) {
-            isInitialMovieLoad = false
-          }
-          if (isInitialBasicMovieLoad && basicMovies.length > 0) {
-            isInitialBasicMovieLoad = false
-          }
-        }
-      } catch (error) {
-        console.error("Error preparing app:", error)
-      } finally {
-        setIsAppReady(true)
-      }
-    }
-
     if (
-      fontsLoaded &&
       !movieDataLoading &&
       !playerDataLoading &&
-      !authLoading
+      !authLoading &&
+      movies.length > 0 &&
+      basicMovies.length > 0
     ) {
-      prepareApp()
+      setIsAppReady(true)
     }
   }, [
-    fontsLoaded,
-    isNetworkConnected,
     movieDataLoading,
     playerDataLoading,
     authLoading,
-    movies,
-    basicMovies,
+    movies.length,
+    basicMovies.length,
   ])
 
-  if (!isAppReady || authLoading || !fontsLoaded) {
+  if (authLoading || !isAppReady) {
     return <LoadingIndicator />
   }
 
   return (
-    <AppProvider>
-      <SafeAreaProvider>
-        <StatusBar style="auto" />
-        {movieDataError ? (
-          <ErrorMessage message={"Error loading movie data"} />
-        ) : (
-          <Slot />
-        )}
-      </SafeAreaProvider>
-    </AppProvider>
+    <SafeAreaProvider>
+      <StatusBar style="auto" />
+      {movieDataError ? (
+        <ErrorMessage message={"Error loading movie data"} />
+      ) : (
+        <Slot />
+      )}
+    </SafeAreaProvider>
   )
 }
 

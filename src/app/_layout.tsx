@@ -1,7 +1,7 @@
 import React from "react"
 import { Tabs } from "expo-router"
 import { colors } from "../styles/global"
-import { AppProvider } from "../contexts/appContext" // Import your AppProvider
+import { AppProvider } from "../contexts/appContext"
 
 const Layout = () => {
   return (
