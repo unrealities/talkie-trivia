@@ -20,4 +20,4 @@ utils/secrets.json
 eas.json
 
 # third-party
-repomix-output.txt
+repomix*

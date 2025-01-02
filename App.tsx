@@ -97,6 +97,7 @@ const AppProviderWrapper: React.FC = () => {
     basicMovies.length,
   ])
 
+  // TODO: authLoading is failing
   if (authLoading || !isAppReady) {
     return <LoadingIndicator />
   }
