@@ -13,7 +13,28 @@ import {
 import { Game, PlayerGame } from "../../models/game"
 import { Movie } from "../../models/movie"
 
-// ... (rest of your defaultMovie and defaultGame definitions)
+const defaultMovie: Movie = {
+  actors: [],
+  director: { id: 0, name: "", popularity: 0, profile_path: "" },
+  genres: [],
+  id: 0,
+  imdb_id: 0,
+  overview: "", // Ensure overview is never undefined
+  poster_path: "",
+  popularity: 0,
+  release_date: "",
+  tagline: "",
+  title: "",
+  vote_average: 0,
+  vote_count: 0,
+}
+
+const defaultGame: Game = {
+  date: new Date(),
+  guessesMax: 5,
+  id: "",
+  movie: defaultMovie,
+}
 
 const usePlayerData = () => {
   const { user } = useAuthentication()

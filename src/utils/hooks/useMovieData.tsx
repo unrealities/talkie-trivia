@@ -13,9 +13,29 @@ const useMovieData = () => {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    console.log("useMovieData: useEffect called") // Added log
     const loadData = async () => {
-      // ... your existing loadData logic
+      try {
+        console.log("useMovieData: Loading movie data...")
+        setLoading(true)
+
+        const loadedMovies: Movie[] = require("../../../data/popularMovies.json")
+        console.log("useMovieData: Loaded movies:", loadedMovies.length)
+        const loadedBasicMovies: BasicMovie[] = require("../../../data/basicMovies.json")
+        console.log(
+          "useMovieData: Loaded basic movies:",
+          loadedBasicMovies.length
+        )
+
+        // Dispatch actions to update the context state
+        dispatch({ type: "SET_MOVIES", payload: loadedMovies })
+        dispatch({ type: "SET_BASIC_MOVIES", payload: loadedBasicMovies })
+      } catch (error) {
+        console.error("useMovieData: Error caught:", error)
+        setError(`useMovieData: Error loading movie data: ${error.message}`)
+      } finally {
+        console.log("useMovieData: Finally block executed.")
+        setLoading(false)
+      }
     }
     console.log("useMovieData: calling loadData")
     loadData()

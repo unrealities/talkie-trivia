@@ -41,20 +41,19 @@ const App = () => {
     loadFonts()
   }, [])
 
-  if (!fontsLoaded) {
-    return <LoadingIndicator />
-  }
+  // TODO: fonts may not be loading
+  // if (!fontsLoaded) {
+  //   console.log("fonts not loaded")
+  //   return <LoadingIndicator />
+  // }
 
   if (fontError) {
     return <ErrorMessage message={fontError.message} />
   }
 
-  return (
-    <AppProviderWrapper /> // Wrap the main logic in a new component
-  )
+  return <AppProviderWrapper />
 }
 
-// New component to handle data loading and context provision
 const AppProviderWrapper: React.FC = () => {
   console.log("AppProviderWrapper: Rendering")
   const { authLoading } = useAuthentication()
@@ -103,14 +102,16 @@ const AppProviderWrapper: React.FC = () => {
   }
 
   return (
-    <SafeAreaProvider>
-      <StatusBar style="auto" />
-      {movieDataError ? (
-        <ErrorMessage message={"Error loading movie data"} />
-      ) : (
-        <Slot />
-      )}
-    </SafeAreaProvider>
+    <AppProvider>
+      <SafeAreaProvider>
+        <StatusBar style="auto" />
+        {movieDataError ? (
+          <ErrorMessage message={"Error loading movie data"} />
+        ) : (
+          <Slot />
+        )}
+      </SafeAreaProvider>
+    </AppProvider>
   )
 }
 
