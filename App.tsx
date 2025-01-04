@@ -9,9 +9,6 @@ import { AppProvider } from "./src/contexts/appContext"
 import { firebaseConfig } from "./src/config/firebase"
 import LoadingIndicator from "./src/components/loadingIndicator"
 import ErrorMessage from "./src/components/errorMessage"
-import useMovieData from "./src/utils/hooks/useMovieData"
-import usePlayerData from "./src/utils/hooks/usePlayerData"
-import { useAuthentication } from "./src/utils/hooks/useAuthentication"
 import { Slot } from "expo-router"
 
 initializeApp(firebaseConfig)
@@ -41,7 +38,6 @@ const App = () => {
     loadFonts()
   }, [])
 
-  // TODO: fonts may not be loading
   // if (!fontsLoaded) {
   //   console.log("fonts not loaded")
   //   return <LoadingIndicator />
@@ -51,67 +47,13 @@ const App = () => {
     return <ErrorMessage message={fontError.message} />
   }
 
-  return <AppProviderWrapper />
-}
-
-const AppProviderWrapper: React.FC = () => {
-  console.log("AppProviderWrapper: Rendering")
-  const { authLoading } = useAuthentication()
-  console.log("AppProviderWrapper: authLoading =", authLoading)
-  const {
-    movies,
-    basicMovies,
-    loading: movieDataLoading,
-    error: movieDataError,
-  } = useMovieData()
-  const {
-    loading: playerDataLoading,
-    error: playerDataError,
-    initializePlayer,
-  } = usePlayerData()
-
-  const [isAppReady, setIsAppReady] = useState(false)
-
-  useEffect(() => {
-    if (!authLoading) {
-      initializePlayer()
-    }
-  }, [authLoading, initializePlayer])
-
-  useEffect(() => {
-    if (
-      !movieDataLoading &&
-      !playerDataLoading &&
-      !authLoading &&
-      movies.length > 0 &&
-      basicMovies.length > 0
-    ) {
-      setIsAppReady(true)
-    }
-  }, [
-    movieDataLoading,
-    playerDataLoading,
-    authLoading,
-    movies.length,
-    basicMovies.length,
-  ])
-
-  // TODO: authLoading is failing
-  if (authLoading || !isAppReady) {
-    return <LoadingIndicator />
-  }
-
   return (
-    <AppProvider>
-      <SafeAreaProvider>
-        <StatusBar style="auto" />
-        {movieDataError ? (
-          <ErrorMessage message={"Error loading movie data"} />
-        ) : (
-          <Slot />
-        )}
-      </SafeAreaProvider>
-    </AppProvider>
+      <AppProvider>
+          <SafeAreaProvider>
+              <StatusBar style="auto" />
+              <Slot />
+          </SafeAreaProvider>
+      </AppProvider>
   )
 }
 

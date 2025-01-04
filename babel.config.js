@@ -11,13 +11,5 @@ module.exports = function (api) {
                 },
             ],
         ],
-        overrides: [
-            {
-                test: (fileName) => fileName.includes("node_modules"),
-                plugins: [
-                    "@babel/plugin-transform-modules-commonjs",
-                ],
-            },
-        ],
     };
 };

@@ -53,17 +53,10 @@
     "stream": "npm:stream-browserify",
     "victory": "^36.6.8",
     "victory-native": "^36.6.8",
-    "vm": "^0.1.0",
-    "expo-router": "~4.0.15"
+    "vm": "^0.1.0"
   },
   "devDependencies": {
     "@types/react": "~18.3.12",
     "typescript": "^5.3.3"
-  },
-  "name": "talkie-trivia",
-  "version": "1.0.0",
-  "scripts": {
-    "android": "expo run:android",
-    "ios": "expo run:ios"
   }
 }
