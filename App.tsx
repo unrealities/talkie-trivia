@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react"
-import { SafeAreaProvider } from "react-native-safe-area-context"
 import { StatusBar } from "expo-status-bar"
 import { useFonts } from "expo-font"
 import { initializeApp } from "firebase/app"
@@ -38,22 +37,20 @@ const App = () => {
     loadFonts()
   }, [])
 
-  // if (!fontsLoaded) {
-  //   console.log("fonts not loaded")
-  //   return <LoadingIndicator />
-  // }
+  if (!fontsLoaded) {
+    console.log("fonts not loaded")
+    return <LoadingIndicator />
+  }
 
   if (fontError) {
     return <ErrorMessage message={fontError.message} />
   }
 
   return (
-      <AppProvider>
-          <SafeAreaProvider>
-              <StatusBar style="auto" />
-              <Slot />
-          </SafeAreaProvider>
-      </AppProvider>
+    <AppProvider>
+      <StatusBar style="auto" />
+      <Slot />
+    </AppProvider>
   )
 }
 

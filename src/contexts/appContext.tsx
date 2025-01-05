@@ -4,14 +4,13 @@ import { Game, PlayerGame } from "../models/game"
 import Player from "../models/player"
 import PlayerStats from "../models/playerStats"
 
-// Define a default movie object to use as a placeholder
 const defaultMovie: Movie = {
   actors: [],
   director: { id: 0, name: "", popularity: 0, profile_path: "" },
   genres: [],
   id: 0,
   imdb_id: 0,
-  overview: "", // Ensure overview is never undefined
+  overview: "",
   poster_path: "",
   popularity: 0,
   release_date: "",

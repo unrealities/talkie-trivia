@@ -1,12 +1,10 @@
 import React from "react"
-import { View } from "react-native"
-
-import Victory from "../utils/victory/victory"
+import { View, Dimensions } from "react-native"
+import { PieChart } from "react-native-chart-kit"
 import { colors } from "../styles/global"
 import { winChartStyles } from "../styles/winChartStyles"
 
-const VictoryPie = Victory.VictoryPie
-const VictoryTheme = Victory.VictoryTheme
+const screenWidth = Dimensions.get("window").width
 
 export interface WinChartProps {
   wins: number[]
@@ -15,36 +13,45 @@ export interface WinChartProps {
 const WinChart = ({ wins }: WinChartProps) => {
   const keys = ["1", "2", "3", "4", "5"]
   const data = keys.map((key, index) => ({
-    key: key,
+    name: key,
     x: key,
     y: wins[index] || 0, // Ensure y is 0 for undefined values
     label:
       wins[index] > 0
         ? `${(wins[index] / wins.reduce((a, b) => a + b, 0)) * 100}%`
         : "",
+    color: [
+      colors.primary,
+      colors.secondary,
+      colors.tertiary,
+      colors.quaternary,
+      colors.quinary,
+    ][index],
+    legendFontColor: colors.secondary,
+    legendFontSize: 15,
   }))
+
+  const chartConfig = {
+    backgroundGradientFrom: colors.background,
+    backgroundGradientTo: colors.background,
+    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+  }
 
   return (
     <View style={winChartStyles.container}>
-      <VictoryPie
+      <PieChart
         testID="victory-pie-chart"
-        colorScale={[
-          colors.primary,
-          colors.secondary,
-          colors.tertiary,
-          colors.quaternary,
-          colors.quinary,
-        ]}
         data={data}
-        innerRadius={({ datum }) => datum.y * 25}
-        style={{
-          labels: winChartStyles.victoryLabels,
-          data: { fill: colors.white },
-        }}
-        theme={VictoryTheme.material}
+        width={screenWidth * 0.6} // Use 60% of the screen width
+        height={220}
+        chartConfig={chartConfig}
+        accessor="y"
+        backgroundColor="transparent"
+        paddingLeft="0"
+        center={[0, 0]}
+        absolute
       />
     </View>
   )
 }
-
 export default WinChart
