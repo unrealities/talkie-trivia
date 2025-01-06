@@ -14,36 +14,19 @@ initializeApp(firebaseConfig)
 getFirestore()
 
 const App = () => {
-  const [fontsLoaded, setFontsLoaded] = useState(false)
-  const [fontError, setFontError] = useState<Error | null>(null)
-
-  useEffect(() => {
-    const loadFonts = async () => {
-      try {
-        const [loaded] = await useFonts({
-          "Arvo-Bold": require("./assets/fonts/Arvo-Bold.ttf"),
-          "Arvo-Italic": require("./assets/fonts/Arvo-Italic.ttf"),
-          "Arvo-Regular": require("./assets/fonts/Arvo-Regular.ttf"),
-        })
-        setFontsLoaded(loaded)
-        if (!loaded) {
-          setFontError(new Error("Failed to load fonts"))
-        }
-      } catch (error) {
-        setFontError(error)
-      }
-    }
-
-    loadFonts()
-  }, [])
+  const [fontsLoaded, fontError] = useFonts({
+    "Arvo-Bold": require("./assets/fonts/Arvo-Bold.ttf"),
+    "Arvo-Italic": require("./assets/fonts/Arvo-Italic.ttf"),
+    "Arvo-Regular": require("./assets/fonts/Arvo-Regular.ttf"),
+  });
 
   if (!fontsLoaded) {
     console.log("fonts not loaded")
-    return <LoadingIndicator />
+    return <LoadingIndicator />;
   }
 
   if (fontError) {
-    return <ErrorMessage message={fontError.message} />
+    return <ErrorMessage message={fontError.message} />;
   }
 
   return (
