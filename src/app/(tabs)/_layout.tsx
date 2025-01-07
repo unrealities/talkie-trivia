@@ -1,0 +1,88 @@
+import React, { useEffect, useState } from "react"
+import { Tabs } from "expo-router"
+import { useAuthentication } from "../../utils/hooks/useAuthentication"
+import useMovieData from "../../utils/hooks/useMovieData"
+import usePlayerData from "../../utils/hooks/usePlayerData"
+import LoadingIndicator from "../../components/loadingIndicator"
+import ErrorMessage from "../../components/errorMessage"
+import { colors } from "../../styles/global"
+
+const TabLayout = () => {
+  const [authLoading, setAuthLoading] = useState(false)
+
+  const { authLoading: authLoadingState } = useAuthentication()
+
+  useEffect(() => {
+    setAuthLoading(authLoadingState)
+  }, [authLoadingState])
+
+  const {
+    movies: movieData,
+    basicMovies: basicMoviesData,
+    loading: movieDataLoading,
+    error: movieDataError,
+  } = useMovieData()
+
+  const {
+    loading: playerDataLoading,
+    error: playerDataError,
+    initializePlayer,
+  } = usePlayerData()
+
+  useEffect(() => {
+    if (!authLoading) {
+      initializePlayer()
+    }
+  }, [authLoading, initializePlayer])
+
+  if (movieDataLoading || playerDataLoading) {
+    console.log("Loading...")
+    return <LoadingIndicator />
+  }
+
+  if (movieDataError) {
+    console.log("Error: movieDataError:", movieDataError)
+    return <ErrorMessage message={movieDataError} />
+  }
+
+  if (playerDataError) {
+    console.log("Error: playerDataError:", playerDataError)
+    return <ErrorMessage message={playerDataError} />
+  }
+
+  if (!movieData || !basicMoviesData) {
+    console.log("Error: Movies data not loaded:", movieData, basicMoviesData)
+    return <ErrorMessage message={"Missing movie data"} />
+  }
+
+  if (!movieData.length || !basicMoviesData.length) {
+    console.log("Error: Movies data is empty:", movieData, basicMoviesData)
+    return <ErrorMessage message={"Missing movie data"} />
+  }
+
+  console.log("InitializedLayout: Rendering Tabs")
+  return (
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: colors.primary,
+        tabBarLabelStyle: { fontFamily: "Arvo-Bold", fontSize: 16 },
+      }}
+    >
+      <Tabs.Screen
+        name="game"
+        options={{
+          title: "Game",
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+        }}
+      />
+    </Tabs>
+  )
+}
+
+export default TabLayout

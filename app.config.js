@@ -43,6 +43,9 @@ export default ({ config }) => ({
       favicon: "./assets/favicon.png"
     },
     extra: {
+      "router": {
+        "root": "src/app"
+      },
       firebaseApiKey: process.env.FIREBASE_APIKEY,
       firebaseAppId: process.env.FIREBASE_APPID,
       firebaseMeasurementId: process.env.FIREBASE_MEASUREMENTID,
