@@ -1,9 +1,9 @@
 import React, { useEffect } from "react"
 import { View } from "react-native"
 
-import MoviesContainer from "../components/movie"
-import { appStyles } from "../styles/appStyles"
-import { useAppContext } from "../contexts/appContext"
+import MoviesContainer from "../../components/movie"
+import { appStyles } from "../../styles/appStyles"
+import { useAppContext } from "../../contexts/appContext"
 
 const GameScreen = () => {
   console.log("GameScreen is rendering")
