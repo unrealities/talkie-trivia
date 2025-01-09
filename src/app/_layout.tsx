@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react"
-import { StatusBar } from "expo-status-bar"
+import React from "react"
 import { useFonts } from "expo-font"
-import { Slot } from "expo-router"
+import { Stack } from "expo-router/stack"
 
-import { AppProvider } from "../contexts/appContext"
 import LoadingIndicator from "../components/loadingIndicator"
 import ErrorMessage from "../components/errorMessage"
 
@@ -24,10 +22,9 @@ const RootLayout = () => {
   }
 
   return (
-    <AppProvider>
-      <StatusBar style="auto" />
-      <Slot />
-    </AppProvider>
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+    </Stack>
   )
 }
 
