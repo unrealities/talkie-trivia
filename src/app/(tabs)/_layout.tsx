@@ -8,7 +8,7 @@ import ErrorMessage from "../../components/errorMessage"
 import { colors } from "../../styles/global"
 
 const TabLayout = () => {
-  const [authLoading, setAuthLoading] = useState(false)
+  const [authLoading, setAuthLoading] = useState(true)
 
   const { authLoading: authLoadingState } = useAuthentication()
 
@@ -31,36 +31,45 @@ const TabLayout = () => {
 
   useEffect(() => {
     if (!authLoading) {
+      console.log("TabLayout: Auth is loaded, initializing player.")
       initializePlayer()
     }
   }, [authLoading, initializePlayer])
 
-  if (movieDataLoading || playerDataLoading) {
-    console.log("Loading...")
+  if (authLoading || movieDataLoading || playerDataLoading) {
+    console.log("TabLayout: Loading...")
     return <LoadingIndicator />
   }
 
   if (movieDataError) {
-    console.log("Error: movieDataError:", movieDataError)
+    console.log("TabLayout: Error: movieDataError:", movieDataError)
     return <ErrorMessage message={movieDataError} />
   }
 
   if (playerDataError) {
-    console.log("Error: playerDataError:", playerDataError)
+    console.log("TabLayout: Error: playerDataError:", playerDataError)
     return <ErrorMessage message={playerDataError} />
   }
 
   if (!movieData || !basicMoviesData) {
-    console.log("Error: Movies data not loaded:", movieData, basicMoviesData)
+    console.log(
+      "TabLayout: Error: Movies data not loaded:",
+      movieData,
+      basicMoviesData
+    )
     return <ErrorMessage message={"Missing movie data"} />
   }
 
   if (!movieData.length || !basicMoviesData.length) {
-    console.log("Error: Movies data is empty:", movieData, basicMoviesData)
+    console.log(
+      "TabLayout: Error: Movies data is empty:",
+      movieData,
+      basicMoviesData
+    )
     return <ErrorMessage message={"Missing movie data"} />
   }
 
-  console.log("InitializedLayout: Rendering Tabs")
+  console.log("TabLayout: InitializedLayout: Rendering Tabs")
   return (
     <Tabs
       screenOptions={{

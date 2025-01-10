@@ -15,11 +15,15 @@ export function useAuthentication() {
   useEffect(() => {
     const unsubscribeFromAuthStatusChanged = onAuthStateChanged(
       auth,
-      (user) => {
+      async (user) => {
         console.log("onAuthStateChanged: User:", user)
         if (user) {
           setUser(user)
-          setUserName(user.displayName || "no name")
+          try {
+            await setUserName(user.displayName || "no name")
+          } catch (error) {
+            console.error("Error setting user name:", error)
+          }
         } else {
           setUser(null) // Explicitly set to null when logged out
         }
