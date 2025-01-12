@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Tabs } from "expo-router"
+import { Tabs, useRouter } from "expo-router"
 import { useAuthentication } from "../../utils/hooks/useAuthentication"
 import useMovieData from "../../utils/hooks/useMovieData"
 import usePlayerData from "../../utils/hooks/usePlayerData"
@@ -9,6 +9,7 @@ import { colors } from "../../styles/global"
 
 const TabLayout = () => {
   const [authLoading, setAuthLoading] = useState(true)
+  const router = useRouter()
 
   const { authLoading: authLoadingState } = useAuthentication()
 
@@ -35,6 +36,12 @@ const TabLayout = () => {
       initializePlayer()
     }
   }, [authLoading, initializePlayer])
+
+  useEffect(() => {
+    if (!authLoading && movieData && basicMoviesData) {
+      router.replace("/game")
+    }
+  }, [authLoading, movieData, basicMoviesData, router])
 
   if (authLoading || movieDataLoading || playerDataLoading) {
     console.log("TabLayout: Loading...")
