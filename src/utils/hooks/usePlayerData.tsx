@@ -37,7 +37,7 @@ const defaultGame: Game = {
 }
 
 const usePlayerData = () => {
-  const { user } = useAuthentication()
+  const { user, authError } = useAuthentication()
   const { state, dispatch } = useAppContext()
   const { player, playerGame, playerStats } = state
   const [loading, setLoading] = useState(false)
@@ -53,6 +53,12 @@ const usePlayerData = () => {
       let name = await getUserName()
       console.log("usePlayerData: Fetched name from local store:", name)
       console.log("usePlayerData: User object:", user)
+
+      if (authError) {
+        console.error("usePlayerData: Auth error: ", authError)
+        setError(`usePlayerData: Auth error: ${authError}`)
+        return
+      }
 
       if (user) {
         console.log("usePlayerData: User is logged in, checking Firestore")
@@ -153,7 +159,7 @@ const usePlayerData = () => {
       console.log("usePlayerData: Initialization complete.")
       setLoading(false)
     }
-  }, [user, dispatch, playerGame, playerStats])
+  }, [user, dispatch, playerGame, playerStats, authError])
 
   return { loading, error, initializePlayer }
 }

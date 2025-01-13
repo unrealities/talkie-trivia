@@ -38,10 +38,52 @@ const TabLayout = () => {
   }, [authLoading, initializePlayer])
 
   useEffect(() => {
-    if (!authLoading && movieData && basicMoviesData) {
-      router.replace("/game")
+    // Combined loading check
+    if (authLoading || movieDataLoading || playerDataLoading) {
+      console.log("TabLayout: Loading...")
+      return // Exit if still loading
     }
-  }, [authLoading, movieData, basicMoviesData, router])
+
+    if (movieDataError) {
+      console.log("TabLayout: Error: movieDataError:", movieDataError)
+      return
+    }
+
+    if (playerDataError) {
+      console.log("TabLayout: Error: playerDataError:", playerDataError)
+      return
+    }
+
+    if (!movieData || !basicMoviesData) {
+      console.log(
+        "TabLayout: Error: Movies data not loaded:",
+        movieData,
+        basicMoviesData
+      )
+      return
+    }
+
+    if (!movieData.length || !basicMoviesData.length) {
+      console.log(
+        "TabLayout: Error: Movies data is empty:",
+        movieData,
+        basicMoviesData
+      )
+      return
+    }
+
+    console.log("TabLayout: Navigation to Game Screen")
+    router.replace("/game")
+  }, [
+    authLoading,
+    movieData,
+    basicMoviesData,
+    movieDataLoading,
+    playerDataLoading,
+    movieDataError,
+    playerDataError,
+    router,
+  ])
 
   if (authLoading || movieDataLoading || playerDataLoading) {
     console.log("TabLayout: Loading...")
@@ -75,7 +117,6 @@ const TabLayout = () => {
     )
     return <ErrorMessage message={"Missing movie data"} />
   }
-
   console.log("TabLayout: InitializedLayout: Rendering Tabs")
   return (
     <Tabs

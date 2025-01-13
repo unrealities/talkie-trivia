@@ -10,43 +10,14 @@ const useMovieData = () => {
   console.log("useMovieData: Hook function called") // Added log
   const { state, dispatch } = useAppContext()
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [loadError, setLoadError] = useState<string | null>(null)
 
   useEffect(() => {
     const loadData = async () => {
       try {
         console.log("useMovieData: Loading movie data...")
         setLoading(true)
-
-        const loadedMovies: Movie[] = require("../../../data/popularMovies.json")
-        console.log("useMovieData: Loaded movies:", loadedMovies.length)
-        const loadedBasicMovies: BasicMovie[] = require("../../../data/basicMovies.json")
-        console.log(
-          "useMovieData: Loaded basic movies:",
-          loadedBasicMovies.length
-        )
-
-        // Dispatch actions to update the context state
-        dispatch({ type: "SET_MOVIES", payload: loadedMovies })
-        dispatch({ type: "SET_BASIC_MOVIES", payload: loadedBasicMovies })
-      } catch (error) {
-        console.error("useMovieData: Error caught:", error)
-        setError(`useMovieData: Error loading movie data: ${error.message}`)
-      } finally {
-        console.log("useMovieData: Finally block executed.")
-        setLoading(false)
-      }
-    }
-    console.log("useMovieData: calling loadData")
-    loadData()
-  }, [dispatch])
-
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        console.log("useMovieData: Loading movie data...")
-        setLoading(true)
-        setError(null)
+        setLoadError(null)
 
         // Use the imported data directly
         const loadedMovies: Movie[] = popularMoviesData
@@ -62,7 +33,7 @@ const useMovieData = () => {
         dispatch({ type: "SET_BASIC_MOVIES", payload: loadedBasicMovies })
       } catch (error: any) {
         console.error("useMovieData: Error caught:", error)
-        setError(`useMovieData: Error loading movie data: ${error.message}`)
+        setLoadError(`useMovieData: Error loading movie data: ${error.message}`)
       } finally {
         console.log("useMovieData: Finally block executed.")
         setLoading(false)
@@ -77,7 +48,7 @@ const useMovieData = () => {
     movies: state.movies,
     basicMovies: state.basicMovies,
     loading,
-    error,
+    error: loadError,
   }
 }
 

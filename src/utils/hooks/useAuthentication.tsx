@@ -11,6 +11,7 @@ export function useAuthentication() {
   console.log("useAuthentication: Hook called")
   const [user, setUser] = useState<User | null>(null) // Start with null
   const [authLoading, setAuthLoading] = useState<boolean>(true)
+  const [authError, setAuthError] = useState<string | null>(null)
 
   useEffect(() => {
     const unsubscribeFromAuthStatusChanged = onAuthStateChanged(
@@ -22,13 +23,26 @@ export function useAuthentication() {
           try {
             await setUserName(user.displayName || "no name")
           } catch (error) {
-            console.error("Error setting user name:", error)
+            console.error("useAuthentication: Error setting user name:", error)
+            setAuthError(
+              `useAuthentication: Error setting user name: ${error.message}`
+            )
           }
         } else {
           setUser(null) // Explicitly set to null when logged out
         }
         console.log("useAuthentication: Setting authLoading to false")
         setAuthLoading(false) // Set loading to false when auth state is known
+      },
+      (error) => {
+        console.error(
+          "useAuthentication: Firebase Authentication Error:",
+          error
+        )
+        setAuthError(
+          `useAuthentication: Firebase Authentication Error: ${error.message}`
+        )
+        setAuthLoading(false) // Ensure loading is set to false on error
       }
     )
 
@@ -39,5 +53,6 @@ export function useAuthentication() {
   return {
     user,
     authLoading,
+    authError,
   }
 }
