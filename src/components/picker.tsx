@@ -80,7 +80,7 @@ const PickerContainer: React.FC<PickerContainerProps> = ({
     }, 300) // 300ms delay
 
     return () => clearTimeout(handler) // Clean up the timeout
-  }, [searchText])
+  }, [searchText, movies])
 
   const onPressCheck = useCallback(() => {
     console.log("onPressCheck: isInteractionsDisabled:", isInteractionsDisabled)

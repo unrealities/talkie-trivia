@@ -8,13 +8,13 @@ import ErrorMessage from "../../components/errorMessage"
 import { colors } from "../../styles/global"
 
 const TabLayout = () => {
-  const [authLoading, setAuthLoading] = useState(true)
+  const [appLoading, setAppLoading] = useState(true)
   const router = useRouter()
 
   const { authLoading: authLoadingState } = useAuthentication()
 
   useEffect(() => {
-    setAuthLoading(authLoadingState)
+    setAppLoading(authLoadingState)
   }, [authLoadingState])
 
   const {
@@ -31,18 +31,21 @@ const TabLayout = () => {
   } = usePlayerData()
 
   useEffect(() => {
-    if (!authLoading) {
+    if (!authLoadingState) {
       console.log("TabLayout: Auth is loaded, initializing player.")
       initializePlayer()
     }
-  }, [authLoading, initializePlayer])
+  }, [authLoadingState, initializePlayer])
 
   useEffect(() => {
     // Combined loading check
-    if (authLoading || movieDataLoading || playerDataLoading) {
+    if (authLoadingState || movieDataLoading || playerDataLoading) {
       console.log("TabLayout: Loading...")
+      setAppLoading(true)
       return // Exit if still loading
     }
+
+    setAppLoading(false)
 
     if (movieDataError) {
       console.log("TabLayout: Error: movieDataError:", movieDataError)
@@ -54,38 +57,36 @@ const TabLayout = () => {
       return
     }
 
-    if (!movieData || !basicMoviesData) {
+    if (
+      !movieData ||
+      !basicMoviesData ||
+      !movieData.length ||
+      !basicMoviesData.length
+    ) {
       console.log(
         "TabLayout: Error: Movies data not loaded:",
         movieData,
         basicMoviesData
       )
-      return
-    }
 
-    if (!movieData.length || !basicMoviesData.length) {
-      console.log(
-        "TabLayout: Error: Movies data is empty:",
-        movieData,
-        basicMoviesData
-      )
+      setAppLoading(true)
       return
     }
 
     console.log("TabLayout: Navigation to Game Screen")
     router.replace("/game")
   }, [
-    authLoading,
-    movieData,
-    basicMoviesData,
-    movieDataLoading,
-    playerDataLoading,
+    authLoadingState,
     movieDataError,
     playerDataError,
     router,
+    basicMoviesData,
+    movieData,
+    movieDataLoading,
+    playerDataLoading,
   ])
 
-  if (authLoading || movieDataLoading || playerDataLoading) {
+  if (appLoading) {
     console.log("TabLayout: Loading...")
     return <LoadingIndicator />
   }
@@ -100,7 +101,12 @@ const TabLayout = () => {
     return <ErrorMessage message={playerDataError} />
   }
 
-  if (!movieData || !basicMoviesData) {
+  if (
+    !movieData ||
+    !basicMoviesData ||
+    !movieData.length ||
+    !basicMoviesData.length
+  ) {
     console.log(
       "TabLayout: Error: Movies data not loaded:",
       movieData,
@@ -109,14 +115,6 @@ const TabLayout = () => {
     return <ErrorMessage message={"Missing movie data"} />
   }
 
-  if (!movieData.length || !basicMoviesData.length) {
-    console.log(
-      "TabLayout: Error: Movies data is empty:",
-      movieData,
-      basicMoviesData
-    )
-    return <ErrorMessage message={"Missing movie data"} />
-  }
   console.log("TabLayout: InitializedLayout: Rendering Tabs")
   return (
     <Tabs
