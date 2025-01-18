@@ -1,6 +1,7 @@
 import React, { useEffect } from "react"
-import { View } from "react-native"
-
+import { View, Text } from "react-native" // Import Text
+import LoadingIndicator from "../../components/loadingIndicator"
+import ErrorMessage from "../../components/errorMessage"
 import MoviesContainer from "../../components/movie"
 import { appStyles } from "../../styles/appStyles"
 import { useAppContext } from "../../contexts/appContext"
@@ -14,7 +15,6 @@ const GameScreen = () => {
 
   useNetworkStatus()
 
-  // Ensure this function updates the context state
   const updatePlayerGame = (newPlayerGame) => {
     console.log("GameScreen: Dispatching new playerGame:", newPlayerGame)
     dispatch({ type: "SET_PLAYER_GAME", payload: newPlayerGame })
@@ -24,23 +24,32 @@ const GameScreen = () => {
     dispatch({ type: "SET_PLAYER_STATS", payload: newPlayerStats })
   }
 
-  useEffect(() => {
-    console.log("GameScreen: playerGame:", playerGame)
-  }, [playerGame.guesses, playerGame.correctAnswer])
+  if (state.isLoading) {
+    return <LoadingIndicator />
+  }
 
-  return (
-    <View style={appStyles.container}>
-      <MoviesContainer
-        isNetworkConnected={isNetworkConnected}
-        movies={basicMovies}
-        player={player}
-        playerGame={playerGame}
-        playerStats={playerStats}
-        updatePlayerGame={updatePlayerGame}
-        updatePlayerStats={updatePlayerStats}
-      />
-    </View>
-  )
+  if (state.dataLoadingError) {
+    return <ErrorMessage message={state.dataLoadingError} />
+  }
+
+  //Only render when the data is ready:
+  if (basicMovies.length > 0 && playerGame.game.movie) {
+    return (
+      <View style={appStyles.container}>
+        <MoviesContainer
+          isNetworkConnected={isNetworkConnected}
+          movies={basicMovies}
+          player={player}
+          playerGame={playerGame}
+          playerStats={playerStats}
+          updatePlayerGame={updatePlayerGame}
+          updatePlayerStats={updatePlayerStats}
+        />
+      </View>
+    )
+  } else {
+    return <Text>Loading game data...</Text>
+  }
 }
 
 export default GameScreen

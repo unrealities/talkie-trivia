@@ -53,9 +53,10 @@ interface AppState {
   player: Player
   playerGame: PlayerGame
   playerStats: PlayerStats
+  isLoading: boolean
+  dataLoadingError: string | null
 }
 
-// Correctly type AppAction with specific payload types for each action
 type AppAction =
   | { type: "SET_NETWORK_CONNECTED"; payload: boolean }
   | { type: "SET_MOVIES"; payload: readonly Movie[] }
@@ -64,6 +65,8 @@ type AppAction =
   | { type: "SET_PLAYER"; payload: Player }
   | { type: "SET_PLAYER_GAME"; payload: PlayerGame }
   | { type: "SET_PLAYER_STATS"; payload: PlayerStats }
+  | { type: "SET_IS_LOADING"; payload: boolean }
+  | { type: "SET_DATA_LOADING_ERROR"; payload: string | null }
 
 export const initialState: AppState = {
   isNetworkConnected: true,
@@ -73,14 +76,16 @@ export const initialState: AppState = {
   player: { id: "", name: "" },
   playerGame: defaultPlayerGame,
   playerStats: defaultPlayerStats,
+  isLoading: true,
+  dataLoadingError: null,
 }
 
 const AppContext = createContext<
   { state: AppState; dispatch: React.Dispatch<AppAction> } | undefined
 >(undefined)
 
-// Reducer function
 export const appReducer = (state: AppState, action: AppAction): AppState => {
+  console.log("appReducer: action:", action)
   switch (action.type) {
     case "SET_NETWORK_CONNECTED":
       return { ...state, isNetworkConnected: action.payload }
@@ -106,15 +111,7 @@ export const appReducer = (state: AppState, action: AppAction): AppState => {
       return { ...state, movie: action.payload }
     case "SET_PLAYER":
       return { ...state, player: action.payload }
-    case "SET_PLAYER_GAME": {
-      // const { guesses, correctAnswer } = action.payload
-
-      // // Check if the new playerGame is actually different
-      // const isPlayerGameDifferent =
-      //     JSON.stringify(state.playerGame.guesses) !== JSON.stringify(guesses) ||
-      //     state.playerGame.correctAnswer !== correctAnswer
-
-      // if (isPlayerGameDifferent) {
+    case "SET_PLAYER_GAME":
       console.log(
         "appReducer: SET_PLAYER_GAME: new playerGame:",
         action.payload
@@ -123,13 +120,12 @@ export const appReducer = (state: AppState, action: AppAction): AppState => {
         ...state,
         playerGame: action.payload,
       }
-      // } else {
-      //   // If playerGame is not different, return the current state to avoid re-render
-      //   return state
-      // }
-    }
     case "SET_PLAYER_STATS":
       return { ...state, playerStats: action.payload }
+    case "SET_IS_LOADING":
+      return { ...state, isLoading: action.payload }
+    case "SET_DATA_LOADING_ERROR":
+      return { ...state, dataLoadingError: action.payload }
     default:
       return state
   }
