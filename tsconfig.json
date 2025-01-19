@@ -13,6 +13,6 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*", "__tests__/**/*", "src/app/profile.tsx"],
+  "include": ["src/**/*", "__tests__/**/*", "src/app/profile.tsx", "index.tsx"],
   "exclude": ["node_modules"]
 }

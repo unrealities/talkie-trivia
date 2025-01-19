@@ -10,8 +10,15 @@ import useNetworkStatus from "../../utils/hooks/useNetworkStatus"
 const GameScreen = () => {
   console.log("GameScreen is rendering")
   const { state, dispatch } = useAppContext()
-  const { isNetworkConnected, basicMovies, player, playerGame, playerStats } =
-    state
+  const {
+    isNetworkConnected,
+    basicMovies,
+    player,
+    playerGame,
+    playerStats,
+    isLoading,
+    dataLoadingError,
+  } = state
 
   useNetworkStatus()
 
@@ -24,16 +31,22 @@ const GameScreen = () => {
     dispatch({ type: "SET_PLAYER_STATS", payload: newPlayerStats })
   }
 
-  if (state.isLoading) {
+  if (isLoading) {
+    console.log("GameScreen: Still loading...")
     return <LoadingIndicator />
   }
 
-  if (state.dataLoadingError) {
-    return <ErrorMessage message={state.dataLoadingError} />
+  if (dataLoadingError) {
+    console.log("GameScreen: Data loading error:", dataLoadingError)
+    return <ErrorMessage message={dataLoadingError} />
   }
+
+  console.log("GameScreen: basicMovies.length:", basicMovies.length)
+  console.log("GameScreen: playerGame.game.movie:", playerGame.game.movie)
 
   //Only render when the data is ready:
   if (basicMovies.length > 0 && playerGame.game.movie) {
+    console.log("GameScreen: Rendering MoviesContainer")
     return (
       <View style={appStyles.container}>
         <MoviesContainer
@@ -48,6 +61,7 @@ const GameScreen = () => {
       </View>
     )
   } else {
+    console.log("GameScreen: Still waiting for game data...")
     return <Text>Loading game data...</Text>
   }
 }
