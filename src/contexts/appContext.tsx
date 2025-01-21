@@ -85,7 +85,7 @@ const AppContext = createContext<
 >(undefined)
 
 export const appReducer = (state: AppState, action: AppAction): AppState => {
-  console.log("appReducer: action:", action)
+  console.log("appReducer: Action dispatched:", action)
   switch (action.type) {
     case "SET_NETWORK_CONNECTED":
       return { ...state, isNetworkConnected: action.payload }

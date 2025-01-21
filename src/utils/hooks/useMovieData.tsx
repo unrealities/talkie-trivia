@@ -13,41 +13,52 @@ const useMovieData = () => {
 
   useEffect(() => {
     const loadData = async () => {
+      setLoading(true) // Set loading to true *before* fetch
       dispatch({ type: "SET_IS_LOADING", payload: true })
       try {
-        console.log("useMovieData: Loading movie data...")
-        setLoading(true)
+        console.log("useMovieData: Fetching movie data...")
         setLoadError(null)
 
+        // Log the data received:
+        console.log("useMovieData: Received movie data:", popularMoviesData)
+        console.log("useMovieData: Received basic movie data:", basicMoviesData)
+
         const loadedMovies: Movie[] = popularMoviesData
-        console.log("useMovieData: Loaded movies:", loadedMovies.length)
-
         const loadedBasicMovies: BasicMovie[] = basicMoviesData
-        console.log(
-          "useMovieData: Loaded basic movies:",
-          loadedBasicMovies.length
-        )
 
+        // Validate that data is loaded correctly
+        if (!Array.isArray(loadedMovies) || loadedMovies.length === 0) {
+          throw new Error("Invalid or empty movie data received.")
+        }
+        if (
+          !Array.isArray(loadedBasicMovies) ||
+          loadedBasicMovies.length === 0
+        ) {
+          throw new Error("Invalid or empty basic movie data received.")
+        }
+
+        console.log("useMovieData: Data validation successful")
         dispatch({ type: "SET_MOVIES", payload: loadedMovies })
+        console.log("useMovieData: Dispatched SET_MOVIES action")
+
         dispatch({ type: "SET_BASIC_MOVIES", payload: loadedBasicMovies })
+        console.log("useMovieData: Dispatched SET_BASIC_MOVIES action")
       } catch (error: any) {
-        console.error("useMovieData: Error caught:", error)
+        console.error("useMovieData: Error loading movie data:", error) // Log the full error object
         setLoadError(`useMovieData: Error loading movie data: ${error.message}`)
         dispatch({
           type: "SET_DATA_LOADING_ERROR",
           payload: `useMovieData: Error loading movie data: ${error.message}`,
         })
       } finally {
-        console.log("useMovieData: Finally block executed.")
-        setLoading(false)
+        console.log("useMovieData: Setting Loading to false")
+        setLoading(false) // Set loading to false in the finally block
         dispatch({ type: "SET_IS_LOADING", payload: false })
       }
     }
-    console.log("useMovieData: calling loadData")
     loadData()
   }, [dispatch])
 
-  console.log("useMovieData: Rendering")
   return {
     movies: state.movies,
     basicMovies: state.basicMovies,

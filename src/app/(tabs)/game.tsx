@@ -6,9 +6,11 @@ import MoviesContainer from "../../components/movie"
 import { appStyles } from "../../styles/appStyles"
 import { useAppContext } from "../../contexts/appContext"
 import useNetworkStatus from "../../utils/hooks/useNetworkStatus"
+import useMovieData from "../../utils/hooks/useMovieData"
+import usePlayerData from "../../utils/hooks/usePlayerData"
 
 const GameScreen = () => {
-  console.log("GameScreen is rendering")
+  console.log("GameScreen: Simple log message")
   const { state, dispatch } = useAppContext()
   const {
     isNetworkConnected,
@@ -20,25 +22,32 @@ const GameScreen = () => {
     dataLoadingError,
   } = state
 
+  const { loading, error } = useMovieData()
+  const { loading: playerDataLoading, error: playerDataError } = usePlayerData()
   useNetworkStatus()
 
   const updatePlayerGame = (newPlayerGame) => {
     console.log("GameScreen: Dispatching new playerGame:", newPlayerGame)
     dispatch({ type: "SET_PLAYER_GAME", payload: newPlayerGame })
   }
-
   const updatePlayerStats = (newPlayerStats) => {
     dispatch({ type: "SET_PLAYER_STATS", payload: newPlayerStats })
   }
 
-  if (isLoading) {
+  if (isLoading || loading || playerDataLoading) {
     console.log("GameScreen: Still loading...")
     return <LoadingIndicator />
   }
 
-  if (dataLoadingError) {
+  if (dataLoadingError || error || playerDataError) {
     console.log("GameScreen: Data loading error:", dataLoadingError)
-    return <ErrorMessage message={dataLoadingError} />
+    return (
+      <ErrorMessage
+        message={
+          dataLoadingError || error || playerDataError || "Unknown error"
+        }
+      />
+    )
   }
 
   console.log("GameScreen: basicMovies.length:", basicMovies.length)
