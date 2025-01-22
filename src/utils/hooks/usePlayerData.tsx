@@ -54,6 +54,8 @@ const usePlayerData = () => {
   const { state, dispatch } = useAppContext()
   const { player, playerGame, playerStats } = state
   const [loading, setLoading] = useState(false)
+  const [playerDataLoaded, setPlayerDataLoaded] = useState(false) // Add this to track when player data is loaded
+
   const [error, setError] = useState<string | null>(null)
   const today = new Date()
   const dateId = generateDateId(today)
@@ -77,6 +79,7 @@ const usePlayerData = () => {
         console.error("usePlayerData: Auth error: ", authError)
         setError(`usePlayerData: Auth error: ${authError}`)
         dispatch({ type: "SET_DATA_LOADING_ERROR", payload: authError })
+        setPlayerDataLoaded(true)
 
         return
       }
@@ -183,19 +186,23 @@ const usePlayerData = () => {
     } finally {
       console.log("usePlayerData: Initialization complete.")
       setLoading(false)
+      setPlayerDataLoaded(true)
+
       dispatch({ type: "SET_IS_LOADING", payload: false })
     }
   }, [user, dispatch, authError, dateId])
 
   useEffect(() => {
     console.log("usePlayerData useEffect: user changed:", user)
+
     if (user) {
       console.log("usePlayer useEffect: calling initializePlayer")
+
       initializePlayer()
     }
   }, [user, initializePlayer])
 
-  return { loading, error, initializePlayer }
+  return { loading, error, playerDataLoaded, initializePlayer } //include playerDataLoaded in return
 }
 
 export default usePlayerData
