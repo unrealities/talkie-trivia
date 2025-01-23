@@ -11,7 +11,9 @@ export const batchUpdatePlayerData = async (
   playerUpdate = null
 ) => {
   if (!playerId) {
-    console.error("batchUpdatePlayerData: Error - Player ID is required.")
+    console.warn(
+      "batchUpdatePlayerData: Warning - Player ID is missing. Data update may not be accurate."
+    )
     throw new Error("Player ID is required for updating player data.")
   }
 
@@ -30,7 +32,7 @@ export const batchUpdatePlayerData = async (
     playerGame &&
     Object.keys(playerGame).length > 0 &&
     playerGame.game.movie.id !== 0 &&
-    playerGame.id // Ensure playerGame.id is set
+    playerGame.id
   ) {
     const gameDocRef = doc(db, "playerGames", playerGame.id).withConverter(
       playerGameConverter

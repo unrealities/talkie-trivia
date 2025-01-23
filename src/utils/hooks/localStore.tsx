@@ -9,9 +9,12 @@ export async function setUserID(id: string) {
 }
 
 export async function getUserID(): Promise<string> {
+  console.log("getUserID: Called") // New log
   let id = await AsyncStorage.getItem(userIDKey)
+  console.log("getUserID: Fetched ID from AsyncStorage:", id) // New log
   if (!id) {
     id = uuid.v4().toString()
+    console.log("getUserID: Generating new ID:", id) // New log
     await setUserID(id)
   }
   return id
@@ -26,9 +29,12 @@ export async function setUserName(name: string) {
 }
 
 export async function getUserName(): Promise<string> {
+  console.log("getUserName: Called") // New log
   let name = await AsyncStorage.getItem(userNameKey)
+  console.log("getUserName: Fetched name from AsyncStorage:", name) // New log
   if (!name) {
-    name = "Guest" // Default name if not found
+    name = "Guest"
+    console.log("getUserName: Setting default name:", name) // New log
     await setUserName(name)
   }
   return name

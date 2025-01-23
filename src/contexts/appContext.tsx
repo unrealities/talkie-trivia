@@ -55,6 +55,7 @@ interface AppState {
   playerStats: PlayerStats
   isLoading: boolean
   dataLoadingError: string | null
+  hasGameStarted: boolean
 }
 
 type AppAction =
@@ -67,6 +68,7 @@ type AppAction =
   | { type: "SET_PLAYER_STATS"; payload: PlayerStats }
   | { type: "SET_IS_LOADING"; payload: boolean }
   | { type: "SET_DATA_LOADING_ERROR"; payload: string | null }
+  | { type: "SET_HAS_GAME_STARTED"; payload: boolean }
 
 export const initialState: AppState = {
   isNetworkConnected: true,
@@ -78,6 +80,7 @@ export const initialState: AppState = {
   playerStats: defaultPlayerStats,
   isLoading: true,
   dataLoadingError: null,
+  hasGameStarted: false,
 }
 
 const AppContext = createContext<
@@ -126,6 +129,8 @@ export const appReducer = (state: AppState, action: AppAction): AppState => {
       return { ...state, isLoading: action.payload }
     case "SET_DATA_LOADING_ERROR":
       return { ...state, dataLoadingError: action.payload }
+    case "SET_HAS_GAME_STARTED":
+      return { ...state, hasGameStarted: action.payload }
     default:
       return state
   }

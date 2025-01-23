@@ -1,3 +1,5 @@
+// usePlayerData.tsx
+
 import { useState, useEffect, useCallback } from "react"
 import { useAuthentication } from "./useAuthentication"
 import { getUserID, getUserName, setUserName, setUserID } from "./localStore"
@@ -12,6 +14,7 @@ import {
   getDocs,
 } from "firebase/firestore"
 import { playerConverter } from "../firestore/converters/player"
+import { playerGameConverter } from "../firestore/converters/playerGame"
 import { playerStatsConverter } from "../firestore/converters/playerStats"
 import Player from "../../models/player"
 import { db } from "../../config/firebase"
@@ -45,6 +48,7 @@ const defaultGame: Game = {
   id: "",
   movie: defaultMovie,
 }
+
 const generateDateId = (date) => {
   return date.toISOString().slice(0, 10)
 }
@@ -54,9 +58,10 @@ const usePlayerData = () => {
   const { state, dispatch } = useAppContext()
   const { player, playerGame, playerStats } = state
   const [loading, setLoading] = useState(false)
-  const [playerDataLoaded, setPlayerDataLoaded] = useState(false) // Add this to track when player data is loaded
-
+  const [playerDataLoaded, setPlayerDataLoaded] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Calculate dateId outside of initializePlayer
   const today = new Date()
   const dateId = generateDateId(today)
 
@@ -80,7 +85,6 @@ const usePlayerData = () => {
         setError(`usePlayerData: Auth error: ${authError}`)
         dispatch({ type: "SET_DATA_LOADING_ERROR", payload: authError })
         setPlayerDataLoaded(true)
-
         return
       }
 
@@ -91,7 +95,6 @@ const usePlayerData = () => {
         const playerRef = doc(db, "players", user.uid).withConverter(
           playerConverter
         )
-
         const playerSnap = await getDoc(playerRef)
 
         if (playerSnap.exists()) {
@@ -120,7 +123,8 @@ const usePlayerData = () => {
             await setUserName(name)
           }
         }
-        //Get PlayerGames
+
+        // Get PlayerGames
         const q = query(
           collection(db, "playerGames").withConverter(playerGameConverter),
           where("playerID", "==", user.uid),
@@ -133,7 +137,6 @@ const usePlayerData = () => {
           fetchedPlayerGame = querySnapshot.docs[0].data()
         } else {
           console.log(`Creating new game for today`)
-
           fetchedPlayerGame = {
             ...defaultPlayerGame,
             playerID: id,
@@ -147,7 +150,8 @@ const usePlayerData = () => {
           ).withConverter(playerGameConverter)
           await setDoc(playerGameRef, fetchedPlayerGame)
         }
-        //Get Player Stats
+
+        // Get Player Stats
         const statsRef = doc(db, "playerStats", user.uid).withConverter(
           playerStatsConverter
         )
@@ -162,23 +166,167 @@ const usePlayerData = () => {
           await setDoc(statsRef, fetchedPlayerStats)
         }
       } else {
+        //new logs
+        console.log("User is null")
         console.log("usePlayerData: User is NOT logged in. Using local ID:", id)
+
+        // Fetch or create player document for guest user
+        const playerRef = doc(db, "players", id).withConverter(playerConverter)
+        try {
+          console.log("usePlayerData: Attempting to get player document:", id)
+          const playerSnap = await getDoc(playerRef)
+          console.log("usePlayerData: Player document snapshot:", playerSnap)
+
+          if (!playerSnap.exists()) {
+            console.log(
+              "usePlayerData: Player document does not exist, creating..."
+            )
+            const newPlayer = new Player(id, name)
+            await setDoc(playerRef, newPlayer)
+            console.log(
+              "usePlayerData: New player document created:",
+              newPlayer
+            )
+          } else {
+            console.log("usePlayerData: Player document exists")
+          }
+        } catch (error) {
+          console.error(
+            "usePlayerData: Error fetching or creating player document:",
+            error
+          )
+          // Handle the error appropriately, e.g., dispatch an error action
+          dispatch({
+            type: "SET_DATA_LOADING_ERROR",
+            payload: error.message,
+          })
+          return // Stop further execution if player document cannot be fetched/created
+        }
+
+        // Get PlayerGames for guest user
+        const q = query(
+          collection(db, "playerGames").withConverter(playerGameConverter),
+          where("playerID", "==", id),
+          where("game.date", "==", dateId)
+        )
+
+        try {
+          console.log(
+            "usePlayerData: Attempting to get playerGames for guest:",
+            id,
+            dateId
+          )
+          const querySnapshot = await getDocs(q)
+          console.log(
+            "usePlayerData: PlayerGames query snapshot:",
+            querySnapshot
+          )
+
+          if (!querySnapshot.empty) {
+            console.log(`Found existing game for today for guest user`)
+            fetchedPlayerGame = querySnapshot.docs[0].data()
+          } else {
+            console.log(`Creating new game for today for guest user`)
+            fetchedPlayerGame = {
+              ...defaultPlayerGame,
+              playerID: id,
+              id: `${id}-${dateId}`,
+              game: { ...defaultGame, date: dateId, id: `${id}-${dateId}` },
+            }
+            const playerGameRef = doc(
+              db,
+              "playerGames",
+              fetchedPlayerGame.id
+            ).withConverter(playerGameConverter)
+            await setDoc(playerGameRef, fetchedPlayerGame)
+            console.log(
+              "usePlayerData: New playerGame document created:",
+              fetchedPlayerGame
+            )
+          }
+        } catch (error) {
+          console.error(
+            "usePlayerData: Error fetching or creating playerGames:",
+            error
+          )
+          // Handle the error appropriately
+          dispatch({
+            type: "SET_DATA_LOADING_ERROR",
+            payload: error.message,
+          })
+          return // Stop if playerGames cannot be fetched/created
+        }
+
+        // Get Player Stats for guest user
+        const statsRef = doc(db, "playerStats", id).withConverter(
+          playerStatsConverter
+        )
+
+        try {
+          console.log(
+            "usePlayerData: Attempting to get playerStats for guest:",
+            id
+          )
+          const statsSnap = await getDoc(statsRef)
+          console.log("usePlayerData: PlayerStats query snapshot:", statsSnap)
+
+          if (statsSnap.exists()) {
+            console.log("Found existing player stats for guest user")
+            fetchedPlayerStats = statsSnap.data()
+          } else {
+            console.log("Creating new player stats for guest user")
+            fetchedPlayerStats = { ...defaultPlayerStats, id }
+            await setDoc(statsRef, fetchedPlayerStats)
+            console.log(
+              "usePlayerData: New playerStats document created:",
+              fetchedPlayerStats
+            )
+          }
+        } catch (error) {
+          console.error(
+            "usePlayerData: Error fetching or creating playerStats:",
+            error
+          )
+          // Handle the error appropriately
+          dispatch({
+            type: "SET_DATA_LOADING_ERROR",
+            payload: error.message,
+          })
+          return // Stop if playerStats cannot be fetched/created
+        }
       }
 
+      // Dispatch actions after successful data operations
+      console.log("usePlayerData: Dispatching SET_PLAYER with:", { id, name })
       dispatch({
         type: "SET_PLAYER",
         payload: { id, name },
       })
 
+      console.log(
+        "usePlayerData: Dispatching SET_PLAYER_GAME with:",
+        fetchedPlayerGame
+      )
       dispatch({
         type: "SET_PLAYER_GAME",
         payload: fetchedPlayerGame,
       })
 
+      console.log(
+        "usePlayerData: Dispatching SET_PLAYER_STATS with:",
+        fetchedPlayerStats
+      )
       dispatch({
         type: "SET_PLAYER_STATS",
         payload: fetchedPlayerStats,
       })
+
+      console.log(
+        "usePlayerData: Dispatching SET_HAS_GAME_STARTED with:",
+        true
+      )
+
+      dispatch({ type: "SET_HAS_GAME_STARTED", payload: true })
     } catch (err: any) {
       console.error("usePlayerData: Error initializing player:", err)
       setError(`usePlayerData: Error initializing player: ${err.message}`)
@@ -187,22 +335,18 @@ const usePlayerData = () => {
       console.log("usePlayerData: Initialization complete.")
       setLoading(false)
       setPlayerDataLoaded(true)
-
       dispatch({ type: "SET_IS_LOADING", payload: false })
     }
-  }, [user, dispatch, authError, dateId])
+  }, [authError, dateId, dispatch]) // Simplified dependencies
 
   useEffect(() => {
     console.log("usePlayerData useEffect: user changed:", user)
-
-    if (user) {
-      console.log("usePlayer useEffect: calling initializePlayer")
-
+    if (!playerDataLoaded) {
       initializePlayer()
     }
-  }, [user, initializePlayer])
+  }, [user, initializePlayer, playerDataLoaded]) // Depend on playerDataLoaded
 
-  return { loading, error, playerDataLoaded, initializePlayer } //include playerDataLoaded in return
+  return { loading, error, playerDataLoaded, initializePlayer }
 }
 
 export default usePlayerData
