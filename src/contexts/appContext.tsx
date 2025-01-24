@@ -92,10 +92,15 @@ export const appReducer = (state: AppState, action: AppAction): AppState => {
   switch (action.type) {
     case "SET_NETWORK_CONNECTED":
       return { ...state, isNetworkConnected: action.payload }
-    case "SET_MOVIES":
+    case "SET_MOVIES": {
       // Select a random movie for today's game
-      const todayMovie =
-        action.payload[new Date().getDate() % action.payload.length]
+      const todayMovieIndex = new Date().getDate() % action.payload.length
+      const todayMovie = action.payload[todayMovieIndex]
+
+      if (!todayMovie || !todayMovie.id || !todayMovie.overview) {
+        console.error("appReducer: SET_MOVIES: Invalid movie selected")
+        return { ...state, movies: action.payload }
+      }
 
       return {
         ...state,
@@ -108,6 +113,7 @@ export const appReducer = (state: AppState, action: AppAction): AppState => {
           },
         },
       }
+    }
     case "SET_BASIC_MOVIES":
       return { ...state, basicMovies: action.payload }
     case "SET_MOVIE":

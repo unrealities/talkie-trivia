@@ -15,6 +15,7 @@ import { BasicMovie } from "../models/movie"
 import { PlayerGame } from "../models/game"
 import Player from "../models/player"
 import PlayerStats from "../models/playerStats"
+import { useAppContext } from "../contexts/appContext"
 
 interface MoviesContainerProps {
   isNetworkConnected: boolean
@@ -37,7 +38,8 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
 }) => {
   const [enableSubmit, setEnableSubmit] = useState(true)
   const [showModal, setShowModal] = useState(false)
-  const confettiRef = useRef(null)
+  const confettiRef = useRef<ConfettiCannon>(null)
+  const { state } = useAppContext() // Get the state and dispatch from context
 
   useEffect(() => {
     const updatePlayerData = async (playerGame) => {
@@ -45,6 +47,10 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         console.log(
           "MoviesContainer useEffect [updatePlayerData]: Skipping update - playerGame is empty"
         )
+        return
+      }
+      if (!state.hasGameStarted) {
+        // Correctly use state here
         return
       }
 
@@ -117,7 +123,6 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         }
       }
     }
-
     const timeoutId = setTimeout(() => {
       updatePlayerData(playerGame)
     }, 50) // Introduce a 50ms delay
@@ -128,6 +133,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
     enableSubmit,
     playerStats,
     player.id,
+    state.hasGameStarted, // Now correctly use the state value
     updatePlayerStats,
     setShowModal,
   ])

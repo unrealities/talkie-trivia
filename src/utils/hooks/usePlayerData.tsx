@@ -1,5 +1,3 @@
-// usePlayerData.tsx
-
 import { useState, useEffect, useCallback } from "react"
 import { useAuthentication } from "./useAuthentication"
 import { getUserID, getUserName, setUserName, setUserID } from "./localStore"
@@ -69,7 +67,6 @@ const usePlayerData = () => {
     setLoading(true)
     dispatch({ type: "SET_IS_LOADING", payload: true })
     console.log("usePlayerData: initializePlayer called")
-
     try {
       console.log("usePlayerData: Initializing player...")
       let id = await getUserID()
@@ -209,7 +206,6 @@ const usePlayerData = () => {
           where("playerID", "==", id),
           where("game.date", "==", dateId)
         )
-
         try {
           console.log(
             "usePlayerData: Attempting to get playerGames for guest:",
@@ -221,7 +217,6 @@ const usePlayerData = () => {
             "usePlayerData: PlayerGames query snapshot:",
             querySnapshot
           )
-
           if (!querySnapshot.empty) {
             console.log(`Found existing game for today for guest user`)
             fetchedPlayerGame = querySnapshot.docs[0].data()
@@ -261,7 +256,6 @@ const usePlayerData = () => {
         const statsRef = doc(db, "playerStats", id).withConverter(
           playerStatsConverter
         )
-
         try {
           console.log(
             "usePlayerData: Attempting to get playerStats for guest:",
@@ -321,11 +315,7 @@ const usePlayerData = () => {
         payload: fetchedPlayerStats,
       })
 
-      console.log(
-        "usePlayerData: Dispatching SET_HAS_GAME_STARTED with:",
-        true
-      )
-
+      console.log("usePlayerData: Dispatching SET_HAS_GAME_STARTED with:", true)
       dispatch({ type: "SET_HAS_GAME_STARTED", payload: true })
     } catch (err: any) {
       console.error("usePlayerData: Error initializing player:", err)
@@ -337,14 +327,42 @@ const usePlayerData = () => {
       setPlayerDataLoaded(true)
       dispatch({ type: "SET_IS_LOADING", payload: false })
     }
-  }, [authError, dateId, dispatch]) // Simplified dependencies
+  }, [authError, dateId, dispatch])
 
   useEffect(() => {
     console.log("usePlayerData useEffect: user changed:", user)
     if (!playerDataLoaded) {
       initializePlayer()
     }
-  }, [user, initializePlayer, playerDataLoaded]) // Depend on playerDataLoaded
+  }, [user, initializePlayer, playerDataLoaded])
+
+  useEffect(() => {
+    // Reset game if new movies are fetched and the game has been started.
+    if (state.hasGameStarted && state.movies && state.movies.length > 0) {
+      console.log(
+        "usePlayerData useEffect [movies]: resetting game due to new movies"
+      )
+      const todayMovieIndex = new Date().getDate() % state.movies.length
+      const todayMovie = state.movies[todayMovieIndex]
+
+      if (todayMovie && todayMovie.id && todayMovie.overview) {
+        dispatch({
+          type: "SET_PLAYER_GAME",
+          payload: {
+            ...defaultPlayerGame,
+            playerID: player.id,
+            id: `${player.id}-${dateId}`,
+            game: {
+              ...defaultGame,
+              date: dateId,
+              id: `${player.id}-${dateId}`,
+              movie: todayMovie,
+            },
+          },
+        })
+      }
+    }
+  }, [state.movies, state.hasGameStarted, dispatch, dateId, player.id])
 
   return { loading, error, playerDataLoaded, initializePlayer }
 }
