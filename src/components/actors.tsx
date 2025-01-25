@@ -1,4 +1,4 @@
-import React from "react"
+import React, { memo } from "react"
 import {
   Image,
   Text,
@@ -25,86 +25,95 @@ interface ActorsProps {
   containerStyle?: StyleProp<ViewStyle>
 }
 
-const ActorContainer = ({ actor, imdbId, style, onActorPress }: ActorProps) => {
-  const imageURI = "https://image.tmdb.org/t/p/original"
-  const imdbURI = imdbId ? `https://www.imdb.com/name/${imdbId}` : null
+const ActorContainer = memo(
+  ({ actor, imdbId, style, onActorPress }: ActorProps) => {
+    const imageURI = "https://image.tmdb.org/t/p/original"
+    const imdbURI = imdbId ? `https://www.imdb.com/name/${imdbId}` : null
 
-  const handlePress = () => {
-    if (onActorPress) {
-      onActorPress(actor)
-      return
+    const handlePress = () => {
+      if (onActorPress) {
+        onActorPress(actor)
+        return
+      }
+
+      if (imdbURI) {
+        Linking.canOpenURL(imdbURI)
+          .then((supported) => {
+            if (supported) {
+              Linking.openURL(imdbURI)
+            } else {
+              Alert.alert("Unable to open IMDb link")
+            }
+          })
+          .catch(() => {
+            Alert.alert("Error opening link")
+          })
+      } else {
+        Alert.alert("IMDb link unavailable", "No link found for this actor.")
+      }
     }
 
-    if (imdbURI) {
-      Linking.canOpenURL(imdbURI)
-        .then((supported) => {
-          if (supported) {
-            Linking.openURL(imdbURI)
-          } else {
-            Alert.alert("Unable to open IMDb link")
-          }
-        })
-        .catch(() => {
-          Alert.alert("Error opening link")
-        })
-    } else {
-      Alert.alert("IMDb link unavailable", "No link found for this actor.")
-    }
-  }
+    const actorImage = actor.profile_path
+      ? { uri: `${imageURI}${actor.profile_path}` }
+      : require("../../assets/actor_default.png")
 
-  const actorImage = actor.profile_path
-    ? { uri: `${imageURI}${actor.profile_path}` }
-    : require("../../assets/actor_default.png")
-
-  return (
-    <View style={[actorsStyles.actorContainer, style]} accessible>
-      <Pressable
-        onPress={handlePress}
-        style={({ pressed }) => [
-          { opacity: pressed ? 0.6 : 1.0 },
-          actorsStyles.actorPressable,
-        ]}
-        role="button"
-        accessibilityLabel={`View details for ${actor.name}`}
-      >
-        <Image
-          source={actorImage}
-          style={actorsStyles.actorImage}
-          resizeMode="cover"
-          defaultSource={require("../../assets/actor_default.png")}
-        />
-        <Text
-          style={actorsStyles.actorText}
-          numberOfLines={2}
-          ellipsizeMode="tail"
+    return (
+      <View style={[actorsStyles.actorContainer, style]} accessible>
+        <Pressable
+          onPress={handlePress}
+          style={({ pressed }) => [
+            { opacity: pressed ? 0.6 : 1.0 },
+            actorsStyles.actorPressable,
+          ]}
+          role="button"
+          accessibilityLabel={`View details for ${actor.name}`}
         >
-          {actor.name}
-        </Text>
-      </Pressable>
-    </View>
-  )
-}
+          <Image
+            source={actorImage}
+            style={actorsStyles.actorImage}
+            resizeMode="cover"
+            defaultSource={require("../../assets/actor_default.png")}
+            placeholder={require("../../assets/actor_default.png")}
+          />
+          <Text
+            style={actorsStyles.actorText}
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
+            {actor.name}
+          </Text>
+        </Pressable>
+      </View>
+    )
+  },
+  (prevProps, nextProps) => prevProps.actor.id === nextProps.actor.id
+)
 
-export const Actors = ({
-  actors,
-  maxDisplay = 3,
-  containerStyle,
-}: ActorsProps) => {
-  if (!actors || actors.length === 0) {
-    return null
+export const Actors = memo(
+  ({ actors, maxDisplay = 3, containerStyle }: ActorsProps) => {
+    if (!actors || actors.length === 0) {
+      return null
+    }
+
+    return (
+      <View style={[actorsStyles.actorsContainer, containerStyle]}>
+        {actors.slice(0, maxDisplay).map((actor) => (
+          <ActorContainer
+            key={`${actor.id}-${actor.name}`}
+            actor={actor}
+            imdbId={actor.imdb_id} // TODO: this data is not available
+          />
+        ))}
+      </View>
+    )
+  },
+  (prevProps, nextProps) => {
+    return (
+      prevProps.actors === nextProps.actors &&
+      prevProps.maxDisplay === nextProps.maxDisplay &&
+      prevProps.containerStyle === nextProps.containerStyle
+    )
   }
-
-  return (
-    <View style={[actorsStyles.actorsContainer, containerStyle]}>
-      {actors.slice(0, maxDisplay).map((actor) => (
-        <ActorContainer
-          key={`${actor.id}-${actor.name}`}
-          actor={actor}
-          imdbId={actor.imdb_id} // TODO: this data is not available
-        />
-      ))}
-    </View>
-  )
-}
+)
 
 export default Actors

@@ -1,4 +1,4 @@
-import React from "react"
+import React, { memo } from "react"
 import { Modal, Pressable, Text, View } from "react-native"
 import { modalStyles } from "../styles/modalStyles"
 import Facts from "./facts"
@@ -10,7 +10,7 @@ interface MovieModalProps {
   toggleModal: (show: boolean) => void
 }
 
-const MovieModal: React.FC<MovieModalProps> = React.memo(
+const MovieModal: React.FC<MovieModalProps> = memo(
   ({ movie, show, toggleModal }) => {
     const renderContent = () => {
       if (!movie) {
@@ -64,7 +64,9 @@ const MovieModal: React.FC<MovieModalProps> = React.memo(
         </Pressable>
       </Modal>
     )
-  }
+  },
+  (prevProps, nextProps) =>
+    prevProps.movie === nextProps.movie && prevProps.show === nextProps.show
 )
 
 export default MovieModal

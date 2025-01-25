@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState, useMemo } from "react"
+// src/components/clues.tsx
+import React, { useEffect, useRef, useState, useMemo, memo } from "react"
 import { Animated, Text, View, Easing, ScrollView } from "react-native"
 import { cluesStyles } from "../styles/cluesStyles"
 import { PlayerGame } from "../models/game"
@@ -29,7 +30,7 @@ const splitSummary = (summary: string, splits: number = 5): string[] => {
   )
 }
 
-const CountContainer = React.memo(
+const CountContainer = memo(
   ({
     currentWordLength,
     guessNumber,
@@ -44,111 +45,116 @@ const CountContainer = React.memo(
   )
 )
 
-const CluesContainer = ({
-  correctGuess,
-  guesses,
-  summary,
-  playerGame,
-}: CluesProps) => {
-  const clues = useMemo(
-    () => splitSummary(playerGame?.game?.movie?.overview || ""),
-    [playerGame?.game?.movie?.overview]
-  )
+const CluesContainer = memo(
+  ({ correctGuess, guesses, summary, playerGame }: CluesProps) => {
+    const clues = useMemo(
+      () => splitSummary(playerGame?.game?.movie?.overview || ""),
+      [playerGame?.game?.movie?.overview]
+    )
 
-  const [isLoading, setIsLoading] = useState(true)
-  const [revealedClues, setRevealedClues] = useState<string[]>([])
-  const fadeAnim = useRef(new Animated.Value(0)).current
-  const slideAnim = useRef(new Animated.Value(-10)).current
-  const scrollViewRef = useRef<ScrollView>(null)
+    const [isLoading, setIsLoading] = useState(true)
+    const [revealedClues, setRevealedClues] = useState<string[]>([])
+    const fadeAnim = useRef(new Animated.Value(0)).current
+    const slideAnim = useRef(new Animated.Value(-10)).current
+    const scrollViewRef = useRef<ScrollView>(null)
 
-  useEffect(() => {
-    if (playerGame?.game?.movie?.overview) {
-      setIsLoading(false)
-    }
-  })
+    useEffect(() => {
+      if (playerGame?.game?.movie?.overview) {
+        setIsLoading(false)
+      }
+    }, [playerGame?.game?.movie?.overview])
 
-  useEffect(() => {
-    console.log("CluesContainer: Guesses updated:", guesses) // Add this log
+    useEffect(() => {
+      console.log("CluesContainer: Guesses updated:", guesses)
 
-    const cluesToReveal = Math.min(guesses.length + 1, clues.length)
-    const newRevealedClues = clues.slice(0, cluesToReveal)
+      const cluesToReveal = Math.min(guesses.length + 1, clues.length)
+      const newRevealedClues = clues.slice(0, cluesToReveal)
 
-    if (newRevealedClues.join(" ") !== revealedClues.join(" ")) {
-      // Reset animation values before starting
-      fadeAnim.setValue(0)
-      slideAnim.setValue(-10)
+      if (newRevealedClues.join(" ") !== revealedClues.join(" ")) {
+        // Reset animation values before starting
+        fadeAnim.setValue(0)
+        slideAnim.setValue(-10)
 
-      Animated.parallel([
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 500,
-          easing: Easing.inOut(Easing.ease),
-          useNativeDriver: true,
-        }),
-        Animated.timing(slideAnim, {
-          toValue: 0,
-          duration: 500,
-          easing: Easing.inOut(Easing.ease),
-          useNativeDriver: true,
-        }),
-      ]).start(() => {
-        scrollViewRef.current?.scrollToEnd({ animated: true })
-      })
+        Animated.parallel([
+          Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 500,
+            easing: Easing.inOut(Easing.ease),
+            useNativeDriver: true,
+          }),
+          Animated.timing(slideAnim, {
+            toValue: 0,
+            duration: 500,
+            easing: Easing.inOut(Easing.ease),
+            useNativeDriver: true,
+          }),
+        ]).start(() => {
+          scrollViewRef.current?.scrollToEnd({ animated: true })
+        })
 
-      setRevealedClues(newRevealedClues)
-    }
-  }, [guesses, clues, revealedClues, fadeAnim, slideAnim])
+        setRevealedClues(newRevealedClues)
+      }
+    }, [guesses, clues, revealedClues, fadeAnim, slideAnim])
 
-  return (
-    <View style={cluesStyles.container}>
-      {isLoading ? (
-        <View style={cluesStyles.skeletonContainer}>
-          <View style={cluesStyles.skeletonLine} />
-          <View style={cluesStyles.skeletonLine} />
-          <View
-            style={[cluesStyles.skeletonLine, cluesStyles.skeletonLineShort]}
-          />
-        </View>
-      ) : (
-        <>
-          <ScrollView ref={scrollViewRef} style={cluesStyles.scrollView}>
-            <Animated.Text
-              style={[
-                cluesStyles.text,
-                {
-                  opacity: fadeAnim,
-                  transform: [{ translateY: slideAnim }],
-                },
-              ]}
-            >
-              {revealedClues.map((clue, index) => {
-                const isLastClue = index === revealedClues.length - 1
-                return (
-                  <Text
-                    key={index}
-                    style={[isLastClue && cluesStyles.mostRecentClue]}
-                  >
-                    {clue}
-                    {index < revealedClues.length - 1 ? " " : ""}
-                  </Text>
-                )
-              })}
-            </Animated.Text>
-          </ScrollView>
-          <CountContainer
-            currentWordLength={revealedClues.join(" ").split(" ").length}
-            guessNumber={guesses.length}
-            totalWordLength={
-              playerGame?.game?.movie?.overview
-                ? playerGame.game.movie.overview.split(" ").length
-                : 0
-            }
-            correctGuess={correctGuess}
-          />
-        </>
-      )}
-    </View>
-  )
-}
+    return (
+      <View style={cluesStyles.container}>
+        {isLoading ? (
+          <View style={cluesStyles.skeletonContainer}>
+            <View style={cluesStyles.skeletonLine} />
+            <View style={cluesStyles.skeletonLine} />
+            <View
+              style={[cluesStyles.skeletonLine, cluesStyles.skeletonLineShort]}
+            />
+          </View>
+        ) : (
+          <>
+            <ScrollView ref={scrollViewRef} style={cluesStyles.scrollView}>
+              <Animated.Text
+                style={[
+                  cluesStyles.text,
+                  {
+                    opacity: fadeAnim,
+                    transform: [{ translateY: slideAnim }],
+                  },
+                ]}
+              >
+                {revealedClues.map((clue, index) => {
+                  const isLastClue = index === revealedClues.length - 1
+                  return (
+                    <Text
+                      key={index}
+                      style={[isLastClue && cluesStyles.mostRecentClue]}
+                    >
+                      {clue}
+                      {index < revealedClues.length - 1 ? " " : ""}
+                    </Text>
+                  )
+                })}
+              </Animated.Text>
+            </ScrollView>
+            <CountContainer
+              currentWordLength={revealedClues.join(" ").split(" ").length}
+              guessNumber={guesses.length}
+              totalWordLength={
+                playerGame?.game?.movie?.overview
+                  ? playerGame.game.movie.overview.split(" ").length
+                  : 0
+              }
+              correctGuess={correctGuess}
+            />
+          </>
+        )}
+      </View>
+    )
+  },
+  (prevProps, nextProps) => {
+    return (
+      prevProps.correctGuess === nextProps.correctGuess &&
+      prevProps.guesses === nextProps.guesses &&
+      prevProps.summary === nextProps.summary &&
+      prevProps.playerGame === nextProps.playerGame
+    )
+  }
+)
 
 export default CluesContainer

@@ -1,13 +1,14 @@
-import React, { useEffect } from "react"
-import { View, Text } from "react-native" // Import Text
+import React, { useEffect, Suspense, lazy } from "react"
+import { View, Text } from "react-native"
 import LoadingIndicator from "../../components/loadingIndicator"
 import ErrorMessage from "../../components/errorMessage"
-import MoviesContainer from "../../components/movie"
 import { appStyles } from "../../styles/appStyles"
 import { useAppContext } from "../../contexts/appContext"
 import useNetworkStatus from "../../utils/hooks/useNetworkStatus"
 import useMovieData from "../../utils/hooks/useMovieData"
 import usePlayerData from "../../utils/hooks/usePlayerData"
+
+const MoviesContainer = lazy(() => import("../../components/movie"))
 
 const GameScreen = () => {
   console.log("GameScreen: Simple log message")
@@ -58,15 +59,17 @@ const GameScreen = () => {
     console.log("GameScreen: Rendering MoviesContainer")
     return (
       <View style={appStyles.container}>
-        <MoviesContainer
-          isNetworkConnected={isNetworkConnected}
-          movies={basicMovies}
-          player={player}
-          playerGame={playerGame}
-          playerStats={playerStats}
-          updatePlayerGame={updatePlayerGame}
-          updatePlayerStats={updatePlayerStats}
-        />
+        <Suspense fallback={<LoadingIndicator />}>
+          <MoviesContainer
+            isNetworkConnected={isNetworkConnected}
+            movies={basicMovies}
+            player={player}
+            playerGame={playerGame}
+            playerStats={playerStats}
+            updatePlayerGame={updatePlayerGame}
+            updatePlayerStats={updatePlayerStats}
+          />
+        </Suspense>
       </View>
     )
   } else {

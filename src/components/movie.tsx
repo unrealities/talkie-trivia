@@ -39,7 +39,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
   const [enableSubmit, setEnableSubmit] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const confettiRef = useRef<ConfettiCannon>(null)
-  const { state } = useAppContext() // Get the state and dispatch from context
+  const { state } = useAppContext()
 
   useEffect(() => {
     const updatePlayerData = async (playerGame) => {
@@ -50,7 +50,6 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         return
       }
       if (!state.hasGameStarted) {
-        // Correctly use state here
         return
       }
 
@@ -127,20 +126,20 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
       updatePlayerData(playerGame)
     }, 50) // Introduce a 50ms delay
 
-    return () => clearTimeout(timeoutId) // Cleanup the timeout
+    return () => clearTimeout(timeoutId)
   }, [
     playerGame,
     enableSubmit,
     playerStats,
     player.id,
-    state.hasGameStarted, // Now correctly use the state value
+    state.hasGameStarted,
     updatePlayerStats,
     setShowModal,
   ])
 
   // Make sure updatePlayerGame is correctly updating the state in GameScreen
   const handleUpdatePlayerGame = (updatedPlayerGame: PlayerGame) => {
-    console.log("MoviesContainer: Updating playerGame:", updatedPlayerGame) // Add this log
+    console.log("MoviesContainer: Updating playerGame:", updatedPlayerGame)
     updatePlayerGame(updatedPlayerGame)
   }
 

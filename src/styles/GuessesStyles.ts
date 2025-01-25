@@ -36,5 +36,5 @@ export const guessesStyles = StyleSheet.create({
   guessSmall: {
     fontSize: responsive.responsiveFontSize(12),
     letterSpacing: -0.5,
-  }
+  },
 })

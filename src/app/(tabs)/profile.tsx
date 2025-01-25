@@ -1,9 +1,10 @@
-import React from "react"
+import React, { lazy } from "react"
 import { View } from "react-native"
-
-import GoogleLogin from "../../components/googleLogin"
-import PlayerStatsContainer from "../../components/playerStats"
+import LoadingIndicator from "../../components/loadingIndicator"
 import { appStyles } from "../../styles/appStyles"
+
+const GoogleLogin = lazy(() => import("../../components/googleLogin"))
+const PlayerStatsContainer = lazy(() => import("../../components/playerStats"))
 import { useAppContext } from "../../contexts/appContext"
 
 const ProfileScreen = () => {
@@ -17,8 +18,10 @@ const ProfileScreen = () => {
 
   return (
     <View style={appStyles.container}>
-      <GoogleLogin player={player} onAuthStateChange={updatePlayer} />
-      <PlayerStatsContainer player={player} playerStats={playerStats} />
+      <React.Suspense fallback={<LoadingIndicator />}>
+        <GoogleLogin player={player} onAuthStateChange={updatePlayer} />
+        <PlayerStatsContainer player={player} playerStats={playerStats} />
+      </React.Suspense>
     </View>
   )
 }

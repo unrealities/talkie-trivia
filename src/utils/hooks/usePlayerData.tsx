@@ -206,6 +206,7 @@ const usePlayerData = () => {
           where("playerID", "==", id),
           where("game.date", "==", dateId)
         )
+
         try {
           console.log(
             "usePlayerData: Attempting to get playerGames for guest:",

@@ -1,4 +1,4 @@
-import React, { useCallback } from "react"
+import React, { useCallback, memo } from "react"
 import {
   Text,
   Pressable,
@@ -20,7 +20,7 @@ interface FactsProps {
   error?: string
 }
 
-const Facts = React.memo(
+const Facts = memo(
   ({ movie, isLoading = false, error }: FactsProps) => {
     if (isLoading) {
       return <ActivityIndicator size="large" color="#0000ff" />
