@@ -95,7 +95,7 @@ const Facts = memo(
               source={imageSource}
               style={factsStyles.posterImage}
               placeholder={require("../../assets/movie_default.png")}
-              onError={(e) => console.log("Image load error")}
+              onError={(e) => console.log("Image load error", e)}
               contentFit="cover"
             />
           )}

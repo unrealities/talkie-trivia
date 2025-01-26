@@ -75,7 +75,7 @@ export const modalStyles = StyleSheet.create({
   },
 
   errorText: {
-    color: colors.primary,
+    color: colors.quaternary, // Changed to error color
     fontFamily: "Arvo-Regular",
     fontSize: responsive.responsiveFontSize(16),
     textAlign: "center",

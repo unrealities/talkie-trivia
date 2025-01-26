@@ -20,6 +20,7 @@ export const actorsStyles = StyleSheet.create({
     borderRadius: responsive.scale(4),
     padding: responsive.scale(4),
     width: "100%",
+    backgroundColor: colors.background, // Added background color
   },
   actorImage: {
     height: responsive.scale(90),
@@ -33,7 +34,7 @@ export const actorsStyles = StyleSheet.create({
     fontSize: responsive.responsiveFontSize(10),
     paddingTop: responsive.scale(4),
     textAlign: "center",
-    color: colors.primary,
+    color: colors.secondary, // Changed to secondary color
     width: "100%",
     lineHeight: responsive.responsiveFontSize(12),
   },

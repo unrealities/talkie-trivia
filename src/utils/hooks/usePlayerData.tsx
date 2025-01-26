@@ -15,7 +15,6 @@ import { playerConverter } from "../firestore/converters/player"
 import { playerGameConverter } from "../firestore/converters/playerGame"
 import { playerStatsConverter } from "../firestore/converters/playerStats"
 import Player from "../../models/player"
-import { db } from "../../config/firebase"
 import {
   defaultPlayerGame,
   defaultPlayerStats,

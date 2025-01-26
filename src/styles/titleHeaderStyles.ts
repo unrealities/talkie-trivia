@@ -14,6 +14,11 @@ export const titleHeaderStyles = StyleSheet.create({
     marginTop: responsive.scale(30),
     minHeight: responsive.scale(60),
     width: "100%",
+    shadowColor: colors.primary, // Shadow color matching primary
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3, // More visible shadow
+    shadowRadius: 8,
+    elevation: 5, // For android
   },
   header: {
     color: colors.primary,
@@ -23,7 +28,7 @@ export const titleHeaderStyles = StyleSheet.create({
     textAlign: "center",
   },
   subHeader: {
-    color: colors.secondary,
+    color: colors.tertiary,
     fontFamily: "Arvo-Italic",
     fontSize: responsive.responsiveFontSize(12),
     paddingBottom: responsive.scale(6),

@@ -42,13 +42,13 @@ const responsiveFontSize = (size: number) => {
 }
 
 export const colors = {
-  background: "#003049",
-  primary: "#f77f00",
-  secondary: "#eae2b7",
-  tertiary: "#fcbf49",
-  quaternary: "#d62828",
-  quinary: "#29d7d7",
-  white: "#fff",
+  background: "#1A1A1A", // Darker background
+  primary: "#F77F00", // Keep the orange as a highlight color
+  secondary: "#EEEEEE", // Light text for contrast
+  tertiary: "#FCBF49", //  A slightly muted orange
+  quaternary: "#D62828", // A deep red for errors or warnings.
+  quinary: "#29D7D7", // A teal/cyan color
+  white: "#FFFFFF",
 }
 
 export const responsive = {

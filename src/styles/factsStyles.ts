@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native"
-import { responsive } from "./global"
+import { colors, responsive } from "./global"
 
 export const factsStyles = StyleSheet.create({
   container: {
@@ -15,7 +15,7 @@ export const factsStyles = StyleSheet.create({
     fontSize: responsive.responsiveFontSize(24),
     paddingBottom: responsive.scale(10),
     textAlign: "center",
-    color: "#333",
+    color: colors.secondary, // Changed header color
   },
   scrollContainer: {
     flexGrow: 1,
@@ -37,7 +37,7 @@ export const factsStyles = StyleSheet.create({
     textAlign: "center",
     width: "90%",
     marginBottom: responsive.scale(10),
-    color: "#666",
+    color: colors.tertiary, // Changed to a muted orange
     fontStyle: "italic",
   },
   text: {
@@ -46,23 +46,24 @@ export const factsStyles = StyleSheet.create({
     paddingTop: responsive.scale(10),
     textAlign: "center",
     marginBottom: responsive.scale(10),
-    color: "#444",
+    color: colors.secondary, // Changed to secondary color
     lineHeight: responsive.responsiveFontSize(18),
   },
   pressable: {
     width: "100%",
     alignItems: "center",
     paddingVertical: responsive.scale(10),
+    backgroundColor: colors.background, // Added background color
   },
   errorContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: responsive.scale(20),
-    backgroundColor: "#f8d7da",
+    backgroundColor: colors.background, // Adjusted background
   },
   errorText: {
-    color: "#721c24",
+    color: colors.quaternary, // Changed to error color
     fontFamily: "Arvo-Bold",
     fontSize: responsive.responsiveFontSize(16),
     textAlign: "center",
@@ -71,6 +72,6 @@ export const factsStyles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f8f9fa",
+    backgroundColor: colors.background, // Adjusted background
   },
 })

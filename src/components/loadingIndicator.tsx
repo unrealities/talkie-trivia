@@ -1,16 +1,12 @@
 import React, { memo } from "react"
-import { View, ActivityIndicator } from "react-native"
+import { View } from "react-native"
 import { appStyles } from "../styles/appStyles"
-import { colors } from "../styles/global"
+import CustomLoadingIndicator from "./customLoadingIndicator"
 
 const LoadingIndicator: React.FC = memo(() => {
   return (
     <View style={appStyles.loadingContainer}>
-      <ActivityIndicator
-        testID="activity-indicator"
-        size="large"
-        color={colors.primary}
-      />
+      <CustomLoadingIndicator />
     </View>
   )
 })

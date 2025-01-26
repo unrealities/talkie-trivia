@@ -29,7 +29,7 @@ export const appStyles = StyleSheet.create({
   errorText: {
     fontFamily: "Arvo-Regular",
     fontSize: responsive.responsiveFontSize(20),
-    color: "red",
+    color: colors.quaternary,
     textAlign: "center",
     width: "80%",
   },

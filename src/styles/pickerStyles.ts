@@ -13,6 +13,11 @@ export const pickerStyles = StyleSheet.create({
     padding: responsive.scale(8),
     width: "100%",
     height: "auto",
+    elevation: 4, // Add a subtle elevation (Android)
+    shadowColor: "black", // Add a shadow (iOS)
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   buttonSmall: {
     minHeight: responsive.scale(55),

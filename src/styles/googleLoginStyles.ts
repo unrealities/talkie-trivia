@@ -10,6 +10,11 @@ export const googleLoginStyles = StyleSheet.create({
     height: responsive.scale(40),
     width: "100%",
     maxWidth: responsive.scale(280),
+    elevation: 4, // Add a subtle elevation (Android)
+    shadowColor: "black", // Add a shadow (iOS)
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   buttonText: {
     color: colors.secondary,
@@ -26,7 +31,7 @@ export const googleLoginStyles = StyleSheet.create({
     paddingVertical: responsive.scale(20),
   },
   errorText: {
-    color: "red",
+    color: colors.quaternary, // Changed to error color
     fontFamily: "Arvo-Regular",
     marginTop: responsive.scale(8),
     textAlign: "center",
