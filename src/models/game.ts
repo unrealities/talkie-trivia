@@ -15,4 +15,7 @@ export class PlayerGame {
   id: string
   playerID: string
   startDate: Date
+  hintsUsed?: {
+    [guessNumber: number]: "decade" | "director" | "actor" | "genre"
+  }
 }

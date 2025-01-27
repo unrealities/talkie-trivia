@@ -16,6 +16,7 @@ import { PlayerGame } from "../models/game"
 import Player from "../models/player"
 import PlayerStats from "../models/playerStats"
 import { useAppContext } from "../contexts/appContext"
+import HintContainer from "./hint"
 
 interface MoviesContainerProps {
   isNetworkConnected: boolean
@@ -142,6 +143,9 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
     console.log("MoviesContainer: Updating playerGame:", updatedPlayerGame)
     updatePlayerGame(updatedPlayerGame)
   }
+  const isInteractionsDisabled =
+    playerGame.correctAnswer ||
+    playerGame.guesses.length >= playerGame.game.guessesMax
 
   return (
     <View style={movieStyles.container}>
@@ -158,6 +162,11 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         playerGame={playerGame}
         movies={movies}
         updatePlayerGame={handleUpdatePlayerGame}
+      />
+      <HintContainer
+        playerGame={playerGame}
+        updatePlayerGame={handleUpdatePlayerGame}
+        isInteractionsDisabled={isInteractionsDisabled}
       />
       <GuessesContainer
         guesses={playerGame.guesses}

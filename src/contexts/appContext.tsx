@@ -35,6 +35,7 @@ export const defaultPlayerGame: PlayerGame = {
   id: "",
   playerID: "",
   startDate: new Date(),
+  hintsUsed: {},
 }
 
 export const defaultPlayerStats: PlayerStats = {

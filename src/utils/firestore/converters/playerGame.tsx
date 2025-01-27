@@ -10,6 +10,7 @@ export const playerGameConverter = {
       id: playerGame.id,
       playerID: playerGame.playerID,
       startDate: playerGame.startDate,
+      hintsUsed: playerGame.hintsUsed,
     }
     return pg
   },
@@ -23,6 +24,7 @@ export const playerGameConverter = {
       id: data.id,
       playerID: data.playerID,
       startDate: data.startDate,
+      hintsUsed: data.hintsUsed || {},
     }
     return pg
   },
