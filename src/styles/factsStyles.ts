@@ -12,15 +12,26 @@ export const factsStyles = StyleSheet.create({
   },
   header: {
     fontFamily: "Arvo-Bold",
-    fontSize: responsive.responsiveFontSize(24),
+    fontSize: responsive.responsiveFontSize(22),
     paddingBottom: responsive.scale(10),
     textAlign: "center",
-    color: colors.secondary, // Changed header color
+    color: colors.secondary,
+  },
+  subHeaderSmall: {
+    fontFamily: "Arvo-Italic",
+    fontSize: responsive.responsiveFontSize(12),
+    textAlign: "center",
+    width: "90%",
+    marginBottom: responsive.scale(4),
+    color: colors.tertiary,
+    fontStyle: "italic",
+    lineHeight: responsive.responsiveFontSize(14),
   },
   scrollContainer: {
     flexGrow: 1,
     alignItems: "center",
-    paddingVertical: responsive.scale(20),
+    paddingVertical: responsive.scale(10),
+    paddingBottom: responsive.scale(20),
     width: "100%",
   },
   posterImage: {
@@ -31,39 +42,30 @@ export const factsStyles = StyleSheet.create({
     borderRadius: responsive.scale(6),
     resizeMode: "contain",
   },
-  subHeader: {
-    fontFamily: "Arvo-Italic",
-    fontSize: responsive.responsiveFontSize(14),
-    textAlign: "center",
-    width: "90%",
-    marginBottom: responsive.scale(10),
-    color: colors.tertiary, // Changed to a muted orange
-    fontStyle: "italic",
-  },
   text: {
     fontFamily: "Arvo-Regular",
     fontSize: responsive.responsiveFontSize(14),
     paddingTop: responsive.scale(10),
     textAlign: "center",
     marginBottom: responsive.scale(10),
-    color: colors.secondary, // Changed to secondary color
+    color: colors.secondary,
     lineHeight: responsive.responsiveFontSize(18),
   },
   pressable: {
     width: "100%",
     alignItems: "center",
     paddingVertical: responsive.scale(10),
-    backgroundColor: colors.background, // Added background color
+    backgroundColor: colors.background,
   },
   errorContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: responsive.scale(20),
-    backgroundColor: colors.background, // Adjusted background
+    backgroundColor: colors.background,
   },
   errorText: {
-    color: colors.quaternary, // Changed to error color
+    color: colors.quaternary,
     fontFamily: "Arvo-Bold",
     fontSize: responsive.responsiveFontSize(16),
     textAlign: "center",
@@ -72,6 +74,6 @@ export const factsStyles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: colors.background, // Adjusted background
+    backgroundColor: colors.background,
   },
 })

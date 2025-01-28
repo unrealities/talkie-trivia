@@ -57,6 +57,16 @@ const ActorContainer = memo(
       ? { uri: `${imageURI}${actor.profile_path}` }
       : require("../../assets/actor_default.png")
 
+    const splitName = (name: string): string[] => {
+      const parts = name.trim().split(" ")
+      if (parts.length > 1) {
+        return [parts[0], parts.slice(1).join(" ")]
+      }
+      return [name, ""]
+    }
+
+    const [firstName, lastName] = splitName(actor.name)
+
     return (
       <View style={[actorsStyles.actorContainer, style]} accessible>
         <Pressable
@@ -75,13 +85,19 @@ const ActorContainer = memo(
             defaultSource={require("../../assets/actor_default.png")}
             placeholder={require("../../assets/actor_default.png")}
           />
-          <Text
-            style={actorsStyles.actorText}
-            numberOfLines={2}
-            ellipsizeMode="tail"
-          >
-            {actor.name}
-          </Text>
+          <View style={actorsStyles.actorTextContainer}>
+            <View style={actorsStyles.actorTextBackground}>
+              <Text style={actorsStyles.actorText}>
+                {firstName}
+                {lastName ? (
+                  <Text style={actorsStyles.actorText}>
+                    {"\n"}
+                    {lastName}
+                  </Text>
+                ) : null}
+              </Text>
+            </View>
+          </View>
         </Pressable>
       </View>
     )
@@ -101,7 +117,7 @@ export const Actors = memo(
           <ActorContainer
             key={`${actor.id}-${actor.name}`}
             actor={actor}
-            imdbId={actor.imdb_id} // TODO: this data is not available
+            imdbId={actor.imdb_id}
           />
         ))}
       </View>

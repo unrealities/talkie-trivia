@@ -18,6 +18,7 @@ export const pickerStyles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
+    boxShadow: "0px 2px 4px rgba(0,0,0,0.2)", // updated boxShadow
   },
   buttonSmall: {
     minHeight: responsive.scale(55),

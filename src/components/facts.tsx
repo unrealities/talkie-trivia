@@ -86,7 +86,7 @@ const Facts = memo(
           keyboardShouldPersistTaps="handled"
         >
           {movie.tagline && (
-            <Text style={factsStyles.subHeader}>{movie.tagline}</Text>
+            <Text style={factsStyles.subHeaderSmall}>{movie.tagline}</Text>
           )}
 
           {/* Using expo-image with caching */}
@@ -101,7 +101,7 @@ const Facts = memo(
           )}
 
           {movie.director?.name && (
-            <Text style={factsStyles.text}>
+            <Text style={factsStyles.subHeaderSmall}>
               Directed by {movie.director.name || "Unknown"}
             </Text>
           )}

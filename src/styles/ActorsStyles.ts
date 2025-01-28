@@ -12,7 +12,8 @@ export const actorsStyles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
     marginHorizontal: responsive.scale(5),
-    minHeight: responsive.scale(140),
+    minHeight: responsive.scale(180),
+    position: "relative",
   },
   actorPressable: {
     alignItems: "center",
@@ -20,22 +21,36 @@ export const actorsStyles = StyleSheet.create({
     borderRadius: responsive.scale(4),
     padding: responsive.scale(4),
     width: "100%",
-    backgroundColor: colors.background, // Added background color
+    backgroundColor: colors.background,
   },
   actorImage: {
-    height: responsive.scale(90),
+    height: responsive.scale(120),
     width: "100%",
     aspectRatio: 1 / 1.5,
     borderRadius: responsive.scale(4),
     resizeMode: "cover",
   },
+  actorTextContainer: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    minHeight: responsive.scale(40),
+    flexWrap: "wrap",
+  },
+  actorTextBackground: {
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    paddingHorizontal: responsive.scale(4),
+    width: "100%",
+  },
   actorText: {
     fontFamily: "Arvo-Regular",
-    fontSize: responsive.responsiveFontSize(10),
-    paddingTop: responsive.scale(4),
+    fontSize: responsive.responsiveFontSize(12),
+    color: colors.secondary,
     textAlign: "center",
-    color: colors.secondary, // Changed to secondary color
-    width: "100%",
-    lineHeight: responsive.responsiveFontSize(12),
+    lineHeight: responsive.responsiveFontSize(14),
+    paddingVertical: responsive.scale(2),
   },
 })

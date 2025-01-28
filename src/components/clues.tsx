@@ -80,13 +80,13 @@ const CluesContainer = memo(
             toValue: 1,
             duration: 500,
             easing: Easing.inOut(Easing.ease),
-            useNativeDriver: true,
+            useNativeDriver: true, // keep useNativeDriver set to true
           }),
           Animated.timing(slideAnim, {
             toValue: 0,
             duration: 500,
             easing: Easing.inOut(Easing.ease),
-            useNativeDriver: true,
+            useNativeDriver: true, // keep useNativeDriver set to true
           }),
         ]).start(() => {
           scrollViewRef.current?.scrollToEnd({ animated: true })
