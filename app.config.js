@@ -44,6 +44,7 @@ export default ({ config }) => ({
     },
     extra: {
       "router": {
+        "origin": false,
         "root": "src/app"
       },
       firebaseApiKey: process.env.FIREBASE_APIKEY,
