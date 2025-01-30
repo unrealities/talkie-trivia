@@ -25,12 +25,31 @@ const TabLayout = () => {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
-        tabBarLabelStyle: { fontFamily: "Arvo-Bold", fontSize: 16 },
+        tabBarLabelStyle: {
+          fontFamily: "Arvo-Bold",
+          fontSize: 16,
+          margin: 0, // Remove default margin
+          padding: 0, // Remove default padding
+        },
+        tabBarIconStyle: {
+          display: "none", // Hide the tab icons (the arrows)
+        },
+        tabBarLabelPosition: "beside-icon", // Ensure labels are displayed beside the icon space (even though the icon is hidden)
+        tabBarStyle: {
+          paddingHorizontal: 100,
+        },
       }}
       initialRouteName="game"
     >
       <Tabs.Screen name="game" options={{ title: "Game" }} />
       <Tabs.Screen name="profile" options={{ title: "Profile" }} />
+      {/* Hide the index route from the tab bar */}
+      <Tabs.Screen
+        name="index"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   )
 }

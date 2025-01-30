@@ -1,5 +1,5 @@
 import React from "react"
-import { Slot } from "expo-router"
+import { Slot, Redirect } from "expo-router"
 import { AppProvider } from "../contexts/appContext"
 
 export default function RootLayout() {
@@ -8,4 +8,8 @@ export default function RootLayout() {
       <Slot />
     </AppProvider>
   )
+}
+
+export function RootLayoutNav() {
+  return <Redirect href={"/game"} />
 }

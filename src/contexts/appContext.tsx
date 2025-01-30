@@ -129,6 +129,7 @@ export const appReducer = (state: AppState, action: AppAction): AppState => {
       return {
         ...state,
         playerGame: action.payload,
+        hasGameStarted: true,
       }
     case "SET_PLAYER_STATS":
       return { ...state, playerStats: action.payload }

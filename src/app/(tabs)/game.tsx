@@ -23,8 +23,12 @@ const GameScreen = () => {
     dataLoadingError,
   } = state
 
-  const { loading, error } = useMovieData()
-  const { loading: playerDataLoading, error: playerDataError } = usePlayerData()
+  const { loading: movieDataLoading, error: movieDataError } = useMovieData()
+  const {
+    loading: playerDataLoading,
+    error: playerDataError,
+    playerDataLoaded,
+  } = usePlayerData()
   useNetworkStatus()
 
   const updatePlayerGame = (newPlayerGame) => {
@@ -35,26 +39,26 @@ const GameScreen = () => {
     dispatch({ type: "SET_PLAYER_STATS", payload: newPlayerStats })
   }
 
-  if (isLoading || loading || playerDataLoading) {
+  if (isLoading || movieDataLoading || playerDataLoading || !playerDataLoaded) {
     console.log("GameScreen: Still loading...")
     return <LoadingIndicator />
   }
 
-  if (dataLoadingError || error || playerDataError) {
+  if (!playerDataLoaded) {
+    console.log("GameScreen: Waiting for playerData to load...")
+    return <LoadingIndicator />
+  }
+
+  if (dataLoadingError || movieDataError || playerDataError) {
     console.log("GameScreen: Data loading error:", dataLoadingError)
-    return (
-      <ErrorMessage
-        message={
-          dataLoadingError || error || playerDataError || "Unknown error"
-        }
-      />
-    )
+    const errorMessage =
+      dataLoadingError || movieDataError || playerDataError || "Unknown error"
+    return <ErrorMessage message={errorMessage} />
   }
 
   console.log("GameScreen: basicMovies.length:", basicMovies.length)
   console.log("GameScreen: playerGame.game.movie:", playerGame.game.movie)
 
-  //Only render when the data is ready:
   if (basicMovies.length > 0 && playerGame.game.movie) {
     console.log("GameScreen: Rendering MoviesContainer")
     return (
