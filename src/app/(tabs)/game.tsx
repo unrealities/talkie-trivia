@@ -1,4 +1,4 @@
-import React, { useEffect, Suspense, lazy } from "react"
+import React, { useEffect, Suspense, lazy, useState } from "react"
 import { View, Text } from "react-native"
 import LoadingIndicator from "../../components/loadingIndicator"
 import ErrorMessage from "../../components/errorMessage"
@@ -11,7 +11,6 @@ import usePlayerData from "../../utils/hooks/usePlayerData"
 const MoviesContainer = lazy(() => import("../../components/movie"))
 
 const GameScreen = () => {
-  console.log("GameScreen: Simple log message")
   const { state, dispatch } = useAppContext()
   const {
     isNetworkConnected,
@@ -31,6 +30,9 @@ const GameScreen = () => {
   } = usePlayerData()
   useNetworkStatus()
 
+  // New state variable to track initial data loading
+  const [initialDataLoaded, setInitialDataLoaded] = useState(false)
+
   const updatePlayerGame = (newPlayerGame) => {
     console.log("GameScreen: Dispatching new playerGame:", newPlayerGame)
     dispatch({ type: "SET_PLAYER_GAME", payload: newPlayerGame })
@@ -39,13 +41,16 @@ const GameScreen = () => {
     dispatch({ type: "SET_PLAYER_STATS", payload: newPlayerStats })
   }
 
-  if (isLoading || movieDataLoading || playerDataLoading || !playerDataLoaded) {
-    console.log("GameScreen: Still loading...")
-    return <LoadingIndicator />
-  }
+  // This useEffect will run when either movieDataLoading or
+  // playerDataLoaded changes
+  useEffect(() => {
+    if (!movieDataLoading && playerDataLoaded) {
+      setInitialDataLoaded(true)
+    }
+  }, [movieDataLoading, playerDataLoaded])
 
-  if (!playerDataLoaded) {
-    console.log("GameScreen: Waiting for playerData to load...")
+  if (isLoading || movieDataLoading || playerDataLoading) {
+    console.log("GameScreen: Still loading...")
     return <LoadingIndicator />
   }
 
@@ -56,30 +61,22 @@ const GameScreen = () => {
     return <ErrorMessage message={errorMessage} />
   }
 
-  console.log("GameScreen: basicMovies.length:", basicMovies.length)
-  console.log("GameScreen: playerGame.game.movie:", playerGame.game.movie)
-
-  if (basicMovies.length > 0 && playerGame.game.movie) {
-    console.log("GameScreen: Rendering MoviesContainer")
-    return (
-      <View style={appStyles.container}>
-        <Suspense fallback={<LoadingIndicator />}>
-          <MoviesContainer
-            isNetworkConnected={isNetworkConnected}
-            movies={basicMovies}
-            player={player}
-            playerGame={playerGame}
-            playerStats={playerStats}
-            updatePlayerGame={updatePlayerGame}
-            updatePlayerStats={updatePlayerStats}
-          />
-        </Suspense>
-      </View>
-    )
-  } else {
-    console.log("GameScreen: Still waiting for game data...")
-    return <Text>Loading game data...</Text>
-  }
+  return (
+    <View style={appStyles.container}>
+      <Suspense fallback={<LoadingIndicator />}>
+        <MoviesContainer
+          isNetworkConnected={isNetworkConnected}
+          movies={basicMovies}
+          player={player}
+          playerGame={playerGame}
+          playerStats={playerStats}
+          updatePlayerGame={updatePlayerGame}
+          updatePlayerStats={updatePlayerStats}
+          initialDataLoaded={initialDataLoaded} // Pass the new prop
+        />
+      </Suspense>
+    </View>
+  )
 }
 
 export default GameScreen

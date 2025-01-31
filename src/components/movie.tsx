@@ -26,6 +26,7 @@ interface MoviesContainerProps {
   playerStats: PlayerStats
   updatePlayerGame: React.Dispatch<React.SetStateAction<PlayerGame>>
   updatePlayerStats: React.Dispatch<React.SetStateAction<PlayerStats>>
+  initialDataLoaded: boolean
 }
 
 const MoviesContainer: React.FC<MoviesContainerProps> = ({
@@ -36,6 +37,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
   playerStats,
   updatePlayerGame,
   updatePlayerStats,
+  initialDataLoaded,
 }) => {
   const [enableSubmit, setEnableSubmit] = useState(true)
   const [showModal, setShowModal] = useState(false)
@@ -123,11 +125,8 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         }
       }
     }
-    const timeoutId = setTimeout(() => {
-      updatePlayerData(playerGame)
-    }, 50) // Introduce a 50ms delay
 
-    return () => clearTimeout(timeoutId)
+    // Add initialDataLoaded to the dependency array
   }, [
     playerGame,
     enableSubmit,
@@ -136,6 +135,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
     state.hasGameStarted,
     updatePlayerStats,
     setShowModal,
+    initialDataLoaded,
   ])
 
   // Make sure updatePlayerGame is correctly updating the state in GameScreen

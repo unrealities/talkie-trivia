@@ -18,7 +18,7 @@
     "comlink": "^4.4.2",
     "crypto-browserify": "^3.12.1",
     "dotenv": "^16.4.7",
-    "expo": "~52.0.26",
+    "expo": "~52.0.28",
     "expo-application": "~6.0.2",
     "expo-auth-session": "~6.0.2",
     "expo-constants": "~17.0.5",

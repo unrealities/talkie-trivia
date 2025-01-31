@@ -76,14 +76,6 @@ const usePlayerData = () => {
       let fetchedPlayerGame = defaultPlayerGame
       let fetchedPlayerStats = defaultPlayerStats
 
-      if (authError) {
-        console.error("usePlayerData: Auth error: ", authError)
-        setError(`usePlayerData: Auth error: ${authError}`)
-        dispatch({ type: "SET_DATA_LOADING_ERROR", payload: authError })
-        setPlayerDataLoaded(true)
-        return
-      }
-
       const db = getFirestore()
 
       if (user) {
@@ -327,14 +319,12 @@ const usePlayerData = () => {
       setPlayerDataLoaded(true)
       dispatch({ type: "SET_IS_LOADING", payload: false })
     }
-  }, [authError, dateId, dispatch])
+  }, [user, dispatch])
 
   useEffect(() => {
     console.log("usePlayerData useEffect: user changed:", user)
-    if (!playerDataLoaded) {
-      initializePlayer()
-    }
-  }, [user, initializePlayer, playerDataLoaded])
+    initializePlayer()
+  }, [user, initializePlayer])
 
   useEffect(() => {
     // Reset game if new movies are fetched and the game has been started.
