@@ -47,6 +47,8 @@ const CountContainer = memo(
 
 const CluesContainer = memo(
   ({ correctGuess, guesses, summary, playerGame }: CluesProps) => {
+    console.log("CluesContainer received summary:", summary)
+
     const clues = useMemo(
       () => splitSummary(playerGame?.game?.movie?.overview || ""),
       [playerGame?.game?.movie?.overview]
@@ -71,7 +73,6 @@ const CluesContainer = memo(
       const newRevealedClues = clues.slice(0, cluesToReveal)
 
       if (newRevealedClues.join(" ") !== revealedClues.join(" ")) {
-        // Reset animation values before starting
         fadeAnim.setValue(0)
         slideAnim.setValue(-10)
 
@@ -80,13 +81,13 @@ const CluesContainer = memo(
             toValue: 1,
             duration: 500,
             easing: Easing.inOut(Easing.ease),
-            useNativeDriver: true, // keep useNativeDriver set to true
+            useNativeDriver: true,
           }),
           Animated.timing(slideAnim, {
             toValue: 0,
             duration: 500,
             easing: Easing.inOut(Easing.ease),
-            useNativeDriver: true, // keep useNativeDriver set to true
+            useNativeDriver: true,
           }),
         ]).start(() => {
           scrollViewRef.current?.scrollToEnd({ animated: true })

@@ -88,6 +88,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
               "MoviesContainer useEffect [updatePlayerData]: updated player data"
             )
             updatePlayerStats(updatedStats)
+            console.log("setShowModal called with:", true)
             setShowModal(true)
             if (playerGame.correctAnswer) confettiRef.current?.start()
           }
@@ -125,8 +126,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         }
       }
     }
-
-    // Add initialDataLoaded to the dependency array
+    updatePlayerData(playerGame)
   }, [
     playerGame,
     enableSubmit,
@@ -147,6 +147,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
     playerGame.correctAnswer ||
     playerGame.guesses.length >= playerGame.game.guessesMax
 
+  console.log("showModal state:", showModal)
   return (
     <View style={movieStyles.container}>
       <NetworkContainer isConnected={isNetworkConnected} />
