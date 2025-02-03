@@ -1,13 +1,5 @@
-// src/components/hint.tsx
 import React, { useState, memo, useCallback, useEffect } from "react"
-import {
-  View,
-  Pressable,
-  Text,
-  ViewStyle,
-  StyleProp,
-  Platform,
-} from "react-native"
+import { View, Pressable, Text, ViewStyle, StyleProp } from "react-native"
 import { PlayerGame } from "../models/game"
 import { hintStyles } from "../styles/hintStyles"
 import { responsive } from "../styles/global"
@@ -24,23 +16,10 @@ const HintContainer = memo(
     const [hintType, setHintType] = useState<
       "decade" | "director" | "actor" | "genre" | null
     >(null)
-    const [hintTextVisibility, setHintTextVisibility] = useState({
-      decade: false,
-      director: false,
-      actor: false,
-      genre: false,
-    })
 
     useEffect(() => {
-      // Reset hint after every guess
       setHintUsed(false)
       setHintType(null)
-      setHintTextVisibility({
-        decade: false,
-        director: false,
-        actor: false,
-        genre: false,
-      })
     }, [playerGame.guesses.length])
 
     const handleHintSelection = useCallback(
@@ -89,39 +68,11 @@ const HintContainer = memo(
       }
       const buttonTextStyle = hintStyles.buttonTextSmall
 
-      const handleVisibilityChange = (
-        hintName: "decade" | "director" | "actor" | "genre",
-        visible: boolean
-      ) => {
-        setHintTextVisibility((prevState) => ({
-          ...prevState,
-          [hintName]: visible,
-        }))
-      }
-
-      const hintButtonProps = (
-        hintName: "decade" | "director" | "actor" | "genre"
-      ) => {
-        if (Platform.OS === "web") {
-          return {
-            onMouseEnter: () => handleVisibilityChange(hintName, true),
-            onMouseLeave: () => handleVisibilityChange(hintName, false),
-          }
-        } else {
-          return {
-            onLongPressIn: () => handleVisibilityChange(hintName, true),
-            onLongPressOut: () => handleVisibilityChange(hintName, false),
-            delayLongPress: 200,
-          }
-        }
-      }
-
       return (
         <View style={hintStyles.hintButtonsContainer}>
           <Text style={hintStyles.hintLabel}>Hint?</Text>
           <View style={hintStyles.hintButtonArea}>
             <Pressable
-              style={hintButtonStyle}
               style={({ pressed }) => [
                 hintStyles.hintButton,
                 isInteractionsDisabled && hintStyles.disabled,
@@ -129,7 +80,6 @@ const HintContainer = memo(
               ]}
               onPress={() => handleHintSelection("decade")}
               disabled={isInteractionsDisabled || hintUsed}
-              {...hintButtonProps("decade")}
               accessible
               accessibilityRole="button"
               accessibilityLabel={
@@ -139,12 +89,9 @@ const HintContainer = memo(
               }
             >
               <Text style={hintStyles.buttonText}>📅</Text>
-              {hintTextVisibility.decade && (
-                <Text style={buttonTextStyle}>Decade</Text>
-              )}
+              <Text style={buttonTextStyle}>Decade</Text>
             </Pressable>
             <Pressable
-              style={hintButtonStyle}
               style={({ pressed }) => [
                 hintStyles.hintButton,
                 isInteractionsDisabled && hintStyles.disabled,
@@ -152,7 +99,6 @@ const HintContainer = memo(
               ]}
               onPress={() => handleHintSelection("director")}
               disabled={isInteractionsDisabled || hintUsed}
-              {...hintButtonProps("director")}
               accessible
               accessibilityRole="button"
               accessibilityLabel={
@@ -162,12 +108,10 @@ const HintContainer = memo(
               }
             >
               <Text style={hintStyles.buttonText}>🎬</Text>
-              {hintTextVisibility.director && (
-                <Text style={buttonTextStyle}>Director</Text>
-              )}
+              {/* Removed conditional rendering to always display text */}
+              <Text style={buttonTextStyle}>Director</Text>
             </Pressable>
             <Pressable
-              style={hintButtonStyle}
               style={({ pressed }) => [
                 hintStyles.hintButton,
                 isInteractionsDisabled && hintStyles.disabled,
@@ -175,7 +119,6 @@ const HintContainer = memo(
               ]}
               onPress={() => handleHintSelection("actor")}
               disabled={isInteractionsDisabled || hintUsed}
-              {...hintButtonProps("actor")}
               accessible
               accessibilityRole="button"
               accessibilityLabel={
@@ -185,12 +128,9 @@ const HintContainer = memo(
               }
             >
               <Text style={hintStyles.buttonText}>🎭</Text>
-              {hintTextVisibility.actor && (
-                <Text style={buttonTextStyle}>Actor</Text>
-              )}
+              <Text style={buttonTextStyle}>Actor</Text>
             </Pressable>
             <Pressable
-              style={hintButtonStyle}
               style={({ pressed }) => [
                 hintStyles.hintButton,
                 isInteractionsDisabled && hintStyles.disabled,
@@ -198,7 +138,7 @@ const HintContainer = memo(
               ]}
               onPress={() => handleHintSelection("genre")}
               disabled={isInteractionsDisabled || hintUsed}
-              {...hintButtonProps("genre")}
+              // {...hintButtonProps("genre")} Removed this
               accessible
               accessibilityRole="button"
               accessibilityLabel={
@@ -208,9 +148,8 @@ const HintContainer = memo(
               }
             >
               <Text style={hintStyles.buttonText}>🗂️</Text>
-              {hintTextVisibility.genre && (
-                <Text style={buttonTextStyle}>Genre</Text>
-              )}
+              {/* Removed conditional rendering to always display text */}
+              <Text style={buttonTextStyle}>Genre</Text>
             </Pressable>
           </View>
         </View>

@@ -1,4 +1,3 @@
-// src/styles/hintStyles.ts
 import { StyleSheet } from "react-native"
 import { colors, responsive } from "./global"
 
@@ -11,26 +10,31 @@ export const hintStyles = StyleSheet.create({
   },
   hintButtonsContainer: {
     flexDirection: "row",
-    alignItems: "center", // Vertically align hint label and button area
+    alignItems: "center",
+    maxWidth: "100%",
+    flexWrap: "wrap",
   },
   hintLabel: {
     color: colors.secondary,
     fontFamily: "Arvo-Bold",
     fontSize: responsive.responsiveFontSize(16),
-    marginRight: responsive.scale(10), // Add some space between label and buttons
+    marginRight: responsive.scale(4),
+    marginBottom: responsive.scale(2),
   },
   hintButtonArea: {
-    flexDirection: "row", // Arrange buttons horizontally
+    flexDirection: "row",
     alignItems: "flex-start",
-    justifyContent: "space-around",
+    justifyContent: "center",
+    flexWrap: "wrap",
   },
   hintButton: {
     borderRadius: responsive.scale(15),
-    padding: responsive.scale(6),
-    minWidth: responsive.scale(30),
+    padding: responsive.scale(4),
+    minWidth: responsive.scale(25),
     alignItems: "center",
     justifyContent: "center",
-    marginHorizontal: responsive.scale(6),
+    marginHorizontal: responsive.scale(2),
+    marginVertical: responsive.scale(2),
   },
   buttonText: {
     color: colors.secondary,
@@ -50,7 +54,7 @@ export const hintStyles = StyleSheet.create({
     color: colors.secondary,
     fontFamily: "Arvo-Regular",
     fontSize: responsive.responsiveFontSize(14),
-    marginLeft: responsive.scale(12),
+    marginLeft: responsive.scale(8),
     textAlign: "center",
   },
 })

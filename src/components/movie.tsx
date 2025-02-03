@@ -158,16 +158,16 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         summary={playerGame.game.movie.overview}
         playerGame={playerGame}
       />
+      <HintContainer
+        playerGame={playerGame}
+        updatePlayerGame={handleUpdatePlayerGame}
+        isInteractionsDisabled={isInteractionsDisabled}
+      />
       <PickerContainer
         enableSubmit={enableSubmit}
         playerGame={playerGame}
         movies={movies}
         updatePlayerGame={handleUpdatePlayerGame}
-      />
-      <HintContainer
-        playerGame={playerGame}
-        updatePlayerGame={handleUpdatePlayerGame}
-        isInteractionsDisabled={isInteractionsDisabled}
       />
       <GuessesContainer
         guesses={playerGame.guesses}
