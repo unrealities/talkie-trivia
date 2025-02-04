@@ -13,12 +13,12 @@ export const pickerStyles = StyleSheet.create({
     padding: responsive.scale(8),
     width: "100%",
     height: "auto",
-    elevation: 4, // Add a subtle elevation (Android)
-    shadowColor: "black", // Add a shadow (iOS)
+    elevation: 4,
+    shadowColor: "black",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    boxShadow: "0px 2px 4px rgba(0,0,0,0.2)", // updated boxShadow
+    boxShadow: "0px 2px 4px rgba(0,0,0,0.2)",
   },
   buttonSmall: {
     minHeight: responsive.scale(55),
@@ -34,11 +34,12 @@ export const pickerStyles = StyleSheet.create({
     fontSize: responsive.responsiveFontSize(12),
   },
   container: {
-    flex: 1,
+    flex: 1, // added flex 1
     minHeight: responsive.scale(180),
     maxWidth: responsive.scale(300),
     width: "100%",
     alignSelf: "center",
+    marginBottom: responsive.scale(10),
   },
   input: {
     alignSelf: "flex-start",
