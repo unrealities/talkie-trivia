@@ -23,7 +23,7 @@ export const factsStyles = StyleSheet.create({
     textAlign: "center",
     width: "90%",
     marginBottom: responsive.scale(4),
-    color: colors.tertiary,
+    color: colors.primary,
     fontStyle: "italic",
     lineHeight: responsive.responsiveFontSize(14),
   },
