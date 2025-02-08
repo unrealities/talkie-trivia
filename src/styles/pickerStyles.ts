@@ -10,7 +10,8 @@ export const pickerStyles = StyleSheet.create({
   button: {
     backgroundColor: colors.primary,
     borderRadius: responsive.scale(10),
-    padding: responsive.scale(8),
+    paddingVertical: responsive.scale(10), // Increased vertical padding
+    paddingHorizontal: responsive.scale(15), // Increased horizontal padding
     width: "100%",
     height: "auto",
     elevation: 4,
@@ -19,6 +20,8 @@ export const pickerStyles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     boxShadow: "0px 2px 4px rgba(0,0,0,0.2)",
+    alignItems: "center", // Ensure text is centered
+    justifyContent: "center",
   },
   buttonSmall: {
     minHeight: responsive.scale(55),
@@ -26,7 +29,7 @@ export const pickerStyles = StyleSheet.create({
   buttonText: {
     color: colors.secondary,
     fontFamily: "Arvo-Regular",
-    fontSize: responsive.responsiveFontSize(14),
+    fontSize: responsive.responsiveFontSize(16), // Slightly larger button text
     textAlign: "center",
     paddingVertical: responsive.scale(2),
   },
@@ -36,7 +39,7 @@ export const pickerStyles = StyleSheet.create({
   container: {
     flex: 1, // added flex 1
     minHeight: responsive.scale(180),
-    maxWidth: responsive.scale(300),
+    maxWidth: responsive.scale(350), // Increased max width to match movie container
     width: "100%",
     alignSelf: "center",
     marginBottom: responsive.scale(10),
@@ -48,11 +51,12 @@ export const pickerStyles = StyleSheet.create({
     borderWidth: 2,
     color: colors.secondary,
     fontFamily: "Arvo-Regular",
-    padding: responsive.scale(5),
+    padding: responsive.scale(8), // Slightly more padding in input
     textAlign: "center",
     width: "100%",
     marginBottom: responsive.scale(10),
-    maxWidth: responsive.scale(300),
+    maxWidth: responsive.scale(350), //Increased max width to match movie container
+    fontSize: responsive.responsiveFontSize(14), //Slightly larger input text
   },
   inputContainer: {
     flexDirection: "row",
@@ -77,7 +81,7 @@ export const pickerStyles = StyleSheet.create({
     marginBottom: responsive.scale(6),
     maxHeight: responsive.scale(82),
     minHeight: responsive.scale(82),
-    maxWidth: responsive.scale(300),
+    maxWidth: responsive.scale(350), // Increased max width to match movie container
     width: "100%",
   },
   resultsShow: {
@@ -106,5 +110,9 @@ export const pickerStyles = StyleSheet.create({
   unselected: {
     color: colors.secondary,
     fontFamily: "Arvo-Italic",
+  },
+  disabledButton: {
+    backgroundColor: colors.tertiary, // Slightly different for disabled button
+    opacity: 0.7,
   },
 })

@@ -20,11 +20,13 @@ export const hintStyles = StyleSheet.create({
     fontSize: responsive.responsiveFontSize(16),
     marginRight: responsive.scale(4),
     marginBottom: responsive.scale(2),
+    textAlign: "center", // Center align label
+    width: "100%", // Full width label
   },
   hintButtonArea: {
     flexDirection: "row",
     alignItems: "flex-start",
-    justifyContent: "center",
+    justifyContent: "center", // Center buttons
     flexWrap: "wrap",
   },
   hintButton: {
@@ -35,6 +37,10 @@ export const hintStyles = StyleSheet.create({
     justifyContent: "center",
     marginHorizontal: responsive.scale(2),
     marginVertical: responsive.scale(2),
+    backgroundColor: colors.primary, // Default button color
+  },
+  usedHintButton: {
+    backgroundColor: colors.tertiary, // Different color for used hint
   },
   buttonText: {
     color: colors.secondary,

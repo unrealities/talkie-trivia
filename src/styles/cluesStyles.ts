@@ -14,6 +14,12 @@ export const cluesStyles = StyleSheet.create({
   },
   mostRecentClue: {
     fontFamily: "Arvo-Bold",
+    backgroundColor: colors.quinary, // Highlight background for recent clue
+    paddingHorizontal: responsive.scale(6), // Add some padding around highlight
+    paddingVertical: responsive.scale(2),
+    borderRadius: responsive.scale(4),
+    marginVertical: responsive.scale(2),
+    color: colors.background, // Text color contrast on highlight
   },
   scrollView: {
     width: "100%",

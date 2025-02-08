@@ -36,6 +36,7 @@ export const defaultPlayerGame: PlayerGame = {
   playerID: "",
   startDate: new Date(),
   hintsUsed: {},
+  gaveUp: false, // Add gaveUp state
 }
 
 export const defaultPlayerStats: PlayerStats = {
@@ -44,6 +45,8 @@ export const defaultPlayerStats: PlayerStats = {
   games: 0,
   maxStreak: 0,
   wins: [0, 0, 0, 0, 0],
+  hintsAvailable: 3, // Initial hints available
+  hintsUsedCount: 0, // Track hints used (optional for now, can add later if needed)
 }
 
 interface AppState {

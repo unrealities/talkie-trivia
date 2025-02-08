@@ -123,6 +123,15 @@ const GoogleLogin: React.FC<GoogleLoginProps> = memo(
             { opacity: pressed || isLoading ? 0.7 : 1 },
           ]}
           disabled={isLoading}
+          accessibilityLabel={
+            player.name ? `Sign out ${player.name}` : "Sign in with Google"
+          }
+          accessibilityHint={
+            player.name
+              ? "Signs you out of the game"
+              : "Signs you in with your Google account"
+          }
+          accessibilityRole="button"
         >
           {isLoading ? (
             <ActivityIndicator color="white" />

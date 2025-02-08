@@ -19,12 +19,12 @@ export const playerStatsStyles = StyleSheet.create({
   statContainer: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: responsive.scale(4),
+    paddingVertical: responsive.scale(6), // Increased vertical padding
     width: "100%",
   },
   statsContainer: {
-    alignItems: "center",
-    paddingTop: responsive.scale(10),
+    alignItems: "flex-start", // Align stats to the start
+    paddingTop: responsive.scale(15), //Increased padding top
     width: "100%",
   },
   text: {
@@ -34,5 +34,10 @@ export const playerStatsStyles = StyleSheet.create({
     paddingLeft: responsive.scale(12),
     textAlign: "left",
     flexShrink: 1,
+  },
+  streakText: {
+    fontSize: responsive.responsiveFontSize(14), //Larger font for streak values
+    fontFamily: "Arvo-Bold", // Bold font for streaks
+    color: colors.quinary, //Highlight color for streaks
   },
 })

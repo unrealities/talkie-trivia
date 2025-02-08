@@ -1,8 +1,8 @@
-// src/components/clues.tsx
 import React, { useEffect, useRef, useState, useMemo, memo } from "react"
 import { Animated, Text, View, Easing, ScrollView } from "react-native"
 import { cluesStyles } from "../styles/cluesStyles"
 import { PlayerGame } from "../models/game"
+import { colors } from "../styles/global" // Import colors
 
 interface CluesProps {
   correctGuess: boolean
@@ -59,6 +59,7 @@ const CluesContainer = memo(
     const fadeAnim = useRef(new Animated.Value(0)).current
     const slideAnim = useRef(new Animated.Value(-10)).current
     const scrollViewRef = useRef<ScrollView>(null)
+    const clueHighlightAnim = useRef(new Animated.Value(0)).current
 
     useEffect(() => {
       if (playerGame?.game?.movie?.overview) {
@@ -67,7 +68,8 @@ const CluesContainer = memo(
     }, [playerGame?.game?.movie?.overview])
 
     useEffect(() => {
-      console.log("CluesContainer: Guesses updated:", guesses)
+      console.log("CluesContainer: Guesses updated:", guesses) // Keep this log
+      if (isLoading) return // Prevent animation if still loading initially
 
       const cluesToReveal = Math.min(guesses.length + 1, clues.length)
       const newRevealedClues = clues.slice(0, cluesToReveal)
@@ -75,6 +77,7 @@ const CluesContainer = memo(
       if (newRevealedClues.join(" ") !== revealedClues.join(" ")) {
         fadeAnim.setValue(0)
         slideAnim.setValue(-10)
+        clueHighlightAnim.setValue(0)
 
         Animated.parallel([
           Animated.timing(fadeAnim, {
@@ -89,13 +92,31 @@ const CluesContainer = memo(
             easing: Easing.inOut(Easing.ease),
             useNativeDriver: true,
           }),
+          Animated.timing(clueHighlightAnim, {
+            toValue: 1,
+            duration: 700,
+            easing: Easing.linear,
+            useNativeDriver: false,
+          }),
         ]).start(() => {
           scrollViewRef.current?.scrollToEnd({ animated: true })
+          Animated.timing(clueHighlightAnim, {
+            toValue: 0,
+            duration: 800,
+            easing: Easing.linear,
+            delay: 500,
+            useNativeDriver: false,
+          }).start()
         })
 
         setRevealedClues(newRevealedClues)
       }
-    }, [guesses, clues, revealedClues, fadeAnim, slideAnim])
+    }, [guesses, clues, isLoading]) // UPDATED DEPENDENCY ARRAY: Only guesses and clues, added isLoading
+
+    const highlightStyle = clueHighlightAnim.interpolate({
+      inputRange: [0, 1],
+      outputRange: ["rgba(0, 0, 0, 0)", colors.quinary],
+    })
 
     return (
       <View style={cluesStyles.container}>
@@ -122,13 +143,16 @@ const CluesContainer = memo(
                 {revealedClues.map((clue, index) => {
                   const isLastClue = index === revealedClues.length - 1
                   return (
-                    <Text
+                    <Animated.Text
                       key={index}
-                      style={[isLastClue && cluesStyles.mostRecentClue]}
+                      style={[
+                        isLastClue && cluesStyles.mostRecentClue,
+                        isLastClue && { backgroundColor: highlightStyle },
+                      ]}
                     >
                       {clue}
                       {index < revealedClues.length - 1 ? " " : ""}
-                    </Text>
+                    </Animated.Text>
                   )
                 })}
               </Animated.Text>

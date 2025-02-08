@@ -25,14 +25,28 @@ const PlayerStatsContainer = memo(
           </View>
           <View style={playerStatsStyles.statContainer}>
             <Text style={playerStatsStyles.header}>Current Streak</Text>
-            <Text style={playerStatsStyles.text}>
+            <Text
+              style={[playerStatsStyles.text, playerStatsStyles.streakText]}
+            >
+              {" "}
+              {/* Apply streakText style */}
               {props.playerStats.currentStreak}
             </Text>
           </View>
           <View style={playerStatsStyles.statContainer}>
             <Text style={playerStatsStyles.header}>Max Streak</Text>
-            <Text style={playerStatsStyles.text}>
+            <Text
+              style={[playerStatsStyles.text, playerStatsStyles.streakText]}
+            >
+              {" "}
+              {/* Apply streakText style */}
               {props.playerStats.maxStreak}
+            </Text>
+          </View>
+          <View style={playerStatsStyles.statContainer}>
+            <Text style={playerStatsStyles.header}>Hints Available</Text>
+            <Text style={playerStatsStyles.text}>
+              {props.playerStats.hintsAvailable}
             </Text>
           </View>
         </View>

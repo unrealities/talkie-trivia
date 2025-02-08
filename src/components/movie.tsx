@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react"
-import { View } from "react-native"
+import React, { useEffect, useRef, useState, useCallback } from "react"
+import { View, Alert, Pressable, Text } from "react-native" // Added Pressable and Text
 import ConfettiCannon from "react-native-confetti-cannon"
 
 import CluesContainer from "./clues"
@@ -42,7 +42,11 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
   const [enableSubmit, setEnableSubmit] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const confettiRef = useRef<ConfettiCannon>(null)
-  const { state } = useAppContext()
+  const { state, dispatch } = useAppContext()
+  const [guessFeedback, setGuessFeedback] = useState<string | null>(null) // State for guess feedback message
+  const [showGiveUpConfirmation, setShowGiveUpConfirmation] = useState(false) // State for "Give Up" confirmation
+
+  const hintsAvailable = playerStats?.hintsAvailable || 0 // Get hintsAvailable from playerStats
 
   useEffect(() => {
     const updatePlayerData = async (playerGame) => {
@@ -57,7 +61,9 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
       }
 
       if (
-        (playerGame.guesses.length > 4 || playerGame.correctAnswer) &&
+        (playerGame.guesses.length > 4 ||
+          playerGame.correctAnswer ||
+          playerGame.gaveUp) && //Include gaveUp state
         enableSubmit
       ) {
         setEnableSubmit(false)
@@ -70,8 +76,11 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
             updatedStats.maxStreak
           )
           updatedStats.wins[playerGame.guesses.length - 1]++
-        } else {
+          updatedStats.games++ // Increment games played on win
+        } else if (!playerGame.gaveUp) {
+          // Only increment games if not gave up and lost
           updatedStats.currentStreak = 0
+          updatedStats.games++ // Increment games played on loss (not gave up)
         }
 
         try {
@@ -81,8 +90,10 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
           const result = await batchUpdatePlayerData(
             updatedStats,
             playerGame,
-            player.id
+            player.id,
+            { hintsAvailable: updatedStats.hintsAvailable } // Pass hintsAvailable to be saved in player doc
           )
+
           if (result.success) {
             console.log(
               "MoviesContainer useEffect [updatePlayerData]: updated player data"
@@ -143,9 +154,47 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
     console.log("MoviesContainer: Updating playerGame:", updatedPlayerGame)
     updatePlayerGame(updatedPlayerGame)
   }
+  const handleGiveUp = useCallback(() => {
+    setShowGiveUpConfirmation(true) // Show confirmation alert
+  }, [setShowGiveUpConfirmation])
+
+  const confirmGiveUp = useCallback(() => {
+    setShowGiveUpConfirmation(false) // Hide confirmation alert
+
+    if (playerGame && !playerGame.correctAnswer) {
+      const updatedPlayerGameGiveUp = {
+        ...playerGame,
+        correctAnswer: false, // Explicitly set to false to ensure modal shows lose state
+        guesses: [...playerGame.guesses, -1], // Add a dummy guess to proceed to game end state
+        gaveUp: true, // Set gaveUp to true
+      }
+
+      updatePlayerGame(updatedPlayerGameGiveUp) // Update game state to trigger end game and modal
+
+      // No need to update playerStats here for "gave up" specifically, stats update already handles loss in the useEffect
+    }
+  }, [playerGame, updatePlayerGame, setShowGiveUpConfirmation])
+
+  const cancelGiveUp = useCallback(() => {
+    setShowGiveUpConfirmation(false) // Just close the confirmation, no further action
+  }, [setShowGiveUpConfirmation])
+
+  const provideGuessFeedback = useCallback(
+    (message: string | null) => {
+      setGuessFeedback(message)
+      if (message) {
+        setTimeout(() => {
+          setGuessFeedback(null)
+        }, 2000) // Clear feedback message after 2 seconds
+      }
+    },
+    [setGuessFeedback]
+  )
+
   const isInteractionsDisabled =
     playerGame.correctAnswer ||
-    playerGame.guesses.length >= playerGame.game.guessesMax
+    playerGame.guesses.length >= playerGame.game.guessesMax ||
+    playerGame.gaveUp //Include gaveUp state to disable interaction after giving up
 
   console.log("showModal state:", showModal)
   return (
@@ -162,18 +211,55 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         playerGame={playerGame}
         updatePlayerGame={handleUpdatePlayerGame}
         isInteractionsDisabled={isInteractionsDisabled}
+        hintsAvailable={hintsAvailable} // Pass hintsAvailable to HintContainer
       />
       <PickerContainer
         enableSubmit={enableSubmit}
         playerGame={playerGame}
         movies={movies}
         updatePlayerGame={handleUpdatePlayerGame}
+        onGuessFeedback={provideGuessFeedback} // Pass the feedback function
       />
+      {guessFeedback && (
+        <View style={movieStyles.feedbackContainer}>
+          <Text style={movieStyles.feedbackText}>{guessFeedback}</Text>
+        </View>
+      )}
       <GuessesContainer
         guesses={playerGame.guesses}
         movie={playerGame.game.movie}
         movies={movies}
       />
+      <Pressable
+        onPress={handleGiveUp}
+        style={({ pressed }) => [
+          movieStyles.giveUpButton,
+          isInteractionsDisabled && movieStyles.disabledButton,
+          pressed && movieStyles.pressedButton,
+        ]}
+        disabled={isInteractionsDisabled}
+        accessible={true}
+        accessibilityLabel="Give Up"
+        accessibilityHint="Gives up on the current movie and reveals the answer."
+        accessibilityRole="button"
+      >
+        <Text style={movieStyles.giveUpButtonText}>Give Up?</Text>
+      </Pressable>
+
+      {showGiveUpConfirmation &&
+        Alert.alert(
+          "Give Up?",
+          "Are you sure you want to give up on this movie?",
+          [
+            {
+              text: "Cancel",
+              onPress: cancelGiveUp,
+              style: "cancel",
+            },
+            { text: "Give Up", onPress: confirmGiveUp },
+          ],
+          { cancelable: false }
+        )}
       <MovieModal
         movie={playerGame.game.movie}
         show={showModal}

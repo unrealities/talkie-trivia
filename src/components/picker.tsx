@@ -1,4 +1,11 @@
-import React, { useEffect, useState, useCallback, useMemo, memo } from "react"
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+  memo,
+  useRef,
+} from "react"
 import {
   ActivityIndicator,
   Pressable,
@@ -6,21 +13,25 @@ import {
   Text,
   TextInput,
   View,
+  Animated,
+  Easing,
 } from "react-native"
 import { BasicMovie } from "../models/movie"
 import { PlayerGame } from "../models/game"
 import { colors } from "../styles/global"
 import { pickerStyles } from "../styles/pickerStyles"
+import { useAnimatedStyle } from "react-native-reanimated" // IMPORT useAnimatedStyle
 
 interface PickerContainerProps {
   enableSubmit: boolean
   movies: BasicMovie[]
   playerGame: PlayerGame
   updatePlayerGame: (updatedPlayerGame: PlayerGame) => void
+  onGuessFeedback: (message: string | null) => void // Feedback function
 }
 
 const PickerContainer: React.FC<PickerContainerProps> = memo(
-  ({ enableSubmit, movies, playerGame, updatePlayerGame }) => {
+  ({ enableSubmit, movies, playerGame, updatePlayerGame, onGuessFeedback }) => {
     const [isFocused, setIsFocused] = useState(false)
     const DEFAULT_BUTTON_TEXT = "Select a Movie"
 
@@ -33,12 +44,19 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
       title: string
     }>({ id: 0, title: DEFAULT_BUTTON_TEXT })
     const [searchText, setSearchText] = useState<string>("")
+    const buttonScale = useRef(new Animated.Value(1)).current // For button animation
 
     const isInteractionsDisabled = useMemo(
       () =>
         playerGame.correctAnswer ||
-        playerGame.guesses.length >= playerGame.game.guessesMax,
-      [playerGame.correctAnswer, playerGame.guesses, playerGame.game.guessesMax]
+        playerGame.guesses.length >= playerGame.game.guessesMax ||
+        playerGame.gaveUp, // Include gaveUp state
+      [
+        playerGame.correctAnswer,
+        playerGame.guesses,
+        playerGame.game.guessesMax,
+        playerGame.gaveUp,
+      ]
     )
 
     // Simple search using includes
@@ -103,6 +121,13 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
           isCorrectAnswer
         )
 
+        // Provide feedback based on the guess
+        if (isCorrectAnswer) {
+          onGuessFeedback("Correct Guess!")
+        } else {
+          onGuessFeedback("Incorrect Guess")
+        }
+
         // Update playerGame state using the new array
         const updatedPlayerGame = {
           ...playerGame,
@@ -114,8 +139,35 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
 
         setSelectedMovie({ id: 0, title: DEFAULT_BUTTON_TEXT })
         setSearchText("")
+
+        // Button press animation
+        Animated.sequence([
+          Animated.timing(buttonScale, {
+            toValue: 0.9,
+            duration: 50, // Short duration for press effect
+            easing: Easing.inOut(Easing.ease),
+            useNativeDriver: true,
+          }),
+          Animated.timing(buttonScale, {
+            toValue: 1,
+            duration: 150, // Slightly longer duration for release
+            easing: Easing.inOut(Easing.ease),
+            useNativeDriver: true,
+          }),
+        ]).start()
       }
-    }, [isInteractionsDisabled, selectedMovie, playerGame, updatePlayerGame])
+    }, [
+      isInteractionsDisabled,
+      selectedMovie,
+      playerGame,
+      updatePlayerGame,
+      onGuessFeedback,
+      buttonScale,
+    ])
+
+    const animatedButtonStyle = useAnimatedStyle(() => ({
+      transform: [{ scale: buttonScale.value }],
+    }))
 
     const handleMovieSelection = (movie: BasicMovie) => {
       if (!isInteractionsDisabled) {
@@ -209,33 +261,40 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
           </View>
         )}
 
-        <Pressable
-          accessible
-          aria-label={
-            isInteractionsDisabled
-              ? "Submit button disabled"
-              : "Submit button enabled"
-          }
-          role="button"
-          disabled={isInteractionsDisabled}
-          onPress={onPressCheck}
-          style={[
-            pickerStyles.button,
-            isInteractionsDisabled && { opacity: 0.5 },
-            selectedMovie.title.length > 35 && pickerStyles.buttonSmall,
-          ]}
-        >
-          <Text
-            numberOfLines={2}
-            ellipsizeMode="tail"
+        <Animated.View style={[animatedButtonStyle]}>
+          <Pressable
+            accessible
+            aria-label={
+              isInteractionsDisabled
+                ? "Submit button disabled"
+                : "Submit button enabled"
+            }
+            role="button"
+            disabled={
+              isInteractionsDisabled ||
+              selectedMovie.title === DEFAULT_BUTTON_TEXT
+            } //disable when no movie selected or interactions are disabled
+            onPress={onPressCheck}
             style={[
-              pickerStyles.buttonText,
-              selectedMovie.title.length > 35 && pickerStyles.buttonTextSmall,
+              pickerStyles.button,
+              isInteractionsDisabled && pickerStyles.disabledButton, // disabled style
+              selectedMovie.title === DEFAULT_BUTTON_TEXT &&
+                pickerStyles.disabledButton, // also disabled style when no movie selected
+              selectedMovie.title.length > 35 && pickerStyles.buttonSmall,
             ]}
           >
-            {selectedMovie.title}
-          </Text>
-        </Pressable>
+            <Text
+              numberOfLines={2}
+              ellipsizeMode="tail"
+              style={[
+                pickerStyles.buttonText,
+                selectedMovie.title.length > 35 && pickerStyles.buttonTextSmall,
+              ]}
+            >
+              {selectedMovie.title}
+            </Text>
+          </Pressable>
+        </Animated.View>
       </View>
     )
   },

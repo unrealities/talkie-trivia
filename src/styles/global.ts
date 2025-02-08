@@ -37,17 +37,17 @@ const responsiveFontSize = (size: number) => {
 
   return Math.min(
     PixelRatio.roundToNearestPixel(size * scaleFactor),
-    size * 1.3 // Maximum font size increase
+    size * 1.4 // Increased max font size slightly for better readability
   )
 }
 
 export const colors = {
   background: "#1A1A1A", // Darker background
   primary: "#F77F00", // Keep the orange as a highlight color
-  secondary: "#EEEEEE", // Light text for contrast
+  secondary: "#F0F0F0", // Lighter text for better contrast - slightly off white
   tertiary: "#FCBF49", //  A slightly muted orange
   quaternary: "#D62828", // A deep red for errors or warnings.
-  quinary: "#29D7D7", // A teal/cyan color
+  quinary: "#29D7D7", // A teal/cyan color, highlight for clues/selected
   white: "#FFFFFF",
 }
 
