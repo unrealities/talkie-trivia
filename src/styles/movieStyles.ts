@@ -8,33 +8,38 @@ export const movieStyles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
     flexDirection: "column",
-    marginTop: height * 0.02, // Reduced top margin
-    width: "95%", // Slightly wider container
+    marginTop: height * 0.03,
+    width: "95%",
     alignSelf: "center",
-    maxWidth: responsive.scale(350), // Increased max width
-    paddingHorizontal: responsive.scale(10), // Added horizontal padding
+    maxWidth: responsive.scale(400),
+    paddingHorizontal: responsive.scale(15),
   },
   feedbackContainer: {
-    backgroundColor: colors.quinary, // Example background color
-    padding: responsive.scale(8),
-    borderRadius: responsive.scale(5),
-    marginTop: responsive.scale(10),
-    marginBottom: responsive.scale(5),
+    backgroundColor: colors.quinary,
+    padding: responsive.scale(10),
+    borderRadius: responsive.scale(8),
+    marginTop: responsive.scale(12),
+    marginBottom: responsive.scale(8),
   },
   feedbackText: {
-    color: colors.background, // Ensure text is visible on feedback background
+    color: colors.background,
     textAlign: "center",
     fontFamily: "Arvo-Bold",
-    fontSize: responsive.responsiveFontSize(14),
+    fontSize: responsive.responsiveFontSize(16),
   },
   giveUpButton: {
-    backgroundColor: colors.quaternary, // Distinct color for give up
+    backgroundColor: colors.quaternary,
     borderRadius: responsive.scale(10),
-    padding: responsive.scale(10),
+    padding: responsive.scale(12),
     alignItems: "center",
     justifyContent: "center",
-    marginTop: responsive.scale(15), // More margin to separate from guesses
-    elevation: 2, // Add elevation for visual lift
+    marginTop: responsive.scale(25), // Increased marginTop to push it down further
+    marginBottom: responsive.scale(20), // Added marginBottom for spacing below button
+    elevation: 0,
+    borderWidth: 2,
+    borderColor: colors.quaternary,
+    alignSelf: "center", // Ensure button is centered
+    width: "90%", // Match width with picker and guesses for visual consistency
   },
   giveUpButtonText: {
     color: colors.secondary,
@@ -43,9 +48,9 @@ export const movieStyles = StyleSheet.create({
     textAlign: "center",
   },
   disabledButton: {
-    opacity: 0.6, //Reduce opacity for disabled state
+    opacity: 0.6,
   },
   pressedButton: {
-    opacity: 0.8, //Visual feedback for pressing
+    opacity: 0.8,
   },
 })

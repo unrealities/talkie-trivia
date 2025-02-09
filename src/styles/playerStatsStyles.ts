@@ -5,39 +5,39 @@ export const playerStatsStyles = StyleSheet.create({
   container: {
     alignItems: "flex-start",
     flex: 1,
-    padding: responsive.scale(8),
+    padding: responsive.scale(12),
     textAlign: "center",
-    width: "90%",
+    width: "95%",
   },
   header: {
-    color: colors.primary,
+    color: colors.lightGrey,
     fontFamily: "Arvo-Bold",
-    fontSize: responsive.responsiveFontSize(12),
-    minWidth: responsive.scale(100),
+    fontSize: responsive.responsiveFontSize(14),
+    minWidth: responsive.scale(120),
     textAlign: "left",
   },
   statContainer: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: responsive.scale(6), // Increased vertical padding
+    paddingVertical: responsive.scale(8),
     width: "100%",
   },
   statsContainer: {
-    alignItems: "flex-start", // Align stats to the start
-    paddingTop: responsive.scale(15), //Increased padding top
+    alignItems: "flex-start",
+    paddingTop: responsive.scale(20),
     width: "100%",
   },
   text: {
     color: colors.secondary,
     fontFamily: "Arvo-Regular",
-    fontSize: responsive.responsiveFontSize(12),
-    paddingLeft: responsive.scale(12),
+    fontSize: responsive.responsiveFontSize(14),
+    paddingLeft: responsive.scale(15),
     textAlign: "left",
     flexShrink: 1,
   },
   streakText: {
-    fontSize: responsive.responsiveFontSize(14), //Larger font for streak values
-    fontFamily: "Arvo-Bold", // Bold font for streaks
-    color: colors.quinary, //Highlight color for streaks
+    fontSize: responsive.responsiveFontSize(16),
+    fontFamily: "Arvo-Bold",
+    color: colors.quinary,
   },
 })

@@ -3,18 +3,20 @@ import { colors, responsive } from "./global"
 
 export const googleLoginStyles = StyleSheet.create({
   button: {
-    backgroundColor: colors.primary,
-    borderRadius: responsive.scale(10),
+    backgroundColor: "transparent",
+    borderWidth: 2,
+    borderColor: colors.primary,
+    borderRadius: responsive.scale(8),
     justifyContent: "center",
     alignItems: "center",
     height: responsive.scale(40),
     width: "100%",
     maxWidth: responsive.scale(280),
-    elevation: 4, // Add a subtle elevation (Android)
-    shadowColor: "black", // Add a shadow (iOS)
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    elevation: 0,
+    shadowColor: "transparent",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0,
+    shadowRadius: 0,
   },
   buttonText: {
     color: colors.secondary,
@@ -25,16 +27,16 @@ export const googleLoginStyles = StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
-    width: responsive.isLargeScreen() ? "60%" : "90%",
+    width: responsive.isLargeScreen() ? "60%" : "95%",
     maxWidth: responsive.scale(400),
     alignSelf: "center",
-    paddingVertical: responsive.scale(20),
+    paddingVertical: responsive.scale(25),
   },
   errorText: {
-    color: colors.quaternary, // Changed to error color
+    color: colors.quaternary,
     fontFamily: "Arvo-Regular",
-    marginTop: responsive.scale(8),
+    marginTop: responsive.scale(10),
     textAlign: "center",
-    fontSize: responsive.responsiveFontSize(16),
+    fontSize: responsive.responsiveFontSize(14),
   },
 })

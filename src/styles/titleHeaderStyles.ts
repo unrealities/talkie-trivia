@@ -3,35 +3,35 @@ import { colors, responsive } from "./global"
 
 export const titleHeaderStyles = StyleSheet.create({
   container: {
-    borderBottomColor: colors.primary,
-    borderBottomWidth: 2,
-    borderTopColor: colors.primary,
-    borderTopWidth: 2,
+    borderBottomColor: colors.lightGrey,
+    borderBottomWidth: 1,
+    borderTopColor: colors.lightGrey,
+    borderTopWidth: 1,
     borderStyle: "solid",
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: responsive.scale(6),
-    marginTop: responsive.scale(30),
+    paddingVertical: responsive.scale(8),
+    marginTop: responsive.scale(35),
     minHeight: responsive.scale(60),
     width: "100%",
-    shadowColor: colors.primary, // Shadow color matching primary
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3, // More visible shadow
-    shadowRadius: 8,
-    elevation: 5, // For android
+    shadowColor: "transparent",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0,
+    shadowRadius: 0,
+    elevation: 0,
   },
   header: {
     color: colors.primary,
     fontFamily: "Arvo-Bold",
-    fontSize: responsive.responsiveFontSize(24),
-    paddingTop: responsive.scale(6),
+    fontSize: responsive.responsiveFontSize(30),
+    paddingTop: responsive.scale(8),
     textAlign: "center",
   },
   subHeader: {
-    color: colors.tertiary,
+    color: colors.lightGrey,
     fontFamily: "Arvo-Italic",
-    fontSize: responsive.responsiveFontSize(12),
-    paddingBottom: responsive.scale(6),
+    fontSize: responsive.responsiveFontSize(16),
+    paddingBottom: responsive.scale(8),
     textAlign: "center",
   },
 })

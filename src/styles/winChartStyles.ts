@@ -7,7 +7,7 @@ export const winChartStyles = StyleSheet.create({
     alignSelf: "center",
     flex: 1,
     flexDirection: "column",
-    padding: responsive.scale(12),
+    padding: responsive.scale(15),
     width: "100%",
   },
   victoryLabels: {

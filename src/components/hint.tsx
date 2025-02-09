@@ -1,8 +1,10 @@
 import React, { useState, memo, useCallback, useEffect } from "react"
-import { View, Pressable, Text, ViewStyle, StyleProp } from "react-native"
+import { View, Pressable, Text } from "react-native"
 import { PlayerGame } from "../models/game"
 import { hintStyles } from "../styles/hintStyles"
 import { responsive } from "../styles/global"
+import { colors } from "../styles/global"
+import Icon from "react-native-vector-icons/FontAwesome" // Import Icon
 
 interface HintProps {
   playerGame: PlayerGame
@@ -18,7 +20,7 @@ const HintContainer = memo(
     isInteractionsDisabled,
     hintsAvailable,
   }: HintProps) => {
-    console.log("HintContainer Rendered") // ADDED: Log when component renders
+    console.log("HintContainer Rendered")
     const [hintUsed, setHintUsed] = useState<boolean>(false)
     const [hintType, setHintType] = useState<
       "decade" | "director" | "actor" | "genre" | null
@@ -27,12 +29,6 @@ const HintContainer = memo(
       useState(hintsAvailable)
 
     useEffect(() => {
-      console.log(
-        "HintContainer useEffect: guesses.length changed",
-        playerGame.guesses.length,
-        "hintsAvailable prop:",
-        hintsAvailable
-      ) // ADDED: Log effect trigger
       setHintUsed(false)
       setHintType(null)
       setLocalHintsAvailable(hintsAvailable)
@@ -44,7 +40,6 @@ const HintContainer = memo(
           return
         }
 
-        console.log("Hint Selected:", hint) // ADDED: Log hint selection
         setHintType(hint)
         setHintUsed(true)
         setLocalHintsAvailable((prevHints) => prevHints - 1)
@@ -71,29 +66,26 @@ const HintContainer = memo(
         let text = ""
         switch (hintType) {
           case "decade":
-            text = `📅 ${playerGame.game.movie.release_date.substring(0, 3)}0s`
+            text = `${playerGame.game.movie.release_date.substring(0, 3)}0s`
             break
           case "director":
-            text = `🎬 ${playerGame.game.movie.director.name}`
+            text = `${playerGame.game.movie.director.name}`
             break
           case "actor":
-            text = `🎭 ${playerGame.game.movie.actors[0].name}`
+            text = `${playerGame.game.movie.actors[0].name}`
             break
           case "genre":
-            text = `🗂️ ${playerGame.game.movie.genres[0].name}`
+            text = `${playerGame.game.movie.genres[0].name}`
             break
           default:
-            return null // No hint type, return null
+            return null
         }
-        console.log("Hint Text Displayed:", text, "hintType:", hintType) // ADDED: Log hint text and type
         return text
       }
-      console.log("No Hint Text (hintType is null or no hint selected)") // ADDED: Log when no hint text
       return null
     }
 
     const renderHintButtons = () => {
-      console.log("renderHintButtons called, hintUsed:", hintUsed) // ADDED: Log button render
       if (hintUsed) {
         return null
       }
@@ -102,7 +94,7 @@ const HintContainer = memo(
 
       const hintButton = (
         hintType: "decade" | "director" | "actor" | "genre",
-        icon: string,
+        iconName: keyof typeof Icon.glyphMap,
         label: string
       ) => (
         <Pressable
@@ -124,7 +116,11 @@ const HintContainer = memo(
               : `Get the movie's ${label.toLowerCase()} hint. Hints available: ${localHintsAvailable}`
           }
         >
-          <Text style={hintStyles.buttonText}>{icon}</Text>
+          <Icon
+            name={iconName}
+            size={responsive.scale(20)}
+            color={colors.secondary}
+          />
           <Text style={buttonTextStyle}>{label}</Text>
         </Pressable>
       )
@@ -135,21 +131,24 @@ const HintContainer = memo(
             Need a Hint? ({localHintsAvailable} available)
           </Text>
           <View style={hintStyles.hintButtonArea}>
-            {hintButton("decade", "📅", "Decade")}
-            {hintButton("director", "🎬", "Director")}
-            {hintButton("actor", "🎭", "Actor")}
-            {hintButton("genre", "🗂️", "Genre")}
+            {hintButton("decade", "calendar", "Decade")}
+            {hintButton("director", "video-camera", "Director")}
+            {hintButton("actor", "mask", "Actor")}
+            {hintButton("genre", "folder-open", "Genre")}
           </View>
         </View>
       )
     }
 
-    const displayedHintText = hintText() // Store hintText result to avoid recalculation in render
+    const displayedHintText = hintText()
 
     return (
       <View style={hintStyles.container}>
         {renderHintButtons()}
-        <Text style={hintStyles.hintText}>{displayedHintText}</Text>
+        {displayedHintText && (
+          <Text style={hintStyles.hintText}>{displayedHintText}</Text>
+        )}{" "}
+        {/* Conditionally render hint text */}
       </View>
     )
   },

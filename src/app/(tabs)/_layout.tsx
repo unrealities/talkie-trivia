@@ -25,18 +25,21 @@ const TabLayout = () => {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.secondary,
         tabBarLabelStyle: {
           fontFamily: "Arvo-Bold",
           fontSize: 16,
-          margin: 0, // Remove default margin
-          padding: 0, // Remove default padding
+          margin: 0,
+          padding: 0,
         },
         tabBarIconStyle: {
-          display: "none", // Hide the tab icons (the arrows)
+          display: "none",
         },
-        tabBarLabelPosition: "beside-icon", // Ensure labels are displayed beside the icon space (even though the icon is hidden)
+        tabBarLabelPosition: "beside-icon",
         tabBarStyle: {
-          paddingHorizontal: 100,
+          paddingHorizontal: 20,
+          backgroundColor: colors.background,
+          borderTopWidth: 0,
         },
       }}
       initialRouteName="game"

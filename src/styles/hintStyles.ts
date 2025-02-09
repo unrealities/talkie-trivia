@@ -5,62 +5,67 @@ export const hintStyles = StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: responsive.scale(10),
+    marginBottom: responsive.scale(20),
     marginTop: responsive.scale(10),
   },
   hintButtonsContainer: {
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
     maxWidth: "100%",
     flexWrap: "wrap",
   },
   hintLabel: {
-    color: colors.secondary,
+    color: colors.lightGrey,
     fontFamily: "Arvo-Bold",
     fontSize: responsive.responsiveFontSize(16),
-    marginRight: responsive.scale(4),
-    marginBottom: responsive.scale(2),
-    textAlign: "center", // Center align label
-    width: "100%", // Full width label
+    marginBottom: responsive.scale(15),
+    textAlign: "center",
+    width: "100%",
   },
   hintButtonArea: {
     flexDirection: "row",
-    alignItems: "flex-start",
-    justifyContent: "center", // Center buttons
+    justifyContent: "space-around",
     flexWrap: "wrap",
+    width: "100%",
   },
   hintButton: {
-    borderRadius: responsive.scale(15),
-    padding: responsive.scale(4),
-    minWidth: responsive.scale(25),
+    borderRadius: responsive.scale(8),
+    padding: responsive.scale(10),
+    minWidth: responsive.scale(80),
     alignItems: "center",
     justifyContent: "center",
-    marginHorizontal: responsive.scale(2),
-    marginVertical: responsive.scale(2),
-    backgroundColor: colors.primary, // Default button color
+    marginHorizontal: responsive.scale(5),
+    marginVertical: responsive.scale(5),
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: colors.lightGrey,
   },
   usedHintButton: {
-    backgroundColor: colors.tertiary, // Different color for used hint
+    backgroundColor: "transparent",
+    opacity: 0.6,
+    borderColor: colors.tertiary,
   },
   buttonText: {
     color: colors.secondary,
     fontSize: responsive.responsiveFontSize(16),
     textAlign: "center",
+    marginTop: responsive.scale(2),
   },
   disabled: {
     opacity: 0.5,
   },
   buttonTextSmall: {
-    color: colors.secondary,
+    color: colors.lightGrey,
     fontFamily: "Arvo-Regular",
-    fontSize: responsive.responsiveFontSize(10),
+    fontSize: responsive.responsiveFontSize(12),
     textAlign: "center",
   },
   hintText: {
     color: colors.secondary,
     fontFamily: "Arvo-Regular",
-    fontSize: responsive.responsiveFontSize(14),
+    fontSize: responsive.responsiveFontSize(16),
     marginLeft: responsive.scale(8),
     textAlign: "center",
+    marginTop: responsive.scale(15),
   },
 })

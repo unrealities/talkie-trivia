@@ -8,20 +8,22 @@ export const pickerStyles = StyleSheet.create({
     top: responsive.scale(6),
   },
   button: {
-    backgroundColor: colors.primary,
+    backgroundColor: "transparent",
     borderRadius: responsive.scale(10),
-    paddingVertical: responsive.scale(10), // Increased vertical padding
-    paddingHorizontal: responsive.scale(15), // Increased horizontal padding
+    paddingVertical: responsive.scale(12),
+    paddingHorizontal: responsive.scale(15),
     width: "100%",
     height: "auto",
-    elevation: 4,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    boxShadow: "0px 2px 4px rgba(0,0,0,0.2)",
-    alignItems: "center", // Ensure text is centered
+    elevation: 0,
+    shadowColor: "transparent",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0,
+    shadowRadius: 0,
+    boxShadow: "none",
+    alignItems: "center",
     justifyContent: "center",
+    borderWidth: 2,
+    borderColor: colors.primary,
   },
   buttonSmall: {
     minHeight: responsive.scale(55),
@@ -29,59 +31,59 @@ export const pickerStyles = StyleSheet.create({
   buttonText: {
     color: colors.secondary,
     fontFamily: "Arvo-Regular",
-    fontSize: responsive.responsiveFontSize(16), // Slightly larger button text
+    fontSize: responsive.responsiveFontSize(18),
     textAlign: "center",
-    paddingVertical: responsive.scale(2),
+    paddingVertical: responsive.scale(4),
   },
   buttonTextSmall: {
-    fontSize: responsive.responsiveFontSize(12),
+    fontSize: responsive.responsiveFontSize(14),
   },
   container: {
-    flex: 1, // added flex 1
+    flex: 1,
     minHeight: responsive.scale(180),
-    maxWidth: responsive.scale(350), // Increased max width to match movie container
+    maxWidth: responsive.scale(400),
     width: "100%",
     alignSelf: "center",
-    marginBottom: responsive.scale(10),
+    marginBottom: responsive.scale(15),
   },
   input: {
     alignSelf: "flex-start",
-    borderColor: colors.primary,
-    borderRadius: responsive.scale(10),
+    borderColor: colors.lightGrey,
+    borderRadius: responsive.scale(8),
     borderWidth: 2,
     color: colors.secondary,
     fontFamily: "Arvo-Regular",
-    padding: responsive.scale(8), // Slightly more padding in input
-    textAlign: "center",
+    padding: responsive.scale(10),
+    textAlign: "left",
     width: "100%",
-    marginBottom: responsive.scale(10),
-    maxWidth: responsive.scale(350), //Increased max width to match movie container
-    fontSize: responsive.responsiveFontSize(14), //Slightly larger input text
+    marginBottom: responsive.scale(12),
+    maxWidth: responsive.scale(400),
+    fontSize: responsive.responsiveFontSize(16),
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
     width: "100%",
-    marginBottom: responsive.scale(6),
+    marginBottom: responsive.scale(8),
     position: "relative",
   },
   pressableText: {
     flex: 1,
     fontFamily: "Arvo-Regular",
-    padding: responsive.scale(4),
+    padding: responsive.scale(8),
     borderRadius: responsive.scale(5),
   },
   searchIndicator: {
     marginLeft: responsive.scale(-25),
   },
   selectedMovie: {
-    backgroundColor: colors.quinary,
+    backgroundColor: colors.grey,
   },
   resultsContainer: {
-    marginBottom: responsive.scale(6),
-    maxHeight: responsive.scale(82),
+    marginBottom: responsive.scale(10),
+    maxHeight: responsive.scale(100),
     minHeight: responsive.scale(82),
-    maxWidth: responsive.scale(350), // Increased max width to match movie container
+    maxWidth: responsive.scale(400),
     width: "100%",
   },
   resultsShow: {
@@ -96,9 +98,10 @@ export const pickerStyles = StyleSheet.create({
   },
   noResultsText: {
     fontFamily: "Arvo-Regular",
-    fontSize: responsive.responsiveFontSize(14),
-    color: colors.tertiary,
+    fontSize: responsive.responsiveFontSize(16),
+    color: colors.lightGrey,
     textAlign: "center",
+    padding: responsive.scale(10),
   },
   errorText: {
     fontFamily: "Arvo-Regular",
@@ -108,11 +111,13 @@ export const pickerStyles = StyleSheet.create({
     padding: responsive.scale(10),
   },
   unselected: {
-    color: colors.secondary,
+    color: colors.lightGrey,
     fontFamily: "Arvo-Italic",
+    fontSize: responsive.responsiveFontSize(16),
   },
   disabledButton: {
-    backgroundColor: colors.tertiary, // Slightly different for disabled button
-    opacity: 0.7,
+    backgroundColor: "transparent",
+    opacity: 0.5,
+    borderColor: colors.tertiary,
   },
 })

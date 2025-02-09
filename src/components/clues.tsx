@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useMemo, memo } from "react"
 import { Animated, Text, View, Easing, ScrollView } from "react-native"
 import { cluesStyles } from "../styles/cluesStyles"
 import { PlayerGame } from "../models/game"
-import { colors } from "../styles/global" // Import colors
+import { colors } from "../styles/global"
 
 interface CluesProps {
   correctGuess: boolean
@@ -68,8 +68,8 @@ const CluesContainer = memo(
     }, [playerGame?.game?.movie?.overview])
 
     useEffect(() => {
-      console.log("CluesContainer: Guesses updated:", guesses) // Keep this log
-      if (isLoading) return // Prevent animation if still loading initially
+      console.log("CluesContainer: Guesses updated:", guesses)
+      if (isLoading) return
 
       const cluesToReveal = Math.min(guesses.length + 1, clues.length)
       const newRevealedClues = clues.slice(0, cluesToReveal)
@@ -111,7 +111,7 @@ const CluesContainer = memo(
 
         setRevealedClues(newRevealedClues)
       }
-    }, [guesses, clues, isLoading]) // UPDATED DEPENDENCY ARRAY: Only guesses and clues, added isLoading
+    }, [guesses, clues, isLoading])
 
     const highlightStyle = clueHighlightAnim.interpolate({
       inputRange: [0, 1],
@@ -130,7 +130,11 @@ const CluesContainer = memo(
           </View>
         ) : (
           <>
-            <ScrollView ref={scrollViewRef} style={cluesStyles.scrollView}>
+            <ScrollView
+              ref={scrollViewRef}
+              style={cluesStyles.scrollView}
+              contentContainerStyle={cluesStyles.scrollViewContent}
+            >
               <Animated.Text
                 style={[
                   cluesStyles.text,

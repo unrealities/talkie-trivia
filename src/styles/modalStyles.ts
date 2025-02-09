@@ -5,25 +5,25 @@ const { width, height } = Dimensions.get("window")
 
 export const modalStyles = StyleSheet.create({
   button: {
-    backgroundColor: colors.primary,
+    backgroundColor: "transparent",
     borderColor: colors.primary,
-    borderRadius: responsive.scale(10),
+    borderRadius: responsive.scale(8),
     borderWidth: 2,
-    padding: responsive.scale(8),
-    elevation: 2,
+    padding: responsive.scale(10),
+    elevation: 0,
     minWidth: responsive.isSmallScreen() ? "40%" : "30%",
     minHeight: responsive.scale(40),
     justifyContent: "center",
     alignItems: "center",
     ...Platform.select({
       ios: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
+        shadowColor: "transparent",
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0,
+        shadowRadius: 0,
       },
       android: {
-        elevation: 5,
+        elevation: 0,
       },
     }),
   },
@@ -32,54 +32,54 @@ export const modalStyles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
   },
 
   modalView: {
-    width: responsive.isTablet ? "80%" : "95%",
+    width: responsive.isTablet ? "75%" : "90%",
     alignItems: "center",
-    backgroundColor: colors.secondary,
-    borderRadius: responsive.scale(20),
+    backgroundColor: colors.background,
+    borderRadius: responsive.scale(15),
     justifyContent: "space-between",
-    margin: responsive.scale(8),
+    margin: responsive.scale(10),
     minWidth: responsive.isSmallScreen()
       ? width * 0.85
       : responsive.isTablet
-      ? width * 0.7
-      : width * 0.85,
+      ? width * 0.65
+      : width * 0.8,
     maxHeight: responsive.isSmallScreen()
-      ? height * 0.6
+      ? height * 0.7
       : responsive.isTablet
-      ? height * 0.75
+      ? height * 0.8
       : height * 0.7,
-    padding: responsive.scale(16),
+    padding: responsive.scale(20),
     ...Platform.select({
       ios: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
+        shadowColor: "transparent",
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0,
+        shadowRadius: 0,
       },
       android: {
-        elevation: 5,
+        elevation: 0,
       },
     }),
   },
 
   buttonText: {
-    color: colors.white,
+    color: colors.secondary,
     fontFamily: "Arvo-Bold",
     textAlign: "center",
-    fontSize: responsive.responsiveFontSize(14),
+    fontSize: responsive.responsiveFontSize(16),
     letterSpacing: 0.5,
   },
 
   errorText: {
-    color: colors.quaternary, // Changed to error color
+    color: colors.quaternary,
     fontFamily: "Arvo-Regular",
-    fontSize: responsive.responsiveFontSize(16),
+    fontSize: responsive.responsiveFontSize(18),
     textAlign: "center",
-    marginBottom: responsive.scale(15),
+    marginBottom: responsive.scale(20),
   },
 
   modalContainer: {

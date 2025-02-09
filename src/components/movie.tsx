@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from "react"
-import { View, Alert, Pressable, Text } from "react-native" // Added Pressable and Text
+import { View, Alert, Pressable, Text } from "react-native"
 import ConfettiCannon from "react-native-confetti-cannon"
 
 import CluesContainer from "./clues"
@@ -43,10 +43,10 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
   const [showModal, setShowModal] = useState(false)
   const confettiRef = useRef<ConfettiCannon>(null)
   const { state, dispatch } = useAppContext()
-  const [guessFeedback, setGuessFeedback] = useState<string | null>(null) // State for guess feedback message
-  const [showGiveUpConfirmation, setShowGiveUpConfirmation] = useState(false) // State for "Give Up" confirmation
+  const [guessFeedback, setGuessFeedback] = useState<string | null>(null)
+  const [showGiveUpConfirmation, setShowGiveUpConfirmation] = useState(false)
 
-  const hintsAvailable = playerStats?.hintsAvailable || 0 // Get hintsAvailable from playerStats
+  const hintsAvailable = playerStats?.hintsAvailable || 0
 
   useEffect(() => {
     const updatePlayerData = async (playerGame) => {
@@ -63,7 +63,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
       if (
         (playerGame.guesses.length > 4 ||
           playerGame.correctAnswer ||
-          playerGame.gaveUp) && //Include gaveUp state
+          playerGame.gaveUp) &&
         enableSubmit
       ) {
         setEnableSubmit(false)
@@ -76,11 +76,10 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
             updatedStats.maxStreak
           )
           updatedStats.wins[playerGame.guesses.length - 1]++
-          updatedStats.games++ // Increment games played on win
+          updatedStats.games++
         } else if (!playerGame.gaveUp) {
-          // Only increment games if not gave up and lost
           updatedStats.currentStreak = 0
-          updatedStats.games++ // Increment games played on loss (not gave up)
+          updatedStats.games++
         }
 
         try {
@@ -91,7 +90,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
             updatedStats,
             playerGame,
             player.id,
-            { hintsAvailable: updatedStats.hintsAvailable } // Pass hintsAvailable to be saved in player doc
+            { hintsAvailable: updatedStats.hintsAvailable }
           )
 
           if (result.success) {
@@ -114,16 +113,11 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         playerGame.guesses.length < 5 &&
         !playerGame.correctAnswer
       ) {
-        // Update playerGame data
         try {
           console.log(
             "MoviesContainer useEffect [updatePlayerData]: updating player game data"
           )
-          const result = await batchUpdatePlayerData(
-            {}, // No stats update
-            playerGame,
-            player.id
-          )
+          const result = await batchUpdatePlayerData({}, playerGame, player.id)
           if (result.success) {
             console.log(
               "MoviesContainer useEffect [updatePlayerData]: updated player game data"
@@ -149,34 +143,31 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
     initialDataLoaded,
   ])
 
-  // Make sure updatePlayerGame is correctly updating the state in GameScreen
   const handleUpdatePlayerGame = (updatedPlayerGame: PlayerGame) => {
     console.log("MoviesContainer: Updating playerGame:", updatedPlayerGame)
     updatePlayerGame(updatedPlayerGame)
   }
   const handleGiveUp = useCallback(() => {
-    setShowGiveUpConfirmation(true) // Show confirmation alert
+    setShowGiveUpConfirmation(true)
   }, [setShowGiveUpConfirmation])
 
   const confirmGiveUp = useCallback(() => {
-    setShowGiveUpConfirmation(false) // Hide confirmation alert
+    setShowGiveUpConfirmation(false)
 
     if (playerGame && !playerGame.correctAnswer) {
       const updatedPlayerGameGiveUp = {
         ...playerGame,
-        correctAnswer: false, // Explicitly set to false to ensure modal shows lose state
-        guesses: [...playerGame.guesses, -1], // Add a dummy guess to proceed to game end state
-        gaveUp: true, // Set gaveUp to true
+        correctAnswer: false,
+        guesses: [...playerGame.guesses, -1],
+        gaveUp: true,
       }
 
-      updatePlayerGame(updatedPlayerGameGiveUp) // Update game state to trigger end game and modal
-
-      // No need to update playerStats here for "gave up" specifically, stats update already handles loss in the useEffect
+      updatePlayerGame(updatedPlayerGameGiveUp)
     }
   }, [playerGame, updatePlayerGame, setShowGiveUpConfirmation])
 
   const cancelGiveUp = useCallback(() => {
-    setShowGiveUpConfirmation(false) // Just close the confirmation, no further action
+    setShowGiveUpConfirmation(false)
   }, [setShowGiveUpConfirmation])
 
   const provideGuessFeedback = useCallback(
@@ -185,7 +176,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
       if (message) {
         setTimeout(() => {
           setGuessFeedback(null)
-        }, 2000) // Clear feedback message after 2 seconds
+        }, 2000)
       }
     },
     [setGuessFeedback]
@@ -194,7 +185,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
   const isInteractionsDisabled =
     playerGame.correctAnswer ||
     playerGame.guesses.length >= playerGame.game.guessesMax ||
-    playerGame.gaveUp //Include gaveUp state to disable interaction after giving up
+    playerGame.gaveUp
 
   console.log("showModal state:", showModal)
   return (
@@ -211,25 +202,27 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         playerGame={playerGame}
         updatePlayerGame={handleUpdatePlayerGame}
         isInteractionsDisabled={isInteractionsDisabled}
-        hintsAvailable={hintsAvailable} // Pass hintsAvailable to HintContainer
+        hintsAvailable={hintsAvailable}
       />
       <PickerContainer
         enableSubmit={enableSubmit}
         playerGame={playerGame}
         movies={movies}
         updatePlayerGame={handleUpdatePlayerGame}
-        onGuessFeedback={provideGuessFeedback} // Pass the feedback function
+        onGuessFeedback={provideGuessFeedback}
       />
       {guessFeedback && (
         <View style={movieStyles.feedbackContainer}>
           <Text style={movieStyles.feedbackText}>{guessFeedback}</Text>
         </View>
       )}
+      {/* Reorder GuessesContainer and PickerContainer to ensure Picker is above */}
       <GuessesContainer
         guesses={playerGame.guesses}
         movie={playerGame.game.movie}
         movies={movies}
       />
+      {/* Place Give Up button AFTER GuessesContainer */}
       <Pressable
         onPress={handleGiveUp}
         style={({ pressed }) => [

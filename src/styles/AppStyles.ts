@@ -11,6 +11,7 @@ export const appStyles = StyleSheet.create({
       android: responsive.scale(10),
       default: 0,
     }),
+    paddingHorizontal: responsive.scale(10),
   },
   loadingContainer: {
     flex: 1,
@@ -28,7 +29,7 @@ export const appStyles = StyleSheet.create({
   },
   errorText: {
     fontFamily: "Arvo-Regular",
-    fontSize: responsive.responsiveFontSize(20),
+    fontSize: responsive.responsiveFontSize(18),
     color: colors.quaternary,
     textAlign: "center",
     width: "80%",

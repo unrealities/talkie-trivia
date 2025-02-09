@@ -17,9 +17,9 @@ const scale = (size: number) => {
   const scaleHeight = SCREEN_HEIGHT / baseHeight
   const scale = Math.min(scaleWidth, scaleHeight)
 
-  // Cap scaling based on screen size
+ 
   if (isLargeScreen()) {
-    return PixelRatio.roundToNearestPixel(size * Math.min(scale, 1.3)) // Cap at 30% increase for large screens
+    return PixelRatio.roundToNearestPixel(size * Math.min(scale, 1.2))
   }
   return PixelRatio.roundToNearestPixel(size * scale)
 }
@@ -30,25 +30,27 @@ const responsiveFontSize = (size: number) => {
   if (isSmallScreen()) {
     scaleFactor = SCREEN_WIDTH / baseWidth
   } else if (isMediumScreen()) {
-    scaleFactor = 1.1
+    scaleFactor = 1.05
   } else {
-    scaleFactor = 1.2
+    scaleFactor = 1.1
   }
 
   return Math.min(
     PixelRatio.roundToNearestPixel(size * scaleFactor),
-    size * 1.4 // Increased max font size slightly for better readability
+    size * 1.3
   )
 }
 
 export const colors = {
-  background: "#1A1A1A", // Darker background
-  primary: "#F77F00", // Keep the orange as a highlight color
-  secondary: "#F0F0F0", // Lighter text for better contrast - slightly off white
-  tertiary: "#FCBF49", //  A slightly muted orange
-  quaternary: "#D62828", // A deep red for errors or warnings.
-  quinary: "#29D7D7", // A teal/cyan color, highlight for clues/selected
+  background: "#1A1A1A",
+  primary: "#F77F00",
+  secondary: "#F0F0F0",
+  tertiary: "#FCBF49",
+  quaternary: "#D62828",
+  quinary: "#29D7D7",
   white: "#FFFFFF",
+  grey: "#555555",
+  lightGrey: "#AAAAAA",
 }
 
 export const responsive = {

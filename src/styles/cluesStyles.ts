@@ -5,27 +5,32 @@ export const cluesStyles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "flex-start",
-    marginVertical: responsive.scale(10),
+    marginVertical: responsive.scale(15),
+    paddingHorizontal: responsive.scale(20),
   },
   countContainer: {
     alignSelf: "flex-end",
-    marginTop: responsive.scale(8),
-    marginBottom: responsive.scale(4),
+    marginTop: responsive.scale(4),
+    marginBottom: responsive.scale(8),
+    marginRight: responsive.scale(20),
   },
   mostRecentClue: {
     fontFamily: "Arvo-Bold",
-    backgroundColor: colors.quinary, // Highlight background for recent clue
-    paddingHorizontal: responsive.scale(6), // Add some padding around highlight
-    paddingVertical: responsive.scale(2),
-    borderRadius: responsive.scale(4),
-    marginVertical: responsive.scale(2),
-    color: colors.background, // Text color contrast on highlight
+    backgroundColor: colors.quinary,
+    paddingHorizontal: responsive.scale(10),
+    paddingVertical: responsive.scale(6),
+    borderRadius: responsive.scale(5),
+    marginVertical: responsive.scale(4),
+    color: colors.background,
   },
   scrollView: {
     width: "100%",
-    paddingHorizontal: responsive.scale(10),
-    maxHeight: responsive.scale(200),
-    marginBottom: responsive.scale(8),
+    paddingHorizontal: responsive.scale(0),
+    maxHeight: responsive.scale(300),
+    marginBottom: responsive.scale(10),
+  },
+  scrollViewContent: {
+    paddingVertical: responsive.scale(10),
   },
   skeletonContainer: {
     paddingHorizontal: responsive.scale(10),
@@ -43,9 +48,9 @@ export const cluesStyles = StyleSheet.create({
   text: {
     color: colors.secondary,
     fontFamily: "Arvo-Regular",
-    fontSize: responsive.responsiveFontSize(12),
+    fontSize: responsive.responsiveFontSize(16),
     paddingBottom: responsive.scale(8),
-    lineHeight: responsive.responsiveFontSize(16),
+    lineHeight: responsive.responsiveFontSize(22),
   },
   textContainer: {
     flexDirection: "row",
@@ -56,7 +61,7 @@ export const cluesStyles = StyleSheet.create({
   wordCountText: {
     color: colors.primary,
     fontFamily: "Arvo-Regular",
-    fontSize: responsive.responsiveFontSize(8),
+    fontSize: responsive.responsiveFontSize(10),
     textAlign: "right",
   },
 })
