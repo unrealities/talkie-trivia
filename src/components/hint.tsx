@@ -1,16 +1,30 @@
 import React, { useState, memo, useCallback, useEffect } from "react"
-import { View, Pressable, Text } from "react-native"
+import {
+  View,
+  Pressable,
+  Text,
+  LayoutAnimation,
+  Platform,
+  UIManager,
+} from "react-native"
 import { PlayerGame } from "../models/game"
 import { hintStyles } from "../styles/hintStyles"
 import { responsive } from "../styles/global"
 import { colors } from "../styles/global"
-import Icon from "react-native-vector-icons/FontAwesome" // Import Icon
+import Icon from "react-native-vector-icons/FontAwesome"
 
 interface HintProps {
   playerGame: PlayerGame
   updatePlayerGame: (updatedPlayerGame: PlayerGame) => void
   isInteractionsDisabled: boolean
   hintsAvailable: number
+}
+
+if (
+  Platform.OS === "android" &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
+  UIManager.setLayoutAnimationEnabledExperimental(true)
 }
 
 const HintContainer = memo(
@@ -27,16 +41,23 @@ const HintContainer = memo(
     >(null)
     const [localHintsAvailable, setLocalHintsAvailable] =
       useState(hintsAvailable)
+    const [showHintOptions, setShowHintOptions] = useState(false)
 
     useEffect(() => {
       setHintUsed(false)
       setHintType(null)
       setLocalHintsAvailable(hintsAvailable)
+      setShowHintOptions(false)
     }, [playerGame.guesses.length, hintsAvailable])
 
     const handleHintSelection = useCallback(
       (hint: "decade" | "director" | "actor" | "genre") => {
-        if (isInteractionsDisabled || hintUsed || localHintsAvailable <= 0) {
+        if (
+          isInteractionsDisabled ||
+          hintUsed ||
+          localHintsAvailable <= 0 ||
+          !showHintOptions
+        ) {
           return
         }
 
@@ -51,6 +72,8 @@ const HintContainer = memo(
             [playerGame.guesses.length]: hint,
           },
         })
+        setShowHintOptions(false)
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
       },
       [
         isInteractionsDisabled,
@@ -58,8 +81,14 @@ const HintContainer = memo(
         playerGame,
         updatePlayerGame,
         localHintsAvailable,
+        showHintOptions,
       ]
     )
+
+    const handleToggleHintOptions = useCallback(() => {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+      setShowHintOptions(!showHintOptions)
+    }, [showHintOptions])
 
     const hintText = () => {
       if (hintType) {
@@ -86,10 +115,6 @@ const HintContainer = memo(
     }
 
     const renderHintButtons = () => {
-      if (hintUsed) {
-        return null
-      }
-
       const buttonTextStyle = hintStyles.buttonTextSmall
 
       const hintButton = (
@@ -106,7 +131,10 @@ const HintContainer = memo(
           ]}
           onPress={() => handleHintSelection(hintType)}
           disabled={
-            isInteractionsDisabled || hintUsed || localHintsAvailable <= 0
+            isInteractionsDisabled ||
+            hintUsed ||
+            localHintsAvailable <= 0 ||
+            !showHintOptions
           }
           accessible
           accessibilityRole="button"
@@ -127,9 +155,6 @@ const HintContainer = memo(
 
       return (
         <View style={hintStyles.hintButtonsContainer}>
-          <Text style={hintStyles.hintLabel}>
-            Need a Hint? ({localHintsAvailable} available)
-          </Text>
           <View style={hintStyles.hintButtonArea}>
             {hintButton("decade", "calendar", "Decade")}
             {hintButton("director", "video-camera", "Director")}
@@ -144,7 +169,18 @@ const HintContainer = memo(
 
     return (
       <View style={hintStyles.container}>
-        {renderHintButtons()}
+        <Pressable
+          onPress={handleToggleHintOptions}
+          accessible
+          accessibilityRole="button"
+          accessibilityLabel="Need a Hint? Tap to reveal hint options."
+        >
+          <Text style={hintStyles.hintLabel}>
+            Need a Hint? ({localHintsAvailable} available)
+          </Text>
+        </Pressable>
+        {showHintOptions && renderHintButtons()}{" "}
+        {/* Conditionally render hint buttons based on visibility state */}
         {displayedHintText && (
           <Text style={hintStyles.hintText}>{displayedHintText}</Text>
         )}{" "}

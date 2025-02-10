@@ -11,8 +11,8 @@ export const titleHeaderStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: responsive.scale(8),
-    marginTop: responsive.scale(35),
-    minHeight: responsive.scale(60),
+    marginTop: responsive.scale(15),
+    minHeight: responsive.scale(50),
     width: "100%",
     shadowColor: "transparent",
     shadowOffset: { width: 0, height: 0 },
@@ -24,14 +24,16 @@ export const titleHeaderStyles = StyleSheet.create({
     color: colors.primary,
     fontFamily: "Arvo-Bold",
     fontSize: responsive.responsiveFontSize(30),
-    paddingTop: responsive.scale(8),
+    paddingTop: responsive.scale(4),
     textAlign: "center",
   },
   subHeader: {
     color: colors.lightGrey,
     fontFamily: "Arvo-Italic",
     fontSize: responsive.responsiveFontSize(16),
-    paddingBottom: responsive.scale(8),
+    paddingBottom: responsive.scale(4),
     textAlign: "center",
   },
 })
+
+export default titleHeaderStyles

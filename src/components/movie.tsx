@@ -204,6 +204,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         isInteractionsDisabled={isInteractionsDisabled}
         hintsAvailable={hintsAvailable}
       />
+      {/* PickerContainer should be BEFORE GuessesContainer */}
       <PickerContainer
         enableSubmit={enableSubmit}
         playerGame={playerGame}
@@ -216,13 +217,12 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
           <Text style={movieStyles.feedbackText}>{guessFeedback}</Text>
         </View>
       )}
-      {/* Reorder GuessesContainer and PickerContainer to ensure Picker is above */}
       <GuessesContainer
         guesses={playerGame.guesses}
         movie={playerGame.game.movie}
         movies={movies}
       />
-      {/* Place Give Up button AFTER GuessesContainer */}
+      {/* Place Give Up button AFTER GuessesContainer in the natural flow of elements */}
       <Pressable
         onPress={handleGiveUp}
         style={({ pressed }) => [

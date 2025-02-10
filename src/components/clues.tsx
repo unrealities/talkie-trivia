@@ -100,13 +100,6 @@ const CluesContainer = memo(
           }),
         ]).start(() => {
           scrollViewRef.current?.scrollToEnd({ animated: true })
-          Animated.timing(clueHighlightAnim, {
-            toValue: 0,
-            duration: 800,
-            easing: Easing.linear,
-            delay: 500,
-            useNativeDriver: false,
-          }).start()
         })
 
         setRevealedClues(newRevealedClues)

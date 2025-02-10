@@ -33,13 +33,13 @@ export const movieStyles = StyleSheet.create({
     padding: responsive.scale(12),
     alignItems: "center",
     justifyContent: "center",
-    marginTop: responsive.scale(25), // Increased marginTop to push it down further
-    marginBottom: responsive.scale(20), // Added marginBottom for spacing below button
+    marginTop: responsive.scale(25),
+    marginBottom: responsive.scale(20),
     elevation: 0,
     borderWidth: 2,
     borderColor: colors.quaternary,
-    alignSelf: "center", // Ensure button is centered
-    width: "90%", // Match width with picker and guesses for visual consistency
+    alignSelf: "center",
+    width: "90%",
   },
   giveUpButtonText: {
     color: colors.secondary,
@@ -54,3 +54,5 @@ export const movieStyles = StyleSheet.create({
     opacity: 0.8,
   },
 })
+
+export default movieStyles
