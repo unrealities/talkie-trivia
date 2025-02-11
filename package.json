@@ -1,6 +1,11 @@
 {
   "name": "talkie-trivia",
   "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/unrealities/talkie-trivia.git"
+  },
+  "license": "MIT",
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
@@ -18,7 +23,7 @@
     "comlink": "^4.4.2",
     "crypto-browserify": "^3.12.1",
     "dotenv": "^16.4.7",
-    "expo": "^52.0.31",
+    "expo": "~52.0.32",
     "expo-application": "~6.0.2",
     "expo-auth-session": "~6.0.3",
     "expo-constants": "~17.0.5",
