@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from "react"
-import { View, Alert, Pressable, Text } from "react-native"
+import { View, Alert, Pressable, Text, ScrollView } from "react-native"
 import ConfettiCannon from "react-native-confetti-cannon"
 
 import CluesContainer from "./clues"
@@ -189,86 +189,91 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
 
   console.log("showModal state:", showModal)
   return (
-    <View style={movieStyles.container}>
-      <NetworkContainer isConnected={isNetworkConnected} />
-      <TitleHeader />
-      <CluesContainer
-        correctGuess={playerGame.correctAnswer}
-        guesses={playerGame.guesses}
-        summary={playerGame.game.movie.overview}
-        playerGame={playerGame}
-      />
-      <HintContainer
-        playerGame={playerGame}
-        updatePlayerGame={handleUpdatePlayerGame}
-        isInteractionsDisabled={isInteractionsDisabled}
-        hintsAvailable={hintsAvailable}
-      />
-      {/* PickerContainer should be BEFORE GuessesContainer */}
-      <PickerContainer
-        enableSubmit={enableSubmit}
-        playerGame={playerGame}
-        movies={movies}
-        updatePlayerGame={handleUpdatePlayerGame}
-        onGuessFeedback={provideGuessFeedback}
-      />
-      {guessFeedback && (
-        <View style={movieStyles.feedbackContainer}>
-          <Text style={movieStyles.feedbackText}>{guessFeedback}</Text>
-        </View>
-      )}
-      <GuessesContainer
-        guesses={playerGame.guesses}
-        movie={playerGame.game.movie}
-        movies={movies}
-      />
-      {/* Place Give Up button AFTER GuessesContainer in the natural flow of elements */}
-      <Pressable
-        onPress={handleGiveUp}
-        style={({ pressed }) => [
-          movieStyles.giveUpButton,
-          isInteractionsDisabled && movieStyles.disabledButton,
-          pressed && movieStyles.pressedButton,
-        ]}
-        disabled={isInteractionsDisabled}
-        accessible={true}
-        accessibilityLabel="Give Up"
-        accessibilityHint="Gives up on the current movie and reveals the answer."
-        accessibilityRole="button"
-      >
-        <Text style={movieStyles.giveUpButtonText}>Give Up?</Text>
-      </Pressable>
-
-      {showGiveUpConfirmation &&
-        Alert.alert(
-          "Give Up?",
-          "Are you sure you want to give up on this movie?",
-          [
-            {
-              text: "Cancel",
-              onPress: cancelGiveUp,
-              style: "cancel",
-            },
-            { text: "Give Up", onPress: confirmGiveUp },
-          ],
-          { cancelable: false }
+    <ScrollView
+      contentContainerStyle={movieStyles.scrollContentContainer}
+      style={{ flex: 1 }}
+    >
+      <View style={movieStyles.container}>
+        <NetworkContainer isConnected={isNetworkConnected} />
+        <TitleHeader />
+        <CluesContainer
+          correctGuess={playerGame.correctAnswer}
+          guesses={playerGame.guesses}
+          summary={playerGame.game.movie.overview}
+          playerGame={playerGame}
+        />
+        <HintContainer
+          playerGame={playerGame}
+          updatePlayerGame={handleUpdatePlayerGame}
+          isInteractionsDisabled={isInteractionsDisabled}
+          hintsAvailable={hintsAvailable}
+        />
+        {/* PickerContainer should be BEFORE GuessesContainer */}
+        <PickerContainer
+          enableSubmit={enableSubmit}
+          playerGame={playerGame}
+          movies={movies}
+          updatePlayerGame={handleUpdatePlayerGame}
+          onGuessFeedback={provideGuessFeedback}
+        />
+        {guessFeedback && (
+          <View style={movieStyles.feedbackContainer}>
+            <Text style={movieStyles.feedbackText}>{guessFeedback}</Text>
+          </View>
         )}
-      <MovieModal
-        movie={playerGame.game.movie}
-        show={showModal}
-        toggleModal={setShowModal}
-      />
-      <ConfettiCannon
-        autoStart={false}
-        colors={Object.values(colors)}
-        count={250}
-        explosionSpeed={500}
-        fadeOut={true}
-        fallSpeed={2000}
-        origin={{ x: 100, y: -20 }}
-        ref={confettiRef}
-      />
-    </View>
+        <GuessesContainer
+          guesses={playerGame.guesses}
+          movie={playerGame.game.movie}
+          movies={movies}
+        />
+        {/* Place Give Up button AFTER GuessesContainer in the natural flow of elements */}
+        <Pressable
+          onPress={handleGiveUp}
+          style={({ pressed }) => [
+            movieStyles.giveUpButton,
+            isInteractionsDisabled && movieStyles.disabledButton,
+            pressed && movieStyles.pressedButton,
+          ]}
+          disabled={isInteractionsDisabled}
+          accessible={true}
+          accessibilityLabel="Give Up"
+          accessibilityHint="Gives up on the current movie and reveals the answer."
+          accessibilityRole="button"
+        >
+          <Text style={movieStyles.giveUpButtonText}>Give Up?</Text>
+        </Pressable>
+
+        {showGiveUpConfirmation &&
+          Alert.alert(
+            "Give Up?",
+            "Are you sure you want to give up on this movie?",
+            [
+              {
+                text: "Cancel",
+                onPress: cancelGiveUp,
+                style: "cancel",
+              },
+              { text: "Give Up", onPress: confirmGiveUp },
+            ],
+            { cancelable: false }
+          )}
+        <MovieModal
+          movie={playerGame.game.movie}
+          show={showModal}
+          toggleModal={setShowModal}
+        />
+        <ConfettiCannon
+          autoStart={false}
+          colors={Object.values(colors)}
+          count={250}
+          explosionSpeed={500}
+          fadeOut={true}
+          fallSpeed={2000}
+          origin={{ x: 100, y: -20 }}
+          ref={confettiRef}
+        />
+      </View>
+    </ScrollView>
   )
 }
 

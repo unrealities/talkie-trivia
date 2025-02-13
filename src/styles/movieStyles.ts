@@ -7,12 +7,16 @@ export const movieStyles = StyleSheet.create({
   container: {
     alignItems: "center",
     flex: 1,
+    flexGrow: 1,
     flexDirection: "column",
-    marginTop: height * 0.03,
+
     width: "95%",
     alignSelf: "center",
     maxWidth: responsive.scale(400),
     paddingHorizontal: responsive.scale(15),
+  },
+  scrollContentContainer: {
+    paddingBottom: responsive.scale(20),
   },
   feedbackContainer: {
     backgroundColor: colors.quinary,

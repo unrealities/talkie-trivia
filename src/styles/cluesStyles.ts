@@ -26,8 +26,9 @@ export const cluesStyles = StyleSheet.create({
   scrollView: {
     width: "100%",
     paddingHorizontal: responsive.scale(0),
-    maxHeight: responsive.scale(400), // Increased maxHeight for clue section - Original was 300
+
     marginBottom: responsive.scale(10),
+    flexGrow: 1,
   },
   scrollViewContent: {
     paddingVertical: responsive.scale(10),
