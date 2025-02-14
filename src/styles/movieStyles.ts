@@ -9,14 +9,16 @@ export const movieStyles = StyleSheet.create({
     flex: 1,
     flexGrow: 1,
     flexDirection: "column",
-
     width: "95%",
     alignSelf: "center",
     maxWidth: responsive.scale(400),
     paddingHorizontal: responsive.scale(15),
+    marginBottom: responsive.scale(20),
   },
   scrollContentContainer: {
     paddingBottom: responsive.scale(20),
+    paddingTop: responsive.scale(10),
+    alignItems: "center",
   },
   feedbackContainer: {
     backgroundColor: colors.quinary,
@@ -24,6 +26,8 @@ export const movieStyles = StyleSheet.create({
     borderRadius: responsive.scale(8),
     marginTop: responsive.scale(12),
     marginBottom: responsive.scale(8),
+    width: "100%",
+    alignItems: "center",
   },
   feedbackText: {
     color: colors.background,
