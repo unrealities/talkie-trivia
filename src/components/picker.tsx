@@ -15,19 +15,20 @@ import {
   View,
   Animated,
   Easing,
+  StyleSheet,
 } from "react-native"
 import { BasicMovie } from "../models/movie"
 import { PlayerGame } from "../models/game"
 import { colors } from "../styles/global"
 import { pickerStyles } from "../styles/pickerStyles"
-import { useAnimatedStyle } from "react-native-reanimated" // IMPORT useAnimatedStyle
+import { useAnimatedStyle } from "react-native-reanimated"
 
 interface PickerContainerProps {
   enableSubmit: boolean
   movies: BasicMovie[]
   playerGame: PlayerGame
   updatePlayerGame: (updatedPlayerGame: PlayerGame) => void
-  onGuessFeedback: (message: string | null) => void // Feedback function
+  onGuessFeedback: (message: string | null) => void
 }
 
 const PickerContainer: React.FC<PickerContainerProps> = memo(
@@ -44,13 +45,13 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
       title: string
     }>({ id: 0, title: DEFAULT_BUTTON_TEXT })
     const [searchText, setSearchText] = useState<string>("")
-    const buttonScale = useRef(new Animated.Value(1)).current // For button animation
+    const buttonScale = useRef(new Animated.Value(1)).current
 
     const isInteractionsDisabled = useMemo(
       () =>
         playerGame.correctAnswer ||
         playerGame.guesses.length >= playerGame.game.guessesMax ||
-        playerGame.gaveUp, // Include gaveUp state
+        playerGame.gaveUp,
       [
         playerGame.correctAnswer,
         playerGame.guesses,
@@ -59,28 +60,24 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
       ]
     )
 
-    // Simple search using includes
     const filterMovies = (searchTerm: string) => {
       const trimmedTerm = searchTerm.trim().toLowerCase()
 
       if (trimmedTerm === "") {
-        return [] // Return empty array when search term is empty
+        return []
       }
 
-      // Filter movies based on search term
       const filteredMovies = movies.filter((movie) =>
         movie.title.toLowerCase().includes(trimmedTerm)
       )
       return filteredMovies
     }
 
-    // Update state directly on input change
     const handleInputChange = (text: string) => {
       setSearchText(text)
       setIsSearching(true)
     }
 
-    // Debounced effect to trigger search
     useEffect(() => {
       const handler = setTimeout(() => {
         if (searchText) {
@@ -91,9 +88,9 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
           setFoundMovies([])
           setIsSearching(false)
         }
-      }, 300) // 300ms delay
+      }, 300)
 
-      return () => clearTimeout(handler) // Clean up the timeout
+      return () => clearTimeout(handler)
     }, [searchText, movies])
 
     const onPressCheck = useCallback(() => {
@@ -121,36 +118,33 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
           isCorrectAnswer
         )
 
-        // Provide feedback based on the guess
         if (isCorrectAnswer) {
           onGuessFeedback("Correct Guess!")
         } else {
           onGuessFeedback("Incorrect Guess")
         }
 
-        // Update playerGame state using the new array
         const updatedPlayerGame = {
           ...playerGame,
           guesses: newGuesses,
           correctAnswer: isCorrectAnswer,
         }
 
-        updatePlayerGame(updatedPlayerGame) // Call updatePlayerGame directly
+        updatePlayerGame(updatedPlayerGame)
 
         setSelectedMovie({ id: 0, title: DEFAULT_BUTTON_TEXT })
         setSearchText("")
 
-        // Button press animation
         Animated.sequence([
           Animated.timing(buttonScale, {
             toValue: 0.9,
-            duration: 50, // Short duration for press effect
+            duration: 50,
             easing: Easing.inOut(Easing.ease),
             useNativeDriver: true,
           }),
           Animated.timing(buttonScale, {
             toValue: 1,
-            duration: 150, // Slightly longer duration for release
+            duration: 150,
             easing: Easing.inOut(Easing.ease),
             useNativeDriver: true,
           }),
@@ -181,7 +175,6 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
       }
     }
 
-    // Render item for FlatList
     const renderItem = ({ item: movie }: { item: BasicMovie }) => {
       const releaseYear = movie.release_date
         ? ` (${movie.release_date.toString().substring(0, 4)})`
@@ -203,9 +196,9 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
           disabled={isInteractionsDisabled}
         >
           <Text
+            style={pickerStyles.unselected}
             numberOfLines={1}
             ellipsizeMode="tail"
-            style={pickerStyles.unselected}
           >
             {titleWithYear}
           </Text>
@@ -256,7 +249,7 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
               keyboardShouldPersistTaps="handled"
               ListEmptyComponent={
                 <Text style={pickerStyles.noResultsText}>No movies found</Text>
-              } // Add a component to display when the list is empty
+              }
             />
           </View>
         )}
@@ -273,13 +266,13 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
             disabled={
               isInteractionsDisabled ||
               selectedMovie.title === DEFAULT_BUTTON_TEXT
-            } //disable when no movie selected or interactions are disabled
+            }
             onPress={onPressCheck}
             style={[
               pickerStyles.button,
-              isInteractionsDisabled && pickerStyles.disabledButton, // disabled style
+              isInteractionsDisabled && pickerStyles.disabledButton,
               selectedMovie.title === DEFAULT_BUTTON_TEXT &&
-                pickerStyles.disabledButton, // also disabled style when no movie selected
+                pickerStyles.disabledButton,
               selectedMovie.title.length > 35 && pickerStyles.buttonSmall,
             ]}
           >

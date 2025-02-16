@@ -10,8 +10,8 @@ export const pickerStyles = StyleSheet.create({
   button: {
     backgroundColor: "transparent",
     borderRadius: responsive.scale(10),
-    paddingVertical: responsive.scale(12),
-    paddingHorizontal: responsive.scale(15),
+    paddingVertical: responsive.scale(10),
+    paddingHorizontal: responsive.scale(12),
     width: "100%",
     height: "auto",
     elevation: 0,
@@ -24,24 +24,24 @@ export const pickerStyles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 2,
     borderColor: colors.primary,
-    marginBottom: responsive.scale(15),
+    marginBottom: responsive.scale(12),
   },
   buttonSmall: {
-    minHeight: responsive.scale(55),
+    minHeight: responsive.scale(45),
   },
   buttonText: {
+    fontSize: responsive.responsiveFontSize(16),
     color: colors.secondary,
     fontFamily: "Arvo-Regular",
-    fontSize: responsive.responsiveFontSize(18),
     textAlign: "center",
-    paddingVertical: responsive.scale(4),
+    paddingVertical: responsive.scale(2),
   },
   buttonTextSmall: {
-    fontSize: responsive.responsiveFontSize(14),
+    fontSize: responsive.responsiveFontSize(13),
   },
   container: {
     flex: 1,
-    minHeight: responsive.scale(180),
+    minHeight: responsive.scale(150),
     maxWidth: responsive.scale(400),
     width: "100%",
     alignSelf: "center",
@@ -53,12 +53,12 @@ export const pickerStyles = StyleSheet.create({
     borderWidth: 2,
     color: colors.secondary,
     fontFamily: "Arvo-Regular",
-    padding: responsive.scale(10),
+    padding: responsive.scale(8),
     textAlign: "left",
     width: "100%",
-    marginBottom: responsive.scale(12),
+    marginBottom: responsive.scale(8),
     maxWidth: responsive.scale(400),
-    fontSize: responsive.responsiveFontSize(16),
+    fontSize: responsive.responsiveFontSize(14),
   },
   inputContainer: {
     flexDirection: "row",
@@ -70,7 +70,7 @@ export const pickerStyles = StyleSheet.create({
   pressableText: {
     flex: 1,
     fontFamily: "Arvo-Regular",
-    padding: responsive.scale(8),
+    padding: responsive.scale(6),
     borderRadius: responsive.scale(5),
   },
   searchIndicator: {
@@ -80,9 +80,9 @@ export const pickerStyles = StyleSheet.create({
     backgroundColor: colors.grey,
   },
   resultsContainer: {
-    marginBottom: responsive.scale(10),
-    maxHeight: responsive.scale(150),
-    minHeight: responsive.scale(82),
+    marginBottom: responsive.scale(8),
+    maxHeight: responsive.scale(120),
+    minHeight: responsive.scale(60),
     maxWidth: responsive.scale(400),
     width: "100%",
     borderColor: colors.lightGrey,
@@ -102,10 +102,10 @@ export const pickerStyles = StyleSheet.create({
   },
   noResultsText: {
     fontFamily: "Arvo-Regular",
-    fontSize: responsive.responsiveFontSize(16),
+    fontSize: responsive.responsiveFontSize(14),
     color: colors.lightGrey,
     textAlign: "center",
-    padding: responsive.scale(10),
+    padding: responsive.scale(8),
   },
   errorText: {
     fontFamily: "Arvo-Regular",
@@ -117,7 +117,7 @@ export const pickerStyles = StyleSheet.create({
   unselected: {
     color: colors.lightGrey,
     fontFamily: "Arvo-Italic",
-    fontSize: responsive.responsiveFontSize(16),
+    fontSize: responsive.responsiveFontSize(14),
   },
   disabledButton: {
     backgroundColor: "transparent",

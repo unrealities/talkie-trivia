@@ -11,7 +11,6 @@ interface GuessesContainerProps {
 
 const GuessesContainer = memo(
   ({ guesses, movies }: GuessesContainerProps) => {
-    // Add useEffect to log when guesses are updated
     useEffect(() => {
       console.log("GuessesContainer: Guesses updated:", guesses)
     }, [guesses])
@@ -54,7 +53,7 @@ const GuessesContainer = memo(
   },
   (prevProps, nextProps) => {
     return (
-      prevProps.guesses === nextProps.guesses &&
+      prevProps.guesses.length === nextProps.guesses.length &&
       prevProps.movie === nextProps.movie &&
       prevProps.movies === nextProps.movies
     )
