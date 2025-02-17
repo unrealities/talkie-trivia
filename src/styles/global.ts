@@ -1,3 +1,14 @@
+export const colors = {
+  background: "#1A1A1A",
+  primary: "#F77F00",
+  secondary: "#F0F0F0",
+  tertiary: "#FCBF49",
+  quaternary: "#D62828",
+  quinary: "#29D7D7",
+  white: "#FFFFFF",
+  grey: "#555555",
+  lightGrey: "#AAAAAA",
+}
 import { Dimensions, PixelRatio, Platform } from "react-native"
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
@@ -17,10 +28,6 @@ const scale = (size: number) => {
   const scaleHeight = SCREEN_HEIGHT / baseHeight
   const scale = Math.min(scaleWidth, scaleHeight)
 
- 
-  if (isLargeScreen()) {
-    return PixelRatio.roundToNearestPixel(size * Math.min(scale, 1.2))
-  }
   return PixelRatio.roundToNearestPixel(size * scale)
 }
 
@@ -28,29 +35,17 @@ const responsiveFontSize = (size: number) => {
   let scaleFactor = 1
 
   if (isSmallScreen()) {
-    scaleFactor = SCREEN_WIDTH / baseWidth
+    scaleFactor = (SCREEN_WIDTH / baseWidth) * 0.9
   } else if (isMediumScreen()) {
-    scaleFactor = 1.05
+    scaleFactor = 1.0
   } else {
     scaleFactor = 1.1
   }
 
   return Math.min(
     PixelRatio.roundToNearestPixel(size * scaleFactor),
-    size * 1.3
+    size * 1.2
   )
-}
-
-export const colors = {
-  background: "#1A1A1A",
-  primary: "#F77F00",
-  secondary: "#F0F0F0",
-  tertiary: "#FCBF49",
-  quaternary: "#D62828",
-  quinary: "#29D7D7",
-  white: "#FFFFFF",
-  grey: "#555555",
-  lightGrey: "#AAAAAA",
 }
 
 export const responsive = {
