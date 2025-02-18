@@ -5,24 +5,26 @@ export const cluesStyles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "flex-start",
-    marginVertical: responsive.scale(10),
+    marginVertical: responsive.scale(20),
   },
   countContainer: {
     alignSelf: "flex-end",
-    marginBottom: responsive.scale(8),
+    marginBottom: responsive.scale(12),
     marginRight: responsive.scale(20),
     marginTop: responsive.scale(4),
   },
   mostRecentClue: {
-    backgroundColor: colors.tertiary,
+    backgroundColor: colors.quinary,
     color: colors.background,
     fontFamily: "Arvo-Bold",
-    marginVertical: responsive.scale(4),
-    paddingHorizontal: responsive.scale(2)
+    marginVertical: responsive.scale(6),
+    paddingHorizontal: responsive.scale(2),
+    paddingVertical: responsive.scale(4),
+    borderRadius: responsive.scale(5),
   },
   scrollView: {
     flexGrow: 1,
-    marginBottom: responsive.scale(10),
+    marginBottom: responsive.scale(15),
     paddingHorizontal: responsive.scale(0),
     width: "100%",
   },
@@ -37,7 +39,7 @@ export const cluesStyles = StyleSheet.create({
     backgroundColor: colors.tertiary,
     borderRadius: responsive.scale(4),
     height: responsive.scale(16),
-    marginBottom: responsive.scale(8),
+    marginBottom: responsive.scale(12),
   },
   skeletonLineShort: {
     width: "60%",
@@ -46,8 +48,8 @@ export const cluesStyles = StyleSheet.create({
     color: colors.secondary,
     fontFamily: "Arvo-Regular",
     fontSize: responsive.responsiveFontSize(14),
-    lineHeight: responsive.responsiveFontSize(16),
-    paddingBottom: responsive.scale(4),
+    lineHeight: responsive.responsiveFontSize(18),
+    paddingBottom: responsive.scale(6),
     flexWrap: "wrap",
   },
   textContainer: {

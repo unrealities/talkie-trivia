@@ -4,11 +4,11 @@ import { colors, responsive } from "./global"
 export const guessesStyles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: responsive.scale(15),
-    marginBottom: responsive.scale(10),
+    marginTop: responsive.scale(20),
+    marginBottom: responsive.scale(20),
     minHeight: responsive.scale(70),
-    paddingBottom: responsive.scale(5),
-    paddingTop: responsive.scale(5),
+    paddingBottom: responsive.scale(10),
+    paddingTop: responsive.scale(10),
     width: "95%",
     alignSelf: "center",
   },
@@ -29,9 +29,9 @@ export const guessesStyles = StyleSheet.create({
     borderRadius: responsive.scale(5),
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: responsive.scale(1),
+    marginBottom: responsive.scale(4),
     paddingHorizontal: responsive.scale(8),
-    paddingVertical: responsive.scale(4),
+    paddingVertical: responsive.scale(6),
     width: "100%",
   },
   guessNumber: {

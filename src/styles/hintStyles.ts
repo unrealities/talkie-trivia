@@ -5,8 +5,8 @@ export const hintStyles = StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: responsive.scale(15),
-    marginTop: responsive.scale(10),
+    marginBottom: responsive.scale(20),
+    marginTop: responsive.scale(15),
   },
   hintButtonsContainer: {
     flexDirection: "column",
@@ -18,7 +18,7 @@ export const hintStyles = StyleSheet.create({
     color: colors.lightGrey,
     fontFamily: "Arvo-Bold",
     fontSize: responsive.responsiveFontSize(16),
-    marginBottom: responsive.scale(10),
+    marginBottom: responsive.scale(15),
     textAlign: "center",
     width: "100%",
     paddingVertical: responsive.scale(8),
@@ -32,12 +32,12 @@ export const hintStyles = StyleSheet.create({
   },
   hintButton: {
     borderRadius: responsive.scale(8),
-    padding: responsive.scale(10),
+    padding: responsive.scale(12),
     minWidth: responsive.scale(75),
     alignItems: "center",
     justifyContent: "center",
-    marginHorizontal: responsive.scale(3),
-    marginVertical: responsive.scale(5),
+    marginHorizontal: responsive.scale(5),
+    marginVertical: responsive.scale(8),
     backgroundColor: "transparent",
     borderWidth: 1,
     borderColor: colors.lightGrey,
@@ -68,7 +68,7 @@ export const hintStyles = StyleSheet.create({
     fontSize: responsive.responsiveFontSize(16),
     marginLeft: responsive.scale(8),
     textAlign: "center",
-    marginTop: responsive.scale(15),
+    marginTop: responsive.scale(20),
   },
 })
 

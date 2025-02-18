@@ -41,10 +41,17 @@ export const pickerStyles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    minHeight: responsive.scale(150),
+    minHeight: responsive.scale(200),
     maxWidth: responsive.scale(400),
     width: "100%",
     alignSelf: "center",
+  },
+  errorText: {
+    color: colors.quaternary,
+    fontFamily: "Arvo-Regular",
+    fontSize: responsive.responsiveFontSize(14),
+    padding: responsive.scale(10),
+    textAlign: "center",
   },
   input: {
     alignSelf: "flex-start",
@@ -53,25 +60,47 @@ export const pickerStyles = StyleSheet.create({
     borderWidth: 2,
     color: colors.secondary,
     fontFamily: "Arvo-Regular",
+    fontSize: responsive.responsiveFontSize(14),
+    marginBottom: responsive.scale(8),
+    maxWidth: responsive.scale(400),
     padding: responsive.scale(8),
     textAlign: "left",
     width: "100%",
-    marginBottom: responsive.scale(8),
-    maxWidth: responsive.scale(400),
-    fontSize: responsive.responsiveFontSize(14),
   },
   inputContainer: {
-    flexDirection: "row",
     alignItems: "center",
-    width: "100%",
+    flexDirection: "row",
     marginBottom: responsive.scale(8),
     position: "relative",
+    width: "100%",
+  },
+  noResultsText: {
+    color: colors.lightGrey,
+    fontFamily: "Arvo-Regular",
+    fontSize: responsive.responsiveFontSize(14),
+    padding: responsive.scale(8),
+    textAlign: "center",
   },
   pressableText: {
+    borderRadius: responsive.scale(5),
     flex: 1,
     fontFamily: "Arvo-Regular",
     padding: responsive.scale(6),
-    borderRadius: responsive.scale(5),
+  },
+  resultsContainer: {
+    marginBottom: responsive.scale(8),
+    maxHeight:
+      responsive.scale(100),
+    minHeight: responsive.scale(60),
+    maxWidth: responsive.scale(400),
+    overflow: "hidden",
+    borderColor: colors.lightGrey,
+    borderRadius: responsive.scale(8),
+    borderWidth: 1,
+    width: "100%",
+  },
+  resultsShow: {
+    flex: 1,
   },
   searchIndicator: {
     marginLeft: responsive.scale(-25),
@@ -79,39 +108,11 @@ export const pickerStyles = StyleSheet.create({
   selectedMovie: {
     backgroundColor: colors.grey,
   },
-  resultsContainer: {
-    marginBottom: responsive.scale(8),
-    maxHeight: responsive.scale(120),
-    minHeight: responsive.scale(60),
-    maxWidth: responsive.scale(400),
-    width: "100%",
-    borderColor: colors.lightGrey,
-    borderWidth: 1,
-    borderRadius: responsive.scale(8),
-    overflow: "hidden",
-  },
-  resultsShow: {
-    flex: 1,
-  },
   text: {
     fontFamily: "Arvo-Regular",
     fontSize: responsive.responsiveFontSize(12),
-    padding: responsive.scale(10),
     lineHeight: responsive.responsiveFontSize(16),
     marginBottom: responsive.scale(10),
-  },
-  noResultsText: {
-    fontFamily: "Arvo-Regular",
-    fontSize: responsive.responsiveFontSize(14),
-    color: colors.lightGrey,
-    textAlign: "center",
-    padding: responsive.scale(8),
-  },
-  errorText: {
-    fontFamily: "Arvo-Regular",
-    fontSize: responsive.responsiveFontSize(14),
-    color: colors.quaternary,
-    textAlign: "center",
     padding: responsive.scale(10),
   },
   unselected: {
@@ -121,8 +122,8 @@ export const pickerStyles = StyleSheet.create({
   },
   disabledButton: {
     backgroundColor: "transparent",
-    opacity: 0.5,
     borderColor: colors.tertiary,
+    opacity: 0.5,
   },
 })
 
