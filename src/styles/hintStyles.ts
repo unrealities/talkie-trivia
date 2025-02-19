@@ -5,8 +5,7 @@ export const hintStyles = StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: responsive.scale(20),
-    marginTop: responsive.scale(15),
+    marginVertical: responsive.scale(2),
   },
   hintButtonsContainer: {
     flexDirection: "column",
@@ -18,7 +17,7 @@ export const hintStyles = StyleSheet.create({
     color: colors.lightGrey,
     fontFamily: "Arvo-Bold",
     fontSize: responsive.responsiveFontSize(16),
-    marginBottom: responsive.scale(15),
+    marginBottom: responsive.scale(4),
     textAlign: "center",
     width: "100%",
     paddingVertical: responsive.scale(8),
@@ -72,4 +71,4 @@ export const hintStyles = StyleSheet.create({
   },
 })
 
-export default hintStyles
+export const hintStyle = StyleSheet.create({})

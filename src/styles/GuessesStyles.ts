@@ -5,7 +5,7 @@ export const guessesStyles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: responsive.scale(20),
-    marginBottom: responsive.scale(20),
+    marginBottom: responsive.scale(15),
     minHeight: responsive.scale(70),
     paddingBottom: responsive.scale(10),
     paddingTop: responsive.scale(10),

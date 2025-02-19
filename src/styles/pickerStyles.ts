@@ -24,10 +24,7 @@ export const pickerStyles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 2,
     borderColor: colors.primary,
-    marginBottom: responsive.scale(12),
-  },
-  buttonSmall: {
-    minHeight: responsive.scale(45),
+    minHeight: responsive.scale(60)
   },
   buttonText: {
     fontSize: responsive.responsiveFontSize(16),
@@ -101,6 +98,7 @@ export const pickerStyles = StyleSheet.create({
   },
   resultsShow: {
     flex: 1,
+    maxWidth: responsive.scale(320),
   },
   searchIndicator: {
     marginLeft: responsive.scale(-25),

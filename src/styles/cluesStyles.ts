@@ -5,7 +5,8 @@ export const cluesStyles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "flex-start",
-    marginVertical: responsive.scale(20),
+    marginVertical: responsive.scale(4),
+    paddingHorizontal: responsive.scale(4),
   },
   countContainer: {
     alignSelf: "flex-end",
@@ -17,10 +18,10 @@ export const cluesStyles = StyleSheet.create({
     backgroundColor: colors.quinary,
     color: colors.background,
     fontFamily: "Arvo-Bold",
-    marginVertical: responsive.scale(6),
-    paddingHorizontal: responsive.scale(2),
-    paddingVertical: responsive.scale(4),
-    borderRadius: responsive.scale(5),
+    marginVertical: responsive.scale(4),
+    paddingHorizontal: responsive.scale(4),
+    paddingVertical: responsive.scale(1),
+    borderRadius: responsive.scale(4),
   },
   scrollView: {
     flexGrow: 1,
