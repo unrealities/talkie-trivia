@@ -38,7 +38,7 @@ export const pickerStyles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    minHeight: responsive.scale(200),
+    minHeight: responsive.scale(220),
     maxWidth: responsive.scale(400),
     width: "100%",
     alignSelf: "center",

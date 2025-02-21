@@ -1,3 +1,4 @@
+// File: src/styles/cluesStyles.ts (from initial repomix-output.txt)
 import { StyleSheet } from "react-native"
 import { colors, responsive } from "./global"
 
@@ -6,6 +7,7 @@ export const cluesStyles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     marginVertical: responsive.scale(4),
+    minHeight: 220,
     paddingHorizontal: responsive.scale(4),
   },
   countContainer: {
