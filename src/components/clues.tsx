@@ -59,7 +59,7 @@ const CluesContainer = memo(
     const fadeAnim = useRef(new Animated.Value(0)).current
     const slideAnim = useRef(new Animated.Value(-10)).current
     const scrollViewRef = useRef<ScrollView>(null)
-    const clueHighlightAnim = useRef(new Animated.Value(0)).current
+    const clueHighlightAnim = useRef(new Animated.Value(0)).current 
 
     useEffect(() => {
       if (playerGame?.game?.movie?.overview) {
@@ -68,13 +68,27 @@ const CluesContainer = memo(
     }, [playerGame?.game?.movie?.overview])
 
     useEffect(() => {
-      console.log("CluesContainer: Guesses updated:", guesses)
+      console.log(
+        "CluesContainer: Guesses updated:",
+        guesses,
+        "correctGuess:",
+        correctGuess
+      ) 
       if (isLoading) return
 
-      const cluesToReveal = Math.min(guesses.length + 1, clues.length)
+      let cluesToReveal
+      if (correctGuess) {
+        console.log("CluesContainer: Correct guess - revealing all clues") 
+        cluesToReveal = clues
+      } else {
+        cluesToReveal = Math.min(guesses.length + 1, clues.length)
+      }
       const newRevealedClues = clues.slice(0, cluesToReveal)
+      console.log("CluesContainer: newRevealedClues:", newRevealedClues) 
+      console.log("CluesContainer: revealedClues:", revealedClues) 
 
       if (newRevealedClues.join(" ") !== revealedClues.join(" ")) {
+        console.log("CluesContainer: Clues are different - animating") 
         fadeAnim.setValue(0)
         slideAnim.setValue(-10)
         clueHighlightAnim.setValue(0)
@@ -100,11 +114,17 @@ const CluesContainer = memo(
           }),
         ]).start(() => {
           scrollViewRef.current?.scrollToEnd({ animated: true })
+          console.log("CluesContainer: Animation complete") 
         })
-
         setRevealedClues(newRevealedClues)
+        console.log(
+          "CluesContainer: revealedClues updated to:",
+          newRevealedClues
+        ) 
+      } else {
+        console.log("CluesContainer: Clues are the same - skipping animation") 
       }
-    }, [guesses, clues, isLoading])
+    }, [guesses, clues, isLoading, correctGuess]) 
 
     const highlightStyle = clueHighlightAnim.interpolate({
       inputRange: [0, 1],
@@ -143,8 +163,12 @@ const CluesContainer = memo(
                     <Animated.Text
                       key={index}
                       style={[
-                        isLastClue && cluesStyles.mostRecentClue,
-                        isLastClue && { backgroundColor: highlightStyle },
+                        cluesStyles.text,
+                        !correctGuess &&
+                          isLastClue &&
+                          cluesStyles.mostRecentClue, 
+                        !correctGuess &&
+                          isLastClue && { backgroundColor: highlightStyle }, 
                       ]}
                     >
                       {clue}

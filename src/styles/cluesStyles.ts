@@ -1,4 +1,3 @@
-// File: src/styles/cluesStyles.ts (from initial repomix-output.txt)
 import { StyleSheet } from "react-native"
 import { colors, responsive } from "./global"
 
