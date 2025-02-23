@@ -20,17 +20,15 @@ interface CountContainerProps {
 
 const splitSummary = (summary: string, splits: number = 5): string[] => {
   if (!summary) return Array(splits).fill("")
-
   const words = summary.trim().split(" ")
   if (words.length === 0) return Array(splits).fill("")
-
   const avgLength = Math.max(1, Math.ceil(words.length / splits))
   return Array.from({ length: splits }, (_, i) =>
     words.slice(i * avgLength, (i + 1) * avgLength).join(" ")
   )
 }
 
-const CountContainer = memo(
+const CountContainer = memo<CountContainerProps>(
   ({
     currentWordLength,
     guessNumber,
@@ -45,7 +43,7 @@ const CountContainer = memo(
   )
 )
 
-const CluesContainer = memo(
+const CluesContainer = React.memo<CluesProps>(
   ({ correctGuess, guesses, summary, playerGame }: CluesProps) => {
     console.log("CluesContainer received summary:", summary)
 
@@ -54,12 +52,12 @@ const CluesContainer = memo(
       [playerGame?.game?.movie?.overview]
     )
 
-    const [isLoading, setIsLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState<boolean>(true)
     const [revealedClues, setRevealedClues] = useState<string[]>([])
     const fadeAnim = useRef(new Animated.Value(0)).current
     const slideAnim = useRef(new Animated.Value(-10)).current
     const scrollViewRef = useRef<ScrollView>(null)
-    const clueHighlightAnim = useRef(new Animated.Value(0)).current 
+    const clueHighlightAnim = useRef(new Animated.Value(0)).current
 
     useEffect(() => {
       if (playerGame?.game?.movie?.overview) {
@@ -69,26 +67,47 @@ const CluesContainer = memo(
 
     useEffect(() => {
       console.log(
-        "CluesContainer: Guesses updated:",
+        "CluesContainer useEffect: guesses",
         guesses,
-        "correctGuess:",
+        "correctGuess",
         correctGuess
-      ) 
-      if (isLoading) return
+      )
+      if (isLoading) {
+        console.log(
+          "CluesContainer useEffect: isLoading is true, returning early"
+        )
+        return
+      }
 
       let cluesToReveal
+      let newRevealedClues
+
       if (correctGuess) {
-        console.log("CluesContainer: Correct guess - revealing all clues") 
+        console.log(
+          "CluesContainer useEffect: Correct guess - revealing all clues"
+        )
         cluesToReveal = clues
+        console.log(
+          "CluesContainer useEffect: CONTENT OF 'clues' array:",
+          clues
+        )
+        newRevealedClues = clues
       } else {
         cluesToReveal = Math.min(guesses.length + 1, clues.length)
+        newRevealedClues = clues.slice(0, cluesToReveal)
       }
-      const newRevealedClues = clues.slice(0, cluesToReveal)
-      console.log("CluesContainer: newRevealedClues:", newRevealedClues) 
-      console.log("CluesContainer: revealedClues:", revealedClues) 
+
+      console.log(
+        "CluesContainer useEffect: revealedClues before update:",
+        revealedClues
+      )
+      console.log(
+        "CluesContainer useEffect: newRevealedClues:",
+        newRevealedClues
+      )
 
       if (newRevealedClues.join(" ") !== revealedClues.join(" ")) {
-        console.log("CluesContainer: Clues are different - animating") 
+        console.log("CluesContainer useEffect: Clues are different - animating")
         fadeAnim.setValue(0)
         slideAnim.setValue(-10)
         clueHighlightAnim.setValue(0)
@@ -114,22 +133,29 @@ const CluesContainer = memo(
           }),
         ]).start(() => {
           scrollViewRef.current?.scrollToEnd({ animated: true })
-          console.log("CluesContainer: Animation complete") 
+          console.log("CluesContainer useEffect: Animation complete")
         })
         setRevealedClues(newRevealedClues)
         console.log(
-          "CluesContainer: revealedClues updated to:",
-          newRevealedClues
-        ) 
+          "CluesContainer useEffect: revealedClues after update:",
+          revealedClues
+        )
       } else {
-        console.log("CluesContainer: Clues are the same - skipping animation") 
+        console.log(
+          "CluesContainer useEffect: Clues are the same - skipping animation"
+        )
       }
-    }, [guesses, clues, isLoading, correctGuess]) 
+    }, [guesses, clues, isLoading, correctGuess])
 
     const highlightStyle = clueHighlightAnim.interpolate({
       inputRange: [0, 1],
       outputRange: ["rgba(0, 0, 0, 0)", colors.quinary],
     })
+
+    console.log(
+      "CluesContainer Rendering: revealedClues in render:",
+      revealedClues
+    )
 
     return (
       <View style={cluesStyles.container}>
@@ -151,10 +177,7 @@ const CluesContainer = memo(
               <Animated.Text
                 style={[
                   cluesStyles.text,
-                  {
-                    opacity: fadeAnim,
-                    transform: [{ translateY: slideAnim }],
-                  },
+                  { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
                 ]}
               >
                 {revealedClues.map((clue, index) => {
@@ -166,9 +189,9 @@ const CluesContainer = memo(
                         cluesStyles.text,
                         !correctGuess &&
                           isLastClue &&
-                          cluesStyles.mostRecentClue, 
+                          cluesStyles.mostRecentClue,
                         !correctGuess &&
-                          isLastClue && { backgroundColor: highlightStyle }, 
+                          isLastClue && { backgroundColor: highlightStyle },
                       ]}
                     >
                       {clue}

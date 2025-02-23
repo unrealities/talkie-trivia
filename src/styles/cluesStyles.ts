@@ -8,6 +8,8 @@ export const cluesStyles = StyleSheet.create({
     marginVertical: responsive.scale(4),
     minHeight: 220,
     paddingHorizontal: responsive.scale(4),
+    width: "100%",
+    alignSelf: "stretch",
   },
   countContainer: {
     alignSelf: "flex-end",
@@ -15,20 +17,13 @@ export const cluesStyles = StyleSheet.create({
     marginRight: responsive.scale(20),
     marginTop: responsive.scale(4),
   },
-  mostRecentClue: {
-    backgroundColor: colors.quinary,
-    color: colors.background,
-    fontFamily: "Arvo-Bold",
-    marginVertical: responsive.scale(4),
-    paddingHorizontal: responsive.scale(4),
-    paddingVertical: responsive.scale(1),
-    borderRadius: responsive.scale(4),
-  },
+  mostRecentClue: {},
   scrollView: {
     flexGrow: 1,
     marginBottom: responsive.scale(15),
     paddingHorizontal: responsive.scale(0),
     width: "100%",
+    alignSelf: "stretch",
   },
   scrollViewContent: {
     paddingVertical: responsive.scale(10),

@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from "react-native"
-import { responsive, colors } from "./global"
+import { responsive, colors } from "../styles/global"
 
 const { width, height } = Dimensions.get("window")
 
@@ -10,7 +10,6 @@ export const movieStyles = StyleSheet.create({
     flexDirection: "column",
     flexGrow: 1,
     maxWidth: responsive.scale(400),
-    paddingHorizontal: responsive.scale(15),
     width: "95%",
     alignSelf: "center",
     marginBottom: responsive.scale(20),
