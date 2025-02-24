@@ -40,7 +40,7 @@ export const pickerStyles = StyleSheet.create({
     flex: 1,
     minHeight: responsive.scale(220),
     maxWidth: responsive.scale(400),
-    width: "100%",
+    width: "95%",
     alignSelf: "center",
   },
   errorText: {

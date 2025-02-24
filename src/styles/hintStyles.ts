@@ -67,7 +67,7 @@ export const hintStyles = StyleSheet.create({
     fontSize: responsive.responsiveFontSize(16),
     marginLeft: responsive.scale(8),
     textAlign: "center",
-    marginTop: responsive.scale(20),
+    marginVertical: responsive.scale(10),
   },
 })
 

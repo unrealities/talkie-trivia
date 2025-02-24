@@ -17,11 +17,12 @@ export const cluesStyles = StyleSheet.create({
     marginRight: responsive.scale(20),
     marginTop: responsive.scale(4),
   },
-  mostRecentClue: {},
+  mostRecentClue: {
+    paddingHorizontal: responsive.scale(8)
+  },
   scrollView: {
     flexGrow: 1,
     marginBottom: responsive.scale(15),
-    paddingHorizontal: responsive.scale(0),
     width: "100%",
     alignSelf: "stretch",
   },
