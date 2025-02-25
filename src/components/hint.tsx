@@ -1,4 +1,4 @@
-import React, { useState, memo, useCallback, useEffect } from "react"
+import React, { useState, memo, useCallback, useEffect, useRef } from "react"
 import {
   View,
   Pressable,
@@ -18,6 +18,7 @@ interface HintProps {
   updatePlayerGame: (updatedPlayerGame: PlayerGame) => void
   isInteractionsDisabled: boolean
   hintsAvailable: number
+  updatePlayerStats: (updatedPlayerStats: any) => void
 }
 
 if (
@@ -33,65 +34,34 @@ const HintContainer = memo(
     updatePlayerGame,
     isInteractionsDisabled,
     hintsAvailable,
+    updatePlayerStats,
   }: HintProps) => {
-    console.log("HintContainer Rendered")
+    console.log("HintContainer Rendered - Hints Available:", hintsAvailable)
     const [hintUsed, setHintUsed] = useState<boolean>(false)
     const [hintType, setHintType] = useState<
       "decade" | "director" | "actor" | "genre" | null
     >(null)
-    const [localHintsAvailable, setLocalHintsAvailable] =
-      useState(hintsAvailable)
     const [showHintOptions, setShowHintOptions] = useState(false)
+    const [displayedHintText, setDisplayedHintText] = useState<string | null>(
+      null
+    )
+    const displayedHintTextRef = useRef(displayedHintText)
 
+    // Corrected useEffect dependency array: removed hintsAvailable
     useEffect(() => {
       setHintUsed(false)
       setHintType(null)
-      setLocalHintsAvailable(hintsAvailable)
+      setDisplayedHintText(null)
       setShowHintOptions(false)
-    }, [playerGame.guesses.length, hintsAvailable])
+    }, [playerGame.guesses.length]) // Only depend on playerGame.guesses.length
 
-    const handleHintSelection = useCallback(
-      (hint: "decade" | "director" | "actor" | "genre") => {
-        if (
-          isInteractionsDisabled ||
-          hintUsed ||
-          localHintsAvailable <= 0 ||
-          !showHintOptions
-        ) {
-          return
-        }
+    useEffect(() => {
+      displayedHintTextRef.current = displayedHintText
+      console.log("displayedHintText Updated:", displayedHintTextRef.current)
+    }, [displayedHintText])
 
-        setHintType(hint)
-        setHintUsed(true)
-        setLocalHintsAvailable((prevHints) => prevHints - 1)
-
-        updatePlayerGame({
-          ...playerGame,
-          hintsUsed: {
-            ...playerGame.hintsUsed,
-            [playerGame.guesses.length]: hint,
-          },
-        })
-        setShowHintOptions(false)
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-      },
-      [
-        isInteractionsDisabled,
-        hintUsed,
-        playerGame,
-        updatePlayerGame,
-        localHintsAvailable,
-        showHintOptions,
-      ]
-    )
-
-    const handleToggleHintOptions = useCallback(() => {
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-      setShowHintOptions(!showHintOptions)
-    }, [showHintOptions])
-
-    const hintText = () => {
-      if (hintType) {
+    const getHintText = useCallback(
+      (hintType: "decade" | "director" | "actor" | "genre"): string => {
         let text = ""
         switch (hintType) {
           case "decade":
@@ -107,12 +77,72 @@ const HintContainer = memo(
             text = `${playerGame.game.movie.genres[0].name}`
             break
           default:
-            return null
+            text = "Error fetching hint"
         }
+        console.log("Generated Hint Text:", text)
         return text
-      }
-      return null
-    }
+      },
+      [playerGame]
+    )
+
+    const handleHintSelection = useCallback(
+      (hint: "decade" | "director" | "actor" | "genre") => {
+        if (
+          isInteractionsDisabled ||
+          hintUsed ||
+          hintsAvailable <= 0 ||
+          !showHintOptions
+        ) {
+          console.log("Hint selection prevented - conditions not met")
+          return
+        }
+
+        setHintType(hint)
+        setHintUsed(true)
+        const text = getHintText(hint)
+        setDisplayedHintText(text)
+        console.log(
+          "Hint selected:",
+          hint,
+          "Hint Text:",
+          text,
+          "displayedHintText:",
+          displayedHintTextRef.current
+        )
+
+        updatePlayerGame({
+          ...playerGame,
+          hintsUsed: {
+            ...playerGame.hintsUsed,
+            [playerGame.guesses.length]: hint,
+          },
+        })
+
+        if (hintsAvailable > 0) {
+          updatePlayerStats({
+            hintsAvailable: hintsAvailable - 1,
+          })
+        }
+        setShowHintOptions(false)
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+      },
+      [
+        isInteractionsDisabled,
+        hintUsed,
+        playerGame,
+        updatePlayerGame,
+        hintsAvailable,
+        showHintOptions,
+        updatePlayerStats,
+        getHintText,
+        displayedHintTextRef,
+      ]
+    )
+
+    const handleToggleHintOptions = useCallback(() => {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+      setShowHintOptions(!showHintOptions)
+    }, [showHintOptions])
 
     const renderHintButtons = () => {
       const buttonTextStyle = hintStyles.buttonTextSmall
@@ -123,25 +153,20 @@ const HintContainer = memo(
         label: string
       ) => (
         <Pressable
-          style={({ pressed }) => [
-            hintStyles.hintButton,
-            localHintsAvailable <= 0 && hintStyles.disabled,
-            { opacity: pressed || localHintsAvailable <= 0 ? 0.7 : 1 },
-            hintUsed && hintStyles.usedHintButton,
-          ]}
+          style={hintStyles.hintButton}
           onPress={() => handleHintSelection(hintType)}
           disabled={
             isInteractionsDisabled ||
             hintUsed ||
-            localHintsAvailable <= 0 ||
+            hintsAvailable <= 0 ||
             !showHintOptions
           }
           accessible
           accessibilityRole="button"
           accessibilityLabel={
-            isInteractionsDisabled || localHintsAvailable <= 0
+            isInteractionsDisabled || hintsAvailable <= 0
               ? "Hint button disabled"
-              : `Get the movie's ${label.toLowerCase()} hint. Hints available: ${localHintsAvailable}`
+              : `Get the movie's ${label.toLowerCase()} hint. Hints available: ${hintsAvailable}`
           }
         >
           <Icon
@@ -165,26 +190,28 @@ const HintContainer = memo(
       )
     }
 
-    const displayedHintText = hintText()
+    const hintLabelText = hintsAvailable <= 0 ? "Out of hints!" : "Need a Hint?"
 
     return (
       <View style={hintStyles.container}>
         <Pressable
-          onPress={handleToggleHintOptions}
-          accessible
+          onPress={hintsAvailable > 0 ? handleToggleHintOptions : undefined}
+          disabled={hintsAvailable <= 0}
+          accessible={true}
           accessibilityRole="button"
-          accessibilityLabel="Need a Hint? Tap to reveal hint options."
+          accessibilityLabel={hintLabelText}
         >
           <Text style={hintStyles.hintLabel}>
-            Need a Hint? ({localHintsAvailable} available)
+            {hintLabelText}{" "}
+            {hintsAvailable > 0 ? `(${hintsAvailable} available)` : ""}
           </Text>
         </Pressable>
-        {showHintOptions && renderHintButtons()}{" "}
-        {/* Conditionally render hint buttons based on visibility state */}
+
+        {hintsAvailable > 0 && showHintOptions && renderHintButtons()}
+
         {displayedHintText && (
           <Text style={hintStyles.hintText}>{displayedHintText}</Text>
-        )}{" "}
-        {/* Conditionally render hint text */}
+        )}
       </View>
     )
   },
@@ -192,7 +219,8 @@ const HintContainer = memo(
     return (
       prevProps.playerGame === nextProps.playerGame &&
       prevProps.isInteractionsDisabled === nextProps.isInteractionsDisabled &&
-      prevProps.hintsAvailable === nextProps.hintsAvailable
+      prevProps.hintsAvailable === nextProps.hintsAvailable &&
+      prevProps.updatePlayerStats === nextProps.updatePlayerStats
     )
   }
 )

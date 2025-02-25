@@ -36,7 +36,7 @@ export const defaultPlayerGame: PlayerGame = {
   playerID: "",
   startDate: new Date(),
   hintsUsed: {},
-  gaveUp: false, // Add gaveUp state
+  gaveUp: false,
 }
 
 export const defaultPlayerStats: PlayerStats = {
@@ -45,8 +45,8 @@ export const defaultPlayerStats: PlayerStats = {
   games: 0,
   maxStreak: 0,
   wins: [0, 0, 0, 0, 0],
-  hintsAvailable: 3, // Initial hints available
-  hintsUsedCount: 0, // Track hints used (optional for now, can add later if needed)
+  hintsAvailable: 3,
+  hintsUsedCount: 0,
 }
 
 interface AppState {
@@ -73,6 +73,7 @@ type AppAction =
   | { type: "SET_IS_LOADING"; payload: boolean }
   | { type: "SET_DATA_LOADING_ERROR"; payload: string | null }
   | { type: "SET_HAS_GAME_STARTED"; payload: boolean }
+  | { type: "DECREMENT_HINTS_AVAILABLE" }
 
 export const initialState: AppState = {
   isNetworkConnected: true,
@@ -97,7 +98,6 @@ export const appReducer = (state: AppState, action: AppAction): AppState => {
     case "SET_NETWORK_CONNECTED":
       return { ...state, isNetworkConnected: action.payload }
     case "SET_MOVIES": {
-      // Select a random movie for today's game
       const todayMovieIndex = new Date().getDate() % action.payload.length
       const todayMovie = action.payload[todayMovieIndex]
 
@@ -142,6 +142,17 @@ export const appReducer = (state: AppState, action: AppAction): AppState => {
       return { ...state, dataLoadingError: action.payload }
     case "SET_HAS_GAME_STARTED":
       return { ...state, hasGameStarted: action.payload }
+    case "DECREMENT_HINTS_AVAILABLE":
+      if (state.playerStats.hintsAvailable > 0) {
+        return {
+          ...state,
+          playerStats: {
+            ...state.playerStats,
+            hintsAvailable: state.playerStats.hintsAvailable - 1,
+          },
+        }
+      }
+      return state
     default:
       return state
   }

@@ -7,11 +7,10 @@ const GoogleLogin = lazy(() => import("../../components/googleLogin"))
 const PlayerStatsContainer = lazy(() => import("../../components/playerStats"))
 import { useAppContext } from "../../contexts/appContext"
 
-const ProfileScreen = () => {
+const ProfileScreen: React.FC<{}> = () => {
   console.log("ProfileScreen is rendering")
   const { state, dispatch } = useAppContext()
   const { player, playerStats } = state
-
   const updatePlayer = (newPlayer) => {
     dispatch({ type: "SET_PLAYER", payload: newPlayer })
   }

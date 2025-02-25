@@ -25,7 +25,7 @@ interface MoviesContainerProps {
   playerGame: PlayerGame
   playerStats: PlayerStats
   updatePlayerGame: React.Dispatch<React.SetStateAction<PlayerGame>>
-  updatePlayerStats: React.Dispatch<React.SetStateAction<PlayerStats>>
+  updatePlayerStats: (updatedPlayerStats: any) => void
   initialDataLoaded: boolean
 }
 
@@ -207,8 +207,8 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
           updatePlayerGame={handleUpdatePlayerGame}
           isInteractionsDisabled={isInteractionsDisabled}
           hintsAvailable={hintsAvailable}
+          updatePlayerStats={updatePlayerStats}
         />
-        {/* PickerContainer should be BEFORE GuessesContainer */}
         <PickerContainer
           enableSubmit={enableSubmit}
           playerGame={playerGame}
@@ -226,7 +226,6 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
           movie={playerGame.game.movie}
           movies={movies}
         />
-        {/* Place Give Up button AFTER GuessesContainer in the natural flow of elements */}
         <Pressable
           onPress={handleGiveUp}
           style={({ pressed }) => [
@@ -242,7 +241,6 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         >
           <Text style={movieStyles.giveUpButtonText}>Give Up?</Text>
         </Pressable>
-
         {showGiveUpConfirmation &&
           Alert.alert(
             "Give Up?",

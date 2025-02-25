@@ -58,7 +58,6 @@ const usePlayerData = () => {
   const [playerDataLoaded, setPlayerDataLoaded] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Calculate dateId outside of initializePlayer
   const today = new Date()
   const dateId = generateDateId(today)
 
@@ -95,7 +94,6 @@ const usePlayerData = () => {
             await setUserName(name)
           }
         } else {
-          // Player doesn't exist in Firestore, create new player document
           console.log(
             "usePlayerData: Player not found, creating new player document"
           )
@@ -112,7 +110,6 @@ const usePlayerData = () => {
           }
         }
 
-        // Get PlayerGames
         const q = query(
           collection(db, "playerGames").withConverter(playerGameConverter),
           where("playerID", "==", user.uid),
@@ -139,7 +136,6 @@ const usePlayerData = () => {
           await setDoc(playerGameRef, fetchedPlayerGame)
         }
 
-        // Get Player Stats
         const statsRef = doc(db, "playerStats", user.uid).withConverter(
           playerStatsConverter
         )
@@ -154,11 +150,9 @@ const usePlayerData = () => {
           await setDoc(statsRef, fetchedPlayerStats)
         }
       } else {
-        //new logs
         console.log("User is null")
         console.log("usePlayerData: User is NOT logged in. Using local ID:", id)
 
-        // Fetch or create player document for guest user
         const playerRef = doc(db, "players", id).withConverter(playerConverter)
         try {
           console.log("usePlayerData: Attempting to get player document:", id)
@@ -183,15 +177,14 @@ const usePlayerData = () => {
             "usePlayerData: Error fetching or creating player document:",
             error
           )
-          // Handle the error appropriately, e.g., dispatch an error action
+
           dispatch({
             type: "SET_DATA_LOADING_ERROR",
             payload: error.message,
           })
-          return // Stop further execution if player document cannot be fetched/created
+          return
         }
 
-        // Get PlayerGames for guest user
         const q = query(
           collection(db, "playerGames").withConverter(playerGameConverter),
           where("playerID", "==", id),
@@ -236,15 +229,14 @@ const usePlayerData = () => {
             "usePlayerData: Error fetching or creating playerGames:",
             error
           )
-          // Handle the error appropriately
+
           dispatch({
             type: "SET_DATA_LOADING_ERROR",
             payload: error.message,
           })
-          return // Stop if playerGames cannot be fetched/created
+          return
         }
 
-        // Get Player Stats for guest user
         const statsRef = doc(db, "playerStats", id).withConverter(
           playerStatsConverter
         )
@@ -273,16 +265,15 @@ const usePlayerData = () => {
             "usePlayerData: Error fetching or creating playerStats:",
             error
           )
-          // Handle the error appropriately
+
           dispatch({
             type: "SET_DATA_LOADING_ERROR",
             payload: error.message,
           })
-          return // Stop if playerStats cannot be fetched/created
+          return
         }
       }
 
-      // Dispatch actions after successful data operations
       console.log("usePlayerData: Dispatching SET_PLAYER with:", { id, name })
       dispatch({
         type: "SET_PLAYER",
@@ -327,7 +318,6 @@ const usePlayerData = () => {
   }, [user, initializePlayer])
 
   useEffect(() => {
-    // Reset game if new movies are fetched and the game has been started.
     if (state.hasGameStarted && state.movies && state.movies.length > 0) {
       console.log(
         "usePlayerData useEffect [movies]: resetting game due to new movies"

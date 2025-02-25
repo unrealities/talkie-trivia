@@ -2,7 +2,6 @@ import { doc, writeBatch, updateDoc } from "firebase/firestore"
 import { db } from "../config/firebase"
 import { playerStatsConverter } from "./firestore/converters/playerStats"
 import { playerGameConverter } from "./firestore/converters/playerGame"
-import { playerConverter } from "./firestore/converters/player"
 
 export const batchUpdatePlayerData = async (
   playerStats: any,
