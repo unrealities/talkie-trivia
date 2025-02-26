@@ -183,7 +183,7 @@ const HintContainer = memo(
           <View style={hintStyles.hintButtonArea}>
             {hintButton("decade", "calendar", "Decade")}
             {hintButton("director", "video-camera", "Director")}
-            {hintButton("actor", "mask", "Actor")}
+            {hintButton("actor", "user", "Actor")}
             {hintButton("genre", "folder-open", "Genre")}
           </View>
         </View>
