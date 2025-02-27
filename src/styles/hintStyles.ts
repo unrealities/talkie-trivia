@@ -6,11 +6,12 @@ export const hintStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginVertical: responsive.scale(2),
+    width: "100%",
   },
   hintButtonsContainer: {
     flexDirection: "column",
     alignItems: "center",
-    maxWidth: "100%",
+    width: "100%",
     flexWrap: "wrap",
   },
   hintLabel: {
@@ -32,10 +33,10 @@ export const hintStyles = StyleSheet.create({
   hintButton: {
     borderRadius: responsive.scale(4),
     padding: responsive.scale(6),
-    minWidth: responsive.scale(58),
+    minWidth: "22%",
     alignItems: "center",
     justifyContent: "center",
-    marginHorizontal: responsive.scale(2),
+    marginHorizontal: responsive.scale(4),
     marginVertical: responsive.scale(8),
     backgroundColor: "transparent",
     borderWidth: 1,
