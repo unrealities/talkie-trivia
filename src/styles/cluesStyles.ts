@@ -6,7 +6,7 @@ export const cluesStyles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     marginVertical: responsive.scale(4),
-    minHeight: 265,
+    minHeight: responsive.scale(265),
     paddingHorizontal: responsive.scale(4),
     width: "100%",
     alignSelf: "stretch",

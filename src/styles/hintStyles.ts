@@ -33,7 +33,7 @@ export const hintStyles = StyleSheet.create({
   hintButton: {
     borderRadius: responsive.scale(4),
     padding: responsive.scale(6),
-    minWidth: "22%",
+    minWidth: "20%",
     alignItems: "center",
     justifyContent: "center",
     marginHorizontal: responsive.scale(4),
