@@ -9,7 +9,7 @@ export const movieStyles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     flexGrow: 1,
-    minWidth: responsive.scale(400),
+    minWidth: responsive.scale(320),
     maxWidth: responsive.scale(400),
     width: "95%",
     alignSelf: "center",
