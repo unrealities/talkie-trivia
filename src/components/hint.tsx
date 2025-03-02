@@ -38,6 +38,8 @@ const HintContainer = memo(
   }: HintProps) => {
     console.log("HintContainer Rendered - Hints Available:", hintsAvailable)
     const [hintUsed, setHintUsed] = useState<boolean>(false)
+    const [isHintOptionsDisabled, setIsHintOptionsDisabled] =
+      useState<boolean>(false)
     const [hintType, setHintType] = useState<
       "decade" | "director" | "actor" | "genre" | null
     >(null)
@@ -47,13 +49,13 @@ const HintContainer = memo(
     )
     const displayedHintTextRef = useRef(displayedHintText)
 
-    // Corrected useEffect dependency array: removed hintsAvailable
     useEffect(() => {
       setHintUsed(false)
       setHintType(null)
       setDisplayedHintText(null)
+      setIsHintOptionsDisabled(false)
       setShowHintOptions(false)
-    }, [playerGame.guesses.length]) // Only depend on playerGame.guesses.length
+    }, [playerGame.guesses.length])
 
     useEffect(() => {
       displayedHintTextRef.current = displayedHintText
@@ -90,6 +92,7 @@ const HintContainer = memo(
         if (
           isInteractionsDisabled ||
           hintUsed ||
+          isHintOptionsDisabled ||
           hintsAvailable <= 0 ||
           !showHintOptions
         ) {
@@ -101,6 +104,7 @@ const HintContainer = memo(
         setHintUsed(true)
         const text = getHintText(hint)
         setDisplayedHintText(text)
+        setIsHintOptionsDisabled(true)
         console.log(
           "Hint selected:",
           hint,
@@ -130,6 +134,7 @@ const HintContainer = memo(
         isInteractionsDisabled,
         hintUsed,
         playerGame,
+        isHintOptionsDisabled,
         updatePlayerGame,
         hintsAvailable,
         showHintOptions,
@@ -158,6 +163,7 @@ const HintContainer = memo(
           disabled={
             isInteractionsDisabled ||
             hintUsed ||
+            isHintOptionsDisabled ||
             hintsAvailable <= 0 ||
             !showHintOptions
           }
@@ -195,8 +201,12 @@ const HintContainer = memo(
     return (
       <View style={hintStyles.container}>
         <Pressable
-          onPress={hintsAvailable > 0 ? handleToggleHintOptions : undefined}
-          disabled={hintsAvailable <= 0}
+          onPress={
+            hintsAvailable > 0 && !isHintOptionsDisabled
+              ? handleToggleHintOptions
+              : undefined
+          }
+          disabled={hintsAvailable <= 0 || isHintOptionsDisabled}
           accessible={true}
           accessibilityRole="button"
           accessibilityLabel={hintLabelText}
@@ -207,7 +217,10 @@ const HintContainer = memo(
           </Text>
         </Pressable>
 
-        {hintsAvailable > 0 && showHintOptions && renderHintButtons()}
+        {hintsAvailable > 0 &&
+          showHintOptions &&
+          !isHintOptionsDisabled &&
+          renderHintButtons()}
 
         {displayedHintText && (
           <Text style={hintStyles.hintText}>{displayedHintText}</Text>
@@ -219,6 +232,7 @@ const HintContainer = memo(
     return (
       prevProps.playerGame === nextProps.playerGame &&
       prevProps.isInteractionsDisabled === nextProps.isInteractionsDisabled &&
+      nextProps.isHintOptionsDisabled === nextProps.isHintOptionsDisabled &&
       prevProps.hintsAvailable === nextProps.hintsAvailable &&
       prevProps.updatePlayerStats === nextProps.updatePlayerStats
     )
