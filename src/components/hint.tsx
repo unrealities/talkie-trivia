@@ -196,7 +196,14 @@ const HintContainer = memo(
       )
     }
 
-    const hintLabelText = hintsAvailable <= 0 ? "Out of hints!" : "Need a Hint?"
+    let hintLabelText = ""
+    if (hintsAvailable <= 0) {
+      hintLabelText = "Out of hints!"
+    } else if (hintUsed) {
+      hintLabelText = `${hintsAvailable} Hints remaining. Please make a guess.`
+    } else {
+      hintLabelText = "Need a Hint?"
+    }
 
     return (
       <View style={hintStyles.container}>
@@ -212,8 +219,10 @@ const HintContainer = memo(
           accessibilityLabel={hintLabelText}
         >
           <Text style={hintStyles.hintLabel}>
-            {hintLabelText}{" "}
-            {hintsAvailable > 0 ? `(${hintsAvailable} available)` : ""}
+            {hintLabelText}
+            {hintsAvailable > 0 && !hintUsed && !showHintOptions
+              ? ` (${hintsAvailable} available)`
+              : ""}
           </Text>
         </Pressable>
 
@@ -232,7 +241,6 @@ const HintContainer = memo(
     return (
       prevProps.playerGame === nextProps.playerGame &&
       prevProps.isInteractionsDisabled === nextProps.isInteractionsDisabled &&
-      nextProps.isHintOptionsDisabled === nextProps.isHintOptionsDisabled &&
       prevProps.hintsAvailable === nextProps.hintsAvailable &&
       prevProps.updatePlayerStats === nextProps.updatePlayerStats
     )
