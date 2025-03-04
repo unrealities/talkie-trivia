@@ -149,6 +149,22 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
   }
   const handleGiveUp = useCallback(() => {
     setShowGiveUpConfirmation(true)
+    {
+      showGiveUpConfirmation &&
+        Alert.alert(
+          "Give Up?",
+          "Are you sure you want to give up on this movie?",
+          [
+            {
+              text: "Cancel",
+              onPress: cancelGiveUp,
+              style: "cancel",
+            },
+            { text: "Give Up", onPress: confirmGiveUp },
+          ],
+          { cancelable: false }
+        )
+    }
   }, [setShowGiveUpConfirmation])
 
   const confirmGiveUp = useCallback(() => {
@@ -241,20 +257,6 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         >
           <Text style={movieStyles.giveUpButtonText}>Give Up?</Text>
         </Pressable>
-        {showGiveUpConfirmation &&
-          Alert.alert(
-            "Give Up?",
-            "Are you sure you want to give up on this movie?",
-            [
-              {
-                text: "Cancel",
-                onPress: cancelGiveUp,
-                style: "cancel",
-              },
-              { text: "Give Up", onPress: confirmGiveUp },
-            ],
-            { cancelable: false }
-          )}
         <MovieModal
           movie={playerGame.game.movie}
           show={showModal}
@@ -267,7 +269,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
           explosionSpeed={500}
           fadeOut={true}
           fallSpeed={2000}
-          origin={{ x: 100, y: -20 }}
+          origin={{ x: -100, y: 0 }}
           ref={confettiRef}
         />
       </View>
