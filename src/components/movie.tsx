@@ -67,7 +67,17 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         enableSubmit
       ) {
         setEnableSubmit(false)
+        // Create a copy to avoid directly mutating state
         const updatedStats = { ...playerStats }
+
+        console.log(
+          "MoviesContainer useEffect [updatePlayerData]: playerStats before update:",
+          playerStats
+        )
+        console.log(
+          "MoviesContainer useEffect [updatePlayerData]: updatedStats before potential wins access:",
+          updatedStats
+        )
 
         if (playerGame.correctAnswer) {
           updatedStats.currentStreak++
@@ -75,7 +85,17 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
             updatedStats.currentStreak,
             updatedStats.maxStreak
           )
-          updatedStats.wins[playerGame.guesses.length - 1]++
+
+          if (!updatedStats.wins) {
+            updatedStats.wins = [0, 0, 0, 0, 0]
+          } else if (!Array.isArray(updatedStats.wins)) {
+            updatedStats.wins = [0, 0, 0, 0, 0]
+          }
+          if (updatedStats.wins && Array.isArray(updatedStats.wins)) {
+            updatedStats.wins[playerGame.guesses.length - 1] =
+              (updatedStats.wins[playerGame.guesses.length - 1] || 0) + 1
+          }
+
           updatedStats.games++
         } else if (!playerGame.gaveUp) {
           updatedStats.currentStreak = 0
@@ -83,9 +103,6 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         }
 
         try {
-          console.log(
-            "MoviesContainer useEffect [updatePlayerData]: updating player data"
-          )
           const result = await batchUpdatePlayerData(
             updatedStats,
             playerGame,
@@ -94,9 +111,6 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
           )
 
           if (result.success) {
-            console.log(
-              "MoviesContainer useEffect [updatePlayerData]: updated player data"
-            )
             updatePlayerStats(updatedStats)
             console.log("setShowModal called with:", true)
             setShowModal(true)
@@ -114,15 +128,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         !playerGame.correctAnswer
       ) {
         try {
-          console.log(
-            "MoviesContainer useEffect [updatePlayerData]: updating player game data"
-          )
           const result = await batchUpdatePlayerData({}, playerGame, player.id)
-          if (result.success) {
-            console.log(
-              "MoviesContainer useEffect [updatePlayerData]: updated player game data"
-            )
-          }
         } catch (err) {
           console.error(
             "MoviesContainer useEffect [updatePlayerData]: Error updating player game data:",
@@ -144,7 +150,6 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
   ])
 
   const handleUpdatePlayerGame = (updatedPlayerGame: PlayerGame) => {
-    console.log("MoviesContainer: Updating playerGame:", updatedPlayerGame)
     updatePlayerGame(updatedPlayerGame)
   }
   const handleGiveUp = useCallback(() => {
