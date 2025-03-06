@@ -67,17 +67,14 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         enableSubmit
       ) {
         setEnableSubmit(false)
-        // Create a copy to avoid directly mutating state
         const updatedStats = { ...playerStats }
 
-        console.log(
-          "MoviesContainer useEffect [updatePlayerData]: playerStats before update:",
-          playerStats
-        )
-        console.log(
-          "MoviesContainer useEffect [updatePlayerData]: updatedStats before potential wins access:",
-          updatedStats
-        )
+        if (!updatedStats.id) {
+          console.warn(
+            "MoviesContainer useEffect [updatePlayerData]: playerStats.id is undefined! Aborting update."
+          )
+          return
+        }
 
         if (playerGame.correctAnswer) {
           updatedStats.currentStreak++
