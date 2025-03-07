@@ -150,7 +150,6 @@ func main() {
 			fmt.Printf(err.Error())
 		}
 
-		// check for error response
 		data := (*json.RawMessage)(&body)
 		var validResponse TMDBDetailsResponse
 		err = json.Unmarshal(*data, &validResponse)

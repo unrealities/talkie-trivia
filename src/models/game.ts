@@ -18,5 +18,5 @@ export class PlayerGame {
   hintsUsed?: {
     [guessNumber: number]: "decade" | "director" | "actor" | "genre"
   }
-  gaveUp: boolean // Added gaveUp property
+  gaveUp: boolean
 }

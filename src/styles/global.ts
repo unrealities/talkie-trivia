@@ -13,16 +13,13 @@ import { Dimensions, PixelRatio, Platform } from "react-native"
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
-// Base design dimensions (use a standard design width)
 const baseWidth = 375
 const baseHeight = 812
 
-// Screen size categories
 const isSmallScreen = () => SCREEN_WIDTH < 375
 const isMediumScreen = () => SCREEN_WIDTH >= 375 && SCREEN_WIDTH < 768
 const isLargeScreen = () => SCREEN_WIDTH >= 768
 
-// Responsive scaling function (refined)
 const scale = (size: number) => {
   const scaleWidth = SCREEN_WIDTH / baseWidth
   const scaleHeight = SCREEN_HEIGHT / baseHeight

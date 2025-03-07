@@ -4,8 +4,8 @@ export default class PlayerStats {
   games: number
   maxStreak: number
   wins: number[]
-  hintsAvailable: number // New field for available hints
-  hintsUsedCount: number // New field to track hints used
+  hintsAvailable: number
+  hintsUsedCount: number
 
   constructor(
     id: string,
@@ -13,8 +13,8 @@ export default class PlayerStats {
     games: number,
     maxStreak: number,
     wins: number[],
-    hintsAvailable: number = 3, // Default hints to 3
-    hintsUsedCount: number = 0 // Initialize hintsUsedCount
+    hintsAvailable: number = 3,
+    hintsUsedCount: number = 0
   ) {
     if (!id) {
       throw new Error("PlayerStats ID is required.")

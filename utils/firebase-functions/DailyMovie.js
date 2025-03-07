@@ -1,4 +1,3 @@
-// Cloud Function (or server-side logic)
 const setDailyMovie = async () => {
     const today = new Date();
     const movieIndex = today.getDate() % movies.length;

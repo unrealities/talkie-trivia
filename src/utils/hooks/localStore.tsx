@@ -4,7 +4,6 @@ import uuid from "react-native-uuid"
 const userIDKey = "userID"
 const userNameKey = "userName"
 
-// Local cache for the current name
 let currentNameCache: string | null = null
 
 export async function setUserID(id: string) {
@@ -37,7 +36,6 @@ export async function setUserName(name: string) {
     console.log("setUserName: Setting new name:", name)
     await AsyncStorage.setItem(userNameKey, name)
     console.log("setUserName: Name set successfully")
-    // Update the local cache after successful setting
     currentNameCache = name
   } catch (error) {
     console.error("setUserName: Error setting name", error)
@@ -47,7 +45,6 @@ export async function setUserName(name: string) {
 export async function getUserName(): Promise<string> {
   console.log("getUserName: Called")
 
-  // Check if name is already in memory
   if (currentNameCache !== null) {
     console.log("getUserName: Retrieved name from cache:", currentNameCache)
     return currentNameCache
@@ -59,9 +56,9 @@ export async function getUserName(): Promise<string> {
   if (!name) {
     name = "Guest"
     console.log("getUserName: Setting default name:", name)
-    await setUserName(name) // Use the updated setUserName which updates the cache
+    await setUserName(name)
   }
-  // Update the local cache with fetched or default name
+
   currentNameCache = name
   return name
 }

@@ -27,17 +27,14 @@ const firebaseConfig: FirebaseConfig = {
   measurementId: Constants?.expoConfig?.extra?.firebaseMeasurementId,
 }
 
-// Initialize Firebase app
 console.log("firebase.tsx: attempting to initilize firebase app")
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig)
 console.log("firebase.tsx: firebase app initialized")
 
-// Initialize Firestore with unlimited cache size
 const db = initializeFirestore(app, {
-  localCache: persistentLocalCache({ cacheSizeBytes: CACHE_SIZE_UNLIMITED }), // 100 MB cache size
+  localCache: persistentLocalCache({ cacheSizeBytes: CACHE_SIZE_UNLIMITED }),
 })
 
-// Enable Firebase Performance Monitoring
 const perf = getPerformance(app)
 
 export { db, firebaseConfig, perf }

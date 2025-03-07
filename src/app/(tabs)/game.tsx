@@ -30,7 +30,6 @@ const GameScreen = () => {
   } = usePlayerData()
   useNetworkStatus()
 
-  // New state variable to track initial data loading
   const [initialDataLoaded, setInitialDataLoaded] = useState(false)
 
   const updatePlayerGame = (newPlayerGame) => {
@@ -41,8 +40,6 @@ const GameScreen = () => {
     dispatch({ type: "SET_PLAYER_STATS", payload: newPlayerStats })
   }
 
-  // This useEffect will run when either movieDataLoading or
-  // playerDataLoaded changes
   useEffect(() => {
     if (!movieDataLoading && playerDataLoaded) {
       setInitialDataLoaded(true)
@@ -72,7 +69,7 @@ const GameScreen = () => {
           playerStats={playerStats}
           updatePlayerGame={updatePlayerGame}
           updatePlayerStats={updatePlayerStats}
-          initialDataLoaded={initialDataLoaded} // Pass the new prop
+          initialDataLoaded={initialDataLoaded}
         />
       </Suspense>
     </View>

@@ -12,7 +12,6 @@ import Constants from "expo-constants"
 import Player from "../models/player"
 import { googleLoginStyles } from "../styles/googleLoginStyles"
 
-// Enhanced configuration validation
 const validateGoogleConfig = (config: Record<string, string | undefined>) => {
   const requiredKeys = [
     "androidClientId",
