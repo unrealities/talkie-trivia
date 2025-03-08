@@ -53,7 +53,7 @@ const GuessesContainer = memo(
   },
   (prevProps, nextProps) => {
     return (
-      prevProps.guesses.length === nextProps.guesses.length &&
+      JSON.stringify(prevProps.guesses) === JSON.stringify(nextProps.guesses) &&
       prevProps.movie === nextProps.movie &&
       prevProps.movies === nextProps.movies
     )

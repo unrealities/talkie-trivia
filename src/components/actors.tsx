@@ -76,7 +76,7 @@ const ActorContainer = memo(
             actorsStyles.actorPressable,
           ]}
           role="button"
-          accessibilityLabel={`View details for ${actor.name}`}
+          accessibilityLabel={`Actor: ${actor.name}. View details`}
         >
           <Image
             source={actorImage}

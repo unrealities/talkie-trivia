@@ -177,7 +177,7 @@ const CluesContainer = React.memo<CluesProps>(
   (prevProps, nextProps) => {
     return (
       prevProps.correctGuess === nextProps.correctGuess &&
-      prevProps.guesses === nextProps.guesses &&
+      prevProps.guesses.length === nextProps.guesses.length &&
       prevProps.summary === nextProps.summary &&
       prevProps.playerGame === nextProps.playerGame
     )

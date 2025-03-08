@@ -12,19 +12,6 @@ import Constants from "expo-constants"
 import Player from "../models/player"
 import { googleLoginStyles } from "../styles/googleLoginStyles"
 
-const validateGoogleConfig = (config: Record<string, string | undefined>) => {
-  const requiredKeys = [
-    "androidClientId",
-    "expoClientId",
-    "iosClientId",
-    "webClientId",
-  ]
-
-  return requiredKeys.every(
-    (key) => config[key] !== undefined && config[key] !== ""
-  )
-}
-
 interface GoogleLoginProps {
   player: Player
   onAuthStateChange?: (player: Player | null) => void

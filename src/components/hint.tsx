@@ -218,7 +218,10 @@ const HintContainer = memo(
           accessibilityRole="button"
           accessibilityLabel={hintLabelText}
         >
-          <Text style={hintStyles.hintLabel}>
+          <Text
+            style={hintStyles.hintLabel}
+            accessibilityLabelledBy="hintLabel"
+          >
             {hintLabelText}
             {hintsAvailable > 0 && !hintUsed && !showHintOptions
               ? ` (${hintsAvailable} available)`

@@ -39,9 +39,12 @@ const WinChart = memo(
     }
 
     return (
-      <View style={winChartStyles.container}>
+      <View
+        style={winChartStyles.container}
+        accessibilityRole="image"
+        accessibilityLabel="Win distribution pie chart"
+      >
         <PieChart
-          testID="victory-pie-chart"
           data={data}
           width={screenWidth * 0.6} // Use 60% of the screen width
           height={220}

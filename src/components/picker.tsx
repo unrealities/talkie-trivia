@@ -15,7 +15,6 @@ import {
   View,
   Animated,
   Easing,
-  StyleSheet,
 } from "react-native"
 import { BasicMovie } from "../models/movie"
 import { PlayerGame } from "../models/game"
@@ -160,7 +159,7 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
     ])
 
     const animatedButtonStyle = useAnimatedStyle(() => ({
-      transform: [{ scale: buttonScale.value }],
+      transform: [{ scale: buttonScale }],
     }))
 
     const handleMovieSelection = (movie: BasicMovie) => {
@@ -273,7 +272,7 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
               isInteractionsDisabled && pickerStyles.disabledButton,
               selectedMovie.title === DEFAULT_BUTTON_TEXT &&
                 pickerStyles.disabledButton,
-              selectedMovie.title.length > 35 && pickerStyles.buttonSmall,
+              selectedMovie.title.length > 35 && pickerStyles.disabledButton,
             ]}
           >
             <Text

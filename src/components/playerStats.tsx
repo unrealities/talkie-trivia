@@ -14,7 +14,11 @@ export interface PlayerStatsContainerProps {
 const PlayerStatsContainer = memo(
   (props: PlayerStatsContainerProps) => {
     return (
-      <View style={playerStatsStyles.container} key={props.player.id}>
+      <View
+        style={playerStatsStyles.container}
+        key={props.player.id}
+        accessibilityLabel="Player Statistics"
+      >
         <WinChart wins={props.playerStats.wins} />
         <View style={playerStatsStyles.statsContainer}>
           <View style={playerStatsStyles.statContainer}>
