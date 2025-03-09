@@ -1,4 +1,4 @@
-import React, { memo } from "react"
+import React, { memo, useCallback } from "react"
 import {
   Image,
   Text,
@@ -30,7 +30,7 @@ const ActorContainer = memo(
     const imageURI = "https://image.tmdb.org/t/p/original"
     const imdbURI = imdbId ? `https://www.imdb.com/name/${imdbId}` : null
 
-    const handlePress = () => {
+    const handlePress = useCallback(() => {
       if (onActorPress) {
         onActorPress(actor)
         return
@@ -51,7 +51,7 @@ const ActorContainer = memo(
       } else {
         Alert.alert("IMDb link unavailable", "No link found for this actor.")
       }
-    }
+    }, [actor, imdbURI, onActorPress])
 
     const actorImage = actor.profile_path
       ? { uri: `${imageURI}${actor.profile_path}` }
@@ -102,7 +102,9 @@ const ActorContainer = memo(
       </View>
     )
   },
-  (prevProps, nextProps) => prevProps.actor.id === nextProps.actor.id
+  (prevProps, nextProps) =>
+    prevProps.actor.id === nextProps.actor.id &&
+    prevProps.onActorPress === nextProps.onActorPress
 )
 
 export const Actors = memo(

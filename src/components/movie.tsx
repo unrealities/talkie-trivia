@@ -48,8 +48,50 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
 
   const hintsAvailable = playerStats?.hintsAvailable || 0
 
-  useEffect(() => {
-    const updatePlayerData = async (playerGame) => {
+  const [dateId, setDateId] = useState<string>(() => {
+    const today = new Date()
+    return today.toISOString().slice(0, 10)
+  })
+
+  const cancelGiveUp = useCallback(() => {
+    setShowGiveUpConfirmation(false)
+  }, [setShowGiveUpConfirmation])
+
+  const confirmGiveUp = useCallback(() => {
+    setShowGiveUpConfirmation(false)
+
+    if (playerGame && !playerGame.correctAnswer) {
+      const updatedPlayerGameGiveUp = {
+        ...playerGame,
+        correctAnswer: false,
+        guesses: [...playerGame.guesses, -1],
+        gaveUp: true,
+      }
+
+      updatePlayerGame(updatedPlayerGameGiveUp)
+    }
+  }, [playerGame, updatePlayerGame, setShowGiveUpConfirmation])
+
+  const handleGiveUp = useCallback(() => {
+    setShowGiveUpConfirmation(true)
+
+    Alert.alert(
+      "Give Up?",
+      "Are you sure you want to give up on this movie?",
+      [
+        {
+          text: "Cancel",
+          onPress: cancelGiveUp,
+          style: "cancel",
+        },
+        { text: "Give Up", onPress: confirmGiveUp },
+      ],
+      { cancelable: false }
+    )
+  }, [setShowGiveUpConfirmation, cancelGiveUp, confirmGiveUp])
+
+  const updatePlayerData = useCallback(
+    async (playerGame) => {
       if (!playerGame || Object.keys(playerGame).length === 0) {
         console.log(
           "MoviesContainer useEffect [updatePlayerData]: Skipping update - playerGame is empty"
@@ -133,60 +175,28 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
           )
         }
       }
-    }
+    },
+    [
+      playerStats,
+      player.id,
+      enableSubmit,
+      setShowModal,
+      confettiRef,
+      updatePlayerStats,
+      state.hasGameStarted,
+    ]
+  )
+
+  useEffect(() => {
     updatePlayerData(playerGame)
-  }, [
-    playerGame,
-    enableSubmit,
-    playerStats,
-    player.id,
-    state.hasGameStarted,
-    updatePlayerStats,
-    setShowModal,
-    initialDataLoaded,
-  ])
+  }, [playerGame, updatePlayerData, initialDataLoaded])
 
-  const handleUpdatePlayerGame = (updatedPlayerGame: PlayerGame) => {
-    updatePlayerGame(updatedPlayerGame)
-  }
-  const handleGiveUp = useCallback(() => {
-    setShowGiveUpConfirmation(true)
-    {
-      showGiveUpConfirmation &&
-        Alert.alert(
-          "Give Up?",
-          "Are you sure you want to give up on this movie?",
-          [
-            {
-              text: "Cancel",
-              onPress: cancelGiveUp,
-              style: "cancel",
-            },
-            { text: "Give Up", onPress: confirmGiveUp },
-          ],
-          { cancelable: false }
-        )
-    }
-  }, [setShowGiveUpConfirmation])
-
-  const confirmGiveUp = useCallback(() => {
-    setShowGiveUpConfirmation(false)
-
-    if (playerGame && !playerGame.correctAnswer) {
-      const updatedPlayerGameGiveUp = {
-        ...playerGame,
-        correctAnswer: false,
-        guesses: [...playerGame.guesses, -1],
-        gaveUp: true,
-      }
-
-      updatePlayerGame(updatedPlayerGameGiveUp)
-    }
-  }, [playerGame, updatePlayerGame, setShowGiveUpConfirmation])
-
-  const cancelGiveUp = useCallback(() => {
-    setShowGiveUpConfirmation(false)
-  }, [setShowGiveUpConfirmation])
+  const handleUpdatePlayerGame = useCallback(
+    (updatedPlayerGame: PlayerGame) => {
+      updatePlayerGame(updatedPlayerGame)
+    },
+    [updatePlayerGame]
+  )
 
   const provideGuessFeedback = useCallback(
     (message: string | null) => {

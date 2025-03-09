@@ -108,7 +108,15 @@ const CluesContainer = React.memo<CluesProps>(
         })
         setRevealedClues(newRevealedClues)
       }
-    }, [guesses, clues, isLoading, correctGuess])
+    }, [
+      guesses,
+      clues,
+      isLoading,
+      correctGuess,
+      fadeAnim,
+      slideAnim,
+      clueHighlightAnim,
+    ])
 
     const highlightStyle = clueHighlightAnim.interpolate({
       inputRange: [0, 1],

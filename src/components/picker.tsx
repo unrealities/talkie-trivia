@@ -59,18 +59,21 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
       ]
     )
 
-    const filterMovies = (searchTerm: string) => {
-      const trimmedTerm = searchTerm.trim().toLowerCase()
+    const filterMovies = useCallback(
+      (searchTerm: string) => {
+        const trimmedTerm = searchTerm.trim().toLowerCase()
 
-      if (trimmedTerm === "") {
-        return []
-      }
+        if (trimmedTerm === "") {
+          return []
+        }
 
-      const filteredMovies = movies.filter((movie) =>
-        movie.title.toLowerCase().includes(trimmedTerm)
-      )
-      return filteredMovies
-    }
+        const filteredMovies = movies.filter((movie) =>
+          movie.title.toLowerCase().includes(trimmedTerm)
+        )
+        return filteredMovies
+      },
+      [movies]
+    )
 
     const handleInputChange = (text: string) => {
       setSearchText(text)
@@ -90,7 +93,7 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
       }, 300)
 
       return () => clearTimeout(handler)
-    }, [searchText, movies])
+    }, [searchText, filterMovies])
 
     const onPressCheck = useCallback(() => {
       console.log(
@@ -162,48 +165,54 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
       transform: [{ scale: buttonScale }],
     }))
 
-    const handleMovieSelection = (movie: BasicMovie) => {
-      if (!isInteractionsDisabled) {
+    const handleMovieSelection = useCallback(
+      (movie: BasicMovie) => {
+        if (!isInteractionsDisabled) {
+          const releaseYear = movie.release_date
+            ? ` (${movie.release_date.toString().substring(0, 4)})`
+            : ""
+          setSelectedMovie({
+            id: movie.id,
+            title: `${movie.title}${releaseYear}`,
+          })
+        }
+      },
+      [isInteractionsDisabled, setSelectedMovie]
+    )
+
+    const renderItem = useCallback(
+      ({ item: movie }: { item: BasicMovie }) => {
         const releaseYear = movie.release_date
           ? ` (${movie.release_date.toString().substring(0, 4)})`
           : ""
-        setSelectedMovie({
-          id: movie.id,
-          title: `${movie.title}${releaseYear}`,
-        })
-      }
-    }
+        const titleWithYear = `${movie.title}${releaseYear}`
 
-    const renderItem = ({ item: movie }: { item: BasicMovie }) => {
-      const releaseYear = movie.release_date
-        ? ` (${movie.release_date.toString().substring(0, 4)})`
-        : ""
-      const titleWithYear = `${movie.title}${releaseYear}`
-
-      return (
-        <Pressable
-          accessible
-          accessibilityRole="button"
-          aria-label={`Select movie: ${movie.title}, ID: ${movie.id}`}
-          key={movie.id}
-          onPress={() => handleMovieSelection(movie)}
-          style={[
-            pickerStyles.pressableText,
-            selectedMovie.id === movie.id && pickerStyles.selectedMovie,
-          ]}
-          android_ripple={{ color: colors.quinary }}
-          disabled={isInteractionsDisabled}
-        >
-          <Text
-            style={pickerStyles.unselected}
-            numberOfLines={1}
-            ellipsizeMode="tail"
+        return (
+          <Pressable
+            accessible
+            accessibilityRole="button"
+            aria-label={`Select movie: ${movie.title}, ID: ${movie.id}`}
+            key={movie.id}
+            onPress={() => handleMovieSelection(movie)}
+            style={[
+              pickerStyles.pressableText,
+              selectedMovie.id === movie.id && pickerStyles.selectedMovie,
+            ]}
+            android_ripple={{ color: colors.quinary }}
+            disabled={isInteractionsDisabled}
           >
-            {titleWithYear}
-          </Text>
-        </Pressable>
-      )
-    }
+            <Text
+              style={pickerStyles.unselected}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {titleWithYear}
+            </Text>
+          </Pressable>
+        )
+      },
+      [handleMovieSelection, selectedMovie.id, isInteractionsDisabled]
+    )
 
     return (
       <View style={pickerStyles.container}>
