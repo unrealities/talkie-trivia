@@ -5,7 +5,7 @@ export const actorsStyles = StyleSheet.create({
   actorsContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    paddingVertical: responsive.scale(12),
+    paddingVertical: responsive.scale(2),
     width: "100%",
   },
   actorContainer: {
@@ -19,7 +19,7 @@ export const actorsStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: responsive.scale(4),
-    padding: responsive.scale(4),
+    padding: responsive.scale(2),
     width: "100%",
     backgroundColor: colors.background,
   },
@@ -42,15 +42,16 @@ export const actorsStyles = StyleSheet.create({
   },
   actorTextBackground: {
     backgroundColor: "rgba(0, 0, 0, 0.6)",
-    paddingHorizontal: responsive.scale(4),
+    paddingHorizontal: responsive.scale(2),
+    marginTop: responsive.scale(10),
     width: "100%",
   },
   actorText: {
     fontFamily: "Arvo-Regular",
-    fontSize: responsive.responsiveFontSize(12),
+    fontSize: responsive.responsiveFontSize(8),
     color: colors.secondary,
     textAlign: "center",
-    lineHeight: responsive.responsiveFontSize(14),
+    lineHeight: responsive.responsiveFontSize(10),
     paddingVertical: responsive.scale(2),
   },
 })

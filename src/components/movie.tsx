@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from "react"
-import { View, Alert, Pressable, Text, ScrollView } from "react-native"
-import ConfettiCannon from "react-native-confetti-cannon"
+import { View, Pressable, Text, ScrollView } from "react-native"
 
 import CluesContainer from "./clues"
 import GuessesContainer from "./guesses"
@@ -17,6 +16,8 @@ import Player from "../models/player"
 import PlayerStats from "../models/playerStats"
 import { useAppContext } from "../contexts/appContext"
 import HintContainer from "./hint"
+import ConfettiCelebration from "./confettiCelebration"
+import GiveUpConfirmation from "./giveUpConfirmation"
 
 interface MoviesContainerProps {
   isNetworkConnected: boolean
@@ -41,10 +42,11 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
 }) => {
   const [enableSubmit, setEnableSubmit] = useState(true)
   const [showModal, setShowModal] = useState(false)
-  const confettiRef = useRef<ConfettiCannon>(null)
+  const [showConfetti, setShowConfetti] = useState(false)
   const { state, dispatch } = useAppContext()
   const [guessFeedback, setGuessFeedback] = useState<string | null>(null)
-  const [showGiveUpConfirmation, setShowGiveUpConfirmation] = useState(false)
+  const [showGiveUpConfirmationDialog, setShowGiveUpConfirmationDialog] =
+    useState(false)
 
   const hintsAvailable = playerStats?.hintsAvailable || 0
 
@@ -54,11 +56,11 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
   })
 
   const cancelGiveUp = useCallback(() => {
-    setShowGiveUpConfirmation(false)
-  }, [setShowGiveUpConfirmation])
+    setShowGiveUpConfirmationDialog(false)
+  }, [setShowGiveUpConfirmationDialog])
 
   const confirmGiveUp = useCallback(() => {
-    setShowGiveUpConfirmation(false)
+    setShowGiveUpConfirmationDialog(false)
 
     if (playerGame && !playerGame.correctAnswer) {
       const updatedPlayerGameGiveUp = {
@@ -70,25 +72,11 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
 
       updatePlayerGame(updatedPlayerGameGiveUp)
     }
-  }, [playerGame, updatePlayerGame, setShowGiveUpConfirmation])
+  }, [playerGame, updatePlayerGame, setShowGiveUpConfirmationDialog])
 
   const handleGiveUp = useCallback(() => {
-    setShowGiveUpConfirmation(true)
-
-    Alert.alert(
-      "Give Up?",
-      "Are you sure you want to give up on this movie?",
-      [
-        {
-          text: "Cancel",
-          onPress: cancelGiveUp,
-          style: "cancel",
-        },
-        { text: "Give Up", onPress: confirmGiveUp },
-      ],
-      { cancelable: false }
-    )
-  }, [setShowGiveUpConfirmation, cancelGiveUp, confirmGiveUp])
+    setShowGiveUpConfirmationDialog(true)
+  }, [setShowGiveUpConfirmationDialog])
 
   const updatePlayerData = useCallback(
     async (playerGame) => {
@@ -153,7 +141,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
             updatePlayerStats(updatedStats)
             console.log("setShowModal called with:", true)
             setShowModal(true)
-            if (playerGame.correctAnswer) confettiRef.current?.start()
+            setShowConfetti(true)
           }
         } catch (err) {
           console.error(
@@ -181,7 +169,6 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
       player.id,
       enableSubmit,
       setShowModal,
-      confettiRef,
       updatePlayerStats,
       state.hasGameStarted,
     ]
@@ -214,6 +201,10 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
     playerGame.correctAnswer ||
     playerGame.guesses.length >= playerGame.game.guessesMax ||
     playerGame.gaveUp
+
+  const handleConfettiStop = useCallback(() => {
+    setShowConfetti(false)
+  }, [])
 
   console.log("showModal state:", showModal)
   return (
@@ -269,20 +260,20 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         >
           <Text style={movieStyles.giveUpButtonText}>Give Up?</Text>
         </Pressable>
+
         <MovieModal
           movie={playerGame.game.movie}
           show={showModal}
           toggleModal={setShowModal}
         />
-        <ConfettiCannon
-          autoStart={false}
-          colors={Object.values(colors)}
-          count={250}
-          explosionSpeed={500}
-          fadeOut={true}
-          fallSpeed={2000}
-          origin={{ x: -100, y: 0 }}
-          ref={confettiRef}
+        <ConfettiCelebration
+          startConfetti={showConfetti}
+          onConfettiStop={handleConfettiStop}
+        />
+        <GiveUpConfirmation
+          isVisible={showGiveUpConfirmationDialog}
+          onConfirm={confirmGiveUp}
+          onCancel={cancelGiveUp}
         />
       </View>
     </ScrollView>
