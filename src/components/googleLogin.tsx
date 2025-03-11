@@ -46,6 +46,9 @@ const GoogleLogin: React.FC<GoogleLoginProps> = memo(
 
     // Centralized error handling
     const handleAuthError = useCallback((error: AuthError) => {
+      if (!error) {
+        return
+      }
       setIsLoading(false)
       const errorMessage =
         error.code === "auth/network-request-failed"

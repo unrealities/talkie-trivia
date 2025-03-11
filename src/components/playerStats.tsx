@@ -13,6 +13,10 @@ export interface PlayerStatsContainerProps {
 
 const PlayerStatsContainer = memo(
   (props: PlayerStatsContainerProps) => {
+    if (!props || !props.player || !props.playerStats) {
+      return null
+    }
+
     return (
       <View
         style={playerStatsStyles.container}
