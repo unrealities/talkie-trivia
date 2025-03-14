@@ -37,6 +37,8 @@ describe("CluesContainer", () => {
     id: "playerGame1",
     playerID: "player1",
     startDate: new Date(),
+    hintsUsed: {},
+    gaveUp: false,
   }
 
   beforeEach(() => {
@@ -71,27 +73,37 @@ describe("CluesContainer", () => {
     )
     expect(screen.queryByText("This is a test overview.")).toBeNull()
 
-    rerender(
-      <CluesContainer
-        playerGame={mockPlayerGame}
-        guesses={[1]}
-        summary={mockPlayerGame.game.movie.overview}
-        correctGuess={false}
-      />
-    )
-    act(() => jest.advanceTimersByTime(500))
+    act(() => {
+      rerender(
+        <CluesContainer
+          playerGame={mockPlayerGame}
+          guesses={[1]}
+          summary={mockPlayerGame.game.movie.overview}
+          correctGuess={false}
+        />
+      )
+    })
+
+    act(() => {
+      jest.advanceTimersByTime(500)
+    })
 
     expect(screen.getByText("This is a test")).toBeTruthy()
 
-    rerender(
-      <CluesContainer
-        playerGame={mockPlayerGame}
-        guesses={[1, 2]}
-        summary={mockPlayerGame.game.movie.overview}
-        correctGuess={false}
-      />
-    )
-    act(() => jest.advanceTimersByTime(500))
+    act(() => {
+      rerender(
+        <CluesContainer
+          playerGame={mockPlayerGame}
+          guesses={[1, 2]}
+          summary={mockPlayerGame.game.movie.overview}
+          correctGuess={false}
+        />
+      )
+    })
+
+    act(() => {
+      jest.advanceTimersByTime(500)
+    })
 
     expect(screen.getByText("overview. It has")).toBeTruthy()
   })

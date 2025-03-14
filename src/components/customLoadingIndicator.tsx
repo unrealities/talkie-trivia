@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { memo, useEffect } from "react"
 import { View, StyleSheet } from "react-native"
 import Animated, {
   useSharedValue,
@@ -33,7 +33,7 @@ const CustomLoadingIndicator = () => {
   })
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} testID="activity-indicator">
       <Animated.View style={[styles.rotateContainer, animatedStyle]}>
         <Svg width={size} height={size}>
           <Circle

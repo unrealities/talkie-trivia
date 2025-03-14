@@ -4,13 +4,14 @@ module.exports = {
         "process.env": {
             EXPO_OS: "test",
         },
+        TEST_ENV: true,
     },
     testEnvironment: "jsdom",
     transform: {
-        "^.+\.(js|jsx|ts|tsx)$": "babel-jest",
+        "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
     },
     transformIgnorePatterns: [
-        "/node_modules/(?!react-native|react-native-reanimated|@react-native-community/masked-view|expo(nent)?|@expo(nent)?/.|react-navigation|@react-navigation/.|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg|victory-native|victory)/",
+        'node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.|@expo-modules/.|react-navigation|@react-navigation/.|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg|victory-native|victory|react-native-reanimated)/',
         "node_modules/@babel/runtime",
     ],
     moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
