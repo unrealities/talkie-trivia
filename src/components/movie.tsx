@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from "react"
+import React, { useEffect, useState, useCallback } from "react"
 import { View, Pressable, Text, ScrollView } from "react-native"
 
 import CluesContainer from "./clues"
@@ -7,7 +7,6 @@ import NetworkContainer from "./network"
 import MovieModal from "./modal"
 import PickerContainer from "./picker"
 import TitleHeader from "./titleHeader"
-import { colors } from "../styles/global"
 import { movieStyles } from "../styles/movieStyles"
 import { batchUpdatePlayerData } from "../utils/firebaseService"
 import { BasicMovie } from "../models/movie"
@@ -17,7 +16,7 @@ import PlayerStats from "../models/playerStats"
 import { useAppContext } from "../contexts/appContext"
 import HintContainer from "./hint"
 import ConfettiCelebration from "./confettiCelebration"
-import GiveUpConfirmation from "./giveUpConfirmation"
+import ConfirmationModal from "./confirmationModal"
 
 interface MoviesContainerProps {
   isNetworkConnected: boolean
@@ -40,7 +39,6 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
   updatePlayerStats,
   initialDataLoaded,
 }) => {
-  const [enableSubmit, setEnableSubmit] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
   const { state, dispatch } = useAppContext()
@@ -50,16 +48,13 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
 
   const hintsAvailable = playerStats?.hintsAvailable || 0
 
-  const [dateId, setDateId] = useState<string>(() => {
-    const today = new Date()
-    return today.toISOString().slice(0, 10)
-  })
-
   const cancelGiveUp = useCallback(() => {
+    console.log("cancelGiveUp called")
     setShowGiveUpConfirmationDialog(false)
   }, [setShowGiveUpConfirmationDialog])
 
   const confirmGiveUp = useCallback(() => {
+    console.log("confirmGiveUp called")
     setShowGiveUpConfirmationDialog(false)
 
     if (playerGame && !playerGame.correctAnswer) {
@@ -70,116 +65,111 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         gaveUp: true,
       }
 
+      console.log(
+        "confirmGiveUp: updating playerGame:",
+        updatedPlayerGameGiveUp
+      )
       updatePlayerGame(updatedPlayerGameGiveUp)
+    } else {
+      console.log(
+        "confirmGiveUp: playerGame is null or correctAnswer is true",
+        playerGame
+      )
     }
-  }, [playerGame, updatePlayerGame, setShowGiveUpConfirmationDialog])
+  }, [playerGame, updatePlayerGame])
 
   const handleGiveUp = useCallback(() => {
+    console.log("handleGiveUp called")
     setShowGiveUpConfirmationDialog(true)
   }, [setShowGiveUpConfirmationDialog])
 
-  const updatePlayerData = useCallback(
-    async (playerGame) => {
-      if (!playerGame || Object.keys(playerGame).length === 0) {
-        console.log(
-          "MoviesContainer useEffect [updatePlayerData]: Skipping update - playerGame is empty"
+  const updatePlayerData = useCallback(async () => {
+    console.log("updatePlayerData called with playerGame:", playerGame)
+
+    if (!playerGame || Object.keys(playerGame).length === 0) {
+      console.log("updatePlayerData: Skipping update - playerGame is empty")
+      return
+    }
+    if (!state.hasGameStarted) {
+      console.log("updatePlayerData: Skipping update - game not started")
+      return
+    }
+
+    if (
+      playerGame.guesses.length >= playerGame.game.guessesMax ||
+      playerGame.correctAnswer ||
+      playerGame.gaveUp
+    ) {
+      const updatedStats = { ...playerStats }
+
+      if (!updatedStats.id) {
+        console.warn(
+          "updatePlayerData: playerStats.id is undefined! Aborting update."
         )
         return
       }
-      if (!state.hasGameStarted) {
-        return
+
+      if (playerGame.correctAnswer) {
+        updatedStats.currentStreak++
+        updatedStats.maxStreak = Math.max(
+          updatedStats.currentStreak,
+          updatedStats.maxStreak
+        )
+
+        if (!updatedStats.wins) {
+          updatedStats.wins = [0, 0, 0, 0, 0]
+        } else if (!Array.isArray(updatedStats.wins)) {
+          updatedStats.wins = [0, 0, 0, 0, 0]
+        }
+        if (updatedStats.wins && Array.isArray(updatedStats.wins)) {
+          updatedStats.wins[playerGame.guesses.length - 1] =
+            (updatedStats.wins[playerGame.guesses.length - 1] || 0) + 1
+        }
+      } else {
+        updatedStats.currentStreak = 0
       }
+      updatedStats.games++ //increment regardless
+      try {
+        const result = await batchUpdatePlayerData(
+          updatedStats,
+          playerGame,
+          player.id,
+          { hintsAvailable: updatedStats.hintsAvailable }
+        )
 
-      if (
-        (playerGame.guesses.length > 4 ||
-          playerGame.correctAnswer ||
-          playerGame.gaveUp) &&
-        enableSubmit
-      ) {
-        setEnableSubmit(false)
-        const updatedStats = { ...playerStats }
-
-        if (!updatedStats.id) {
-          console.warn(
-            "MoviesContainer useEffect [updatePlayerData]: playerStats.id is undefined! Aborting update."
-          )
-          return
-        }
-
-        if (playerGame.correctAnswer) {
-          updatedStats.currentStreak++
-          updatedStats.maxStreak = Math.max(
-            updatedStats.currentStreak,
-            updatedStats.maxStreak
-          )
-
-          if (!updatedStats.wins) {
-            updatedStats.wins = [0, 0, 0, 0, 0]
-          } else if (!Array.isArray(updatedStats.wins)) {
-            updatedStats.wins = [0, 0, 0, 0, 0]
-          }
-          if (updatedStats.wins && Array.isArray(updatedStats.wins)) {
-            updatedStats.wins[playerGame.guesses.length - 1] =
-              (updatedStats.wins[playerGame.guesses.length - 1] || 0) + 1
-          }
-
-          updatedStats.games++
-        } else if (!playerGame.gaveUp) {
-          updatedStats.currentStreak = 0
-          updatedStats.games++
-        }
-
-        try {
-          const result = await batchUpdatePlayerData(
-            updatedStats,
-            playerGame,
-            player.id,
-            { hintsAvailable: updatedStats.hintsAvailable }
-          )
-
-          if (result.success) {
-            updatePlayerStats(updatedStats)
-            console.log("setShowModal called with:", true)
+        if (result.success) {
+          if (playerGame.correctAnswer || playerGame.gaveUp) {
             setShowModal(true)
-            setShowConfetti(true)
+            if (playerGame.correctAnswer) {
+              setShowConfetti(true)
+            }
           }
-        } catch (err) {
-          console.error(
-            "MoviesContainer useEffect [updatePlayerData]: Error updating player data:",
-            err
-          )
+        } else {
+          console.error("updatePlayerData: Batch update failed.")
         }
-      } else if (
-        playerGame.guesses.length > 0 &&
-        playerGame.guesses.length < 5 &&
-        !playerGame.correctAnswer
-      ) {
-        try {
-          const result = await batchUpdatePlayerData({}, playerGame, player.id)
-        } catch (err) {
-          console.error(
-            "MoviesContainer useEffect [updatePlayerData]: Error updating player game data:",
-            err
-          )
-        }
+      } catch (err) {
+        console.error("updatePlayerData: Error updating player data:", err)
       }
-    },
-    [
-      playerStats,
-      player.id,
-      enableSubmit,
-      setShowModal,
-      updatePlayerStats,
-      state.hasGameStarted,
-    ]
-  )
+    } else if (playerGame.guesses.length > 0) {
+      try {
+        const result = await batchUpdatePlayerData({}, playerGame, player.id) //still pass full playerGame
+        if (!result.success) {
+          console.error("updatePlayerData: Error updating player game data")
+        }
+      } catch (err) {
+        console.error("updatePlayerData: Error updating player game data:", err)
+      }
+    }
+  }, [playerStats, player.id, state.hasGameStarted, playerGame])
 
   useEffect(() => {
-    updatePlayerData(playerGame)
-  }, [playerGame, updatePlayerData, initialDataLoaded])
+    console.log("useEffect triggered with playerGame:", playerGame)
+    updatePlayerData()
+  }, [playerGame, updatePlayerData])
 
   const handleUpdatePlayerGame = useCallback(
     (updatedPlayerGame: PlayerGame) => {
+      console.log("handleUpdatePlayerGame called with", updatedPlayerGame)
       updatePlayerGame(updatedPlayerGame)
     },
     [updatePlayerGame]
@@ -206,7 +196,6 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
     setShowConfetti(false)
   }, [])
 
-  console.log("showModal state:", showModal)
   return (
     <ScrollView
       contentContainerStyle={movieStyles.scrollContentContainer}
@@ -229,7 +218,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
           updatePlayerStats={updatePlayerStats}
         />
         <PickerContainer
-          enableSubmit={enableSubmit}
+          enableSubmit={true}
           playerGame={playerGame}
           movies={movies}
           updatePlayerGame={handleUpdatePlayerGame}
@@ -246,7 +235,10 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
           movies={movies}
         />
         <Pressable
-          onPress={handleGiveUp}
+          onPress={() => {
+            console.log("Give Up button pressed!")
+            handleGiveUp()
+          }}
           style={({ pressed }) => [
             movieStyles.giveUpButton,
             isInteractionsDisabled && movieStyles.disabledButton,
@@ -262,7 +254,11 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         </Pressable>
 
         <MovieModal
-          movie={playerGame.game.movie}
+          movie={
+            playerGame.correctAnswer || playerGame.gaveUp
+              ? playerGame.game.movie
+              : null
+          }
           show={showModal}
           toggleModal={setShowModal}
         />
@@ -270,8 +266,12 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
           startConfetti={showConfetti}
           onConfettiStop={handleConfettiStop}
         />
-        <GiveUpConfirmation
+        <ConfirmationModal
           isVisible={showGiveUpConfirmationDialog}
+          title="Give Up?"
+          message="Are you sure you want to give up on this movie?"
+          confirmText="Give Up"
+          cancelText="Cancel"
           onConfirm={confirmGiveUp}
           onCancel={cancelGiveUp}
         />

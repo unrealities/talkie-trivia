@@ -1,4 +1,4 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useEffect, useRef } from "react"
 import { Alert } from "react-native"
 
 interface GiveUpConfirmationProps {
@@ -12,23 +12,40 @@ const GiveUpConfirmation: React.FC<GiveUpConfirmationProps> = ({
   onConfirm,
   onCancel,
 }) => {
+  const isVisibleRef = useRef(isVisible)
+
+  useEffect(() => {
+    isVisibleRef.current = isVisible
+  }, [isVisible])
+
   const handleConfirmation = useCallback(() => {
+    console.log("handleConfirmation called. isVisible:", isVisibleRef.current)
     Alert.alert(
       "Give Up?",
       "Are you sure you want to give up on this movie?",
       [
         {
           text: "Cancel",
-          onPress: onCancel,
+          onPress: () => {
+            console.log("Cancel pressed")
+            onCancel()
+          },
           style: "cancel",
         },
-        { text: "Give Up", onPress: onConfirm },
+        {
+          text: "Give Up",
+          onPress: () => {
+            console.log("Give Up pressed")
+            onConfirm()
+          },
+        },
       ],
       { cancelable: false }
     )
   }, [onCancel, onConfirm])
 
-  React.useEffect(() => {
+  useEffect(() => {
+    console.log("GiveUpConfirmation useEffect. isVisible:", isVisible)
     if (isVisible) {
       handleConfirmation()
     }

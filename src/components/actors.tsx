@@ -1,6 +1,5 @@
 import React, { memo, useCallback } from "react"
 import {
-  Image,
   Text,
   Pressable,
   View,
@@ -11,6 +10,7 @@ import {
 import * as Linking from "expo-linking"
 import { actorsStyles } from "../styles/actorsStyles"
 import { Actor } from "../models/movie"
+import { Image } from "expo-image"
 
 interface ActorProps {
   actor: Actor
@@ -82,7 +82,6 @@ const ActorContainer = memo(
             source={actorImage}
             style={actorsStyles.actorImage}
             resizeMode="cover"
-            defaultSource={require("../../assets/actor_default.png")}
             placeholder={require("../../assets/actor_default.png")}
           />
           <View style={actorsStyles.actorTextContainer}>

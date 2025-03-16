@@ -8,7 +8,14 @@ export const batchUpdatePlayerData = async (
   playerGame: any,
   playerId: string,
   playerUpdate: any = null
-) => {
+): Promise<{ success: boolean }> => {
+  console.log("batchUpdatePlayerData called with:", {
+    playerStats,
+    playerGame,
+    playerId,
+    playerUpdate,
+  })
+
   if (!playerId) {
     console.warn(
       "batchUpdatePlayerData: Warning - Player ID is missing. Data update may not be accurate."

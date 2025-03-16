@@ -1,11 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  useMemo,
-  memo,
-  useRef,
-} from "react"
+import React, { useEffect, useState, useCallback, useMemo, memo } from "react"
 import {
   ActivityIndicator,
   Pressable,
@@ -20,7 +13,7 @@ import { BasicMovie } from "../models/movie"
 import { PlayerGame } from "../models/game"
 import { colors } from "../styles/global"
 import { pickerStyles } from "../styles/pickerStyles"
-import { useAnimatedStyle } from "react-native-reanimated"
+import { useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 
 interface PickerContainerProps {
   enableSubmit: boolean
@@ -44,7 +37,7 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
       title: string
     }>({ id: 0, title: DEFAULT_BUTTON_TEXT })
     const [searchText, setSearchText] = useState<string>("")
-    const buttonScale = useRef(new Animated.Value(1)).current
+    const buttonScale = useSharedValue(1)
 
     const isInteractionsDisabled = useMemo(
       () =>
@@ -162,7 +155,7 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
     ])
 
     const animatedButtonStyle = useAnimatedStyle(() => ({
-      transform: [{ scale: buttonScale }],
+      transform: [{ scale: buttonScale.value }],
     }))
 
     const handleMovieSelection = useCallback(
