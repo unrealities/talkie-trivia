@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo, memo } from "react"
 import { Animated, Text, View, Easing, ScrollView } from "react-native"
+import { useAnimatedStyle } from "react-native-reanimated"
 import { cluesStyles } from "../styles/cluesStyles"
 import { PlayerGame } from "../models/game"
 import { colors } from "../styles/global"
@@ -89,13 +90,13 @@ const CluesContainer = React.memo<CluesProps>(
             toValue: 1,
             duration: 500,
             easing: Easing.inOut(Easing.ease),
-            useNativeDriver: true,
+            useNativeDriver: false,
           }),
           Animated.timing(slideAnim, {
             toValue: 0,
             duration: 500,
             easing: Easing.inOut(Easing.ease),
-            useNativeDriver: true,
+            useNativeDriver: false,
           }),
           Animated.timing(clueHighlightAnim, {
             toValue: 1,
@@ -118,9 +119,11 @@ const CluesContainer = React.memo<CluesProps>(
       clueHighlightAnim,
     ])
 
-    const highlightStyle = clueHighlightAnim.interpolate({
-      inputRange: [0, 1],
-      outputRange: ["rgba(0, 0, 0, 0)", colors.quinary],
+    const highlightStyle = useAnimatedStyle(() => {
+      return {
+        backgroundColor:
+          clueHighlightAnim.value === 1 ? colors.quinary : "rgba(0, 0, 0, 0)",
+      }
     })
 
     return (
@@ -156,8 +159,7 @@ const CluesContainer = React.memo<CluesProps>(
                         !correctGuess &&
                           isLastClue &&
                           cluesStyles.mostRecentClue,
-                        !correctGuess &&
-                          isLastClue && { backgroundColor: highlightStyle },
+                        !correctGuess && isLastClue && highlightStyle,
                       ]}
                     >
                       {clue}

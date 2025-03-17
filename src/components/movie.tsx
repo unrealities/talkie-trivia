@@ -69,14 +69,22 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         "confirmGiveUp: updating playerGame:",
         updatedPlayerGameGiveUp
       )
-      updatePlayerGame(updatedPlayerGameGiveUp)
+      try {
+        updatePlayerGame(updatedPlayerGameGiveUp)
+      } catch (error) {
+        console.error("Error giving up", error)
+        dispatch({
+          type: "SET_DATA_LOADING_ERROR",
+          payload: error.message,
+        })
+      }
     } else {
       console.log(
         "confirmGiveUp: playerGame is null or correctAnswer is true",
         playerGame
       )
     }
-  }, [playerGame, updatePlayerGame])
+  }, [playerGame, updatePlayerGame, dispatch])
 
   const handleGiveUp = useCallback(() => {
     console.log("handleGiveUp called")
@@ -128,7 +136,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
       } else {
         updatedStats.currentStreak = 0
       }
-      updatedStats.games++ //increment regardless
+      updatedStats.games++
       try {
         const result = await batchUpdatePlayerData(
           updatedStats,
@@ -146,21 +154,41 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
           }
         } else {
           console.error("updatePlayerData: Batch update failed.")
+
+          dispatch({
+            type: "SET_DATA_LOADING_ERROR",
+            payload: "Batch update failed.",
+          })
         }
       } catch (err) {
         console.error("updatePlayerData: Error updating player data:", err)
+
+        dispatch({
+          type: "SET_DATA_LOADING_ERROR",
+          payload: err.message,
+        })
       }
     } else if (playerGame.guesses.length > 0) {
       try {
-        const result = await batchUpdatePlayerData({}, playerGame, player.id) //still pass full playerGame
+        const result = await batchUpdatePlayerData({}, playerGame, player.id)
         if (!result.success) {
           console.error("updatePlayerData: Error updating player game data")
+
+          dispatch({
+            type: "SET_DATA_LOADING_ERROR",
+            payload: "Error updating player game.",
+          })
         }
       } catch (err) {
         console.error("updatePlayerData: Error updating player game data:", err)
+
+        dispatch({
+          type: "SET_DATA_LOADING_ERROR",
+          payload: err.message,
+        })
       }
     }
-  }, [playerStats, player.id, state.hasGameStarted, playerGame])
+  }, [playerStats, player.id, state.hasGameStarted, playerGame, dispatch])
 
   useEffect(() => {
     console.log("useEffect triggered with playerGame:", playerGame)
@@ -170,9 +198,17 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
   const handleUpdatePlayerGame = useCallback(
     (updatedPlayerGame: PlayerGame) => {
       console.log("handleUpdatePlayerGame called with", updatedPlayerGame)
-      updatePlayerGame(updatedPlayerGame)
+      try {
+        updatePlayerGame(updatedPlayerGame)
+      } catch (error) {
+        console.error("Error updating player game", error)
+        dispatch({
+          type: "SET_DATA_LOADING_ERROR",
+          payload: error.message,
+        })
+      }
     },
-    [updatePlayerGame]
+    [updatePlayerGame, dispatch]
   )
 
   const provideGuessFeedback = useCallback(

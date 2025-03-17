@@ -15,16 +15,12 @@ export const pickerStyles = StyleSheet.create({
     width: "100%",
     height: "auto",
     elevation: 0,
-    shadowColor: "transparent",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0,
-    shadowRadius: 0,
     boxShadow: "none",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
     borderColor: colors.primary,
-    minHeight: responsive.scale(60)
+    minHeight: responsive.scale(60),
   },
   buttonText: {
     fontSize: responsive.responsiveFontSize(16),
@@ -86,8 +82,7 @@ export const pickerStyles = StyleSheet.create({
   },
   resultsContainer: {
     marginBottom: responsive.scale(8),
-    maxHeight:
-      responsive.scale(100),
+    maxHeight: responsive.scale(100),
     minHeight: responsive.scale(60),
     maxWidth: responsive.scale(400),
     overflow: "hidden",

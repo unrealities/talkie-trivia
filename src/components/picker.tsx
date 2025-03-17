@@ -134,14 +134,12 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
           Animated.timing(buttonScale, {
             toValue: 0.9,
             duration: 50,
-            easing: Easing.inOut(Easing.ease),
-            useNativeDriver: true,
+            easing: Easing.inOut(Easing.ease)
           }),
           Animated.timing(buttonScale, {
             toValue: 1,
             duration: 150,
-            easing: Easing.inOut(Easing.ease),
-            useNativeDriver: true,
+            easing: Easing.inOut(Easing.ease)
           }),
         ]).start()
       }
