@@ -15,17 +15,7 @@ export const modalStyles = StyleSheet.create({
     minHeight: responsive.scale(40),
     justifyContent: "center",
     alignItems: "center",
-    ...Platform.select({
-      ios: {
-        shadowColor: "transparent",
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0,
-        shadowRadius: 0,
-      },
-      android: {
-        elevation: 0,
-      },
-    }),
+    boxShadow: "none",
   },
 
   centeredView: {
@@ -53,17 +43,7 @@ export const modalStyles = StyleSheet.create({
       ? height * 0.8
       : height * 0.7,
     padding: responsive.scale(20),
-    ...Platform.select({
-      ios: {
-        shadowColor: "transparent",
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0,
-        shadowRadius: 0,
-      },
-      android: {
-        elevation: 0,
-      },
-    }),
+    boxShadow: "none",
   },
 
   buttonText: {

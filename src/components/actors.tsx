@@ -68,7 +68,10 @@ const ActorContainer = memo(
     const [firstName, lastName] = splitName(actor.name)
 
     return (
-      <View style={[actorsStyles.actorContainer, style]} accessible>
+      <View
+        style={[actorsStyles.actorContainer, style, { pointerEvents: "auto" }]}
+        accessible
+      >
         <Pressable
           onPress={handlePress}
           style={({ pressed }) => [

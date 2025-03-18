@@ -13,10 +13,7 @@ export const googleLoginStyles = StyleSheet.create({
     width: "100%",
     maxWidth: responsive.scale(280),
     elevation: 0,
-    shadowColor: "transparent",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0,
-    shadowRadius: 0,
+    boxShadow: "none",
   },
   buttonText: {
     color: colors.secondary,

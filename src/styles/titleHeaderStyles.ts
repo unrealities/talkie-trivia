@@ -13,11 +13,7 @@ export const titleHeaderStyles = StyleSheet.create({
     marginBottom: responsive.scale(4),
     paddingVertical: responsive.scale(4),
     width: "100%",
-    shadowColor: "transparent",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0,
-    shadowRadius: 0,
-    elevation: 0,
+    boxShadow: "none",
   },
   header: {
     color: colors.primary,
