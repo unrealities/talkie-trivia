@@ -1,6 +1,10 @@
 import React, { useEffect, useRef, useState, useMemo, memo } from "react"
-import { Animated, Text, View, Easing, ScrollView } from "react-native"
-import { useAnimatedStyle } from "react-native-reanimated"
+import { Text, View, Easing, ScrollView } from "react-native"
+import Animated, {
+  useSharedValue,
+  withTiming,
+  useAnimatedStyle,
+} from "react-native-reanimated"
 import { cluesStyles } from "../styles/cluesStyles"
 import { PlayerGame } from "../models/game"
 import { colors } from "../styles/global"
@@ -30,12 +34,7 @@ const splitSummary = (summary: string, splits: number = 5): string[] => {
 }
 
 const CountContainer = memo<CountContainerProps>(
-  ({
-    currentWordLength,
-    guessNumber,
-    totalWordLength,
-    correctGuess,
-  }: CountContainerProps) => (
+  ({ currentWordLength, guessNumber, totalWordLength, correctGuess }) => (
     <View style={cluesStyles.countContainer}>
       <Text style={cluesStyles.wordCountText}>
         {correctGuess ? totalWordLength : currentWordLength}/{totalWordLength}
@@ -45,7 +44,7 @@ const CountContainer = memo<CountContainerProps>(
 )
 
 const CluesContainer = React.memo<CluesProps>(
-  ({ correctGuess, guesses, summary, playerGame }: CluesProps) => {
+  ({ correctGuess, guesses, summary, playerGame }) => {
     const clues = useMemo(
       () => splitSummary(playerGame?.game?.movie?.overview || ""),
       [playerGame?.game?.movie?.overview]
@@ -53,10 +52,10 @@ const CluesContainer = React.memo<CluesProps>(
 
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [revealedClues, setRevealedClues] = useState<string[]>([])
-    const fadeAnim = useRef(new Animated.Value(0)).current
-    const slideAnim = useRef(new Animated.Value(-10)).current
+    const fadeAnim = useSharedValue(0)
+    const slideAnim = useSharedValue(-10)
+    const clueHighlightAnim = useSharedValue(0)
     const scrollViewRef = useRef<ScrollView>(null)
-    const clueHighlightAnim = useRef(new Animated.Value(0)).current
 
     useEffect(() => {
       if (playerGame?.game?.movie?.overview) {
@@ -65,9 +64,7 @@ const CluesContainer = React.memo<CluesProps>(
     }, [playerGame?.game?.movie?.overview])
 
     useEffect(() => {
-      if (isLoading) {
-        return
-      }
+      if (isLoading) return
 
       let cluesToReveal
       let newRevealedClues
@@ -81,50 +78,37 @@ const CluesContainer = React.memo<CluesProps>(
       }
 
       if (newRevealedClues.join(" ") !== revealedClues.join(" ")) {
-        fadeAnim.setValue(0)
-        slideAnim.setValue(-10)
-        clueHighlightAnim.setValue(0)
+        fadeAnim.value = 0
+        slideAnim.value = -10
+        clueHighlightAnim.value = 0
 
-        Animated.parallel([
-          Animated.timing(fadeAnim, {
-            toValue: 1,
-            duration: 500,
-            easing: Easing.inOut(Easing.ease),
-            useNativeDriver: false,
-          }),
-          Animated.timing(slideAnim, {
-            toValue: 0,
-            duration: 500,
-            easing: Easing.inOut(Easing.ease),
-            useNativeDriver: false,
-          }),
-          Animated.timing(clueHighlightAnim, {
-            toValue: 1,
-            duration: 700,
-            easing: Easing.linear,
-            useNativeDriver: false,
-          }),
-        ]).start(() => {
-          scrollViewRef.current?.scrollToEnd({ animated: true })
+        fadeAnim.value = withTiming(1, {
+          duration: 500,
+          easing: Easing.inOut(Easing.ease),
         })
-        setRevealedClues(newRevealedClues)
-      }
-    }, [
-      guesses,
-      clues,
-      isLoading,
-      correctGuess,
-      fadeAnim,
-      slideAnim,
-      clueHighlightAnim,
-    ])
+        slideAnim.value = withTiming(0, {
+          duration: 500,
+          easing: Easing.inOut(Easing.ease),
+        })
+        clueHighlightAnim.value = withTiming(1, {
+          duration: 700,
+          easing: Easing.linear,
+        })
 
-    const highlightStyle = useAnimatedStyle(() => {
-      return {
-        backgroundColor:
-          clueHighlightAnim.value === 1 ? colors.quinary : "rgba(0, 0, 0, 0)",
+        setRevealedClues(newRevealedClues)
+        scrollViewRef.current?.scrollToEnd({ animated: true })
       }
-    })
+    }, [guesses, clues, isLoading, correctGuess])
+
+    const animatedTextStyle = useAnimatedStyle(() => ({
+      opacity: fadeAnim.value,
+      transform: [{ translateY: slideAnim.value }],
+    }))
+
+    const highlightStyle = useAnimatedStyle(() => ({
+      backgroundColor:
+        clueHighlightAnim.value > 0.5 ? colors.quinary : "rgba(0, 0, 0, 0)",
+    }))
 
     return (
       <View style={cluesStyles.container}>
@@ -143,12 +127,7 @@ const CluesContainer = React.memo<CluesProps>(
               style={cluesStyles.scrollView}
               contentContainerStyle={cluesStyles.scrollViewContent}
             >
-              <Animated.Text
-                style={[
-                  cluesStyles.text,
-                  { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
-                ]}
-              >
+              <Animated.Text style={[cluesStyles.text, animatedTextStyle]}>
                 {revealedClues.map((clue, index) => {
                   const isLastClue = index === revealedClues.length - 1
                   return (
