@@ -98,10 +98,6 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
       console.log("updatePlayerData: Skipping update - playerGame is empty")
       return
     }
-    if (!state.hasGameStarted) {
-      console.log("updatePlayerData: Skipping update - game not started")
-      return
-    }
 
     if (
       playerGame.guesses.length >= playerGame.game.guessesMax ||
@@ -188,7 +184,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         })
       }
     }
-  }, [playerStats, player.id, state.hasGameStarted, playerGame, dispatch])
+  }, [playerStats, player.id, playerGame, dispatch])
 
   useEffect(() => {
     console.log("useEffect triggered with playerGame:", playerGame)

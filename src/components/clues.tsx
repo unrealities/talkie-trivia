@@ -4,6 +4,7 @@ import Animated, {
   useSharedValue,
   withTiming,
   useAnimatedStyle,
+  runOnJS,
 } from "react-native-reanimated"
 import { cluesStyles } from "../styles/cluesStyles"
 import { PlayerGame } from "../models/game"
@@ -82,23 +83,27 @@ const CluesContainer = React.memo<CluesProps>(
         slideAnim.value = -10
         clueHighlightAnim.value = 0
 
-        fadeAnim.value = withTiming(1, {
-          duration: 500,
-          easing: Easing.inOut(Easing.ease),
-        })
-        slideAnim.value = withTiming(0, {
-          duration: 500,
-          easing: Easing.inOut(Easing.ease),
-        })
-        clueHighlightAnim.value = withTiming(1, {
-          duration: 700,
-          easing: Easing.linear,
-        })
+        const startAnimations = () => {
+          fadeAnim.value = withTiming(1, {
+            duration: 500,
+            easing: Easing.inOut(Easing.ease),
+          })
+          slideAnim.value = withTiming(0, {
+            duration: 500,
+            easing: Easing.inOut(Easing.ease),
+          })
+          clueHighlightAnim.value = withTiming(1, {
+            duration: 700,
+            easing: Easing.linear,
+          })
+        }
 
         setRevealedClues(newRevealedClues)
+        runOnJS(startAnimations)()
+
         scrollViewRef.current?.scrollToEnd({ animated: true })
       }
-    }, [guesses, clues, isLoading, correctGuess])
+    }, [guesses, clues, isLoading, correctGuess, revealedClues])
 
     const animatedTextStyle = useAnimatedStyle(() => ({
       opacity: fadeAnim.value,

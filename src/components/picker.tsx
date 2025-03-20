@@ -13,7 +13,11 @@ import { BasicMovie } from "../models/movie"
 import { PlayerGame } from "../models/game"
 import { colors } from "../styles/global"
 import { pickerStyles } from "../styles/pickerStyles"
-import { useAnimatedStyle, useSharedValue } from "react-native-reanimated"
+import {
+  withTiming,
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated"
 
 interface PickerContainerProps {
   enableSubmit: boolean
@@ -39,18 +43,10 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
     const [searchText, setSearchText] = useState<string>("")
     const buttonScale = useSharedValue(1)
 
-    const isInteractionsDisabled = useMemo(
-      () =>
-        playerGame.correctAnswer ||
-        playerGame.guesses.length >= playerGame.game.guessesMax ||
-        playerGame.gaveUp,
-      [
-        playerGame.correctAnswer,
-        playerGame.guesses,
-        playerGame.game.guessesMax,
-        playerGame.gaveUp,
-      ]
-    )
+    const isInteractionsDisabled =
+      playerGame.correctAnswer ||
+      playerGame.guesses.length >= playerGame.game.guessesMax ||
+      playerGame.gaveUp
 
     const filterMovies = useCallback(
       (searchTerm: string) => {
@@ -130,18 +126,11 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
         setSelectedMovie({ id: 0, title: DEFAULT_BUTTON_TEXT })
         setSearchText("")
 
-        Animated.sequence([
-          Animated.timing(buttonScale, {
-            toValue: 0.9,
-            duration: 50,
-            easing: Easing.inOut(Easing.ease)
-          }),
-          Animated.timing(buttonScale, {
-            toValue: 1,
-            duration: 150,
-            easing: Easing.inOut(Easing.ease)
-          }),
-        ]).start()
+        buttonScale.value = 0.9
+        buttonScale.value = withTiming(1, {
+          duration: 150,
+          easing: Easing.inOut(Easing.ease),
+        })
       }
     }, [
       isInteractionsDisabled,
@@ -152,9 +141,11 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
       buttonScale,
     ])
 
-    const animatedButtonStyle = useAnimatedStyle(() => ({
-      transform: [{ scale: buttonScale.value }],
-    }))
+    const animatedButtonStyle = useAnimatedStyle(() => {
+      return {
+        transform: [{ scale: buttonScale.value }],
+      }
+    })
 
     const handleMovieSelection = useCallback(
       (movie: BasicMovie) => {
@@ -253,7 +244,16 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
           </View>
         )}
 
-        <Animated.View style={[animatedButtonStyle]}>
+        <Animated.View
+          style={[
+            pickerStyles.button,
+            animatedButtonStyle,
+            isInteractionsDisabled && pickerStyles.disabledButton,
+            selectedMovie.title === DEFAULT_BUTTON_TEXT &&
+              pickerStyles.disabledButton,
+            selectedMovie.title.length > 35 && pickerStyles.disabledButton,
+          ]}
+        >
           <Pressable
             accessible
             aria-label={
@@ -267,13 +267,12 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
               selectedMovie.title === DEFAULT_BUTTON_TEXT
             }
             onPress={onPressCheck}
-            style={[
-              pickerStyles.button,
-              isInteractionsDisabled && pickerStyles.disabledButton,
-              selectedMovie.title === DEFAULT_BUTTON_TEXT &&
-                pickerStyles.disabledButton,
-              selectedMovie.title.length > 35 && pickerStyles.disabledButton,
-            ]}
+            style={{
+              width: "100%",
+              height: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
             <Text
               numberOfLines={2}
@@ -288,14 +287,6 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
           </Pressable>
         </Animated.View>
       </View>
-    )
-  },
-  (prevProps, nextProps) => {
-    return (
-      prevProps.enableSubmit === nextProps.enableSubmit &&
-      prevProps.movies === nextProps.movies &&
-      prevProps.playerGame === nextProps.playerGame &&
-      prevProps.updatePlayerGame === nextProps.updatePlayerGame
     )
   }
 )
