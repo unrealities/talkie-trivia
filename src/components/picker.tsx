@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo, memo } from "react"
+import React, { useEffect, useState, useCallback, memo } from "react"
 import {
   ActivityIndicator,
   Pressable,
@@ -6,14 +6,12 @@ import {
   Text,
   TextInput,
   View,
-  Animated,
-  Easing,
 } from "react-native"
 import { BasicMovie } from "../models/movie"
 import { PlayerGame } from "../models/game"
 import { colors } from "../styles/global"
 import { pickerStyles } from "../styles/pickerStyles"
-import {
+import Animated, {
   withTiming,
   useAnimatedStyle,
   useSharedValue,
@@ -126,10 +124,8 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
         setSelectedMovie({ id: 0, title: DEFAULT_BUTTON_TEXT })
         setSearchText("")
 
-        buttonScale.value = 0.9
-        buttonScale.value = withTiming(1, {
-          duration: 150,
-          easing: Easing.inOut(Easing.ease),
+        buttonScale.value = withTiming(0.9, { duration: 150 }, () => {
+          buttonScale.value = withTiming(1, { duration: 150 })
         })
       }
     }, [
@@ -144,6 +140,25 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
     const animatedButtonStyle = useAnimatedStyle(() => {
       return {
         transform: [{ scale: buttonScale.value }],
+
+        backgroundColor:
+          isInteractionsDisabled ||
+          selectedMovie.title === DEFAULT_BUTTON_TEXT ||
+          selectedMovie.title.length > 35
+            ? "transparent"
+            : undefined,
+        borderColor:
+          isInteractionsDisabled ||
+          selectedMovie.title === DEFAULT_BUTTON_TEXT ||
+          selectedMovie.title.length > 35
+            ? colors.tertiary
+            : colors.primary,
+        opacity:
+          isInteractionsDisabled ||
+          selectedMovie.title === DEFAULT_BUTTON_TEXT ||
+          selectedMovie.title.length > 35
+            ? 0.5
+            : 1,
       }
     })
 
@@ -244,16 +259,7 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
           </View>
         )}
 
-        <Animated.View
-          style={[
-            pickerStyles.button,
-            animatedButtonStyle,
-            isInteractionsDisabled && pickerStyles.disabledButton,
-            selectedMovie.title === DEFAULT_BUTTON_TEXT &&
-              pickerStyles.disabledButton,
-            selectedMovie.title.length > 35 && pickerStyles.disabledButton,
-          ]}
-        >
+        <Animated.View style={[pickerStyles.button, animatedButtonStyle]}>
           <Pressable
             accessible
             aria-label={

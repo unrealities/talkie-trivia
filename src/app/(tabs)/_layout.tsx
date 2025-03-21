@@ -4,12 +4,14 @@ import { colors } from "../../styles/global"
 import { useFonts } from "expo-font"
 import LoadingIndicator from "../../components/loadingIndicator"
 import ErrorMessage from "../../components/errorMessage"
+import { FontAwesome } from "@expo/vector-icons"
 
 const TabLayout = () => {
   const [fontsLoaded, fontError] = useFonts({
     "Arvo-Bold": require("../../../assets/fonts/Arvo-Bold.ttf"),
     "Arvo-Italic": require("../../../assets/fonts/Arvo-Italic.ttf"),
     "Arvo-Regular": require("../../../assets/fonts/Arvo-Regular.ttf"),
+    ...FontAwesome.font,
   })
 
   if (!fontsLoaded) {

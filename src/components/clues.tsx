@@ -79,9 +79,9 @@ const CluesContainer = React.memo<CluesProps>(
       }
 
       if (newRevealedClues.join(" ") !== revealedClues.join(" ")) {
-        fadeAnim.value = 0
-        slideAnim.value = -10
-        clueHighlightAnim.value = 0
+        fadeAnim.value = withTiming(0)
+        slideAnim.value = withTiming(-10)
+        clueHighlightAnim.value = withTiming(0)
 
         const startAnimations = () => {
           fadeAnim.value = withTiming(1, {

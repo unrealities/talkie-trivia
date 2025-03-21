@@ -17,6 +17,11 @@ import { useAppContext } from "../contexts/appContext"
 import HintContainer from "./hint"
 import ConfettiCelebration from "./confettiCelebration"
 import ConfirmationModal from "./confirmationModal"
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated"
 
 interface MoviesContainerProps {
   isNetworkConnected: boolean
@@ -75,7 +80,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         console.error("Error giving up", error)
         dispatch({
           type: "SET_DATA_LOADING_ERROR",
-          payload: error.message,
+          payload: (error as Error).message,
         })
       }
     } else {
@@ -161,7 +166,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
 
         dispatch({
           type: "SET_DATA_LOADING_ERROR",
-          payload: err.message,
+          payload: (err as Error).message,
         })
       }
     } else if (playerGame.guesses.length > 0) {
@@ -180,7 +185,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
 
         dispatch({
           type: "SET_DATA_LOADING_ERROR",
-          payload: err.message,
+          payload: (err as Error).message,
         })
       }
     }
@@ -200,7 +205,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         console.error("Error updating player game", error)
         dispatch({
           type: "SET_DATA_LOADING_ERROR",
-          payload: error.message,
+          payload: (error as Error).message,
         })
       }
     },
@@ -227,6 +232,22 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
   const handleConfettiStop = useCallback(() => {
     setShowConfetti(false)
   }, [])
+
+  const modalOpacity = useSharedValue(0)
+
+  const animatedModalStyles = useAnimatedStyle(() => {
+    return {
+      opacity: modalOpacity.value,
+    }
+  })
+
+  useEffect(() => {
+    if (showModal) {
+      modalOpacity.value = withTiming(1, { duration: 300 })
+    } else {
+      modalOpacity.value = withTiming(0, { duration: 300 })
+    }
+  }, [showModal, modalOpacity])
 
   return (
     <ScrollView
@@ -285,15 +306,17 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
           <Text style={movieStyles.giveUpButtonText}>Give Up?</Text>
         </Pressable>
 
-        <MovieModal
-          movie={
-            playerGame.correctAnswer || playerGame.gaveUp
-              ? playerGame.game.movie
-              : null
-          }
-          show={showModal}
-          toggleModal={setShowModal}
-        />
+        <Animated.View style={[animatedModalStyles]}>
+          <MovieModal
+            movie={
+              playerGame.correctAnswer || playerGame.gaveUp
+                ? playerGame.game.movie
+                : null
+            }
+            show={showModal}
+            toggleModal={setShowModal}
+          />
+        </Animated.View>
         <ConfettiCelebration
           startConfetti={showConfetti}
           onConfettiStop={handleConfettiStop}
