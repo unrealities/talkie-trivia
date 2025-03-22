@@ -28,7 +28,7 @@ const defaultMovie: Movie = {
   director: { id: 0, name: "", popularity: 0, profile_path: "" },
   genres: [],
   id: 0,
-  imdb_id: "",
+  imdb_id: 0,
   overview: "",
   poster_path: "",
   popularity: 0,
@@ -51,9 +51,9 @@ const generateDateId = (date: Date) => {
 }
 
 const usePlayerData = () => {
-  const { user, authError } = useAuthentication()
+  const { user } = useAuthentication()
   const { state, dispatch } = useAppContext()
-  const { player, playerGame, playerStats } = state
+  const { player, playerGame } = state
   const [loading, setLoading] = useState(false)
   const [playerDataLoaded, setPlayerDataLoaded] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -139,29 +139,49 @@ const usePlayerData = () => {
         }
       }
 
-      if (user) {
-        id = user.uid
-        name = user.displayName || "Guest"
-
-        const fetchedPlayer = await fetchOrCreatePlayer(id, name)
+      const fetchData = async (playerId: string, playerName: string) => {
+        const fetchedPlayer = await fetchOrCreatePlayer(playerId, playerName)
         await setUserID(fetchedPlayer.id)
         await setUserName(fetchedPlayer.name)
 
-        const fetchedPlayerGame = await fetchOrCreatePlayerGame(id)
-        const fetchedPlayerStats = await fetchOrCreatePlayerStats(id)
+        const fetchedPlayerGame = await fetchOrCreatePlayerGame(playerId)
+        const fetchedPlayerStats = await fetchOrCreatePlayerStats(playerId)
 
-        dispatch({ type: "SET_PLAYER", payload: fetchedPlayer })
-        dispatch({ type: "SET_PLAYER_GAME", payload: fetchedPlayerGame })
-        dispatch({ type: "SET_PLAYER_STATS", payload: fetchedPlayerStats })
-      } else {
-        const fetchedPlayer = await fetchOrCreatePlayer(id, name)
-        const fetchedPlayerGame = await fetchOrCreatePlayerGame(id)
-        const fetchedPlayerStats = await fetchOrCreatePlayerStats(id)
-        dispatch({ type: "SET_PLAYER", payload: fetchedPlayer })
-        dispatch({ type: "SET_PLAYER_GAME", payload: fetchedPlayerGame })
-        dispatch({ type: "SET_PLAYER_STATS", payload: fetchedPlayerStats })
+        return { fetchedPlayer, fetchedPlayerGame, fetchedPlayerStats }
       }
 
+      if (user) {
+        id = user.uid
+        name = user.displayName || "Guest"
+      }
+      const { fetchedPlayer, fetchedPlayerGame, fetchedPlayerStats } =
+        await fetchData(id, name)
+
+      const todayMovieIndex = new Date().getDate() % state.movies.length
+      const todayMovie = state.movies[todayMovieIndex]
+
+      let finalPlayerGame = fetchedPlayerGame
+      if (
+        todayMovie &&
+        todayMovie.id &&
+        fetchedPlayerGame.game.movie.id !== todayMovie.id
+      ) {
+        finalPlayerGame = {
+          ...defaultPlayerGame,
+          playerID: fetchedPlayer.id,
+          id: `${fetchedPlayer.id}-${dateId}`,
+          game: {
+            ...defaultGame,
+            date: today,
+            id: `${fetchedPlayer.id}-${dateId}`,
+            movie: todayMovie,
+          },
+        }
+      }
+
+      dispatch({ type: "SET_PLAYER", payload: fetchedPlayer })
+      dispatch({ type: "SET_PLAYER_GAME", payload: finalPlayerGame })
+      dispatch({ type: "SET_PLAYER_STATS", payload: fetchedPlayerStats })
       dispatch({ type: "SET_HAS_GAME_STARTED", payload: true })
     } catch (err: any) {
       console.error("usePlayerData: Error initializing player:", err)
@@ -173,7 +193,7 @@ const usePlayerData = () => {
       setPlayerDataLoaded(true)
       dispatch({ type: "SET_IS_LOADING", payload: false })
     }
-  }, [dispatch, dateId, user])
+  }, [dispatch, dateId, user, state.movies])
 
   useEffect(() => {
     console.log("usePlayerData useEffect: user changed:", user)
@@ -182,43 +202,9 @@ const usePlayerData = () => {
 
   useEffect(() => {
     if (state.hasGameStarted && state.movies && state.movies.length > 0) {
-      console.log(
-        "usePlayerData useEffect [movies]: resetting game due to new movies"
-      )
-      const todayMovieIndex = new Date().getDate() % state.movies.length
-      const todayMovie = state.movies[todayMovieIndex]
-
-      if (
-        todayMovie &&
-        todayMovie.id &&
-        todayMovie.overview &&
-        todayMovie.id !== playerGame.game.movie.id
-      ) {
-        dispatch({
-          type: "SET_PLAYER_GAME",
-          payload: {
-            ...defaultPlayerGame,
-            playerID: player.id,
-            id: `${player.id}-${dateId}`,
-            game: {
-              ...defaultGame,
-              date: today,
-              id: `${player.id}-${dateId}`,
-              movie: todayMovie,
-            },
-          },
-        })
-      }
+      console.log("usePlayerData useEffect [movies]: Effect running")
     }
-  }, [
-    state.movies,
-    state.hasGameStarted,
-    dispatch,
-    dateId,
-    player.id,
-    today,
-    playerGame.game.movie.id,
-  ])
+  }, [state.movies, state.hasGameStarted, dispatch, player.id])
 
   return { loading, error, playerDataLoaded, initializePlayer }
 }

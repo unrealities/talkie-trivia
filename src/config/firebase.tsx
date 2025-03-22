@@ -4,6 +4,7 @@ import {
   initializeFirestore,
   CACHE_SIZE_UNLIMITED,
   persistentLocalCache,
+  enableMultiTabIndexedDbPersistence,
 } from "firebase/firestore"
 import { getPerformance } from "firebase/performance"
 
@@ -34,6 +35,10 @@ console.log("firebase.tsx: firebase app initialized")
 const db = initializeFirestore(app, {
   localCache: persistentLocalCache({ cacheSizeBytes: CACHE_SIZE_UNLIMITED }),
 })
+
+enableMultiTabIndexedDbPersistence(db)
+  .then(() => console.log("Multi-tab persistence enabled"))
+  .catch((err) => console.error("Failed to enable multi-tab persistence:", err))
 
 const perf = getPerformance(app)
 

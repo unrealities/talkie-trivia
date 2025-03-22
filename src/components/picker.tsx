@@ -23,10 +23,18 @@ interface PickerContainerProps {
   playerGame: PlayerGame
   updatePlayerGame: (updatedPlayerGame: PlayerGame) => void
   onGuessFeedback: (message: string | null) => void
+  setShowConfetti?: (show: boolean) => void
 }
 
 const PickerContainer: React.FC<PickerContainerProps> = memo(
-  ({ enableSubmit, movies, playerGame, updatePlayerGame, onGuessFeedback }) => {
+  ({
+    enableSubmit,
+    movies,
+    playerGame,
+    updatePlayerGame,
+    onGuessFeedback,
+    setShowConfetti,
+  }) => {
     const [isFocused, setIsFocused] = useState(false)
     const DEFAULT_BUTTON_TEXT = "Select a Movie"
 
@@ -109,6 +117,7 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
 
         if (isCorrectAnswer) {
           onGuessFeedback("Correct Guess!")
+          setShowConfetti && setShowConfetti(true)
         } else {
           onGuessFeedback("Incorrect Guess")
         }
@@ -135,6 +144,7 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
       updatePlayerGame,
       onGuessFeedback,
       buttonScale,
+      setShowConfetti,
     ])
 
     const animatedButtonStyle = useAnimatedStyle(() => {

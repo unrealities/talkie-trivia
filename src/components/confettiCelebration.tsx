@@ -42,6 +42,7 @@ const ConfettiCelebration: React.FC<ConfettiCelebrationProps> = ({
       explosionSpeed={500}
       ref={confettiRef}
       onAnimationEnd={stop}
+      autoStart={false}
     />
   )
 }

@@ -54,12 +54,10 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
   const hintsAvailable = playerStats?.hintsAvailable || 0
 
   const cancelGiveUp = useCallback(() => {
-    console.log("cancelGiveUp called")
     setShowGiveUpConfirmationDialog(false)
   }, [setShowGiveUpConfirmationDialog])
 
   const confirmGiveUp = useCallback(() => {
-    console.log("confirmGiveUp called")
     setShowGiveUpConfirmationDialog(false)
 
     if (playerGame && !playerGame.correctAnswer) {
@@ -69,38 +67,16 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         guesses: [...playerGame.guesses, -1],
         gaveUp: true,
       }
-
-      console.log(
-        "confirmGiveUp: updating playerGame:",
-        updatedPlayerGameGiveUp
-      )
-      try {
-        updatePlayerGame(updatedPlayerGameGiveUp)
-      } catch (error) {
-        console.error("Error giving up", error)
-        dispatch({
-          type: "SET_DATA_LOADING_ERROR",
-          payload: (error as Error).message,
-        })
-      }
-    } else {
-      console.log(
-        "confirmGiveUp: playerGame is null or correctAnswer is true",
-        playerGame
-      )
+      updatePlayerGame(updatedPlayerGameGiveUp)
     }
   }, [playerGame, updatePlayerGame, dispatch])
 
   const handleGiveUp = useCallback(() => {
-    console.log("handleGiveUp called")
     setShowGiveUpConfirmationDialog(true)
   }, [setShowGiveUpConfirmationDialog])
 
   const updatePlayerData = useCallback(async () => {
-    console.log("updatePlayerData called with playerGame:", playerGame)
-
     if (!playerGame || Object.keys(playerGame).length === 0) {
-      console.log("updatePlayerData: Skipping update - playerGame is empty")
       return
     }
 
@@ -112,9 +88,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
       const updatedStats = { ...playerStats }
 
       if (!updatedStats.id) {
-        console.warn(
-          "updatePlayerData: playerStats.id is undefined! Aborting update."
-        )
+        console.warn("playerStats.id is undefined! Aborting update.")
         return
       }
 
@@ -124,20 +98,13 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
           updatedStats.currentStreak,
           updatedStats.maxStreak
         )
-
-        if (!updatedStats.wins) {
-          updatedStats.wins = [0, 0, 0, 0, 0]
-        } else if (!Array.isArray(updatedStats.wins)) {
-          updatedStats.wins = [0, 0, 0, 0, 0]
-        }
-        if (updatedStats.wins && Array.isArray(updatedStats.wins)) {
-          updatedStats.wins[playerGame.guesses.length - 1] =
-            (updatedStats.wins[playerGame.guesses.length - 1] || 0) + 1
-        }
+        updatedStats.wins = updatedStats.wins || [0, 0, 0, 0, 0]
+        updatedStats.wins[playerGame.guesses.length - 1]++
       } else {
         updatedStats.currentStreak = 0
       }
       updatedStats.games++
+
       try {
         const result = await batchUpdatePlayerData(
           updatedStats,
@@ -145,84 +112,44 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
           player.id,
           { hintsAvailable: updatedStats.hintsAvailable }
         )
-
         if (result.success) {
-          if (playerGame.correctAnswer || playerGame.gaveUp) {
-            setShowModal(true)
-            if (playerGame.correctAnswer) {
-              setShowConfetti(true)
-            }
-          }
-        } else {
-          console.error("updatePlayerData: Batch update failed.")
-
-          dispatch({
-            type: "SET_DATA_LOADING_ERROR",
-            payload: "Batch update failed.",
-          })
+          setShowModal(true)
         }
-      } catch (err) {
-        console.error("updatePlayerData: Error updating player data:", err)
-
-        dispatch({
-          type: "SET_DATA_LOADING_ERROR",
-          payload: (err as Error).message,
-        })
+      } catch (error) {
+        console.error("Error updating data:", error)
       }
     } else if (playerGame.guesses.length > 0) {
       try {
-        const result = await batchUpdatePlayerData({}, playerGame, player.id)
-        if (!result.success) {
-          console.error("updatePlayerData: Error updating player game data")
-
-          dispatch({
-            type: "SET_DATA_LOADING_ERROR",
-            payload: "Error updating player game.",
-          })
-        }
+        await batchUpdatePlayerData({}, playerGame, player.id)
       } catch (err) {
         console.error("updatePlayerData: Error updating player game data:", err)
-
         dispatch({
           type: "SET_DATA_LOADING_ERROR",
           payload: (err as Error).message,
         })
       }
     }
-  }, [playerStats, player.id, playerGame, dispatch])
+  }, [playerGame, playerStats, player.id, dispatch])
 
   useEffect(() => {
-    console.log("useEffect triggered with playerGame:", playerGame)
-    updatePlayerData()
-  }, [playerGame, updatePlayerData])
+    if (initialDataLoaded) {
+      updatePlayerData()
+    }
+  }, [initialDataLoaded, updatePlayerData])
 
   const handleUpdatePlayerGame = useCallback(
     (updatedPlayerGame: PlayerGame) => {
-      console.log("handleUpdatePlayerGame called with", updatedPlayerGame)
-      try {
-        updatePlayerGame(updatedPlayerGame)
-      } catch (error) {
-        console.error("Error updating player game", error)
-        dispatch({
-          type: "SET_DATA_LOADING_ERROR",
-          payload: (error as Error).message,
-        })
-      }
+      updatePlayerGame(updatedPlayerGame)
     },
-    [updatePlayerGame, dispatch]
+    [updatePlayerGame]
   )
 
-  const provideGuessFeedback = useCallback(
-    (message: string | null) => {
-      setGuessFeedback(message)
-      if (message) {
-        setTimeout(() => {
-          setGuessFeedback(null)
-        }, 2000)
-      }
-    },
-    [setGuessFeedback]
-  )
+  const provideGuessFeedback = useCallback((message: string | null) => {
+    setGuessFeedback(message)
+    if (message) {
+      setTimeout(() => setGuessFeedback(null), 2000)
+    }
+  }, [])
 
   const isInteractionsDisabled =
     playerGame.correctAnswer ||
@@ -276,6 +203,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
           movies={movies}
           updatePlayerGame={handleUpdatePlayerGame}
           onGuessFeedback={provideGuessFeedback}
+          setShowConfetti={setShowConfetti}
         />
         {guessFeedback && (
           <View style={movieStyles.feedbackContainer}>
@@ -288,10 +216,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
           movies={movies}
         />
         <Pressable
-          onPress={() => {
-            console.log("Give Up button pressed!")
-            handleGiveUp()
-          }}
+          onPress={handleGiveUp}
           style={({ pressed }) => [
             movieStyles.giveUpButton,
             isInteractionsDisabled && movieStyles.disabledButton,
@@ -300,7 +225,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
           disabled={isInteractionsDisabled}
           accessible={true}
           accessibilityLabel="Give Up"
-          accessibilityHint="Gives up on the current movie and reveals the answer."
+          accessibilityHint="Gives up on the current movie."
           accessibilityRole="button"
         >
           <Text style={movieStyles.giveUpButtonText}>Give Up?</Text>
@@ -324,7 +249,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         <ConfirmationModal
           isVisible={showGiveUpConfirmationDialog}
           title="Give Up?"
-          message="Are you sure you want to give up on this movie?"
+          message="Are you sure you want to give up?"
           confirmText="Give Up"
           cancelText="Cancel"
           onConfirm={confirmGiveUp}
