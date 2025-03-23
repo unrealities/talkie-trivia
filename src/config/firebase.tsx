@@ -1,12 +1,12 @@
-import Constants from "expo-constants"
 import { initializeApp, getApps, getApp } from "firebase/app"
 import {
   initializeFirestore,
   CACHE_SIZE_UNLIMITED,
   persistentLocalCache,
-  enableMultiTabIndexedDbPersistence,
+  persistentMultipleTabManager,
 } from "firebase/firestore"
 import { getPerformance } from "firebase/performance"
+import Constants from "expo-constants"
 
 interface FirebaseConfig {
   apiKey: string
@@ -33,12 +33,11 @@ const app = getApps().length ? getApp() : initializeApp(firebaseConfig)
 console.log("firebase.tsx: firebase app initialized")
 
 const db = initializeFirestore(app, {
-  localCache: persistentLocalCache({ cacheSizeBytes: CACHE_SIZE_UNLIMITED }),
+  localCache: persistentLocalCache({
+    cacheSizeBytes: CACHE_SIZE_UNLIMITED,
+    tabManager: persistentMultipleTabManager(),
+  }),
 })
-
-enableMultiTabIndexedDbPersistence(db)
-  .then(() => console.log("Multi-tab persistence enabled"))
-  .catch((err) => console.error("Failed to enable multi-tab persistence:", err))
 
 const perf = getPerformance(app)
 
