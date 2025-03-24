@@ -55,9 +55,10 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
 
   const cancelGiveUp = useCallback(() => {
     setShowGiveUpConfirmationDialog(false)
-  }, [setShowGiveUpConfirmationDialog])
+  }, [])
 
   const confirmGiveUp = useCallback(() => {
+    const { player, playerGame } = state
     setShowGiveUpConfirmationDialog(false)
 
     if (playerGame && !playerGame.correctAnswer) {
@@ -69,13 +70,20 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
       }
       updatePlayerGame(updatedPlayerGameGiveUp)
     }
-  }, [playerGame, updatePlayerGame, dispatch])
+  }, [state, updatePlayerGame])
 
   const handleGiveUp = useCallback(() => {
     setShowGiveUpConfirmationDialog(true)
-  }, [setShowGiveUpConfirmationDialog])
+  }, [])
 
   const updatePlayerData = useCallback(async () => {
+    const { player, playerGame, playerStats } = state
+
+    if (!player || !player.id) {
+      console.warn("Player data not loaded yet. Aborting update.")
+      return
+    }
+
     if (!playerGame || Object.keys(playerGame).length === 0) {
       return
     }
@@ -129,7 +137,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
         })
       }
     }
-  }, [playerGame, playerStats, player.id, dispatch])
+  }, [state, dispatch])
 
   useEffect(() => {
     if (initialDataLoaded) {
@@ -189,6 +197,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
           guesses={playerGame.guesses}
           summary={playerGame.game.movie.overview}
           playerGame={playerGame}
+          isGameOver={isInteractionsDisabled} 
         />
         <HintContainer
           playerGame={playerGame}

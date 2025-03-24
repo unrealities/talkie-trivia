@@ -15,6 +15,8 @@ interface CluesProps {
   guesses: number[]
   summary: string
   playerGame: PlayerGame
+
+  isGameOver: boolean
 }
 
 interface CountContainerProps {
@@ -45,7 +47,7 @@ const CountContainer = memo<CountContainerProps>(
 )
 
 const CluesContainer = React.memo<CluesProps>(
-  ({ correctGuess, guesses, summary, playerGame }) => {
+  ({ correctGuess, guesses, summary, playerGame, isGameOver }) => {
     const clues = useMemo(
       () => splitSummary(playerGame?.game?.movie?.overview || ""),
       [playerGame?.game?.movie?.overview]
@@ -70,7 +72,7 @@ const CluesContainer = React.memo<CluesProps>(
       let cluesToReveal
       let newRevealedClues
 
-      if (correctGuess) {
+      if (correctGuess || isGameOver) {
         cluesToReveal = clues
         newRevealedClues = clues
       } else {
@@ -103,7 +105,7 @@ const CluesContainer = React.memo<CluesProps>(
 
         scrollViewRef.current?.scrollToEnd({ animated: true })
       }
-    }, [guesses, clues, isLoading, correctGuess, revealedClues])
+    }, [guesses, clues, isLoading, correctGuess, isGameOver, revealedClues])
 
     const animatedTextStyle = useAnimatedStyle(() => ({
       opacity: fadeAnim.value,
@@ -141,9 +143,13 @@ const CluesContainer = React.memo<CluesProps>(
                       style={[
                         cluesStyles.text,
                         !correctGuess &&
+                          !isGameOver &&
                           isLastClue &&
                           cluesStyles.mostRecentClue,
-                        !correctGuess && isLastClue && highlightStyle,
+                        !correctGuess &&
+                          !isGameOver &&
+                          isLastClue &&
+                          highlightStyle,
                       ]}
                     >
                       {clue}
@@ -173,7 +179,8 @@ const CluesContainer = React.memo<CluesProps>(
       prevProps.correctGuess === nextProps.correctGuess &&
       prevProps.guesses.length === nextProps.guesses.length &&
       prevProps.summary === nextProps.summary &&
-      prevProps.playerGame === nextProps.playerGame
+      prevProps.playerGame === nextProps.playerGame &&
+      prevProps.isGameOver === nextProps.isGameOver
     )
   }
 )
