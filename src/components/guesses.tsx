@@ -6,7 +6,7 @@ import { guessesStyles } from "../styles/guessesStyles"
 interface GuessesContainerProps {
   guesses: number[]
   movie: Movie
-  movies: BasicMovie[]
+  movies: readonly BasicMovie[]
 }
 
 const GuessesContainer = memo(

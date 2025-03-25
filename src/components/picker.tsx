@@ -19,7 +19,7 @@ import Animated, {
 
 interface PickerContainerProps {
   enableSubmit: boolean
-  movies: BasicMovie[]
+  movies: readonly BasicMovie[]
   playerGame: PlayerGame
   updatePlayerGame: (updatedPlayerGame: PlayerGame) => void
   onGuessFeedback: (message: string | null) => void
