@@ -1,11 +1,14 @@
 import React from "react"
 import { Slot } from "expo-router"
 import { AppProvider } from "../contexts/appContext"
+import ErrorBoundary from "../components/errorBoundary"
 
 export default function RootLayout() {
   return (
-    <AppProvider>
-      <Slot />
-    </AppProvider>
+    <ErrorBoundary>
+      <AppProvider>
+        <Slot />
+      </AppProvider>
+    </ErrorBoundary>
   )
 }

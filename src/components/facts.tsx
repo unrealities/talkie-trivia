@@ -53,9 +53,14 @@ const Facts = memo(
             }
           })
         } catch (linkError) {
+          console.error("Error opening IMDb link:", linkError)
           Alert.alert(
             "Link Error",
-            linkError instanceof Error ? linkError.message : "Unknown error"
+            `Could not open the IMDb link. ${
+              linkError instanceof Error
+                ? linkError.message
+                : "Please check if you have a browser installed."
+            }`
           )
         }
       } else {
