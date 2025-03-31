@@ -11,7 +11,7 @@ module.exports = {
         "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
     },
     transformIgnorePatterns: [
-        'node_modules/(?!((jest-)?react-native|@react-native(-community)?|react-native/src)|expo(nent)?|@expo(nent)?/.|@expo-modules/.|react-navigation|@react-navigation/.|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg|victory-native|victory|react-native-reanimated)/',
+        'node_modules/(?!((jest-)?react-native|@react-native(-community)?|react-native/src)|expo(nent)?|@expo(nent)?/.|@expo-modules/.|react-navigation|@react-navigation/.|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg|victory-native|victory|react-native-reanimated|expo-image|expo-linking|expo-constants|expo-asset|expo-font|expo-modules-core)/',
         "node_modules/@babel/runtime",
     ],
     moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
