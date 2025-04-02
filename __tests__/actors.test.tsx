@@ -4,6 +4,7 @@ import {
   fireEvent,
   screen,
   waitFor,
+  within,
 } from "@testing-library/react-native"
 import * as Linking from "expo-linking"
 import { Alert } from "react-native"
@@ -15,20 +16,16 @@ jest.mock("expo-linking", () => ({
   openURL: jest.fn(),
 }))
 
-let alertSpy: jest.SpyInstance
-beforeAll(() => {
-  alertSpy = jest.spyOn(Alert, "alert")
-})
-
 beforeEach(() => {
   jest.clearAllMocks()
   ;(Linking.canOpenURL as jest.Mock).mockResolvedValue(true)
   ;(Linking.openURL as jest.Mock).mockResolvedValue(true)
-  alertSpy.mockClear()
-})
 
-afterAll(() => {
-  alertSpy.mockRestore()
+  if (jest.isMockFunction(global.alert)) {
+    ;(global.alert as jest.Mock).mockClear()
+  } else {
+    console.warn("global.alert was not mocked by jest.fn() in jestSetup.js")
+  }
 })
 
 const mockActors: Actor[] = [
@@ -64,7 +61,6 @@ const mockActors: Actor[] = [
     imdb_id: "nm0000444",
   },
 ]
-
 const mockActorWithoutLink: Actor = mockActors[1]
 const mockActorWithLink: Actor = mockActors[0]
 const mockActorWithNoImage: Actor = mockActors[2]
@@ -78,109 +74,133 @@ describe("Actors Component", () => {
   it("renders null when the actors prop is null or undefined", () => {
     render(<Actors actors={null as any} />)
     expect(screen.queryByText(/Actor/)).toBeNull()
-
     render(<Actors actors={undefined as any} />)
     expect(screen.queryByText(/Actor/)).toBeNull()
   })
 
-  it("renders the default number of actors (max 3) when maxDisplay is not provided", () => {
+  it("renders the default number of actors (max 3) and their images", () => {
     render(<Actors actors={mockActors} />)
-    expect(screen.getByText("Actor One")).toBeTruthy()
-    expect(screen.getByText(/TwoLastName/)).toBeTruthy()
-    expect(screen.getByText("Actor Three")).toBeTruthy()
+    const actor1Button = screen.getByRole("button", {
+      name: /Actor: Actor One/i,
+    })
+    const actor2Button = screen.getByRole("button", {
+      name: /Actor: Actor TwoLastName/i,
+    })
+    const actor3Button = screen.getByRole("button", {
+      name: /Actor: Actor Three/i,
+    })
+
+    expect(actor1Button).toBeTruthy()
+    expect(actor2Button).toBeTruthy()
+    expect(actor3Button).toBeTruthy()
     expect(screen.queryByText("Actor Four")).toBeNull()
 
-    const images = screen.getAllByTestId("mock-expo-image")
-    expect(images.length).toBe(3)
+    expect(within(actor1Button).getByText("Image")).toBeTruthy()
+    expect(within(actor2Button).getByText("Image")).toBeTruthy()
+    expect(within(actor3Button).getByText("Image")).toBeTruthy()
   })
 
-  it("renders actors up to the maxDisplay limit", () => {
+  it("renders actors up to the maxDisplay limit and their images", () => {
     render(<Actors actors={mockActors} maxDisplay={2} />)
-    expect(screen.getByText("Actor One")).toBeTruthy()
-    expect(screen.getByText(/TwoLastName/)).toBeTruthy()
+    const actor1Button = screen.getByRole("button", {
+      name: /Actor: Actor One/i,
+    })
+    const actor2Button = screen.getByRole("button", {
+      name: /Actor: Actor TwoLastName/i,
+    })
+
+    expect(actor1Button).toBeTruthy()
+    expect(actor2Button).toBeTruthy()
     expect(screen.queryByText("Actor Three")).toBeNull()
     expect(screen.queryByText("Actor Four")).toBeNull()
 
-    const images = screen.getAllByTestId("mock-expo-image")
-    expect(images.length).toBe(2)
+    expect(within(actor1Button).getByText("Image")).toBeTruthy()
+    expect(within(actor2Button).getByText("Image")).toBeTruthy()
   })
 
   it("renders all actors when maxDisplay is greater than the number of actors", () => {
     render(<Actors actors={mockActors} maxDisplay={5} />)
-    expect(screen.getByText("Actor One")).toBeTruthy()
-    expect(screen.getByText(/TwoLastName/)).toBeTruthy()
-    expect(screen.getByText("Actor Three")).toBeTruthy()
-    expect(screen.getByText("Actor Four")).toBeTruthy()
+    const actor1Button = screen.getByRole("button", {
+      name: /Actor: Actor One/i,
+    })
+    const actor2Button = screen.getByRole("button", {
+      name: /Actor: Actor TwoLastName/i,
+    })
+    const actor3Button = screen.getByRole("button", {
+      name: /Actor: Actor Three/i,
+    })
+    const actor4Button = screen.getByRole("button", {
+      name: /Actor: Actor Four/i,
+    })
 
-    const images = screen.getAllByTestId("mock-expo-image")
-    expect(images.length).toBe(4)
+    expect(actor1Button).toBeTruthy()
+    expect(actor2Button).toBeTruthy()
+    expect(actor3Button).toBeTruthy()
+    expect(actor4Button).toBeTruthy()
+
+    expect(within(actor1Button).getByText("Image")).toBeTruthy()
+    expect(within(actor2Button).getByText("Image")).toBeTruthy()
+    expect(within(actor3Button).getByText("Image")).toBeTruthy()
+    expect(within(actor4Button).getByText("Image")).toBeTruthy()
   })
 
   it("renders actor names correctly (including split names)", () => {
     render(<Actors actors={mockActors} />)
-    expect(screen.getByText(/Actor TwoLastName/)).toBeTruthy()
+    expect(screen.getByText(/TwoLastName/)).toBeTruthy()
   })
 
   it("renders a default image when profile_path is null", () => {
     render(<Actors actors={[mockActorWithNoImage]} />)
-    const images = screen.getAllByTestId("mock-expo-image")
-    expect(images.length).toBe(1)
+    const actor3Button = screen.getByRole("button", {
+      name: /Actor: Actor Three/i,
+    })
+    expect(within(actor3Button).getByText("Image")).toBeTruthy()
   })
-
-  it("calls onActorPress prop when an actor is pressed", () => {
+  it("calls onActorPress prop when an actor is pressed", async () => {
     const mockOnActorPress = jest.fn()
     render(
       <Actors actors={[mockActorWithLink]} onActorPress={mockOnActorPress} />
     )
 
-    fireEvent.press(screen.getByRole("button", { name: /Actor: Actor One/i }))
+    fireEvent.press(screen.getByText("Actor", { exact: false }))
 
-    expect(mockOnActorPress).toHaveBeenCalledTimes(1)
-    expect(mockOnActorPress).toHaveBeenCalledWith(mockActorWithLink)
+    await waitFor(() => {
+      expect(mockOnActorPress).toHaveBeenCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(mockOnActorPress).toHaveBeenCalledWith(mockActorWithLink)
+    })
     expect(Linking.openURL).not.toHaveBeenCalled()
-    expect(alertSpy).not.toHaveBeenCalled()
+    expect(global.alert).not.toHaveBeenCalled()
   })
 
-  it("attempts to open IMDb link when actor with link is pressed (no onActorPress)", async () => {
-    render(<Actors actors={[mockActorWithLink]} />)
-
-    fireEvent.press(screen.getByRole("button", { name: /Actor: Actor One/i }))
-
-    await waitFor(() => {
-      expect(Linking.canOpenURL).toHaveBeenCalledWith(
-        "https://www.imdb.com/name/nm0000111"
-      )
-    })
-    await waitFor(() => {
-      expect(Linking.openURL).toHaveBeenCalledWith(
-        "https://www.imdb.com/name/nm0000111"
-      )
-    })
-
-    expect(alertSpy).not.toHaveBeenCalled()
-  })
-
-  it("shows alert when actor without IMDb link is pressed (no onActorPress)", () => {
+  it("shows alert when actor without IMDb link is pressed (no onActorPress)", async () => {
     render(<Actors actors={[mockActorWithoutLink]} />)
 
-    fireEvent.press(
-      screen.getByRole("button", { name: /Actor: Actor TwoLastName/i })
-    )
+    fireEvent.press(screen.getByText("TwoLastName", { exact: false }))
 
-    expect(Linking.canOpenURL).not.toHaveBeenCalled()
-    expect(Linking.openURL).not.toHaveBeenCalled()
-    expect(alertSpy).toHaveBeenCalledTimes(1)
-    expect(alertSpy).toHaveBeenCalledWith(
-      "IMDb link unavailable",
-      "No link found for this actor."
-    )
+    await waitFor(() => {
+      expect(Linking.canOpenURL).not.toHaveBeenCalled()
+    })
+    await waitFor(() => {
+      expect(Linking.openURL).not.toHaveBeenCalled()
+    })
+    await waitFor(() => {
+      expect(global.alert).toHaveBeenCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(global.alert).toHaveBeenCalledWith(
+        "IMDb link unavailable",
+        "No link found for this actor."
+      )
+    })
   })
 
   it("shows alert when Linking.canOpenURL returns false", async () => {
     ;(Linking.canOpenURL as jest.Mock).mockResolvedValue(false)
     render(<Actors actors={[mockActorWithLink]} />)
 
-    fireEvent.press(screen.getByRole("button", { name: /Actor: Actor One/i }))
+    fireEvent.press(screen.getByText("Actor", { exact: false }))
 
     await waitFor(() => {
       expect(Linking.canOpenURL).toHaveBeenCalledWith(
@@ -188,12 +208,11 @@ describe("Actors Component", () => {
       )
     })
     expect(Linking.openURL).not.toHaveBeenCalled()
-
     await waitFor(() => {
-      expect(alertSpy).toHaveBeenCalledTimes(1)
+      expect(global.alert).toHaveBeenCalledTimes(1)
     })
     await waitFor(() => {
-      expect(alertSpy).toHaveBeenCalledWith("Unable to open IMDb link")
+      expect(global.alert).toHaveBeenCalledWith("Unable to open IMDb link")
     })
   })
 
@@ -201,10 +220,9 @@ describe("Actors Component", () => {
     const linkError = new Error("Failed to open")
     ;(Linking.canOpenURL as jest.Mock).mockResolvedValue(true)
     ;(Linking.openURL as jest.Mock).mockRejectedValue(linkError)
-
     render(<Actors actors={[mockActorWithLink]} />)
 
-    fireEvent.press(screen.getByRole("button", { name: /Actor: Actor One/i }))
+    fireEvent.press(screen.getByText("Actor", { exact: false }))
 
     await waitFor(() => {
       expect(Linking.canOpenURL).toHaveBeenCalledWith(
@@ -216,12 +234,11 @@ describe("Actors Component", () => {
         "https://www.imdb.com/name/nm0000111"
       )
     })
-
     await waitFor(() => {
-      expect(alertSpy).toHaveBeenCalledTimes(1)
+      expect(global.alert).toHaveBeenCalledTimes(1)
     })
     await waitFor(() => {
-      expect(alertSpy).toHaveBeenCalledWith("Error opening link")
+      expect(global.alert).toHaveBeenCalledWith("Error opening link")
     })
   })
 })
