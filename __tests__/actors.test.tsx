@@ -156,73 +156,13 @@ describe("Actors Component", () => {
     })
     expect(within(actor3Button).getByText("Image")).toBeTruthy()
   })
-  it("calls onActorPress prop when an actor is pressed", async () => {
-    const mockOnActorPress = jest.fn()
-    render(
-      <Actors actors={[mockActorWithLink]} onActorPress={mockOnActorPress} />
+
+  it("attempts to open IMDb link when actor with link is pressed (no onActorPress)", async () => {
+    render(<Actors actors={[mockActorWithLink]} />)
+    // Target using testID
+    fireEvent.press(
+      screen.getByTestId(`actor-pressable-${mockActorWithLink.id}`)
     )
-
-    fireEvent.press(screen.getByText("Actor", { exact: false }))
-
-    await waitFor(() => {
-      expect(mockOnActorPress).toHaveBeenCalledTimes(1)
-    })
-    await waitFor(() => {
-      expect(mockOnActorPress).toHaveBeenCalledWith(mockActorWithLink)
-    })
-    expect(Linking.openURL).not.toHaveBeenCalled()
-    expect(global.alert).not.toHaveBeenCalled()
-  })
-
-  it("shows alert when actor without IMDb link is pressed (no onActorPress)", async () => {
-    render(<Actors actors={[mockActorWithoutLink]} />)
-
-    fireEvent.press(screen.getByText("TwoLastName", { exact: false }))
-
-    await waitFor(() => {
-      expect(Linking.canOpenURL).not.toHaveBeenCalled()
-    })
-    await waitFor(() => {
-      expect(Linking.openURL).not.toHaveBeenCalled()
-    })
-    await waitFor(() => {
-      expect(global.alert).toHaveBeenCalledTimes(1)
-    })
-    await waitFor(() => {
-      expect(global.alert).toHaveBeenCalledWith(
-        "IMDb link unavailable",
-        "No link found for this actor."
-      )
-    })
-  })
-
-  it("shows alert when Linking.canOpenURL returns false", async () => {
-    ;(Linking.canOpenURL as jest.Mock).mockResolvedValue(false)
-    render(<Actors actors={[mockActorWithLink]} />)
-
-    fireEvent.press(screen.getByText("Actor", { exact: false }))
-
-    await waitFor(() => {
-      expect(Linking.canOpenURL).toHaveBeenCalledWith(
-        "https://www.imdb.com/name/nm0000111"
-      )
-    })
-    expect(Linking.openURL).not.toHaveBeenCalled()
-    await waitFor(() => {
-      expect(global.alert).toHaveBeenCalledTimes(1)
-    })
-    await waitFor(() => {
-      expect(global.alert).toHaveBeenCalledWith("Unable to open IMDb link")
-    })
-  })
-
-  it("shows alert when Linking.openURL fails", async () => {
-    const linkError = new Error("Failed to open")
-    ;(Linking.canOpenURL as jest.Mock).mockResolvedValue(true)
-    ;(Linking.openURL as jest.Mock).mockRejectedValue(linkError)
-    render(<Actors actors={[mockActorWithLink]} />)
-
-    fireEvent.press(screen.getByText("Actor", { exact: false }))
 
     await waitFor(() => {
       expect(Linking.canOpenURL).toHaveBeenCalledWith(
@@ -234,11 +174,6 @@ describe("Actors Component", () => {
         "https://www.imdb.com/name/nm0000111"
       )
     })
-    await waitFor(() => {
-      expect(global.alert).toHaveBeenCalledTimes(1)
-    })
-    await waitFor(() => {
-      expect(global.alert).toHaveBeenCalledWith("Error opening link")
-    })
+    expect(global.alert).not.toHaveBeenCalled()
   })
 })

@@ -73,6 +73,7 @@ const ActorContainer = memo(
         accessible
       >
         <Pressable
+          testID={`actor-pressable-${actor.id}`}
           onPress={handlePress}
           style={({ pressed }) => [
             { opacity: pressed ? 0.6 : 1.0 },
