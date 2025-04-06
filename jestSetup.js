@@ -1,5 +1,4 @@
 import { jest } from "@jest/globals"
-import React from "react"
 
 jest.mock("react-native-reanimated", () => {
   return {
@@ -29,6 +28,7 @@ jest.mock("react-native-reanimated", () => {
     runOnJS: jest.fn((fn) => fn),
     View: "View",
     Text: "Text",
+    ScrollView: "ScrollView",
   }
 })
 
@@ -66,6 +66,30 @@ jest.mock("expo-linking", () => ({
   openURL: jest.fn(() => Promise.resolve(true)),
 }))
 
+jest.mock("react-native/Libraries/Components/ScrollView/ScrollView", () => {
+  const React = require("react")
+  const { View } = require("react-native")
+
+  const MockScrollView = React.forwardRef(({ children, ...props }, ref) => (
+    <View ref={ref} {...props} testID="mock-scrollview">
+      {children}
+    </View>
+  ))
+  return MockScrollView
+})
+
+jest.mock(
+  "react-native/Libraries/Components/ActivityIndicator/ActivityIndicator",
+  () => {
+    const { View } = require("react-native")
+
+    const MockActivityIndicator = ({ ...props }) => (
+      <View {...props} testID="activity-indicator" />
+    )
+    return MockActivityIndicator
+  }
+)
+
 const originalWarn = console.warn
 console.warn = (...args) => {
   const warningMessage = args[0]
@@ -81,6 +105,13 @@ console.warn = (...args) => {
   if (
     typeof warningMessage === "string" &&
     warningMessage.includes("process.env.EXPO_OS is not defined")
+  ) {
+    return
+  }
+  if (
+    typeof warningMessage === "string" &&
+    warningMessage.includes("No native module found for") &&
+    warningMessage.includes("UIManager")
   ) {
     return
   }
