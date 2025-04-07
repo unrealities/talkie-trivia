@@ -1,4 +1,5 @@
 import { jest } from "@jest/globals"
+global.__DEV__ = true;
 
 jest.mock("react-native-reanimated", () => {
   return {

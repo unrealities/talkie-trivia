@@ -3,6 +3,7 @@ module.exports = {
     "process.env": {
       EXPO_OS: "test",
     },
+    __DEV__: true,
     TEST_ENV: true,
   },
   testEnvironment: "jsdom",
