@@ -1,35 +1,104 @@
 import { jest } from "@jest/globals"
-global.__DEV__ = true;
+global.__DEV__ = true
 
 jest.mock("react-native-reanimated", () => {
+  const Reanimated = jest.requireActual("react-native-reanimated")
+
+  const mockEasingFunction = (value) => value
+  const Easing = {
+    linear: mockEasingFunction,
+    ease: mockEasingFunction,
+    quad: mockEasingFunction,
+    cubic: mockEasingFunction,
+    sin: mockEasingFunction,
+    circle: mockEasingFunction,
+    exp: mockEasingFunction,
+    bounce: mockEasingFunction,
+    in: jest.fn(() => mockEasingFunction),
+    out: jest.fn(() => mockEasingFunction),
+    inOut: jest.fn(() => mockEasingFunction),
+    poly: jest.fn(() => mockEasingFunction),
+    elastic: jest.fn(() => mockEasingFunction),
+    back: jest.fn(() => mockEasingFunction),
+    bezier: jest.fn(() => mockEasingFunction),
+  }
+
   return {
+    ...Reanimated,
+
+    Easing: Easing,
     useSharedValue: jest.fn((initialValue) => ({ value: initialValue })),
     useAnimatedStyle: jest.fn(() => ({})),
-    withTiming: jest.fn((toValue, _, cb) => {
+    withTiming: jest.fn((toValue, options, cb) => {
+      if (typeof options === "function") {
+        cb = options
+      }
       if (cb) {
         cb(true)
       }
       return toValue
     }),
-    withSpring: jest.fn((toValue, _, cb) => {
+    withSequence: jest.fn((...args) => {
+      const finalAnimation = args[args.length - 1]
+      return typeof finalAnimation === "number" ? finalAnimation : 0
+    }),
+    withSpring: jest.fn((toValue, options, cb) => {
+      if (typeof options === "function") {
+        cb = options
+      }
       if (cb) {
         cb(true)
       }
       return toValue
     }),
-    Easing: {
-      linear: jest.fn(),
-      in: jest.fn(),
-      out: jest.fn(),
-      inOut: jest.fn(() => jest.fn()),
-    },
-    interpolate: jest.fn(),
-    Extrapolate: { CLAMP: "clamp" },
+    interpolate: jest.fn((value, inputRange, outputRange) => {
+      return outputRange[Math.floor(outputRange.length / 2)] ?? outputRange[0]
+    }),
+
     useAnimatedGestureHandler: jest.fn(),
-    runOnJS: jest.fn((fn) => fn),
+    runOnJS: jest.fn(
+      (fn) =>
+        (...args) =>
+          fn(...args)
+    ),
+
     View: "View",
     Text: "Text",
     ScrollView: "ScrollView",
+    Animated: {
+      View: "View",
+      Text: "Text",
+      ScrollView: "ScrollView",
+    },
+
+    Layout: {
+      springify: jest.fn().mockReturnThis(),
+      damping: jest.fn().mockReturnThis(),
+      mass: jest.fn().mockReturnThis(),
+      stiffness: jest.fn().mockReturnThis(),
+      overshootClamping: jest.fn().mockReturnThis(),
+      restDisplacementThreshold: jest.fn().mockReturnThis(),
+      restSpeedThreshold: jest.fn().mockReturnThis(),
+
+      duration: jest.fn().mockReturnThis(),
+      delay: jest.fn().mockReturnThis(),
+    },
+    createAnimatedPropAdapter: jest.fn(),
+    useAnimatedProps: jest.fn(() => ({})),
+    useDerivedValue: jest.fn((processor) => ({ value: processor() })),
+    useAnimatedRef: jest.fn(() => ({ current: null })),
+    cancelAnimation: jest.fn(),
+
+    ReduceMotion: { never: "never", always: "always", system: "system" },
+    measure: jest.fn(() => ({
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+      pageX: 0,
+      pageY: 0,
+    })),
+    useFrameCallback: jest.fn(),
   }
 })
 
@@ -37,10 +106,7 @@ jest.mock("expo-image", () => {
   const MockReact = require("react")
   const MockReactNative = require("react-native")
   const MockImage = MockReact.forwardRef(
-    (
-      { source, style, placeholder, contentFit, onError, ...props }: any,
-      ref: any
-    ) => {
+    ({ source, style, placeholder, contentFit, onError, ...props }, ref) => {
       const uri =
         typeof source === "object" && source !== null && "uri" in source
           ? source.uri
@@ -59,6 +125,7 @@ jest.mock("expo-image", () => {
       )
     }
   )
+  MockImage.displayName = "MockExpoImage"
   return { Image: MockImage }
 })
 
@@ -76,6 +143,7 @@ jest.mock("react-native/Libraries/Components/ScrollView/ScrollView", () => {
       {children}
     </View>
   ))
+  MockScrollView.displayName = "MockScrollView"
   return MockScrollView
 })
 
@@ -87,13 +155,84 @@ jest.mock(
     const MockActivityIndicator = ({ ...props }) => (
       <View {...props} testID="activity-indicator" />
     )
+    MockActivityIndicator.displayName = "MockActivityIndicator"
     return MockActivityIndicator
   }
 )
 
+jest.mock("react-native", () => {
+  return {
+    View: "View",
+    Text: "Text",
+    Pressable: "Pressable",
+    Button: "Button",
+    Modal: "Modal",
+    TextInput: "TextInput",
+    FlatList: "FlatList",
+    ScrollView: "ScrollView",
+    ActivityIndicator: "ActivityIndicator",
+    StyleSheet: {
+      create: (styles) => styles,
+      flatten: jest.fn((style) => style),
+      compose: jest.fn((style1, style2) => [style1, style2]),
+      hairlineWidth: 1,
+    },
+    Platform: {
+      OS: "test",
+      select: (config) => config["test"] ?? config["default"],
+      Version: "testVersion",
+    },
+    PixelRatio: {
+      get: jest.fn(() => 1),
+      getFontScale: jest.fn(() => 1),
+      getPixelSizeForLayoutSize: jest.fn((layoutSize) => layoutSize),
+      roundToNearestPixel: jest.fn((size) => Math.round(size)),
+    },
+    Dimensions: {
+      get: jest.fn((key) => {
+        if (key === "window" || key === "screen") {
+          return { width: 375, height: 812, scale: 1, fontScale: 1 }
+        }
+        return undefined
+      }),
+      addEventListener: jest.fn().mockReturnValue({ remove: jest.fn() }),
+      removeEventListener: jest.fn(),
+    },
+    Alert: { alert: jest.fn() },
+    LayoutAnimation: {
+      configureNext: jest.fn(),
+      Presets: { easeInEaseOut: {}, linear: {}, spring: {} },
+    },
+    UIManager: {
+      RCTView: () => {},
+      Constants: {},
+      measure: jest.fn(),
+      measureInWindow: jest.fn(),
+    },
+    NativeModules: {
+      UIManager: {
+        RCTView: () => {},
+        Constants: {},
+        measure: jest.fn(),
+        measureInWindow: jest.fn(),
+      },
+      DeviceInfo: {
+        getConstants: () => ({
+          Dimensions: {
+            window: { width: 375, height: 812, scale: 1, fontScale: 1 },
+            screen: { width: 375, height: 812, scale: 1, fontScale: 1 },
+          },
+        }),
+      },
+    },
+    Linking: jest.requireMock("expo-linking"),
+  }
+})
+
 const originalWarn = console.warn
 console.warn = (...args) => {
   const warningMessage = args[0]
+
   if (
     typeof warningMessage === "string" &&
     warningMessage.includes("defaultProps") &&
@@ -109,10 +248,37 @@ console.warn = (...args) => {
   ) {
     return
   }
+
   if (
     typeof warningMessage === "string" &&
-    warningMessage.includes("No native module found for") &&
+    (warningMessage.includes("No native module found for") ||
+      warningMessage.includes("`TurboModuleRegistry.getEnforcing(...)`") ||
+      warningMessage.includes("__fbBatchedBridgeConfig is not set") ||
+      warningMessage.includes(
+        "Calling synchronous methods on native modules"
+      )) &&
     warningMessage.includes("UIManager")
+  ) {
+    return
+  }
+  if (
+    typeof warningMessage === "string" &&
+    warningMessage.includes("No native ExponentConstants module found")
+  ) {
+    return
+  }
+  if (
+    typeof warningMessage === "string" &&
+    warningMessage.includes("Animated: `useNativeDriver`")
+  ) {
+    return
+  }
+  if (
+    typeof warningMessage === "string" &&
+    warningMessage.includes(
+      "Warning: unstable_createElement is acting as a fallback"
+    ) &&
+    warningMessage.includes("W3CSelectability")
   ) {
     return
   }
@@ -120,3 +286,190 @@ console.warn = (...args) => {
 }
 
 global.alert = jest.fn()
+
+jest.mock("@react-native-async-storage/async-storage", () =>
+  require("@react-native-async-storage/async-storage/jest/async-storage-mock")
+)
+
+jest.mock("react-native-uuid", () => ({
+  v4: () => "mock-uuid-v4",
+}))
+
+jest.mock("expo-constants", () => {
+  const Constants = jest.requireActual("expo-constants")
+  return {
+    ...Constants,
+
+    executionEnvironment: "storeClient",
+    isDevice: false,
+    deviceName: "JestTestDevice",
+    systemFonts: [],
+    statusBarHeight: 20,
+    deviceYearClass: 2021,
+    manifest: {},
+    manifest2: {},
+    expoConfig: {
+      ...(Constants.expoConfig || {}),
+      extra: {
+        ...(Constants.expoConfig?.extra || {}),
+        firebaseApiKey: "mock-firebase-apikey",
+        firebaseProjectId: "mock-project-id",
+        firebaseMessagingSenderId: "mock-sender-id",
+        firebaseAppId: "mock-app-id",
+        firebaseMeasurementId: "mock-measurement-id",
+        androidClientId: "mock-android-client-id",
+        expoClientId: "mock-expo-client-id",
+        iosClientId: "mock-ios-client-id",
+        webClientId: "mock-web-client-id",
+        themoviedbKey: "mock-tmdb-key",
+      },
+    },
+  }
+})
+
+jest.mock("expo-auth-session/providers/google", () => ({
+  useIdTokenAuthRequest: () => [
+    {},
+    { type: "success", params: { id_token: "mock-id-token" } },
+    jest.fn(() =>
+      Promise.resolve({
+        type: "success",
+        params: { id_token: "mock-id-token" },
+      })
+    ),
+  ],
+}))
+jest.mock("expo-auth-session", () => {
+  return {
+    makeRedirectUri: jest.fn(() => "mock-redirect-uri"),
+
+    AuthRequest: jest.fn(),
+    fetchDiscoveryAsync: jest.fn(),
+    exchangeCodeAsync: jest.fn(),
+  }
+})
+
+jest.mock("firebase/auth", () => {
+  const mockUser = {
+    uid: "mock-test-user-id",
+    displayName: "Mock User",
+    email: "mock@example.com",
+
+    getIdToken: jest.fn(() => Promise.resolve("mock-id-token")),
+  }
+  const mockAuthInstance = {
+    currentUser: null,
+    onAuthStateChangedListeners: [],
+    onIdTokenChangedListeners: [],
+
+    __setUser: function (user) {
+      this.currentUser = user
+      this.onAuthStateChangedListeners.forEach((listener) => listener(user))
+      this.onIdTokenChangedListeners.forEach((listener) => listener(user))
+    },
+    onAuthStateChanged: function (listener) {
+      this.onAuthStateChangedListeners.push(listener)
+
+      listener(this.currentUser)
+
+      return () => {
+        this.onAuthStateChangedListeners =
+          this.onAuthStateChangedListeners.filter((l) => l !== listener)
+      }
+    },
+    onIdTokenChanged: function (listener) {
+      this.onIdTokenChangedListeners.push(listener)
+      listener(this.currentUser)
+      return () => {
+        this.onIdTokenChangedListeners = this.onIdTokenChangedListeners.filter(
+          (l) => l !== listener
+        )
+      }
+    },
+
+    signOut: jest.fn(() => {
+      mockAuthInstance.__setUser(null)
+      return Promise.resolve()
+    }),
+    signInWithCredential: jest.fn(() => {
+      const result = { user: mockUser }
+      mockAuthInstance.__setUser(mockUser)
+      return Promise.resolve(result)
+    }),
+  }
+
+  return {
+    getAuth: jest.fn(() => mockAuthInstance),
+    onAuthStateChanged: jest.fn((auth, listener) =>
+      auth.onAuthStateChanged(listener)
+    ),
+    GoogleAuthProvider: {
+      credential: jest.fn(() => ({
+        providerId: "google.com",
+        signInMethod: "google.com",
+      })),
+      PROVIDER_ID: "google.com",
+    },
+    signInWithCredential: jest.fn((auth, cred) =>
+      auth.signInWithCredential(cred)
+    ),
+    signOut: jest.fn((auth) => auth.signOut()),
+  }
+})
+
+jest.mock("firebase/firestore", () => ({
+  getFirestore: jest.fn(() => ({})),
+  doc: jest.fn((db, collection, id) => ({
+    id: id || `mock-doc-id-${collection}`,
+    path: `${collection}/${id || "mock-doc-id"}`,
+    withConverter: jest.fn(function () {
+      return this
+    }),
+    parent: { id: collection },
+  })),
+  getDoc: jest.fn(() =>
+    Promise.resolve({
+      exists: jest.fn(() => false),
+      data: jest.fn(() => undefined),
+      id: "mock-getDoc-id",
+    })
+  ),
+  setDoc: jest.fn(() => Promise.resolve()),
+  updateDoc: jest.fn(() => Promise.resolve()),
+  writeBatch: jest.fn(() => ({
+    set: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+    commit: jest.fn(() => Promise.resolve()),
+  })),
+
+  collection: jest.fn((db, path) => ({ id: path, path: path })),
+  query: jest.fn(),
+  where: jest.fn(),
+  getDocs: jest.fn(() => Promise.resolve({ empty: true, docs: [], size: 0 })),
+  onSnapshot: jest.fn(() => jest.fn()),
+  serverTimestamp: jest.fn(),
+  Timestamp: {
+    now: jest.fn(() => ({ seconds: Date.now() / 1000, nanoseconds: 0 })),
+    fromDate: jest.fn((date) => ({
+      seconds: date.getTime() / 1000,
+      nanoseconds: 0,
+    })),
+  },
+  CACHE_SIZE_UNLIMITED: -1,
+  persistentLocalCache: jest.fn(() => ({})),
+  persistentMultipleTabManager: jest.fn(() => ({})),
+  initializeFirestore: jest.fn((app, config) => ({})),
+}))
+
+jest.mock("firebase/app", () => ({
+  initializeApp: jest.fn(() => ({ name: "mockApp", options: {} })),
+  getApps: jest.fn(() => []),
+  getApp: jest.fn(() => ({ name: "[DEFAULT]", options: {} })),
+}))
+
+jest.mock("firebase/performance", () => ({
+  getPerformance: jest.fn(() => ({})),
+}))
+
+jest.mock("@expo/vector-icons/FontAwesome", () => "FontAwesome")
