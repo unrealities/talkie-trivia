@@ -12,6 +12,8 @@ import { actorsStyles } from "../styles/actorsStyles"
 import { Actor } from "../models/movie"
 import { Image } from "expo-image"
 
+type ImageSource = { uri: string } | number
+
 interface ActorProps {
   actor: Actor
   imdbId?: string
@@ -24,6 +26,8 @@ interface ActorsProps {
   maxDisplay?: number
   containerStyle?: StyleProp<ViewStyle>
 }
+
+const defaultActorImage = require("../../assets/actor_default.png")
 
 const ActorContainer = memo(
   ({ actor, imdbId, style, onActorPress }: ActorProps) => {
@@ -53,9 +57,11 @@ const ActorContainer = memo(
       }
     }, [actor, imdbURI, onActorPress])
 
-    const actorImage = actor.profile_path
+    const actorImageSource: ImageSource = actor.profile_path
       ? { uri: `${imageURI}${actor.profile_path}` }
-      : require("../../assets/actor_default.png")
+      : defaultActorImage
+
+    const placeholderSource: ImageSource = defaultActorImage
 
     const splitName = (name: string): string[] => {
       const parts = name.trim().split(" ")
@@ -83,10 +89,10 @@ const ActorContainer = memo(
           accessibilityLabel={`Actor: ${actor.name}. View details`}
         >
           <Image
-            source={actorImage}
+            source={actorImageSource}
             style={actorsStyles.actorImage}
             resizeMode="cover"
-            placeholder={require("../../assets/actor_default.png")}
+            placeholder={placeholderSource}
           />
           <View style={actorsStyles.actorTextContainer}>
             <View style={actorsStyles.actorTextBackground}>

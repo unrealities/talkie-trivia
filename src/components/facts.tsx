@@ -5,7 +5,6 @@ import {
   View,
   Alert,
   ActivityIndicator,
-  ImageSourcePropType,
   ScrollView,
 } from "react-native"
 import * as Linking from "expo-linking"
@@ -14,16 +13,26 @@ import { Actors } from "./actors"
 import { Movie } from "../models/movie"
 import { factsStyles } from "../styles/factsStyles"
 
+type ImageSource = { uri: string } | number
+
 interface FactsProps {
   movie: Movie
   isLoading?: boolean
   error?: string
 }
 
+const defaultMovieImage = require("../../assets/movie_default.png")
+
 const Facts = memo(
   ({ movie, isLoading = false, error }: FactsProps) => {
     if (isLoading) {
-      return <ActivityIndicator size="large" color="#0000ff" />
+      return (
+        <ActivityIndicator
+          testID="activity-indicator"
+          size="large"
+          color="#0000ff"
+        />
+      )
     }
 
     if (error) {
@@ -38,9 +47,11 @@ const Facts = memo(
       ? `https://www.imdb.com/title/${movie.imdb_id}`
       : null
 
-    const imageSource: ImageSourcePropType = movie.poster_path
+    const imageSource: ImageSource = movie.poster_path
       ? { uri: `https://image.tmdb.org/t/p/original${movie.poster_path}` }
-      : require("../../assets/movie_default.png")
+      : defaultMovieImage
+
+    const placeholderSource: ImageSource = defaultMovieImage
 
     const handlePressIMDb = useCallback(() => {
       if (imdbURI) {
@@ -94,16 +105,13 @@ const Facts = memo(
             <Text style={factsStyles.subHeaderSmall}>{movie.tagline}</Text>
           )}
 
-          {/* Using expo-image with caching */}
-          {movie.poster_path && (
-            <Image
-              source={imageSource}
-              style={factsStyles.posterImage}
-              placeholder={require("../../assets/movie_default.png")}
-              onError={(e) => console.log("Image load error", e)}
-              contentFit="cover"
-            />
-          )}
+          <Image
+            source={imageSource}
+            style={factsStyles.posterImage}
+            placeholder={placeholderSource}
+            onError={(e) => console.log("Image load error", e)}
+            contentFit="cover"
+          />
 
           {movie.director?.name && (
             <Text style={factsStyles.subHeaderSmall}>
