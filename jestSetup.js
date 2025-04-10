@@ -1,106 +1,40 @@
 import { jest } from "@jest/globals"
+import { NativeModules } from 'react-native'
 global.__DEV__ = true
 
-jest.mock("react-native-reanimated", () => {
-  const Reanimated = jest.requireActual("react-native-reanimated")
+NativeModules.ReanimatedModule = {
+  installTurboModule: jest.fn(),
+};
 
-  const mockEasingFunction = (value) => value
-  const Easing = {
-    linear: mockEasingFunction,
-    ease: mockEasingFunction,
-    quad: mockEasingFunction,
-    cubic: mockEasingFunction,
-    sin: mockEasingFunction,
-    circle: mockEasingFunction,
-    exp: mockEasingFunction,
-    bounce: mockEasingFunction,
-    in: jest.fn(() => mockEasingFunction),
-    out: jest.fn(() => mockEasingFunction),
-    inOut: jest.fn(() => mockEasingFunction),
-    poly: jest.fn(() => mockEasingFunction),
-    elastic: jest.fn(() => mockEasingFunction),
-    back: jest.fn(() => mockEasingFunction),
-    bezier: jest.fn(() => mockEasingFunction),
+jest.mock('react-native-reanimated', () => {
+  const Reanimated = require('react-native-reanimated/mock');
+
+  if (!Reanimated.useSharedValue) {
+    Reanimated.useSharedValue = jest.fn(initialValue => ({ value: initialValue }));
+  }
+  if (!Reanimated.useAnimatedStyle) {
+    Reanimated.useAnimatedStyle = jest.fn(callback => callback());
+  }
+  if (!Reanimated.withTiming) {
+    Reanimated.withTiming = jest.fn((toValue, options, cb) => {
+      if (typeof options === 'function') cb = options;
+      if (cb) cb(true);
+      return toValue;
+    });
+  }
+  if (!Reanimated.Easing) {
+    Reanimated.Easing = {
+      linear: v => v,
+      inOut: () => v => v,
+      ease: v => v,
+    };
+  }
+  if (!Reanimated.runOnJS) {
+    Reanimated.runOnJS = jest.fn(fn => (...args) => fn(...args));
   }
 
-  return {
-    ...Reanimated,
-
-    Easing: Easing,
-    useSharedValue: jest.fn((initialValue) => ({ value: initialValue })),
-    useAnimatedStyle: jest.fn(() => ({})),
-    withTiming: jest.fn((toValue, options, cb) => {
-      if (typeof options === "function") {
-        cb = options
-      }
-      if (cb) {
-        cb(true)
-      }
-      return toValue
-    }),
-    withSequence: jest.fn((...args) => {
-      const finalAnimation = args[args.length - 1]
-      return typeof finalAnimation === "number" ? finalAnimation : 0
-    }),
-    withSpring: jest.fn((toValue, options, cb) => {
-      if (typeof options === "function") {
-        cb = options
-      }
-      if (cb) {
-        cb(true)
-      }
-      return toValue
-    }),
-    interpolate: jest.fn((value, inputRange, outputRange) => {
-      return outputRange[Math.floor(outputRange.length / 2)] ?? outputRange[0]
-    }),
-
-    useAnimatedGestureHandler: jest.fn(),
-    runOnJS: jest.fn(
-      (fn) =>
-        (...args) =>
-          fn(...args)
-    ),
-
-    View: "View",
-    Text: "Text",
-    ScrollView: "ScrollView",
-    Animated: {
-      View: "View",
-      Text: "Text",
-      ScrollView: "ScrollView",
-    },
-
-    Layout: {
-      springify: jest.fn().mockReturnThis(),
-      damping: jest.fn().mockReturnThis(),
-      mass: jest.fn().mockReturnThis(),
-      stiffness: jest.fn().mockReturnThis(),
-      overshootClamping: jest.fn().mockReturnThis(),
-      restDisplacementThreshold: jest.fn().mockReturnThis(),
-      restSpeedThreshold: jest.fn().mockReturnThis(),
-
-      duration: jest.fn().mockReturnThis(),
-      delay: jest.fn().mockReturnThis(),
-    },
-    createAnimatedPropAdapter: jest.fn(),
-    useAnimatedProps: jest.fn(() => ({})),
-    useDerivedValue: jest.fn((processor) => ({ value: processor() })),
-    useAnimatedRef: jest.fn(() => ({ current: null })),
-    cancelAnimation: jest.fn(),
-
-    ReduceMotion: { never: "never", always: "always", system: "system" },
-    measure: jest.fn(() => ({
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0,
-      pageX: 0,
-      pageY: 0,
-    })),
-    useFrameCallback: jest.fn(),
-  }
-})
+  return Reanimated;
+});
 
 jest.mock("expo-image", () => {
   const MockReact = require("react")
@@ -204,14 +138,14 @@ jest.mock("react-native", () => {
       Presets: { easeInEaseOut: {}, linear: {}, spring: {} },
     },
     UIManager: {
-      RCTView: () => {},
+      RCTView: () => { },
       Constants: {},
       measure: jest.fn(),
       measureInWindow: jest.fn(),
     },
     NativeModules: {
       UIManager: {
-        RCTView: () => {},
+        RCTView: () => { },
         Constants: {},
         measure: jest.fn(),
         measureInWindow: jest.fn(),

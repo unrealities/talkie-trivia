@@ -118,7 +118,7 @@ describe("Facts Component", () => {
       screen.getByText(`Directed by ${mockMovieFull.director.name}`)
     ).toBeTruthy()
 
-    expect(screen.getByText("Image")).toBeTruthy()
+    expect(screen.getAllByRole('image').length).toBeGreaterThan(0);
 
     expect(screen.getByText(mockActors[0].name.split(" ")[0])).toBeTruthy()
     expect(screen.getByText(mockActors[1].name.split(" ")[0])).toBeTruthy()
