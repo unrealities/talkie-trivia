@@ -54,32 +54,31 @@ const Facts = memo(
     const placeholderSource: ImageSource = defaultMovieImage
 
     const handlePressIMDb = useCallback(() => {
+      if (!imdbURI) {
+        Alert.alert("No IMDb Link", "IMDb link is unavailable for this movie")
+        return
+      }
+
       Linking.canOpenURL(imdbURI)
         .then((supported) => {
           if (supported) {
+            return Linking.openURL(imdbURI)
+          } else {
             Alert.alert("Unsupported Link", "Unable to open IMDb page")
-            return Promise.reject(new Error("Unsupported Link"))
           }
         })
         .catch((linkError) => {
-          if (linkError && linkError.message !== "Unsupported Link") {
-            console.error("Error handling IMDb link:", linkError)
-            Alert.alert(
-              "Link Error",
-              `Could not open the IMDb link. ${
-                linkError instanceof Error
-                  ? linkError.message
-                  : "An unexpected error occurred."
-              }`
-            )
-          } else {
-            Alert.alert(
-              "No IMDb Link",
-              "IMDb link is unavailable for this movie"
-            )
-          }
+          console.error("Error handling IMDb link:", linkError)
+          Alert.alert(
+            "Link Error",
+            `Could not open the IMDb link. ${
+              linkError instanceof Error
+                ? linkError.message
+                : "An unexpected error occurred."
+            }`
+          )
         })
-    })
+    }, [imdbURI])
 
     return (
       <View style={factsStyles.container}>

@@ -6,32 +6,28 @@ NativeModules.ReanimatedModule = {
   installTurboModule: jest.fn(),
 };
 
+jest.mock('react-native/Libraries/EventEmitter/NativeEventEmitter', () => {
+  return jest.fn(() => ({ addListener: jest.fn(), removeListeners: jest.fn() }));
+});
+
 jest.mock('react-native-reanimated', () => {
   const Reanimated = require('react-native-reanimated/mock');
 
-  if (!Reanimated.useSharedValue) {
-    Reanimated.useSharedValue = jest.fn(initialValue => ({ value: initialValue }));
-  }
-  if (!Reanimated.useAnimatedStyle) {
-    Reanimated.useAnimatedStyle = jest.fn(callback => callback());
-  }
-  if (!Reanimated.withTiming) {
-    Reanimated.withTiming = jest.fn((toValue, options, cb) => {
-      if (typeof options === 'function') cb = options;
-      if (cb) cb(true);
-      return toValue;
-    });
-  }
-  if (!Reanimated.Easing) {
-    Reanimated.Easing = {
-      linear: v => v,
-      inOut: () => v => v,
-      ease: v => v,
-    };
-  }
-  if (!Reanimated.runOnJS) {
-    Reanimated.runOnJS = jest.fn(fn => (...args) => fn(...args));
-  }
+  Reanimated.useSharedValue = jest.fn(initialValue => ({ value: initialValue }));
+  Reanimated.useAnimatedStyle = jest.fn(callback => callback());
+  Reanimated.withTiming = jest.fn((toValue, options, cb) => {
+    if (typeof options === 'function') cb = options;
+    if (cb && typeof cb === 'function') {
+      cb(true);
+    }
+    return toValue;
+  });
+  Reanimated.Easing = {
+    linear: jest.fn(v => v),
+    inOut: jest.fn(() => jest.fn(v => v)),
+    ease: jest.fn(v => v),
+  };
+  Reanimated.runOnJS = jest.fn(fn => (...args) => fn(...args));
 
   return Reanimated;
 });

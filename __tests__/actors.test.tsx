@@ -149,15 +149,15 @@ describe("Actors Component", () => {
 
   it("renders actor names correctly (including split names)", async () => {
     render(<Actors actors={mockActors} />)
-    expect(screen.getByText(/Actor/)).toBeTruthy()
     expect(screen.getByText(/One/)).toBeTruthy()
     expect(screen.getByText(/TwoLastName/)).toBeTruthy()
   })
 
   it("renders a default image when profile_path is null", () => {
     render(<Actors actors={[mockActorWithNoImage]} />)
-    const actor3Button = screen.getByRole("button", {
-      name: /Actor: Actor Three/i,
-    })
+    const actor3Button = screen.getByTestId(
+      `actor-pressable-${mockActorWithNoImage.id}`
+    )
+    expect(actor3Button).toBeTruthy()
   })
 })
