@@ -1,36 +1,32 @@
 import { jest } from "@jest/globals"
-import { NativeModules } from 'react-native'
+
 global.__DEV__ = true
 
-NativeModules.ReanimatedModule = {
-  installTurboModule: jest.fn(),
-};
-
-jest.mock('react-native/Libraries/EventEmitter/NativeEventEmitter', () => {
-  return jest.fn(() => ({ addListener: jest.fn(), removeListeners: jest.fn() }));
-});
-
-jest.mock('react-native-reanimated', () => {
-  const Reanimated = require('react-native-reanimated/mock');
-
-  Reanimated.useSharedValue = jest.fn(initialValue => ({ value: initialValue }));
-  Reanimated.useAnimatedStyle = jest.fn(callback => callback());
-  Reanimated.withTiming = jest.fn((toValue, options, cb) => {
-    if (typeof options === 'function') cb = options;
-    if (cb && typeof cb === 'function') {
-      cb(true);
+jest.mock("react-native-reanimated", () => ({
+  useSharedValue: jest.fn((initialValue) => ({ value: initialValue })),
+  useAnimatedStyle: jest.fn((callback) => callback()),
+  withTiming: jest.fn((toValue, options, cb) => {
+    if (typeof cb === "function") {
+      cb(true)
+    } else if (options && typeof options === "function") {
+      options(true)
     }
-    return toValue;
-  });
-  Reanimated.Easing = {
-    linear: jest.fn(v => v),
-    inOut: jest.fn(() => jest.fn(v => v)),
-    ease: jest.fn(v => v),
-  };
-  Reanimated.runOnJS = jest.fn(fn => (...args) => fn(...args));
-
-  return Reanimated;
-});
+    return toValue
+  }),
+  Easing: {
+    linear: jest.fn((v) => v),
+    inOut: jest.fn(() => jest.fn((v) => v)),
+    ease: jest.fn((v) => v),
+  },
+  runOnJS: jest.fn(
+    (fn) =>
+      (...args) =>
+        fn(...args)
+  ),
+  interpolate: jest.fn(),
+  Extrapolate: { CLAMP: "clamp", EXTEND: "extend", IDENTITY: "identity" },
+  createAnimatedComponent: jest.fn((component) => component),
+}))
 
 jest.mock("expo-image", () => {
   const MockReact = require("react")
@@ -47,7 +43,7 @@ jest.mock("expo-image", () => {
           style={style}
           data-testid="mock-expo-image"
           data-source={uri}
-          role="image"
+          accessibilityRole="image"
           {...props}
         >
           <MockReactNative.Text>Image</MockReactNative.Text>
@@ -67,7 +63,6 @@ jest.mock("expo-linking", () => ({
 jest.mock("react-native/Libraries/Components/ScrollView/ScrollView", () => {
   const React = require("react")
   const { View } = require("react-native")
-
   const MockScrollView = React.forwardRef(({ children, ...props }, ref) => (
     <View ref={ref} {...props} testID="mock-scrollview">
       {children}
@@ -81,7 +76,6 @@ jest.mock(
   "react-native/Libraries/Components/ActivityIndicator/ActivityIndicator",
   () => {
     const { View } = require("react-native")
-
     const MockActivityIndicator = ({ ...props }) => (
       <View {...props} testID="activity-indicator" />
     )
@@ -91,6 +85,42 @@ jest.mock(
 )
 
 jest.mock("react-native", () => {
+  const mockNativeModules = {
+    UIManager: {
+      RCTView: () => {},
+      Constants: {},
+      measure: jest.fn(),
+      measureInWindow: jest.fn(),
+    },
+    ReanimatedModule: {
+      installTurboModule: jest.fn(),
+      makeMutable: jest.fn(),
+      makeRemote: jest.fn(),
+      startMapper: jest.fn(),
+      stopMapper: jest.fn(),
+      registerEventHandler: jest.fn(),
+      unregisterEventHandler: jest.fn(),
+      getViewProp: jest.fn(),
+    },
+
+    DeviceInfo: {
+      getConstants: () => ({
+        Dimensions: {
+          window: { width: 375, height: 812, scale: 1, fontScale: 1 },
+          screen: { width: 375, height: 812, scale: 1, fontScale: 1 },
+        },
+      }),
+    },
+
+    RNCNetInfo: {
+      getCurrentState: jest.fn(() =>
+        Promise.resolve({ isInternetReachable: true, type: "wifi" })
+      ),
+      addListener: jest.fn(() => jest.fn()),
+      removeListeners: jest.fn(),
+    },
+  }
+
   return {
     View: "View",
     Text: "Text",
@@ -101,6 +131,7 @@ jest.mock("react-native", () => {
     FlatList: "FlatList",
     ScrollView: "ScrollView",
     ActivityIndicator: "ActivityIndicator",
+
     StyleSheet: {
       create: (styles) => styles,
       flatten: jest.fn((style) => style),
@@ -133,29 +164,17 @@ jest.mock("react-native", () => {
       configureNext: jest.fn(),
       Presets: { easeInEaseOut: {}, linear: {}, spring: {} },
     },
-    UIManager: {
-      RCTView: () => { },
-      Constants: {},
-      measure: jest.fn(),
-      measureInWindow: jest.fn(),
-    },
-    NativeModules: {
-      UIManager: {
-        RCTView: () => { },
-        Constants: {},
-        measure: jest.fn(),
-        measureInWindow: jest.fn(),
-      },
-      DeviceInfo: {
-        getConstants: () => ({
-          Dimensions: {
-            window: { width: 375, height: 812, scale: 1, fontScale: 1 },
-            screen: { width: 375, height: 812, scale: 1, fontScale: 1 },
-          },
-        }),
-      },
-    },
+
     Linking: jest.requireMock("expo-linking"),
+
+    NativeModules: mockNativeModules,
+
+    UIManager: mockNativeModules.UIManager,
+
+    NativeEventEmitter: jest.fn(() => ({
+      addListener: jest.fn(),
+      removeListeners: jest.fn(),
+    })),
   }
 })
 
@@ -178,7 +197,6 @@ console.warn = (...args) => {
   ) {
     return
   }
-
   if (
     typeof warningMessage === "string" &&
     (warningMessage.includes("No native module found for") ||
@@ -205,6 +223,20 @@ console.warn = (...args) => {
   }
   if (
     typeof warningMessage === "string" &&
+    warningMessage.includes("RCTView") &&
+    warningMessage.includes("does not exist") &&
+    warningMessage.includes("react-native-reanimated")
+  ) {
+    return
+  }
+  if (
+    typeof warningMessage === "string" &&
+    warningMessage.includes('Key "cancelled" in the image picker')
+  ) {
+    return
+  }
+  if (
+    typeof warningMessage === "string" &&
     warningMessage.includes(
       "Warning: unstable_createElement is acting as a fallback"
     ) &&
@@ -212,6 +244,7 @@ console.warn = (...args) => {
   ) {
     return
   }
+
   originalWarn.apply(console, args)
 }
 
@@ -229,7 +262,6 @@ jest.mock("expo-constants", () => {
   const Constants = jest.requireActual("expo-constants")
   return {
     ...Constants,
-
     executionEnvironment: "storeClient",
     isDevice: false,
     deviceName: "JestTestDevice",
@@ -272,7 +304,6 @@ jest.mock("expo-auth-session/providers/google", () => ({
 jest.mock("expo-auth-session", () => {
   return {
     makeRedirectUri: jest.fn(() => "mock-redirect-uri"),
-
     AuthRequest: jest.fn(),
     fetchDiscoveryAsync: jest.fn(),
     exchangeCodeAsync: jest.fn(),
@@ -284,14 +315,12 @@ jest.mock("firebase/auth", () => {
     uid: "mock-test-user-id",
     displayName: "Mock User",
     email: "mock@example.com",
-
     getIdToken: jest.fn(() => Promise.resolve("mock-id-token")),
   }
   const mockAuthInstance = {
     currentUser: null,
     onAuthStateChangedListeners: [],
     onIdTokenChangedListeners: [],
-
     __setUser: function (user) {
       this.currentUser = user
       this.onAuthStateChangedListeners.forEach((listener) => listener(user))
@@ -299,9 +328,7 @@ jest.mock("firebase/auth", () => {
     },
     onAuthStateChanged: function (listener) {
       this.onAuthStateChangedListeners.push(listener)
-
       listener(this.currentUser)
-
       return () => {
         this.onAuthStateChangedListeners =
           this.onAuthStateChangedListeners.filter((l) => l !== listener)
@@ -316,7 +343,6 @@ jest.mock("firebase/auth", () => {
         )
       }
     },
-
     signOut: jest.fn(() => {
       mockAuthInstance.__setUser(null)
       return Promise.resolve()
@@ -327,7 +353,6 @@ jest.mock("firebase/auth", () => {
       return Promise.resolve(result)
     }),
   }
-
   return {
     getAuth: jest.fn(() => mockAuthInstance),
     onAuthStateChanged: jest.fn((auth, listener) =>
@@ -372,7 +397,6 @@ jest.mock("firebase/firestore", () => ({
     delete: jest.fn(),
     commit: jest.fn(() => Promise.resolve()),
   })),
-
   collection: jest.fn((db, path) => ({ id: path, path: path })),
   query: jest.fn(),
   where: jest.fn(),
