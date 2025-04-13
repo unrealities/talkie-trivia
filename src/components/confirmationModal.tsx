@@ -29,7 +29,9 @@ const ConfirmationModal = memo(
         visible={isVisible}
         onRequestClose={onCancel}
       >
-        <View style={confirmationModalStyles.centeredView}>
+        {isVisible && (
+          <View style={confirmationModalStyles.centeredView} testID="confirmation-modal-container">
+
           <View style={confirmationModalStyles.modalView}>
             <Text style={confirmationModalStyles.title}>{title}</Text>
             <Text style={confirmationModalStyles.message}>{message}</Text>
@@ -59,6 +61,7 @@ const ConfirmationModal = memo(
             </View>
           </View>
         </View>
+        )}
       </Modal>
     )
   }

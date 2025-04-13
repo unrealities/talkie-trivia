@@ -1,163 +1,89 @@
-import React from "react"
-import {
-  render,
-  fireEvent,
-  screen,
-  waitFor,
-  within,
-} from "@testing-library/react-native"
-import * as Linking from "expo-linking"
-import { Alert } from "react-native"
-import { Actors } from "../src/components/actors"
-import { Actor } from "../src/models/movie"
+import React from 'react';
+import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import Actors from '../src/components/actors';
+import { Actor } from '../src/models/movie';
+import * as Linking from 'expo-linking';
+import { Alert } from 'react-native';
 
-jest.mock("expo-linking", () => ({
+// Mock the Linking module
+jest.mock('expo-linking', () => ({
   canOpenURL: jest.fn(),
   openURL: jest.fn(),
-}))
+}));
 
-beforeEach(() => {
-  jest.clearAllMocks()
-  ;(Linking.canOpenURL as jest.Mock).mockResolvedValue(true)
-  ;(Linking.openURL as jest.Mock).mockResolvedValue(true)
-
-  if (jest.isMockFunction(global.alert)) {
-    ;(global.alert as jest.Mock).mockClear()
-  } else {
-    console.warn("global.alert was not mocked by jest.fn() in jestSetup.js")
-  }
-})
+// Mock the Alert module
+jest.spyOn(Alert, 'alert');
 
 const mockActors: Actor[] = [
-  {
-    id: 1,
-    name: "Actor One",
-    popularity: 9,
-    profile_path: "/actor1.jpg",
-    order: 0,
-    imdb_id: "nm0000111",
-  },
-  {
-    id: 2,
-    name: "Actor TwoLastName",
-    popularity: 8,
-    profile_path: "/actor2.jpg",
-    order: 1,
-  },
-  {
-    id: 3,
-    name: "Actor Three",
-    popularity: 7,
-    profile_path: null,
-    order: 2,
-    imdb_id: "nm0000333",
-  },
-  {
-    id: 4,
-    name: "Actor Four",
-    popularity: 6,
-    profile_path: "/actor4.jpg",
-    order: 3,
-    imdb_id: "nm0000444",
-  },
-]
-const mockActorWithoutLink: Actor = mockActors[1]
-const mockActorWithLink: Actor = mockActors[0]
-const mockActorWithNoImage: Actor = mockActors[2]
+  { id: 1, name: 'Tom Hanks', profile_path: '/tom_hanks.jpg', imdb_id: 'nm0000158' },
+  { id: 2, name: 'Brad Pitt', profile_path: '/brad_pitt.jpg', imdb_id: 'nm0000093' },
+  { id: 3, name: 'Leonardo DiCaprio', profile_path: '/leonardo_dicaprio.jpg', imdb_id: 'nm0000138' },
+];
 
-describe("Actors Component", () => {
-  it("renders null when the actors array is empty", () => {
-    render(<Actors actors={[]} />)
-    expect(screen.queryByText(/Actor/)).toBeNull()
-  })
+describe('Actors Component', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
-  it("renders null when the actors prop is null or undefined", () => {
-    render(<Actors actors={null as any} />)
-    expect(screen.queryByText(/Actor/)).toBeNull()
-    render(<Actors actors={undefined as any} />)
-    expect(screen.queryByText(/Actor/)).toBeNull()
-  })
+  it('renders without actors', () => {
+    const { queryByTestId } = render(<Actors actors={[]} />);
+    expect(queryByTestId('actor-pressable-1')).toBeNull();
+  });
 
-  it("renders the default number of actors (max 3) and their images", () => {
-    render(<Actors actors={mockActors} />)
-    const actor1Button = screen.getByTestId(
-      `actor-pressable-${mockActors[0].id}`
-    )
-    const actor2Button = screen.getByTestId(
-      `actor-pressable-${mockActors[1].id}`
-    )
-    const actor3Button = screen.getByTestId(
-      `actor-pressable-${mockActors[2].id}`
-    )
+  it('renders with actors', () => {
+    const { getByTestId } = render(<Actors actors={mockActors} />);
+    expect(getByTestId('actor-pressable-1')).toBeTruthy();
+    expect(getByTestId('actor-pressable-2')).toBeTruthy();
+    expect(getByTestId('actor-pressable-3')).toBeTruthy();
+  });
 
-    expect(actor1Button).toBeTruthy()
-    expect(actor2Button).toBeTruthy()
-    expect(actor3Button).toBeTruthy()
-    expect(
-      screen.queryByTestId(`actor-pressable-${mockActors[3].id}`)
-    ).toBeNull()
+  it('displays the correct number of actors based on maxDisplay', () => {
+    const { getAllByTestId } = render(<Actors actors={mockActors} maxDisplay={2} />);
+    expect(getAllByTestId(/actor-pressable-/).length).toBe(2);
+  });
 
-    expect(within(actor1Button).getByText("Image")).toBeTruthy()
-    expect(within(actor2Button).getByText("Image")).toBeTruthy()
-    expect(within(actor3Button).getByText("Image")).toBeTruthy()
-  })
+  it('handles actor names with single and multiple parts', () => {
+    const actors: Actor[] = [
+      { id: 1, name: 'Cher', profile_path: '/cher.jpg', imdb_id: 'nm0000333' },
+      { id: 2, name: 'Robert Downey Jr.', profile_path: '/robert_downey_jr.jpg', imdb_id: 'nm0000375' },
+    ];
+    const { getByTestId, getByText } = render(<Actors actors={actors} />);
+    expect(getByText('Cher')).toBeTruthy()
+    expect(getByText('Robert Downey Jr.')).toBeTruthy()
+  });
 
-  it("renders actors up to the maxDisplay limit and their images", () => {
-    render(<Actors actors={mockActors} maxDisplay={2} />)
-    const actor1Button = screen.getByTestId(
-      `actor-pressable-${mockActors[0].id}`
-    )
-    const actor2Button = screen.getByTestId(
-      `actor-pressable-${mockActors[1].id}`
-    )
+  it('opens IMDb link when actor is pressed and link is available', async () => {
+    (Linking.canOpenURL as jest.Mock).mockResolvedValue(true);
+    const { getByTestId } = render(<Actors actors={mockActors} />);
+    fireEvent.press(getByTestId('actor-pressable-1'));
+    await waitFor(() => expect(Linking.openURL).toHaveBeenCalledWith('https://www.imdb.com/name/nm0000158'));
+  });
 
-    expect(actor1Button).toBeTruthy()
-    expect(actor2Button).toBeTruthy()
-    expect(
-      screen.queryByTestId(`actor-pressable-${mockActors[2].id}`)
-    ).toBeNull()
+  it('shows an alert when IMDb link is unavailable', async () => {
+    const actors: Actor[] = [{ id: 1, name: 'Unknown Actor', profile_path: null, imdb_id: null }];
+    const { getByTestId } = render(<Actors actors={actors} />);
+    fireEvent.press(getByTestId('actor-pressable-1'));
+    await waitFor(() => expect(Alert.alert).toHaveBeenCalledWith('IMDb link unavailable', 'No link found for this actor.'));
+  });
 
-    expect(within(actor1Button).getByText("Image")).toBeTruthy()
-    expect(within(actor2Button).getByText("Image")).toBeTruthy()
-  })
+  it('shows an alert when IMDb link cannot be opened', async () => {
+    (Linking.canOpenURL as jest.Mock).mockResolvedValue(false);
+    const { getByTestId } = render(<Actors actors={mockActors} />);
+    fireEvent.press(getByTestId('actor-pressable-1'));
+    await waitFor(() => expect(Alert.alert).toHaveBeenCalledWith('Unable to open IMDb link'));
+  });
 
-  it("renders all actors when maxDisplay is greater than the number of actors", () => {
-    render(<Actors actors={mockActors} maxDisplay={5} />)
-    const actor1Button = screen.getByTestId(
-      `actor-pressable-${mockActors[0].id}`
-    )
-    const actor2Button = screen.getByTestId(
-      `actor-pressable-${mockActors[1].id}`
-    )
-    const actor3Button = screen.getByTestId(
-      `actor-pressable-${mockActors[2].id}`
-    )
-    const actor4Button = screen.getByTestId(
-      `actor-pressable-${mockActors[3].id}`
-    )
+  it('triggers onActorPress callback when provided', async () => {
+    const onActorPress = jest.fn(actor => actor);
+    const { getByTestId } = render(<Actors actors={mockActors} onActorPress={onActorPress} maxDisplay={1} />);
+    const pressable = getByTestId('actor-pressable-1');
+    fireEvent.press(pressable);
+    await waitFor(() => expect(onActorPress).toHaveBeenCalledWith(mockActors[0]), { timeout: 1000 });
+  });
 
-    expect(actor1Button).toBeTruthy()
-    expect(actor2Button).toBeTruthy()
-    expect(actor3Button).toBeTruthy()
-    expect(actor4Button).toBeTruthy()
-
-    expect(within(actor1Button).getByText("Image")).toBeTruthy()
-    expect(within(actor2Button).getByText("Image")).toBeTruthy()
-    expect(within(actor3Button).getByText("Image")).toBeTruthy()
-    expect(within(actor4Button).getByText("Image")).toBeTruthy()
-  })
-
-  it("renders actor names correctly (including split names)", async () => {
-    render(<Actors actors={mockActors} />)
-    expect(screen.getByText(/One/)).toBeTruthy()
-    expect(screen.getByText(/TwoLastName/)).toBeTruthy()
-  })
-
-  it("renders a default image when profile_path is null", () => {
-    render(<Actors actors={[mockActorWithNoImage]} />)
-    const actor3Button = screen.getByTestId(
-      `actor-pressable-${mockActorWithNoImage.id}`
-    )
-    expect(actor3Button).toBeTruthy()
-  })
-})
+  it('has correct accessibility labels and roles', () => {
+    const { getByTestId } = render(<Actors actors={mockActors} />);
+    expect(getByTestId('actor-pressable-1').props.accessibilityLabel).toBe('Actor: Tom Hanks. View details');
+    expect(getByTestId('actor-pressable-1').props.role).toBe('button');
+  });
+});

@@ -12,26 +12,11 @@ const ConfettiCelebration: React.FC<ConfettiCelebrationProps> = ({
   onConfettiStop,
 }) => {
   const confettiRef = useRef<ConfettiCannon>(null)
-
-  const start = useCallback(() => {
-    confettiRef.current?.start()
-  }, [])
-
-  const stop = useCallback(() => {
-    onConfettiStop?.()
-  }, [onConfettiStop])
-
-  useEffect(() => {
-    if (startConfetti) {
-      start()
-    }
-
-    return () => {
-      confettiRef.current?.stop?.()
-    }
-  }, [startConfetti, start])
-
-  return (
+  const start = useCallback(() => { confettiRef.current?.start() }, [])
+  const stop = useCallback(() => { onConfettiStop?.() }, [onConfettiStop])
+  
+  useEffect(() => { if(startConfetti) start() }, [startConfetti, start])
+  const confettiCannon = startConfetti ? (
     <ConfettiCannon
       testID="confetti-cannon"
       count={250}
@@ -41,10 +26,9 @@ const ConfettiCelebration: React.FC<ConfettiCelebrationProps> = ({
       fadeOut={true}
       explosionSpeed={500}
       ref={confettiRef}
-      onAnimationEnd={stop}
-      autoStart={false}
     />
-  )
+  ) : null;
+  return confettiCannon;
 }
 
-export default ConfettiCelebration
+export default ConfettiCelebration;

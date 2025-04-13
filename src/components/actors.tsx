@@ -117,7 +117,7 @@ const ActorContainer = memo(
 )
 
 export const Actors = memo(
-  ({ actors, maxDisplay = 3, containerStyle }: ActorsProps) => {
+  ({ actors, maxDisplay = 3, containerStyle, onActorPress }: ActorsProps & { onActorPress?: (actor: Actor) => void }) => {
     if (!actors || actors.length === 0) {
       return null
     }
@@ -129,6 +129,7 @@ export const Actors = memo(
             key={`${actor.id}-${actor.name}`}
             actor={actor}
             imdbId={actor.imdb_id}
+            onActorPress={onActorPress}
           />
         ))}
       </View>
@@ -137,8 +138,9 @@ export const Actors = memo(
   (prevProps, nextProps) => {
     return (
       prevProps.actors === nextProps.actors &&
-      prevProps.maxDisplay === nextProps.maxDisplay &&
-      prevProps.containerStyle === nextProps.containerStyle
+        prevProps.maxDisplay === nextProps.maxDisplay &&
+        prevProps.containerStyle === nextProps.containerStyle &&
+        prevProps.onActorPress === nextProps.onActorPress
     )
   }
 )
