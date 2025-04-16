@@ -13,7 +13,7 @@ module.exports = {
   },
 
   transformIgnorePatterns: [
-    "node_modules/(?!(react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@react-navigation/.*|react-native-reanimated|react-native-svg|victory-native|expo-font|expo-image|expo-linking|expo-constants|expo-asset|expo-modules-core)/)",
+    "node_modules/(?!(@react-native-community|react-native-vector-icons)/)",
   ],
 
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],

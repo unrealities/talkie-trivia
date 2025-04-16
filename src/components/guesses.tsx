@@ -11,15 +11,11 @@ interface GuessesContainerProps {
 
 const GuessesContainer = memo(
   ({ guesses, movies }: GuessesContainerProps) => {
-    useEffect(() => {
-      console.log("GuessesContainer: Guesses updated:", guesses)
-    }, [guesses])
-
     const getMovieTitle = (id: number | undefined) => {
       if (id && id > 0) {
         const movie = movies.find((m) => m.id === id)
         const releaseYear = movie?.release_date
-          ? ` (${movie.release_date.toString().substring(0, 4)})`
+          ? ` (${movie.release_date})`
           : ""
         return movie ? `${movie.title}${releaseYear}` : "-"
       }

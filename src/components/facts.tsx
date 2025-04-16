@@ -68,7 +68,6 @@ const Facts = memo(
           }
         })
         .catch((linkError) => {
-          console.error("Error handling IMDb link:", linkError)
           Alert.alert(
             "Link Error",
             `Could not open the IMDb link. ${
