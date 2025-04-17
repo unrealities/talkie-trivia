@@ -87,7 +87,7 @@ jest.mock(
 jest.mock("react-native", () => {
   const mockNativeModules = {
     UIManager: {
-      RCTView: () => {},
+      RCTView: () => { },
       Constants: {},
       measure: jest.fn(),
       measureInWindow: jest.fn(),
@@ -258,36 +258,30 @@ jest.mock("react-native-uuid", () => ({
   v4: () => "mock-uuid-v4",
 }))
 
-jest.mock("expo-constants", () => {
-  const Constants = jest.requireActual("expo-constants")
-  return {
-    ...Constants,
-    executionEnvironment: "storeClient",
-    isDevice: false,
-    deviceName: "JestTestDevice",
-    systemFonts: [],
-    statusBarHeight: 20,
-    deviceYearClass: 2021,
-    manifest: {},
-    manifest2: {},
-    expoConfig: {
-      ...(Constants.expoConfig || {}),
-      extra: {
-        ...(Constants.expoConfig?.extra || {}),
-        firebaseApiKey: "mock-firebase-apikey",
-        firebaseProjectId: "mock-project-id",
-        firebaseMessagingSenderId: "mock-sender-id",
-        firebaseAppId: "mock-app-id",
-        firebaseMeasurementId: "mock-measurement-id",
-        androidClientId: "mock-android-client-id",
-        expoClientId: "mock-expo-client-id",
-        iosClientId: "mock-ios-client-id",
-        webClientId: "mock-web-client-id",
-        themoviedbKey: "mock-tmdb-key",
-      },
+jest.mock("expo-constants", () => ({
+  executionEnvironment: "storeClient",
+  isDevice: false,
+  deviceName: "JestTestDevice",
+  systemFonts: [],
+  statusBarHeight: 20,
+  deviceYearClass: 2021,
+  manifest: {},
+  manifest2: {},
+  expoConfig: {
+    extra: {
+      firebaseApiKey: "mock-firebase-apikey",
+      firebaseProjectId: "mock-project-id",
+      firebaseMessagingSenderId: "mock-sender-id",
+      firebaseAppId: "mock-app-id",
+      firebaseMeasurementId: "mock-measurement-id",
+      androidClientId: "mock-android-client-id",
+      expoClientId: "mock-expo-client-id",
+      iosClientId: "mock-ios-client-id",
+      webClientId: "mock-web-client-id",
+      themoviedbKey: "mock-tmdb-key",
     },
-  }
-})
+  },
+}));
 
 jest.mock("expo-auth-session/providers/google", () => ({
   useIdTokenAuthRequest: () => [
