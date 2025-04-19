@@ -30,14 +30,8 @@ describe('GuessesContainer', () => {
     expect(getByText('1')).toBeTruthy();
   });
 
-  it('renders with a single guess', () => {
-    const movies: readonly BasicMovie[] = [{
-      id: 123,
-      title: 'Guess Movie',
-      release_date: 1999
-    }];
-    const movie: Movie = {
-      id: 456,
+  it('renders with a single guess', () => {    const movies: readonly BasicMovie[] = [{ id: 123, title: 'Guess Movie', release_date: '1999-01-01' }];
+    const movie: Movie = {      id: 123,
       title: 'Test Movie',
       overview: '',
       poster_path: '',

@@ -8,7 +8,7 @@ export interface Actor {
 
 export interface BasicMovie {
   id: number
-  release_date: number
+  release_date: string
   title: string
 }
 
