@@ -82,14 +82,14 @@ describe('PickerContainer', () => {
 
   it('calls handleInputChange with correct input', () => {
     const { getByPlaceholderText, mockLogic } = setup();
-    const input = getByPlaceholderText('Search for a movie...');
+    const input = getByPlaceholderText('Search for a movie...'); //
     fireEvent.changeText(input, 'Movie');
     expect(mockLogic.handleInputChange).toHaveBeenCalledWith('Movie');
   });
 
   it('calls handleMovieSelection when a movie is selected', () => {
     const { mockLogic } = setup();
-    const movieItem = screen.getByLabelText(/Select movie: Movie 1, ID: 1/);
+    const movieItem = screen.getByLabelText(new RegExp("Select movie: Movie 1, ID: 1"));
     fireEvent.press(movieItem);
     expect(mockLogic.handleMovieSelection).toHaveBeenCalledWith(mockMovies[0]);
   });
@@ -103,14 +103,14 @@ describe('PickerContainer', () => {
 
   it('does not call onPressCheck when the button is pressed but no movie is selected', () => {
     const { getByText, mockLogic } = setup();
-    const button = getByText('Select a movie');
-    fireEvent.press(button);
+    const button = screen.getByRole('button', { name: 'Select a movie' });
+    fireEvent.press(button)
     expect(mockLogic.onPressCheck).not.toHaveBeenCalled();
   });
 
   it('renders movie list items with accessibility roles and labels', () => {
     const { getAllByLabelText } = setup();
-    const movieItems = screen.getAllByLabelText(/Select movie:/);
+    const movieItems = screen.getAllByLabelText(new RegExp("Select movie:"));
     expect(movieItems.length).toBe(mockMovies.length); // Check length based on filtered items
     movieItems.forEach((item, index) => {
       expect(item.props['aria-label']).toBe(`Select movie: ${mockMovies[index].title}, ID: ${mockMovies[index].id}`);
@@ -119,7 +119,7 @@ describe('PickerContainer', () => {
 
   it('applies selected style to the selected movie', () => {
     const { mockLogic } = setup({}, { selectedMovie: mockMovies[1] });
-    const selectedMovieItem = screen.getByLabelText(new RegExp(`Select movie: ${mockMovies[1].title}, ID: ${mockMovies[1].id}`));
+    const selectedMovieItem = screen.getByLabelText(new RegExp("Select movie: " + mockMovies[1].title + ", ID: " + mockMovies[1].id));
     // Check if the selected movie item has aria-selected="true"
     expect(selectedMovieItem.props['aria-selected']).toBe('true'); // Assuming the value is a string
     // If the value is a boolean, use: expect(selectedMovieItem.props['aria-selected']).toBe(true);

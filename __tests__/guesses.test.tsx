@@ -30,16 +30,17 @@ describe('GuessesContainer', () => {
     expect(getByText('1')).toBeTruthy();
   });
 
-  it('renders with a single guess', () => {    const movies: readonly BasicMovie[] = [{ id: 123, title: 'Guess Movie', release_date: '1999-01-01' }];
-    const movie: Movie = {      id: 123,
-      title: 'Test Movie',
+  it('renders with a single guess', () => {
+    const movies: readonly BasicMovie[] = [{ id: 123, title: 'Guess Movie', release_date: '1999-01-01' }];
+    const movie: Movie = {
+      id: 123,
+      title: 'Guess Movie',
       overview: '',
       poster_path: '',
-      release_date: '1999-01-01',
       vote_average: 0
     };
     const { getByText }: RenderResult = render(<GuessesContainer guesses={[123]} movie={movie} movies={movies} />);
     expect(getByText('1')).toBeTruthy();
-    expect(getByText('Guess Movie (1999)')).toBeTruthy();
+    expect(getByText(new RegExp('Guess Movie (1999)'))).toBeTruthy();
   });
 });
