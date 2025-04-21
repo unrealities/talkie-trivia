@@ -41,6 +41,6 @@ describe('GuessesContainer', () => {
     };
     const { getByText }: RenderResult = render(<GuessesContainer guesses={[123]} movie={movie} movies={movies} />);
     expect(getByText('1')).toBeTruthy();
-    expect(getByText(new RegExp('Guess Movie (1999)'))).toBeTruthy();
+    expect(getByText('Guess Movie (1999-01-01)')).toBeTruthy();
   });
 });
