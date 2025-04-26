@@ -1,13 +1,15 @@
-import React, { memo, useEffect } from "react"
-import { View, StyleSheet } from "react-native"
+import React, { useEffect } from "react"
+import { View, StyleSheet } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withRepeat,
   withTiming,
   Easing,
-} from "react-native-reanimated"
-import { Svg, Circle } from "react-native-svg"
+} from "react-native-reanimated";
+import { Svg, Circle } from "react-native-svg";
+
+
 import { colors, responsive } from "../styles/global"
 
 const CustomLoadingIndicator = () => {
@@ -77,4 +79,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default CustomLoadingIndicator
+export default CustomLoadingIndicator;
