@@ -1,11 +1,11 @@
 import React from 'react';
-import { View } from 'react-native';
 import { render, screen } from '@testing-library/react-native';
 import CustomLoadingIndicator from '../src/components/customLoadingIndicator';
 
 jest.mock('react-native-reanimated', () => {
+  const { View } = require('react-native');
   return {
-    View: jest.fn(({ children, ...props }) => <View {...props}>{children}</View>),
+      View: jest.fn(({ children, ...props }) => <View {...props}>{children}</View>),
     useSharedValue: jest.fn(() => ({ value: 0 })),
     useAnimatedStyle: jest.fn(() => ({})),
     withRepeat: jest.fn((value) => value),
@@ -13,16 +13,16 @@ jest.mock('react-native-reanimated', () => {
       Easing: { linear: jest.fn() },
     default: {
       View: jest.fn(({ children, ...props }) => <View {...props}>{children}</View>),
-      },
+    },
   };
 });
 
 jest.mock('react-native-svg', () => {
-  const ActualSvg = jest.requireActual('react-native-svg');
   return {
-      ...ActualSvg,
-    Svg: jest.fn(({ children, ...props }) => <svg {...props}>{children}</svg>),
-    Circle: jest.fn(({ children, ...props }) => <circle {...props}>{children}</circle>),
+      Svg: jest.fn(({ children, ...props }) => <svg {...props}>{children}</svg>),
+    Circle: jest.fn(({ children, ...props }) => <circle testID="circle" {...props}>{children}</circle>),  
+  default: jest.fn(({ children, ...props }) => <svg {...props}>{children}</svg>),
+
   };
 });
 
@@ -47,8 +47,8 @@ describe('CustomLoadingIndicator', () => {
   });
 
   it('renders 2 Circle elements', () => {
-    const { getAllByRole } = render(<CustomLoadingIndicator />);
-    const circles = getAllByRole('Circle');
+    render(<CustomLoadingIndicator />);
+    const circles = screen.getAllByTestId('circle');
     expect(circles.length).toBe(2);
   });
 });
