@@ -66,6 +66,7 @@ class ErrorBoundary extends Component<Props, State> {
             title="Reload App"
             onPress={this.handleReload}
             color={colors.primary}
+            testID="reload-button"
           />
           <Text
             style={[

@@ -12,7 +12,7 @@ const ErrorMessage: React.FC<ErrorMessageProps> = memo(
     return (
       <View style={appStyles.errorContainer}>
         <Text style={appStyles.errorText}>{message}</Text>
-        {onRetry && <Button title="Retry" onPress={onRetry} />}
+        {onRetry && <Button testID="retry" title="Retry" onPress={onRetry} />}
       </View>
     )
   },
