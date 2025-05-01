@@ -19,7 +19,6 @@ const GiveUpConfirmation: React.FC<GiveUpConfirmationProps> = ({
   }, [isVisible])
 
   const handleConfirmation = useCallback(() => {
-    console.log("handleConfirmation called. isVisible:", isVisibleRef.current)
     Alert.alert(
       "Give Up?",
       "Are you sure you want to give up on this movie?",
@@ -27,7 +26,6 @@ const GiveUpConfirmation: React.FC<GiveUpConfirmationProps> = ({
         {
           text: "Cancel",
           onPress: () => {
-            console.log("Cancel pressed")
             onCancel()
           },
           style: "cancel",
@@ -35,7 +33,6 @@ const GiveUpConfirmation: React.FC<GiveUpConfirmationProps> = ({
         {
           text: "Give Up",
           onPress: () => {
-            console.log("Give Up pressed")
             onConfirm()
           },
         },
@@ -45,7 +42,6 @@ const GiveUpConfirmation: React.FC<GiveUpConfirmationProps> = ({
   }, [onCancel, onConfirm])
 
   useEffect(() => {
-    console.log("GiveUpConfirmation useEffect. isVisible:", isVisible)
     if (isVisible) {
       handleConfirmation()
     }
