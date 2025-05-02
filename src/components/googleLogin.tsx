@@ -32,6 +32,7 @@ const GoogleLogin: React.FC<GoogleLoginProps> = memo(
     return (
       <View style={googleLoginStyles.container}>
         <Pressable
+          testID="googleButton"
           onPress={onPressAction}
           style={({ pressed }) => [
             googleLoginStyles.button,
@@ -47,6 +48,7 @@ const GoogleLogin: React.FC<GoogleLoginProps> = memo(
             <ActivityIndicator
               size="small"
               color={googleLoginStyles.buttonText.color}
+              testID="activityIndicator"
             />
           ) : (
             <Text style={googleLoginStyles.buttonText}>{buttonText}</Text>
