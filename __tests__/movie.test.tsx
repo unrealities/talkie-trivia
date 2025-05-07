@@ -1,12 +1,22 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react-native';
-import { useGameLogic } from '../utils/hooks/useGameLogic';
-import { useNetworkStatus } from '../utils/hooks/useNetworkStatus';
-import { Movie } from './movie';
-import { AppContext } from '../contexts/appContext';
+import useNetworkStatus from '../src/utils/hooks/useNetworkStatus';
+import Movie from '../src/components/movie'
 
 // Mock the necessary hooks and context
-jest.mock('src/utils/hooks/useGameLogic');
+jest.mock('../utils/hooks/useGameLogic', () => ({
+  useGameLogic: () => ({
+    game: {
+      id: 'game1',
+      movie: { title: 'Test Movie', release_date: '2022-01-01', poster_path: '/test.jpg', overview: 'A test movie' },
+      guesses: [],
+      isGameOver: false,
+      isGameWon: false,
+    },
+    isLoading: false,
+    error: null,
+  }),
+}));
 jest.mock('../utils/hooks/useNetworkStatus');
 jest.mock('../contexts/appContext', () => ({
   AppContext: {
@@ -15,7 +25,6 @@ jest.mock('../contexts/appContext', () => ({
   },
 }));
 
-const mockUseGameLogic = useGameLogic as jest.Mock;
 const mockUseNetworkStatus = useNetworkStatus as jest.Mock;
 
 describe('Movie', () => {
@@ -35,14 +44,6 @@ describe('Movie', () => {
   };
 
   beforeEach(() => {
-    mockUseGameLogic.mockReturnValue({
-      game: mockGame,
-      isLoading: false,
-      error: null,
-      handleGuess: jest.fn(),
-      handleGiveUp: jest.fn(),
-      handleNewGame: jest.fn(),
-    });
     mockUseNetworkStatus.mockReturnValue({ isConnected: true });
   });
 
@@ -55,42 +56,54 @@ describe('Movie', () => {
   });
 
   it('displays loading indicator when loading', () => {
-    mockUseGameLogic.mockReturnValue({
-      ...mockUseGameLogic(),
-      isLoading: true,
-    });
+    jest.mock('../utils/hooks/useGameLogic', () => ({
+      useGameLogic: () => ({
+        game: null,
+        isLoading: true,
+        error: null,
+      }),
+    }));
 
     render(<Movie />);
 
-    expect(screen.getByTestId('custom-loading-indicator')).toBeTruthy();
+    expect(screen.getByTestId('loading-indicator')).toBeTruthy();
   });
 
   it('displays error message when there is an error', () => {
-    mockUseGameLogic.mockReturnValue({
-      ...mockUseGameLogic(),
-      error: 'Failed to load game',
-    });
+    jest.mock('../utils/hooks/useGameLogic', () => ({
+      useGameLogic: () => ({
+        game: null,
+        isLoading: false,
+        error: 'Failed to load game',
+      }),
+    }));
 
     render(<Movie />);
 
     expect(screen.getByText('Error: Failed to load game')).toBeTruthy();
   });
 
-  it('displays "No Network Connection" when offline', () => {
+  it('displays "No Network Connection" when offline', async () => {
     mockUseNetworkStatus.mockReturnValue({ isConnected: false });
-
     render(<Movie />);
-
-    expect(screen.getByText('No Network Connection')).toBeTruthy();
+    await waitFor(() => {
+      expect(screen.getByText('No Network Connection')).toBeTruthy();
+    });
   });
 
   it('calls handleGiveUp when Give Up button is pressed', () => {
     const handleGiveUpMock = jest.fn();
-    mockUseGameLogic.mockReturnValue({
-      ...mockUseGameLogic(),
+    jest.mock('../utils/hooks/useGameLogic', () => ({
       handleGiveUp: handleGiveUpMock,
-    });
-
+    }));
+    jest.mock('../utils/hooks/useGameLogic', () => ({
+      useGameLogic: () => ({
+        game: mockGame,
+        isLoading: false,
+        error: null,
+        handleGiveUp: handleGiveUpMock,
+      }),
+    }));
     render(<Movie />);
 
     fireEvent.press(screen.getByText('Give Up'));
@@ -100,11 +113,14 @@ describe('Movie', () => {
 
   it('calls handleNewGame when Play Again button is pressed after game over', () => {
     const handleNewGameMock = jest.fn();
-    mockUseGameLogic.mockReturnValue({
-      ...mockUseGameLogic(),
-      game: { ...mockGame, isGameOver: true },
-      handleNewGame: handleNewGameMock,
-    });
+    jest.mock('../utils/hooks/useGameLogic', () => ({
+      useGameLogic: () => ({
+        game: { ...mockGame, isGameOver: true },
+        isLoading: false,
+        error: null,
+        handleNewGame: handleNewGameMock,
+      }),
+    }));
 
     render(<Movie />);
 

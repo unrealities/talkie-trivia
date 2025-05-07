@@ -12,8 +12,6 @@ interface MovieModalProps {
 
 const MovieModal: React.FC<MovieModalProps> = memo(
   ({ movie, show, toggleModal }) => {
-    console.log("MovieModal rendered with show:", show)
-
     const renderContent = () => {
       if (!movie) {
         return (
