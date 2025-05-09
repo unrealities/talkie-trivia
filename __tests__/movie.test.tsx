@@ -92,31 +92,28 @@ describe('Movie', () => {
   });
 
   it('calls handleGiveUp when Give Up button is pressed', () => {
-    const handleGiveUpMock = jest.fn();
+ const handleGiveUpMock = jest.fn();
     jest.mock('../utils/hooks/useGameLogic', () => ({
       handleGiveUp: handleGiveUpMock,
-    }));
-    jest.mock('../utils/hooks/useGameLogic', () => ({
       useGameLogic: () => ({
         game: mockGame,
         isLoading: false,
         error: null,
-        handleGiveUp: handleGiveUpMock,
+        handleGuess: jest.fn(), // Add other required mocks if needed
       }),
     }));
     render(<Movie />);
-
     fireEvent.press(screen.getByText('Give Up'));
 
     expect(handleGiveUpMock).toHaveBeenCalled();
   });
 
   it('calls handleNewGame when Play Again button is pressed after game over', () => {
-    const handleNewGameMock = jest.fn();
     jest.mock('../utils/hooks/useGameLogic', () => ({
+      const handleNewGameMock = jest.fn();
       useGameLogic: () => ({
+        const handleNewGameMock = jest.fn();
         game: { ...mockGame, isGameOver: true },
-        isLoading: false,
         error: null,
         handleNewGame: handleNewGameMock,
       }),
