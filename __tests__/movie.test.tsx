@@ -3,27 +3,43 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react-nativ
 import useNetworkStatus from '../src/utils/hooks/useNetworkStatus';
 import Movie from '../src/components/movie'
 
-// Mock the necessary hooks and context
-jest.mock('../utils/hooks/useGameLogic', () => ({
-  useGameLogic: () => ({
-    game: {
-      id: 'game1',
-      movie: { title: 'Test Movie', release_date: '2022-01-01', poster_path: '/test.jpg', overview: 'A test movie' },
-      guesses: [],
-      isGameOver: false,
-      isGameWon: false,
-    },
-    isLoading: false,
-    error: null,
-  }),
-}));
-jest.mock('../utils/hooks/useNetworkStatus');
+jest.mock('../utils/hooks/useGameLogic', () => {
+  const handleGiveUpMock = jest.fn();
+  const handleNewGameMock = jest.fn();
+  const handleGuessMock = jest.fn();
+
+ return {
+    useGameLogic: () => ({
+      game: {
+        id: 'game1',
+        movie: { title: 'Test Movie', release_date: '2022-01-01', poster_path: '/test.jpg', overview: 'A test movie' },
+        guesses: [],
+        isGameWon: false,
+      },
+      handleGiveUp: handleGiveUpMock,
+      handleNewGame: handleNewGameMock,
+      handleGuess: handleGuessMock,
+      isLoading: false,
+      error: null,
+    }),
+  }
+});
+
 jest.mock('../contexts/appContext', () => ({
-  AppContext: {
+ AppContext: {
     Consumer: ({ children }: { children: (value: any) => React.ReactNode }) =>
       children({ player: { name: 'TestPlayer', id: '1' }, setPlayer: jest.fn() }),
   },
 }));
+
+jest.mock('../components/gameUI', () => ({
+  __esModule: true,
+  default: () => {
+    return <div data-testid="game-ui">GameUI</div>;
+  },
+}));
+
+jest.mock('../utils/hooks/useNetworkStatus');
 
 const mockUseNetworkStatus = useNetworkStatus as jest.Mock;
 
@@ -92,16 +108,11 @@ describe('Movie', () => {
   });
 
   it('calls handleGiveUp when Give Up button is pressed', () => {
- const handleGiveUpMock = jest.fn();
+    // Assuming the jest.mock at the top provides handleGiveUpMock
+    const handleGiveUpMock = jest.fn(); // Re-declare locally for this test
     jest.mock('../utils/hooks/useGameLogic', () => ({
-      handleGiveUp: handleGiveUpMock,
-      useGameLogic: () => ({
-        game: mockGame,
-        isLoading: false,
-        error: null,
-        handleGuess: jest.fn(), // Add other required mocks if needed
-      }),
-    }));
+ useGameLogic: () => ({ game: mockGame, isLoading: false, error: null, handleGuess: jest.fn(), handleGiveUp: handleGiveUpMock }),
+ }));
     render(<Movie />);
     fireEvent.press(screen.getByText('Give Up'));
 
@@ -109,14 +120,12 @@ describe('Movie', () => {
   });
 
   it('calls handleNewGame when Play Again button is pressed after game over', () => {
+    const handleNewGameMock = jest.fn(); // Re-declare locally for this test
     jest.mock('../utils/hooks/useGameLogic', () => ({
-      const handleNewGameMock = jest.fn();
       useGameLogic: () => ({
-        const handleNewGameMock = jest.fn();
-        game: { ...mockGame, isGameOver: true },
-        error: null,
-        handleNewGame: handleNewGameMock,
+ game: { ...mockGame, isGameOver: true }, // Mock game over state
       }),
+
     }));
 
     render(<Movie />);
