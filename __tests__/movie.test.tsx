@@ -1,45 +1,59 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react-native';
+
+// Mock expo-network before useNetworkStatus is imported
+jest.mock('expo-network', () => ({
+  getNetworkStateAsync: jest.fn(() => Promise.resolve({ isInternetReachable: true })),
+}));
 import useNetworkStatus from '../src/utils/hooks/useNetworkStatus';
 import Movie from '../src/components/movie'
 
-jest.mock('../utils/hooks/useGameLogic', () => {
-  const handleGiveUpMock = jest.fn();
-  const handleNewGameMock = jest.fn();
-  const handleGuessMock = jest.fn();
+jest.mock('../src/utils/hooks/useGameLogic.tsx', () => ({
+  useGameLogic: jest.fn(() => ({
+    // Mocked values and functions returned by the hook
+    game: {
+      id: 'game1',
+      movie: { title: 'Test Movie', release_date: '2022-01-01', poster_path: '/test.jpg', overview: 'A test movie' },
+      guesses: [],
+      isGameWon: false,
+    },
+    handleGiveUp: jest.fn(),
+    handleNewGame: jest.fn(),
+    handleGuess: jest.fn(),
+    isLoading: false,
+    error: null,
+  })),
+}));
 
- return {
-    useGameLogic: () => ({
-      game: {
-        id: 'game1',
-        movie: { title: 'Test Movie', release_date: '2022-01-01', poster_path: '/test.jpg', overview: 'A test movie' },
-        guesses: [],
-        isGameWon: false,
-      },
-      handleGiveUp: handleGiveUpMock,
-      handleNewGame: handleNewGameMock,
-      handleGuess: handleGuessMock,
-      isLoading: false,
-      error: null,
-    }),
-  }
-});
-
-jest.mock('../contexts/appContext', () => ({
+jest.mock('../src/contexts/appContext', () => ({
  AppContext: {
     Consumer: ({ children }: { children: (value: any) => React.ReactNode }) =>
       children({ player: { name: 'TestPlayer', id: '1' }, setPlayer: jest.fn() }),
   },
 }));
 
-jest.mock('../components/gameUI', () => ({
+jest.mock('../src/components/gameUI', () => ({
   __esModule: true,
   default: () => {
     return <div data-testid="game-ui">GameUI</div>;
   },
 }));
 
-jest.mock('../utils/hooks/useNetworkStatus');
+jest.mock('../src/components/hintUI', () => ({
+  __esModule: true,
+  default: () => {
+    return <div data-testid="hint-ui">HintUI</div>;
+  },
+}));
+
+jest.mock('../src/components/playerStats', () => ({
+  __esModule: true,
+  default: () => {
+    return <div data-testid="player-stats">PlayerStats</div>;
+  },
+}));
+
+jest.mock('../src/utils/hooks/useNetworkStatus');
 
 const mockUseNetworkStatus = useNetworkStatus as jest.Mock;
 
@@ -72,13 +86,14 @@ describe('Movie', () => {
   });
 
   it('displays loading indicator when loading', () => {
-    jest.mock('../utils/hooks/useGameLogic', () => ({
-      useGameLogic: () => ({
-        game: null,
-        isLoading: true,
-        error: null,
-      }),
-    }));
+    useGameLogic.mockReturnValue({
+      game: null,
+      isLoading: true,
+      error: null,
+      handleGiveUp: jest.fn(),
+      handleNewGame: jest.fn(),
+      handleGuess: jest.fn(),
+    });
 
     render(<Movie />);
 
@@ -86,13 +101,14 @@ describe('Movie', () => {
   });
 
   it('displays error message when there is an error', () => {
-    jest.mock('../utils/hooks/useGameLogic', () => ({
-      useGameLogic: () => ({
-        game: null,
-        isLoading: false,
-        error: 'Failed to load game',
-      }),
-    }));
+    useGameLogic.mockReturnValue({
+      game: null,
+      isLoading: false,
+      error: 'Failed to load game',
+      handleGiveUp: jest.fn(),
+      handleNewGame: jest.fn(),
+      handleGuess: jest.fn(),
+    });
 
     render(<Movie />);
 
@@ -109,30 +125,27 @@ describe('Movie', () => {
 
   it('calls handleGiveUp when Give Up button is pressed', () => {
     // Assuming the jest.mock at the top provides handleGiveUpMock
-    const handleGiveUpMock = jest.fn(); // Re-declare locally for this test
-    jest.mock('../utils/hooks/useGameLogic', () => ({
- useGameLogic: () => ({ game: mockGame, isLoading: false, error: null, handleGuess: jest.fn(), handleGiveUp: handleGiveUpMock }),
- }));
     render(<Movie />);
     fireEvent.press(screen.getByText('Give Up'));
 
-    expect(handleGiveUpMock).toHaveBeenCalled();
+    expect(useGameLogic().handleGiveUp).toHaveBeenCalled();
   });
 
   it('calls handleNewGame when Play Again button is pressed after game over', () => {
-    const handleNewGameMock = jest.fn(); // Re-declare locally for this test
-    jest.mock('../utils/hooks/useGameLogic', () => ({
-      useGameLogic: () => ({
- game: { ...mockGame, isGameOver: true }, // Mock game over state
-      }),
-
-    }));
+    useGameLogic.mockReturnValue({
+      game: { ...mockGame, isGameOver: true }, // Mock game over state
+      isLoading: false,
+      error: null,
+      handleGiveUp: jest.fn(),
+      handleNewGame: jest.fn(),
+      handleGuess: jest.fn(),
+    });
 
     render(<Movie />);
 
     fireEvent.press(screen.getByText('Play Again'));
 
-    expect(handleNewGameMock).toHaveBeenCalled();
+    expect(useGameLogic().handleNewGame).toHaveBeenCalled();
   });
 
   it('renders GameUI component', () => {
