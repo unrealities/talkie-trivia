@@ -1,4 +1,5 @@
 import React, { useEffect } from "react"
+import { View, Text } from "react-native"
 import {
   useSharedValue,
   useAnimatedStyle,
@@ -32,6 +33,8 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
   updatePlayerGame,
   updatePlayerStats,
   initialDataLoaded,
+
+
 }) => {
   const {
     showModal,
@@ -46,6 +49,8 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
     confirmGiveUp,
     handleConfettiStop,
     provideGuessFeedback,
+ isLoading,
+    error
   } = useGameLogic({
     initialDataLoaded,
     player,
@@ -68,6 +73,18 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
       modalOpacity.value = withTiming(0, { duration: 300 })
     }
   }, [showModal])
+
+  if (isLoading) {
+    return <View><Text>Loading...</Text></View>;
+  }
+
+  if (error) {
+    return <View><Text>Error: {error}</Text></View>;
+  }
+
+  if (!isNetworkConnected) {
+    return <View><Text>No Network Connection</Text></View>;
+  }
 
   return (
     <GameUI

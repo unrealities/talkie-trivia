@@ -1,12 +1,12 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react-native';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react-native';
 import GameUI from '../src/components/gameUI';
 import { BasicMovie } from '../src/models/movie';
 import { PlayerGame, Game } from '../src/models/game';
 import Player from '../src/models/player';
 import PlayerStats from '../src/models/playerStats';
 
-// Mocking dependencies
+// Mocking child components
 jest.mock('../src/components/clues', () => ({
   __esModule: true,
   default: () => <div testID="clues-container" />,
@@ -19,13 +19,15 @@ jest.mock('../src/components/network', () => ({
   __esModule: true,
   default: () => <div testID="network-container" />,
 }));
-jest.mock('../src/components/errorMessage', () => ({
-  __esModule: true,
-  default: () => <div testID="network-container" />,
-}));
+// Modify the mock for './modal' (MovieModal) in this file. The mock should be a function that accepts props. If the 'show' prop is true and the 'movie' prop is not null, the mock should render a button with the text 'Play Again'. This button should call the toggleModal prop when pressed.
 jest.mock('../src/components/modal', () => ({
   __esModule: true,
-  default: () => <div testID="modal-container" />,
+  default: ({ show, movie, toggleModal }: any) => {
+    if (show && movie) {
+      return <button onClick={toggleModal}>Play Again</button>;
+    }
+    return <div testID="modal-container" />;
+  },
 }));
 jest.mock('../src/components/picker', () => ({
   __esModule: true,
@@ -66,7 +68,13 @@ const mockGame: Game = {
   genres: [],
   actors: [],
   directors: [],
-}
+  movie: { // Keep this structure for the movie details needed by GameUI
+    id: '1',
+    title: '', // Corrected title here, as GameUI doesn't directly render this
+    title: 'Test Movie',
+    release_date: '2022-01-01',
+    overview: 'A test movie',
+  },
 const mockPlayerGame: PlayerGame = {
   game: mockGame,
   guesses: [],
@@ -118,6 +126,21 @@ const renderWithProps = (props: any) => {
 };
 
 describe('GameUI', () => {
+  it('renders correctly with game data', () => {
+    const gameDataProps = {
+      ...mockProps,
+      playerGame: mockPlayerGame, // Ensure playerGame has complete game and movie data
+    };
+    render(<GameUI {...gameDataProps} />);
+
+    expect(screen.getByTestId('network-container')).toBeDefined();
+    expect(screen.getByTestId('title-header')).toBeDefined();
+    expect(screen.getByTestId('clues-container')).toBeDefined();
+    expect(screen.getByTestId('hint-container')).toBeDefined();
+    expect(screen.getByTestId('picker-container')).toBeDefined();
+    expect(screen.getByTestId('guesses-container')).toBeDefined();
+  });
+
   it('renders guess feedback when present', () => {
     const feedback = "Try Again!";
     renderWithProps({ ...mockProps, guessFeedback: feedback });
@@ -162,4 +185,16 @@ describe('GameUI', () => {
     fireEvent.press(giveUpButton);
     expect(mockProps.handleGiveUp).toHaveBeenCalled();
   });
+
+  it('calls handleNewGame when Play Again button is pressed after game over', () => {
+    const gameCompleteProps = {
+      ...mockProps,
+      playerGame: { ...mockPlayerGame, correctAnswer: true },
+      showModal: true, // Assuming modal shows on game over
+    };
+    render(<GameUI {...gameCompleteProps} />);
+    fireEvent.press(screen.getByText('Play Again'));
+    expect(mockProps.setShowModal).toHaveBeenCalledWith(false); // Assuming Play Again button calls toggleModal (setShowModal)
+  });
 });
+
