@@ -87,25 +87,27 @@ describe('Movie', () => {
   };
 
   beforeEach(() => {
-    mockUseNetworkStatus.mockReturnValue({ isConnected: true });
+    jest.clearAllMocks();
+    mockUseNetworkStatus.mockReturnValue({ isNetworkConnected: true });
   });
 
   it('renders GameUI component when not loading, no error, network connected, and game data is available', () => {
     // Ensure useGameLogic mock returns a state where GameUI should be rendered
     useGameLogic.mockReturnValue({
-      game: mockGame, // Provide valid game data
       playerGame: mockGame.playerGame, // Provide valid playerGame data
       isLoading: false,
       error: null,
       player: { name: 'TestPlayer', id: '1' },
+      game: mockGame, // Provide valid game data
       playerStats: {},
       updatePlayerGame: jest.fn(),
       handleGiveUp: jest.fn(),
       handleNewGame: jest.fn(),
       handleGuess: jest.fn(),
+ isNetworkConnected: true,
     });
     // Ensure useNetworkStatus mock returns connected
-    mockUseNetworkStatus.mockReturnValue({ isConnected: true });
+    mockUseNetworkStatus.mockReturnValue({ isNetworkConnected: true });
 
     render(<Movie />);
     expect(screen.getByTestId('game-ui')).toBeTruthy();
@@ -113,10 +115,7 @@ describe('Movie', () => {
 
   it('calls handleGiveUp when Give Up button is pressed', () => {
     useGameLogic.mockReturnValue({
-      game: { // Ensure the structure returned by useGameLogic matches what MoviesContainer expects
-        ...mockGame,
-        isGameOver: false,
-        isGameWon: false,
+      // Ensure the structure returned by useGameLogic matches what MoviesContainer expects
         playerGame: { // Add playerGame with game not over state
         correctAnswer: false,
         gaveUp: false,
@@ -124,6 +123,8 @@ describe('Movie', () => {
         guesses: [],
       },
       isLoading: false,
+      error: null,
+      game: mockGame, // Include game object if needed by GameUI
       player: { name: 'TestPlayer', id: '1' }, // Include player if needed
       playerStats: {}, // Include playerStats if needed
       updatePlayerGame: jest.fn(), // Include update functions if needed
@@ -131,7 +132,8 @@ describe('Movie', () => {
       handleGiveUp: jest.fn(),
       handleNewGame: jest.fn(),
       handleGuess: jest.fn(),
-    }});
+ isNetworkConnected: true,
+    });
 
     render(<Movie />);
     fireEvent.press(screen.getByText('Give Up'));
@@ -141,10 +143,7 @@ describe('Movie', () => {
 
   it('calls handleNewGame when Play Again button is pressed after game over', () => {
     useGameLogic.mockReturnValue({
-      game: { // Ensure the structure returned by useGameLogic matches what MoviesContainer expects
-        ...mockGame,
-        isGameOver: true,
-        isGameWon: false,
+      // Ensure the structure returned by useGameLogic matches what MoviesContainer expects
         playerGame: { // Add playerGame with game over state (won)
         correctAnswer: true, // Or gaveUp: true
         gaveUp: false,
@@ -152,6 +151,8 @@ describe('Movie', () => {
         guesses: [],
       },
       isLoading: false,
+      error: null,
+      game: mockGame, // Include game object if needed by GameUI
       player: { name: 'TestPlayer', id: '1' }, // Include player if needed
       playerStats: {}, // Include playerStats if needed
       updatePlayerGame: jest.fn(), // Include update functions if needed
@@ -159,7 +160,8 @@ describe('Movie', () => {
       handleGiveUp: jest.fn(),
       handleNewGame: jest.fn(),
       handleGuess: jest.fn(),
-    }});
+ isNetworkConnected: true,
+    });
 
     render(<Movie />);
     fireEvent.press(screen.getByText('Play Again'));
@@ -175,6 +177,7 @@ describe('Movie', () => {
       handleGiveUp: jest.fn(),
       handleNewGame: jest.fn(),
       handleGuess: jest.fn(),
+ isNetworkConnected: true, // Assume network is connected during loading
     });
     render(<Movie />);
     expect(screen.getByText('Loading...')).toBeTruthy();
@@ -189,13 +192,14 @@ describe('Movie', () => {
       handleGiveUp: jest.fn(),
       handleNewGame: jest.fn(),
       handleGuess: jest.fn(),
+ isNetworkConnected: true, // Assume network is connected when error occurs
     });
     render(<Movie />);
     expect(screen.getByText('Error: Failed to load game')).toBeTruthy();
   });
 
   it('displays "No Network Connection" when offline', async () => {
-    mockUseNetworkStatus.mockReturnValue({ isConnected: false });
+    mockUseNetworkStatus.mockReturnValue({ isNetworkConnected: false });
     render(<Movie />);
     expect(screen.getByText('No Network Connection')).toBeTruthy();
   });

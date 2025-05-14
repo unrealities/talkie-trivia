@@ -74,6 +74,8 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
     }
   }, [showModal])
 
+  console.log('MoviesContainer state:', { isLoading, error, isNetworkConnected, playerGame: !!playerGame });
+
   if (isLoading) {
     return <View><Text>Loading...</Text></View>;
   }
