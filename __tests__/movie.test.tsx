@@ -192,7 +192,7 @@ describe('Movie', () => {
       handleGiveUp: jest.fn(),
       handleNewGame: jest.fn(),
       handleGuess: jest.fn(),
- isNetworkConnected: true, // Assume network is connected when error occurs
+ isNetworkConnected: true, // Assume network is connected when error occurs. TODO: This test should likely mock a network connected scenario to specifically test the error display.
     });
     render(<Movie />);
     expect(screen.getByText('Error: Failed to load game')).toBeTruthy();

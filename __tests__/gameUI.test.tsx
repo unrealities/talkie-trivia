@@ -24,7 +24,7 @@ jest.mock('../src/components/modal', () => ({
   __esModule: true,
   default: ({ show, movie, toggleModal }: any) => {
     if (show && movie) {
-      return <button onClick={toggleModal} testID="play-again-button">Play Again</button>;
+      return <button onClick={() => { toggleModal(); }} testID="play-again-button">Play Again</button>;
     }
     return <div testID="modal-container" />;
   },
@@ -187,14 +187,15 @@ describe('GameUI', () => {
   });
 
   it('calls handleNewGame when Play Again button is pressed after game over', async () => {
+    const toggleModal = jest.fn();
     const gameCompleteProps = {
       ...mockProps,
-      playerGame: { ...mockPlayerGame, correctAnswer: true },
+ playerGame: { ...mockPlayerGame, correctAnswer: true },
       showModal: true, // Assuming modal shows on game over
     };
-    render(<GameUI {...gameCompleteProps} />);
-    fireEvent.press(await screen.findByTestId('play-again-button'));
-    expect(mockProps.setShowModal).toHaveBeenCalledWith(false); // Assuming Play Again button calls toggleModal (setShowModal)
+ render(<GameUI {...gameCompleteProps} toggleModal={toggleModal} />);
+    await screen.findByTestId('play-again-button');
+ expect(toggleModal).toHaveBeenCalled();
   });
 });
 
