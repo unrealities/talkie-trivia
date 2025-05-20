@@ -31,7 +31,7 @@ interface PickerUIProps {
   handleBlur: () => void
 }
 
-const PickerUI: React.FC<PickerUIProps> = memo(
+export const PickerUI: React.FC<PickerUIProps> = memo(
   ({
     searchText,
     isSearching,
@@ -136,5 +136,3 @@ const PickerUI: React.FC<PickerUIProps> = memo(
     )
   }
 )
-
-export default PickerUI

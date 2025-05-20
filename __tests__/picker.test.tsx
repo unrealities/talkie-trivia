@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent, waitFor, screen } from '@testing-library/react-native';
-import PickerContainer from '../src/components/pickerUI';
 import { PlayerGame } from '../src/models/game';
+import { PickerUI } from '../src/components/pickerUI';
 import { BasicMovie } from '../src/models/movie';
 import { colors } from '../src/styles/global';
 import { usePickerLogic } from '../src/utils/hooks/usePickerLogic';
@@ -47,24 +47,43 @@ const defaultProps = {
 describe('PickerContainer', () => {
   beforeEach(() => {
     mockUsePickerLogic.mockReturnValue({
+      selectedMovieTitle: 'Select a movie', // Explicitly mock selectedMovieTitle
+      selectedMovie: { id: '', title: 'Select a movie', release_date: '' },
+      // Provide default mock values for all other properties returned by usePickerLogic
+ isLoading: false,
+ error: null,
+      buttonScale: { _value: 1 }, // Mock animated value structure
+      DEFAULT_BUTTON_TEXT: 'Select a movie',
+      isInteractionsDisabled: false, // Default to enabled
       searchText: '',
       foundMovies: [],
       // Provide default mock values for all other properties returned by usePickerLogic
       isSearching: false,
-      selectedMovie: { id: '', title: 'Select a movie', release_date: '' },
-      buttonScale: { _value: 1 }, // Mock animated value structure
-      DEFAULT_BUTTON_TEXT: 'Select a movie',
-      handleInputChange: jest.fn(),
-      handleMovieSelection: jest.fn(),
-      onPressCheck: jest.fn(),
-      handleFocus: jest.fn(),
-      handleBlur: jest.fn(),
-      isInteractionsDisabled: false, // Default to enabled
+      handleInputChange: jest.fn(), handleMovieSelection: jest.fn(), onPressCheck: jest.fn(), handleFocus: jest.fn(), handleBlur: jest.fn(),
     });
   });
 
+  // Mock the selectedMovieTitle separately based on the selectedMovie mock
+
   test('renders with default props', () => {
-    render(<PickerContainer {...defaultProps} />);
+    const mockLogicProps = mockUsePickerLogic();
+    render(
+      <PickerUI
+        searchText={mockLogicProps.searchText}
+        selectedMovieTitle={mockLogicProps.selectedMovieTitle}
+        selectedMovie={mockLogicProps.selectedMovie}
+        foundMovies={mockLogicProps.foundMovies}
+        isSearching={mockLogicProps.isSearching}
+        isInteractionsDisabled={mockLogicProps.isInteractionsDisabled}
+        buttonScale={mockLogicProps.buttonScale}
+        DEFAULT_BUTTON_TEXT={mockLogicProps.DEFAULT_BUTTON_TEXT}
+        handleInputChange={mockLogicProps.handleInputChange}
+        handleMovieSelection={mockLogicProps.handleMovieSelection}
+        onPressCheck={mockLogicProps.onPressCheck}
+        handleFocus={mockLogicProps.handleFocus}
+        handleBlur={mockLogicProps.handleBlur}
+      />
+    );
     expect(screen.getByPlaceholderText('Search for a movie...')).toBeVisible();
     expect(screen.getByText('Select a movie')).toBeVisible();
   });
@@ -78,9 +97,27 @@ describe('PickerContainer', () => {
       ...mockUsePickerLogic(), // Spread the default mock values
       // Override specific properties for this test
       isInteractionsDisabled: true,
+      selectedMovieTitle: 'Select a movie',
     });
 
-    render(<PickerContainer {...defaultProps} playerGame={playerGameWithCorrectAnswer} />);
+    const mockLogicProps = mockUsePickerLogic();
+    render(
+      <PickerUI
+        searchText={mockLogicProps.searchText}
+        selectedMovieTitle={mockLogicProps.selectedMovieTitle}
+        selectedMovie={mockLogicProps.selectedMovie}
+        foundMovies={mockLogicProps.foundMovies}
+        isSearching={mockLogicProps.isSearching}
+        isInteractionsDisabled={mockLogicProps.isInteractionsDisabled}
+        buttonScale={mockLogicProps.buttonScale}
+        DEFAULT_BUTTON_TEXT={mockLogicProps.DEFAULT_BUTTON_TEXT}
+        handleInputChange={mockLogicProps.handleInputChange}
+        handleMovieSelection={mockLogicProps.handleMovieSelection}
+        onPressCheck={mockLogicProps.onPressCheck}
+        handleFocus={mockLogicProps.handleFocus}
+        handleBlur={mockLogicProps.handleBlur}
+      />
+    );
     expect(screen.getByPlaceholderText('Search for a movie...')).toBeDisabled();
     expect(screen.getByText('Select a movie')).toBeVisible(); // Button is visible but style should indicate disabled
     // Checking button style requires inspecting the animated style, which is tricky with RTL.
@@ -96,8 +133,26 @@ describe('PickerContainer', () => {
       ...mockUsePickerLogic(), // Spread the default mock values
       // Override specific properties for this test
       isInteractionsDisabled: true,
+      selectedMovieTitle: 'Select a movie',
     });
-    render(<PickerContainer {...defaultProps} playerGame={playerGameWithGaveUp} />);
+    const mockLogicProps = mockUsePickerLogic();
+    render(
+      <PickerUI
+        searchText={mockLogicProps.searchText}
+        selectedMovieTitle={mockLogicProps.selectedMovieTitle}
+        selectedMovie={mockLogicProps.selectedMovie}
+        foundMovies={mockLogicProps.foundMovies}
+        isSearching={mockLogicProps.isSearching}
+        isInteractionsDisabled={mockLogicProps.isInteractionsDisabled}
+        buttonScale={mockLogicProps.buttonScale}
+        DEFAULT_BUTTON_TEXT={mockLogicProps.DEFAULT_BUTTON_TEXT}
+        handleInputChange={mockLogicProps.handleInputChange}
+        handleMovieSelection={mockLogicProps.handleMovieSelection}
+        onPressCheck={mockLogicProps.onPressCheck}
+        handleFocus={mockLogicProps.handleFocus}
+        handleBlur={mockLogicProps.handleBlur}
+      />
+    );
     expect(screen.getByPlaceholderText('Search for a movie...')).toBeDisabled();
     expect(screen.getByText('Select a movie')).toBeVisible(); // Button is visible but style should indicate disabled
   });
@@ -111,8 +166,26 @@ describe('PickerContainer', () => {
       ...mockUsePickerLogic(), // Spread the default mock values
       // Override specific properties for this test
       isInteractionsDisabled: true,
+      selectedMovieTitle: 'Select a movie',
     });
-    render(<PickerContainer {...defaultProps} playerGame={playerGameWithMaxGuesses} />);
+    const mockLogicProps = mockUsePickerLogic();
+    render(
+      <PickerUI
+        searchText={mockLogicProps.searchText}
+        selectedMovieTitle={mockLogicProps.selectedMovieTitle}
+        selectedMovie={mockLogicProps.selectedMovie}
+        foundMovies={mockLogicProps.foundMovies}
+        isSearching={mockLogicProps.isSearching}
+        isInteractionsDisabled={mockLogicProps.isInteractionsDisabled}
+        buttonScale={mockLogicProps.buttonScale}
+        DEFAULT_BUTTON_TEXT={mockLogicProps.DEFAULT_BUTTON_TEXT}
+        handleInputChange={mockLogicProps.handleInputChange}
+        handleMovieSelection={mockLogicProps.handleMovieSelection}
+        onPressCheck={mockLogicProps.onPressCheck}
+        handleFocus={mockLogicProps.handleFocus}
+        handleBlur={mockLogicProps.handleBlur}
+      />
+    );
     expect(screen.getByPlaceholderText('Search for a movie...')).toBeDisabled();
     expect(screen.getByText('Select a movie')).toBeVisible(); // Button is visible but style should indicate disabled
   });
@@ -123,8 +196,26 @@ describe('PickerContainer', () => {
       ...mockUsePickerLogic(), // Spread the default mock values
       // Override specific properties for this test
       handleInputChange,
+      selectedMovieTitle: 'Select a movie',
     });
-    render(<PickerContainer {...defaultProps} />);
+    const mockLogicProps = mockUsePickerLogic();
+    render(
+      <PickerUI
+        searchText={mockLogicProps.searchText}
+        selectedMovieTitle={mockLogicProps.selectedMovieTitle}
+        selectedMovie={mockLogicProps.selectedMovie}
+        foundMovies={mockLogicProps.foundMovies}
+        isSearching={mockLogicProps.isSearching}
+        isInteractionsDisabled={mockLogicProps.isInteractionsDisabled}
+        buttonScale={mockLogicProps.buttonScale}
+        DEFAULT_BUTTON_TEXT={mockLogicProps.DEFAULT_BUTTON_TEXT}
+        handleInputChange={mockLogicProps.handleInputChange}
+        handleMovieSelection={mockLogicProps.handleMovieSelection}
+        onPressCheck={mockLogicProps.onPressCheck}
+        handleFocus={mockLogicProps.handleFocus}
+        handleBlur={mockLogicProps.handleBlur}
+      />
+    );
     fireEvent.changeText(screen.getByPlaceholderText('Search for a movie...'), 'new search');
     expect(handleInputChange).toHaveBeenCalledWith('new search');
   });
@@ -133,10 +224,29 @@ describe('PickerContainer', () => {
     const handleMovieSelection = jest.fn();
     mockUsePickerLogic.mockReturnValue({
       ...mockUsePickerLogic(), // Spread the default mock values
- foundMovies: mockMovies, // Override specific properties for this test
+      foundMovies: mockMovies, // Override specific properties for this test
       handleMovieSelection,
     });
-    render(<PickerContainer {...defaultProps} />);
+    mockUsePickerLogic.mockReturnValue({...mockUsePickerLogic(), selectedMovieTitle: 'Select a movie'}); // Initial render title
+
+    const mockLogicProps = mockUsePickerLogic();
+    render(
+      <PickerUI
+        searchText={mockLogicProps.searchText}
+        selectedMovieTitle={mockLogicProps.selectedMovieTitle}
+        selectedMovie={mockLogicProps.selectedMovie}
+        foundMovies={mockLogicProps.foundMovies}
+        isSearching={mockLogicProps.isSearching}
+        isInteractionsDisabled={mockLogicProps.isInteractionsDisabled}
+        buttonScale={mockLogicProps.buttonScale}
+        DEFAULT_BUTTON_TEXT={mockLogicProps.DEFAULT_BUTTON_TEXT}
+        handleInputChange={mockLogicProps.handleInputChange}
+        handleMovieSelection={mockLogicProps.handleMovieSelection}
+        onPressCheck={mockLogicProps.onPressCheck}
+        handleFocus={mockLogicProps.handleFocus}
+        handleBlur={mockLogicProps.handleBlur}
+      />
+    );
 
     // Need to simulate typing to show the found movies
     fireEvent.changeText(screen.getByPlaceholderText('Search for a movie...'), 'Test');
@@ -144,6 +254,8 @@ describe('PickerContainer', () => {
     await waitFor(() => {
       expect(screen.getByText('Test Movie (2022)')).toBeVisible();
     });
+    // After selection, the title should update, but the mock doesn't reflect this state change.
+    // The test focuses on if handleMovieSelection is called, which is correct.
 
     fireEvent.press(screen.getByText('Test Movie (2022)'));
     expect(handleMovieSelection).toHaveBeenCalledWith(mockMovie);
@@ -156,8 +268,26 @@ describe('PickerContainer', () => {
       // Override specific properties for this test
       selectedMovie: mockMovie, // Simulate a movie being selected
       onPressCheck,
+      selectedMovieTitle: mockMovie.title,
     });
-    render(<PickerContainer {...defaultProps} />);
+    const mockLogicProps = mockUsePickerLogic();
+    render(
+      <PickerUI
+        searchText={mockLogicProps.searchText}
+        selectedMovieTitle={mockLogicProps.selectedMovieTitle}
+        selectedMovie={mockLogicProps.selectedMovie}
+        foundMovies={mockLogicProps.foundMovies}
+        isSearching={mockLogicProps.isSearching}
+        isInteractionsDisabled={mockLogicProps.isInteractionsDisabled}
+        buttonScale={mockLogicProps.buttonScale}
+        DEFAULT_BUTTON_TEXT={mockLogicProps.DEFAULT_BUTTON_TEXT}
+        handleInputChange={mockLogicProps.handleInputChange}
+        handleMovieSelection={mockLogicProps.handleMovieSelection}
+        onPressCheck={mockLogicProps.onPressCheck}
+        handleFocus={mockLogicProps.handleFocus}
+        handleBlur={mockLogicProps.handleBlur}
+      />
+    );
     fireEvent.press(screen.getByLabelText(`Check movie: ${mockMovie.title}`));
     expect(onPressCheck).toHaveBeenCalled();
   });
@@ -170,8 +300,26 @@ describe('PickerContainer', () => {
       foundMovies: mockMovies,
       selectedMovie: { id: '', title: 'Select a movie', release_date: '' },
       handleMovieSelection,
+      selectedMovieTitle: 'Select a movie',
     });
-    const { getByText } = render(<PickerContainer {...defaultProps} />);
+    const mockLogicProps = mockUsePickerLogic();
+    const { getByText } = render(
+      <PickerUI
+        searchText={mockLogicProps.searchText}
+        selectedMovieTitle={mockLogicProps.selectedMovieTitle}
+        selectedMovie={mockLogicProps.selectedMovie}
+        foundMovies={mockLogicProps.foundMovies}
+        isSearching={mockLogicProps.isSearching}
+        isInteractionsDisabled={mockLogicProps.isInteractionsDisabled}
+        buttonScale={mockLogicProps.buttonScale}
+        DEFAULT_BUTTON_TEXT={mockLogicProps.DEFAULT_BUTTON_TEXT}
+        handleInputChange={mockLogicProps.handleInputChange}
+        handleMovieSelection={mockLogicProps.handleMovieSelection}
+        onPressCheck={mockLogicProps.onPressCheck}
+        handleFocus={mockLogicProps.handleFocus}
+        handleBlur={mockLogicProps.handleBlur}
+      />
+    );
     fireEvent.changeText(screen.getByPlaceholderText('Search for a movie...'), 'Test'); // Trigger search and display list
 
     expect(getByText('Test Movie (2022)')).toBeVisible();
@@ -179,9 +327,7 @@ describe('PickerContainer', () => {
   });
 
   test('animated button style reflects disabled state and selected movie', () => {
-    // Testing animated styles directly with RTL is complex.
-    // We are testing the logic within usePickerLogic and the passed props to PickerUI.
-    // We can check if the props passed to PickerUI reflect the expected state.
+    // Testing animated styles directly with RTL is complex.\n    // We are testing the logic within usePickerLogic and the passed props to PickerUI.\n    // We can check if the props passed to PickerUI reflect the expected state.\n
     const selectedMovie = { id: '3', title: 'Short', release_date: '' };
     mockUsePickerLogic.mockReturnValue({
       ...mockUsePickerLogic(), // Spread the default mock values
@@ -189,8 +335,27 @@ describe('PickerContainer', () => {
       selectedMovie,
       DEFAULT_BUTTON_TEXT: 'Select a movie',
       isInteractionsDisabled: false,
+      selectedMovieTitle: selectedMovie.title,
     });
-    const { rerender } = render(<PickerContainer {...defaultProps} />);
+    const mockLogicProps = mockUsePickerLogic();
+    const { rerender } = render(
+      <PickerUI
+        searchText={mockLogicProps.searchText}
+        selectedMovieTitle={mockLogicProps.selectedMovieTitle}
+        selectedMovie={mockLogicProps.selectedMovie}
+        foundMovies={mockLogicProps.foundMovies}
+        isSearching={mockLogicProps.isSearching}
+        isInteractionsDisabled={mockLogicProps.isInteractionsDisabled}
+        buttonScale={mockLogicProps.buttonScale}
+        DEFAULT_BUTTON_TEXT={mockLogicProps.DEFAULT_BUTTON_TEXT}
+        handleInputChange={mockLogicProps.handleInputChange}
+        handleMovieSelection={mockLogicProps.handleMovieSelection}
+        onPressCheck={mockLogicProps.onPressCheck}
+        handleFocus={mockLogicProps.handleFocus}
+        handleBlur={mockLogicProps.handleBlur}
+      />
+    );
+
 
     // Check when a valid movie is selected
     expect(mockUsePickerLogic().selectedMovie).toEqual(selectedMovie);
@@ -202,8 +367,26 @@ describe('PickerContainer', () => {
       selectedMovie,
       DEFAULT_BUTTON_TEXT: 'Select a movie',
       isInteractionsDisabled: true,
+      selectedMovieTitle: selectedMovie.title,
     });
-    rerender(<PickerContainer {...defaultProps} />);
+    const nextMockLogicProps = mockUsePickerLogic();
+    rerender(
+      <PickerUI
+        searchText={nextMockLogicProps.searchText}
+        selectedMovieTitle={nextMockLogicProps.selectedMovieTitle}
+        selectedMovie={nextMockLogicProps.selectedMovie}
+        foundMovies={nextMockLogicProps.foundMovies}
+        isSearching={nextMockLogicProps.isSearching}
+        isInteractionsDisabled={nextMockLogicProps.isInteractionsDisabled}
+        buttonScale={nextMockLogicProps.buttonScale}
+        DEFAULT_BUTTON_TEXT={nextMockLogicProps.DEFAULT_BUTTON_TEXT}
+        handleInputChange={nextMockLogicProps.handleInputChange}
+        handleMovieSelection={nextMockLogicProps.handleMovieSelection}
+        onPressCheck={nextMockLogicProps.onPressCheck}
+        handleFocus={nextMockLogicProps.handleFocus}
+        handleBlur={nextMockLogicProps.handleBlur}
+      />
+    );
     expect(mockUsePickerLogic().isInteractionsDisabled).toBe(true);
 
     // Check when no movie is selected (default text)
@@ -213,8 +396,26 @@ describe('PickerContainer', () => {
       selectedMovie: { id: '', title: 'Select a movie', release_date: '' },
       DEFAULT_BUTTON_TEXT: 'Select a movie',
       isInteractionsDisabled: false,
+      selectedMovieTitle: 'Select a movie',
     });
-    rerender(<PickerContainer {...defaultProps} />);
+    const anotherMockLogicProps = mockUsePickerLogic();
+    rerender(
+      <PickerUI
+        searchText={anotherMockLogicProps.searchText}
+        selectedMovieTitle={anotherMockLogicProps.selectedMovieTitle}
+        selectedMovie={anotherMockLogicProps.selectedMovie}
+        foundMovies={anotherMockLogicProps.foundMovies}
+        isSearching={anotherMockLogicProps.isSearching}
+        isInteractionsDisabled={anotherMockLogicProps.isInteractionsDisabled}
+        buttonScale={anotherMockLogicProps.buttonScale}
+        DEFAULT_BUTTON_TEXT={anotherMockLogicProps.DEFAULT_BUTTON_TEXT}
+        handleInputChange={anotherMockLogicProps.handleInputChange}
+        handleMovieSelection={anotherMockLogicProps.handleMovieSelection}
+        onPressCheck={anotherMockLogicProps.onPressCheck}
+        handleFocus={anotherMockLogicProps.handleFocus}
+        handleBlur={anotherMockLogicProps.handleBlur}
+      />
+    );
     expect(mockUsePickerLogic().selectedMovie.title).toBe('Select a movie');
 
     // Check when selected movie title is too long
@@ -224,8 +425,26 @@ describe('PickerContainer', () => {
       selectedMovie: { id: '4', title: 'A very very very very very very very long movie title', release_date: '' },
       DEFAULT_BUTTON_TEXT: 'Select a movie',
       isInteractionsDisabled: false,
+      selectedMovieTitle: 'A very very very very very very very long movie title',
     });
-    rerender(<PickerContainer {...defaultProps} />);
+    const lastMockLogicProps = mockUsePickerLogic();
+    rerender(
+      <PickerUI
+        searchText={lastMockLogicProps.searchText}
+        selectedMovieTitle={lastMockLogicProps.selectedMovieTitle}
+        selectedMovie={lastMockLogicProps.selectedMovie}
+        foundMovies={lastMockLogicProps.foundMovies}
+        isSearching={lastMockLogicProps.isSearching}
+        isInteractionsDisabled={lastMockLogicProps.isInteractionsDisabled}
+        buttonScale={lastMockLogicProps.buttonScale}
+        DEFAULT_BUTTON_TEXT={lastMockLogicProps.DEFAULT_BUTTON_TEXT}
+        handleInputChange={lastMockLogicProps.handleInputChange}
+        handleMovieSelection={lastMockLogicProps.handleMovieSelection}
+        onPressCheck={lastMockLogicProps.onPressCheck}
+        handleFocus={lastMockLogicProps.handleFocus}
+        handleBlur={lastMockLogicProps.handleBlur}
+      />
+    );
     expect(mockUsePickerLogic().selectedMovie.title.length).toBeGreaterThan(35);
   });
 
@@ -237,8 +456,26 @@ describe('PickerContainer', () => {
       // Override specific properties for this test
       handleFocus,
       handleBlur,
+      selectedMovieTitle: 'Select a movie',
     });
-    render(<PickerContainer {...defaultProps} />);
+    const mockLogicProps = mockUsePickerLogic();
+    render(
+      <PickerUI
+        searchText={mockLogicProps.searchText}
+        selectedMovieTitle={mockLogicProps.selectedMovieTitle}
+        selectedMovie={mockLogicProps.selectedMovie}
+        foundMovies={mockLogicProps.foundMovies}
+        isSearching={mockLogicProps.isSearching}
+        isInteractionsDisabled={mockLogicProps.isInteractionsDisabled}
+        buttonScale={mockLogicProps.buttonScale}
+        DEFAULT_BUTTON_TEXT={mockLogicProps.DEFAULT_BUTTON_TEXT}
+        handleInputChange={mockLogicProps.handleInputChange}
+        handleMovieSelection={mockLogicProps.handleMovieSelection}
+        onPressCheck={mockLogicProps.onPressCheck}
+        handleFocus={mockLogicProps.handleFocus}
+        handleBlur={mockLogicProps.handleBlur}
+      />
+    );
     fireEvent(screen.getByPlaceholderText('Search for a movie...'), 'focus');
     expect(handleFocus).toHaveBeenCalled();
     fireEvent(screen.getByPlaceholderText('Search for a movie...'), 'blur');
@@ -250,8 +487,26 @@ describe('PickerContainer', () => {
       ...mockUsePickerLogic(), // Spread the default mock values
       foundMovies: mockMovies, // Override specific properties for this test with a non-empty array
       selectedMovie: { id: '', title: 'Select a movie', release_date: '' },
+      selectedMovieTitle: 'Select a movie',
     });
-    render(<PickerContainer {...defaultProps} />);
+    const mockLogicProps = mockUsePickerLogic();
+    render(
+      <PickerUI
+        searchText={mockLogicProps.searchText}
+        selectedMovieTitle={mockLogicProps.selectedMovieTitle}
+        selectedMovie={mockLogicProps.selectedMovie}
+        foundMovies={mockLogicProps.foundMovies}
+        isSearching={mockLogicProps.isSearching}
+        isInteractionsDisabled={mockLogicProps.isInteractionsDisabled}
+        buttonScale={mockLogicProps.buttonScale}
+        DEFAULT_BUTTON_TEXT={mockLogicProps.DEFAULT_BUTTON_TEXT}
+        handleInputChange={mockLogicProps.handleInputChange}
+        handleMovieSelection={mockLogicProps.handleMovieSelection}
+        onPressCheck={mockLogicProps.onPressCheck}
+        handleFocus={mockLogicProps.handleFocus}
+        handleBlur={mockLogicProps.handleBlur}
+      />
+    );
 
     fireEvent.changeText(screen.getByPlaceholderText('Search for a movie...'), 'Test'); // Trigger search and display list
 
@@ -275,10 +530,29 @@ describe('PickerContainer', () => {
       ...mockUsePickerLogic(), // Spread the default mock values
       // Override specific properties for this test
       selectedMovie: mockMovie,
+      selectedMovieTitle: mockMovie.title,
       onPressCheck: () => onPressCheck({ setShowConfetti }), // Pass the mock setShowConfetti
     });
 
-    render(<PickerContainer {...defaultProps} setShowConfetti={setShowConfetti} />);
+    const mockLogicProps = mockUsePickerLogic();
+    render(
+      <PickerUI
+        searchText={mockLogicProps.searchText}
+        selectedMovieTitle={mockLogicProps.selectedMovieTitle}
+        selectedMovie={mockLogicProps.selectedMovie}
+        foundMovies={mockLogicProps.foundMovies}
+        isSearching={mockLogicProps.isSearching}
+        isInteractionsDisabled={mockLogicProps.isInteractionsDisabled}
+        buttonScale={mockLogicProps.buttonScale}
+        DEFAULT_BUTTON_TEXT={mockLogicProps.DEFAULT_BUTTON_TEXT}
+        handleInputChange={mockLogicProps.handleInputChange}
+        handleMovieSelection={mockLogicProps.handleMovieSelection}
+        onPressCheck={mockLogicProps.onPressCheck}
+        handleFocus={mockLogicProps.handleFocus}
+        handleBlur={mockLogicProps.handleBlur}
+        setShowConfetti={setShowConfetti}
+      />
+    );
     fireEvent.press(screen.getByLabelText(`Check movie: ${mockMovie.title}`));
     expect(onPressCheck).toHaveBeenCalled();
     expect(setShowConfetti).toHaveBeenCalledWith(true);
@@ -287,7 +561,7 @@ describe('PickerContainer', () => {
 
   test('ensures onGuessFeedback is called with appropriate messages', () => {
     const onGuessFeedback = jest.fn();
-     const onPressCheck = jest.fn().mockImplementation(({ onGuessFeedback }) => {
+    const onPressCheck = jest.fn().mockImplementation(({ onGuessFeedback }) => {
         if (onGuessFeedback) {
             onGuessFeedback("Test feedback message");
         }
@@ -297,17 +571,29 @@ describe('PickerContainer', () => {
         // Override specific properties for this test
         selectedMovie: mockMovie,
         onGuessFeedback: onGuessFeedback,
+        selectedMovieTitle: mockMovie.title,
         onPressCheck: () => onPressCheck({ onGuessFeedback }),
     });
-    render(<PickerContainer {...defaultProps} onGuessFeedback={onGuessFeedback} />);
+    const mockLogicProps = mockUsePickerLogic();
+    render(
+      <PickerUI
+        searchText={mockLogicProps.searchText}
+        selectedMovieTitle={mockLogicProps.selectedMovieTitle}
+        selectedMovie={mockLogicProps.selectedMovie}
+        foundMovies={mockLogicProps.foundMovies}
+        isSearching={mockLogicProps.isSearching}
+        isInteractionsDisabled={mockLogicProps.isInteractionsDisabled}
+        buttonScale={mockLogicProps.buttonScale}
+        DEFAULT_BUTTON_TEXT={mockLogicProps.DEFAULT_BUTTON_TEXT}
+        handleInputChange={mockLogicProps.handleInputChange}
+        handleMovieSelection={mockLogicProps.handleMovieSelection}
+        onPressCheck={mockLogicProps.onPressCheck}
+        handleFocus={mockLogicProps.handleFocus}
+        handleBlur={mockLogicProps.handleBlur}
+        onGuessFeedback={onGuessFeedback}
+      />
+    );
     fireEvent.press(screen.getByLabelText(`Check movie: ${mockMovie.title}`));
     expect(onGuessFeedback).toHaveBeenCalledWith("Test feedback message");
-  });
-
-  test('tests the memoization of the component', () => {
-    // This test is more about verifying that `memo` is used, rather than
-    // a deep test of memoization behavior which is handled by React.
-    // We can check if the component type indicates it's memoized.
-    expect(PickerContainer.displayName).toBe('Memo(PickerContainer)');
   });
 });

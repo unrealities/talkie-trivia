@@ -74,7 +74,7 @@ describe('Movie', () => {
   const mockGame = {
     id: 'game1',
     movie: { title: 'Test Movie', release_date: '2022-01-01', poster_path: '/test.jpg', overview: 'A test movie' },
-    playerGame: { guesses: [], correctAnswer: false, gaveUp: false, game: { movie: { overview: '' } } }, // Add playerGame structure
+    playerGame: { guesses: [], correctAnswer: false, gaveUp: false, game: { movie: { overview: '' } } },
     isGameOver: false,
     isGameWon: false,
     clues: [],
@@ -94,7 +94,11 @@ describe('Movie', () => {
   it('renders GameUI component when not loading, no error, network connected, and game data is available', () => {
     // Ensure useGameLogic mock returns a state where GameUI should be rendered
     useGameLogic.mockReturnValue({
-      playerGame: mockGame.playerGame, // Provide valid playerGame data
+      playerGame: {
+        ...mockGame.playerGame,
+        game: mockGame, // Include the nested game object
+      },
+ // Provide valid playerGame data
       isLoading: false,
       error: null,
       player: { name: 'TestPlayer', id: '1' },
@@ -116,7 +120,10 @@ describe('Movie', () => {
   it('calls handleGiveUp when Give Up button is pressed', () => {
     useGameLogic.mockReturnValue({
       // Ensure the structure returned by useGameLogic matches what MoviesContainer expects
-        playerGame: { // Add playerGame with game not over state
+      playerGame: {
+ // Add playerGame with game not over state
+        game: mockGame, // Include the nested game object
+
         correctAnswer: false,
         gaveUp: false,
         game: mockGame, // Include game object if needed by GameUI
@@ -144,7 +151,10 @@ describe('Movie', () => {
   it('calls handleNewGame when Play Again button is pressed after game over', () => {
     useGameLogic.mockReturnValue({
       // Ensure the structure returned by useGameLogic matches what MoviesContainer expects
-        playerGame: { // Add playerGame with game over state (won)
+      playerGame: {
+ // Add playerGame with game over state (won)
+        game: mockGame, // Include the nested game object
+
         correctAnswer: true, // Or gaveUp: true
         gaveUp: false,
         game: mockGame, // Include game object if needed by GameUI
