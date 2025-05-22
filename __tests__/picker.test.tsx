@@ -5,10 +5,29 @@ import {
   waitFor,
   screen,
 } from "@testing-library/react-native"
+import { View, Text } from "react-native"
 import { PlayerGame } from "../src/models/game"
 import { PickerUI } from "../src/components/pickerUI"
 import { BasicMovie } from "../src/models/movie"
 import { colors } from "../src/styles/global"
+
+// Mock react-native-reanimated
+jest.mock("react-native-reanimated", () => {
+  const { View, Text } = require("react-native")
+
+  return {
+    useSharedValue: (value: any) => ({ value }),
+    useAnimatedStyle: (style: any) => style(),
+    withSpring: (value: any) => value,
+    withTiming: (value: any) => value,
+    Animated: { 
+      View: View, 
+      Text: Text, 
+      createAnimatedComponent: (component: any) => component 
+    },
+  }
+})
+
 import { usePickerLogic } from "../src/utils/hooks/usePickerLogic"
 
 // Mock the usePickerLogic hook
@@ -56,27 +75,24 @@ const defaultProps = {
 describe("PickerContainer", () => {
   beforeEach(() => {
     mockUsePickerLogic.mockReturnValue({
-      selectedMovieTitle: "Select a movie", // Explicitly mock selectedMovieTitle
+      selectedMovieTitle: "Select a movie",
       selectedMovie: { id: "", title: "Select a movie", release_date: "" },
-      // Provide default mock values for all other properties returned by usePickerLogic
       isLoading: false,
       error: null,
-      buttonScale: { _value: 1 }, // Mock animated value structure
+      buttonScale: { value: 1 }, // Simplified animated value structure
       DEFAULT_BUTTON_TEXT: "Select a movie",
-      isInteractionsDisabled: false, // Default to enabled
+      isInteractionsDisabled: false,
       searchText: "",
       foundMovies: [],
-      // Provide default mock values for all other properties returned by usePickerLogic
       isSearching: false,
       handleInputChange: jest.fn(),
       handleMovieSelection: jest.fn(),
       onPressCheck: jest.fn(),
       handleFocus: jest.fn(),
       handleBlur: jest.fn(),
+      renderItem: jest.fn(({ item }) => <Text>{item.title}</Text>),
     })
   })
-
-  // Mock the selectedMovieTitle separately based on the selectedMovie mock
 
   test("renders with default props", () => {
     const mockLogicProps = mockUsePickerLogic()
@@ -107,8 +123,7 @@ describe("PickerContainer", () => {
       correctAnswer: true,
     }
     mockUsePickerLogic.mockReturnValue({
-      ...mockUsePickerLogic(), // Spread the default mock values
-      // Override specific properties for this test
+      ...mockUsePickerLogic(),
       isInteractionsDisabled: true,
       selectedMovieTitle: "Select a movie",
     })
@@ -132,9 +147,7 @@ describe("PickerContainer", () => {
       />
     )
     expect(screen.getByPlaceholderText("Search for a movie...")).toBeDisabled()
-    expect(screen.getByText("Select a movie")).toBeVisible() // Button is visible but style should indicate disabled
-    // Checking button style requires inspecting the animated style, which is tricky with RTL.
-    // The mock usePickerLogic already returns isInteractionsDisabled: true based on playerGame state.
+    expect(screen.getByText("Select a movie")).toBeVisible()
   })
 
   test("disables interactions when game is over (gaveUp)", () => {
@@ -143,8 +156,7 @@ describe("PickerContainer", () => {
       gaveUp: true,
     }
     mockUsePickerLogic.mockReturnValue({
-      ...mockUsePickerLogic(), // Spread the default mock values
-      // Override specific properties for this test
+      ...mockUsePickerLogic(),
       isInteractionsDisabled: true,
       selectedMovieTitle: "Select a movie",
     })
@@ -167,7 +179,7 @@ describe("PickerContainer", () => {
       />
     )
     expect(screen.getByPlaceholderText("Search for a movie...")).toBeDisabled()
-    expect(screen.getByText("Select a movie")).toBeVisible() // Button is visible but style should indicate disabled
+    expect(screen.getByText("Select a movie")).toBeVisible()
   })
 
   test("disables interactions when guesses are maxed out", () => {
@@ -176,8 +188,7 @@ describe("PickerContainer", () => {
       guesses: ["guess1", "guess2", "guess3", "guess4", "guess5"],
     }
     mockUsePickerLogic.mockReturnValue({
-      ...mockUsePickerLogic(), // Spread the default mock values
-      // Override specific properties for this test
+      ...mockUsePickerLogic(),
       isInteractionsDisabled: true,
       selectedMovieTitle: "Select a movie",
     })
@@ -200,14 +211,13 @@ describe("PickerContainer", () => {
       />
     )
     expect(screen.getByPlaceholderText("Search for a movie...")).toBeDisabled()
-    expect(screen.getByText("Select a movie")).toBeVisible() // Button is visible but style should indicate disabled
+    expect(screen.getByText("Select a movie")).toBeVisible()
   })
 
   test("handles input change and updates search text", () => {
     const handleInputChange = jest.fn()
     mockUsePickerLogic.mockReturnValue({
-      ...mockUsePickerLogic(), // Spread the default mock values
-      // Override specific properties for this test
+      ...mockUsePickerLogic(),
       handleInputChange,
       selectedMovieTitle: "Select a movie",
     })
@@ -239,14 +249,11 @@ describe("PickerContainer", () => {
   test("selects a movie and updates the selected movie", async () => {
     const handleMovieSelection = jest.fn()
     mockUsePickerLogic.mockReturnValue({
-      ...mockUsePickerLogic(), // Spread the default mock values
-      foundMovies: mockMovies, // Override specific properties for this test
-      handleMovieSelection,
-    })
-    mockUsePickerLogic.mockReturnValue({
       ...mockUsePickerLogic(),
+      foundMovies: mockMovies,
+      handleMovieSelection,
       selectedMovieTitle: "Select a movie",
-    }) // Initial render title
+    })
 
     const mockLogicProps = mockUsePickerLogic()
     render(
@@ -267,7 +274,6 @@ describe("PickerContainer", () => {
       />
     )
 
-    // Need to simulate typing to show the found movies
     fireEvent.changeText(
       screen.getByPlaceholderText("Search for a movie..."),
       "Test"
@@ -276,8 +282,6 @@ describe("PickerContainer", () => {
     await waitFor(() => {
       expect(screen.getByText("Test Movie (2022)")).toBeVisible()
     })
-    // After selection, the title should update, but the mock doesn't reflect this state change.
-    // The test focuses on if handleMovieSelection is called, which is correct.
 
     fireEvent.press(screen.getByText("Test Movie (2022)"))
     expect(handleMovieSelection).toHaveBeenCalledWith(mockMovie)
@@ -286,9 +290,8 @@ describe("PickerContainer", () => {
   test("presses the check button and triggers onPressCheck", () => {
     const onPressCheck = jest.fn()
     mockUsePickerLogic.mockReturnValue({
-      ...mockUsePickerLogic(), // Spread the default mock values
-      // Override specific properties for this test
-      selectedMovie: mockMovie, // Simulate a movie being selected
+      ...mockUsePickerLogic(),
+      selectedMovie: mockMovie,
       onPressCheck,
       selectedMovieTitle: mockMovie.title,
     })
@@ -317,8 +320,7 @@ describe("PickerContainer", () => {
   test("renderItem function renders movie items correctly", () => {
     const handleMovieSelection = jest.fn()
     mockUsePickerLogic.mockReturnValue({
-      ...mockUsePickerLogic(), // Spread the default mock values
-      // Override specific properties for this test
+      ...mockUsePickerLogic(),
       foundMovies: mockMovies,
       selectedMovie: { id: "", title: "Select a movie", release_date: "" },
       handleMovieSelection,
@@ -345,18 +347,16 @@ describe("PickerContainer", () => {
     fireEvent.changeText(
       screen.getByPlaceholderText("Search for a movie..."),
       "Test"
-    ) // Trigger search and display list
+    )
 
     expect(getByText("Test Movie (2022)")).toBeVisible()
     expect(getByText("Another Movie (2023)")).toBeVisible()
   })
 
   test("animated button style reflects disabled state and selected movie", () => {
-    // Testing animated styles directly with RTL is complex.\n    // We are testing the logic within usePickerLogic and the passed props to PickerUI.\n    // We can check if the props passed to PickerUI reflect the expected state.\n
     const selectedMovie = { id: "3", title: "Short", release_date: "" }
     mockUsePickerLogic.mockReturnValue({
-      ...mockUsePickerLogic(), // Spread the default mock values
-      // Override specific properties for this test
+      ...mockUsePickerLogic(),
       selectedMovie,
       DEFAULT_BUTTON_TEXT: "Select a movie",
       isInteractionsDisabled: false,
@@ -381,13 +381,10 @@ describe("PickerContainer", () => {
       />
     )
 
-    // Check when a valid movie is selected
     expect(mockUsePickerLogic().selectedMovie).toEqual(selectedMovie)
 
-    // Check when interactions are disabled
     mockUsePickerLogic.mockReturnValue({
-      ...mockUsePickerLogic(), // Spread the default mock values
-      // Override specific properties for this test
+      ...mockUsePickerLogic(),
       selectedMovie,
       DEFAULT_BUTTON_TEXT: "Select a movie",
       isInteractionsDisabled: true,
@@ -413,10 +410,8 @@ describe("PickerContainer", () => {
     )
     expect(mockUsePickerLogic().isInteractionsDisabled).toBe(true)
 
-    // Check when no movie is selected (default text)
     mockUsePickerLogic.mockReturnValue({
-      ...mockUsePickerLogic(), // Spread the default mock values
-      // Override specific properties for this test
+      ...mockUsePickerLogic(),
       selectedMovie: { id: "", title: "Select a movie", release_date: "" },
       DEFAULT_BUTTON_TEXT: "Select a movie",
       isInteractionsDisabled: false,
@@ -442,10 +437,8 @@ describe("PickerContainer", () => {
     )
     expect(mockUsePickerLogic().selectedMovie.title).toBe("Select a movie")
 
-    // Check when selected movie title is too long
     mockUsePickerLogic.mockReturnValue({
-      ...mockUsePickerLogic(), // Spread the default mock values
-      // Override specific properties for this test
+      ...mockUsePickerLogic(),
       selectedMovie: {
         id: "4",
         title: "A very very very very very very very long movie title",
@@ -481,8 +474,7 @@ describe("PickerContainer", () => {
     const handleFocus = jest.fn()
     const handleBlur = jest.fn()
     mockUsePickerLogic.mockReturnValue({
-      ...mockUsePickerLogic(), // Spread the default mock values
-      // Override specific properties for this test
+      ...mockUsePickerLogic(),
       handleFocus,
       handleBlur,
       selectedMovieTitle: "Select a movie",
@@ -513,8 +505,8 @@ describe("PickerContainer", () => {
 
   test("tests accessibility properties of Pressable elements", async () => {
     mockUsePickerLogic.mockReturnValue({
-      ...mockUsePickerLogic(), // Spread the default mock values
-      foundMovies: mockMovies, // Override specific properties for this test with a non-empty array
+      ...mockUsePickerLogic(),
+      foundMovies: mockMovies,
       selectedMovie: { id: "", title: "Select a movie", release_date: "" },
       selectedMovieTitle: "Select a movie",
     })
@@ -540,7 +532,7 @@ describe("PickerContainer", () => {
     fireEvent.changeText(
       screen.getByPlaceholderText("Search for a movie..."),
       "Test"
-    ) // Trigger search and display list
+    )
 
     await waitFor(() => {
       expect(
@@ -569,11 +561,10 @@ describe("PickerContainer", () => {
     })
 
     mockUsePickerLogic.mockReturnValue({
-      ...mockUsePickerLogic(), // Spread the default mock values
-      // Override specific properties for this test
+      ...mockUsePickerLogic(),
       selectedMovie: mockMovie,
       selectedMovieTitle: mockMovie.title,
-      onPressCheck: () => onPressCheck({ setShowConfetti }), // Pass the mock setShowConfetti
+      onPressCheck: () => onPressCheck({ setShowConfetti }),
     })
 
     const mockLogicProps = mockUsePickerLogic()
@@ -608,8 +599,7 @@ describe("PickerContainer", () => {
       }
     })
     mockUsePickerLogic.mockReturnValue({
-      ...mockUsePickerLogic(), // Spread the default mock values
-      // Override specific properties for this test
+      ...mockUsePickerLogic(),
       selectedMovie: mockMovie,
       onGuessFeedback: onGuessFeedback,
       selectedMovieTitle: mockMovie.title,
