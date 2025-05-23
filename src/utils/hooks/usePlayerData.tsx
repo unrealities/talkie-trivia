@@ -24,10 +24,11 @@ const usePlayerData = () => {
   const dateId = generateDateId(today)
 
   const initializePlayerData = useCallback(async () => {
-    // Only proceed with initialization if authentication is complete, movies are loaded,
-    // we are not already initializing, AND a user is authenticated.
-    if (authLoading || !movies || movies.length === 0 || isInitializing.current || !user) {
-      // ... existing log and dispatch for loading state ...
+    if (
+      authLoading ||
+      !movies ||
+      movies.length === 0 ||
+      isInitializing.current
     ) {
       console.log(
         `usePlayerData: Delaying/Skipping init. AuthLoading: ${authLoading}, Movies loaded: ${
@@ -49,9 +50,14 @@ const usePlayerData = () => {
     try {
       const db = getFirestore()
 
-      // Since we now check for 'user' at the beginning, we can directly use user.uid and user.displayName
-      const playerId = user.uid
-      const playerName = user.displayName || "Guest"
+      let playerId: string
+      let playerName: string
+      if (user) {
+        playerId = user.uid
+        playerName = user.displayName || "Guest"
+      } else {
+        playerId = await getUserID()
+        playerName = await getUserName()
       }
 
       const currentPlayer = await fetchOrCreatePlayer(db, playerId, playerName)

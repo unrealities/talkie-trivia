@@ -6,7 +6,7 @@ import { PlayerGame } from "../models/game"
 import { colors } from "../styles/global"
 import { pickerStyles } from "../styles/pickerStyles"
 import { usePickerLogic } from "../utils/hooks/usePickerLogic"
-import PickerUI from "./pickerUI"
+import { PickerUI } from "./pickerUI"
 
 interface PickerContainerProps {
   enableSubmit: boolean

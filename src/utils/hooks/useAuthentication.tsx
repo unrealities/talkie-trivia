@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react"
 import { initializeApp } from "firebase/app"
-import { getAuth, onAuthStateChanged, User } from "firebase/auth"
+import {
+  getAuth,
+  onAuthStateChanged,
+  User,
+  signInAnonymously,
+} from "firebase/auth"
 import { firebaseConfig } from "../../config/firebase"
 
-let app
+let app: any
 
 try {
   app = initializeApp(firebaseConfig)
@@ -12,7 +17,16 @@ try {
   console.error("useAuthentication: Error initializing Firebase app:", error)
 }
 
-const auth = getAuth(app)
+const auth = app ? getAuth(app) : null
+
+const isFirebaseAuthError = (error: any): boolean => {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    typeof error.code === "string" &&
+    error.code.startsWith("auth/")
+  )
+}
 
 export function useAuthentication() {
   console.log("useAuthentication: Hook called")
@@ -21,85 +35,85 @@ export function useAuthentication() {
   const [authError, setAuthError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!app) {
-      console.error("useAuthentication: firebase app not initialized")
+    if (!auth) {
+      console.error(
+        "useAuthentication: Firebase auth is not initialized (app init failed)."
+      )
+      setAuthError("Firebase app initialization failed.")
       setAuthLoading(false)
       return
     }
+
     let isMounted = true
+    setAuthLoading(true)
 
-    const initialCheck = new Promise<void>((resolve) => {
-      const unsubscribe = onAuthStateChanged(
-        auth,
-        (user) => {
-          if (isMounted) {
-            setUser(user)
-            console.log("onAuthStateChanged (initial check): User:", user)
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      async (firebaseUser) => {
+        if (!isMounted) return
 
+        if (firebaseUser) {
+          console.log(
+            "useAuthentication: User is signed in:",
+            firebaseUser.uid,
+            "Anonymous:",
+            firebaseUser.isAnonymous
+          )
+          setUser(firebaseUser)
+          setAuthError(null)
+          setAuthLoading(false)
+        } else {
+          console.log(
+            "useAuthentication: No user signed in. Attempting anonymous sign-in."
+          )
+          try {
+            const userCredential = await signInAnonymously(auth)
             console.log(
-              "useAuthentication: Setting authLoading to false from initial check"
+              "useAuthentication: Anonymous sign-in successful, user from credential:",
+              userCredential.user.uid
             )
-            setAuthLoading(false)
-            resolve() // Resolve the promise
-            unsubscribe() // Unsubscribe immediately
-          }
-        },
-        (error) => {
-          if (isMounted) {
+          } catch (anonError: any) {
             console.error(
-              "useAuthentication: Firebase Auth Error (initial check):",
-              error
+              "useAuthentication: Error signing in anonymously:",
+              anonError
             )
-            setAuthError(
-              `useAuthentication: Firebase Auth Error (initial check): ${error.message}`
-            )
+            let errorMessage = "Failed to sign in anonymously."
+            if (isFirebaseAuthError(anonError)) {
+              errorMessage = `Anonymous sign-in failed: ${anonError.message} (Code: ${anonError.code})`
+            } else if (anonError?.message) {
+              errorMessage = `Anonymous sign-in failed: ${anonError.message}`
+            }
+            setAuthError(errorMessage)
+            setUser(null)
             setAuthLoading(false)
-            resolve() // Resolve even with error to stop the loading
-            unsubscribe() // Unsubscribe immediately
           }
         }
-      )
-    })
-
-    initialCheck.then(() => {
-      if (isMounted) {
-        const unsubscribe = onAuthStateChanged(
-          auth,
-          (user) => {
-            if (isMounted) {
-              setUser(user)
-              console.log("onAuthStateChanged: User:", user)
-              console.log(
-                "useAuthentication: Setting authLoading to false after initial check"
-              )
-              setAuthLoading(false)
-            }
-          },
-          (error) => {
-            if (isMounted) {
-              console.error(
-                "useAuthentication: Firebase Auth Error (after initial check):",
-                error
-              )
-              setAuthError(
-                `useAuthentication: Firebase Auth Error (after initial check): ${error.message}`
-              )
-              setAuthLoading(false)
-            }
-          }
+      },
+      (error: any) => {
+        if (!isMounted) return
+        console.error(
+          "useAuthentication: Firebase Auth Error (onAuthStateChanged):",
+          error
         )
-        return () => {
-          unsubscribe()
-          isMounted = false
+        let errorMessage = `Auth state error.`
+        if (isFirebaseAuthError(error)) {
+          errorMessage = `Auth state error: ${error.message} (Code: ${error.code})`
+        } else if (error?.message) {
+          errorMessage = `Auth state error: ${error.message}`
         }
+        setAuthError(errorMessage)
+        setUser(null)
+        setAuthLoading(false)
       }
-    })
+    )
+
     return () => {
       isMounted = false
+      unsubscribe()
     }
   }, [])
 
-  console.log("useAuthentication: Returning:", { user, authLoading })
+  console.log("useAuthentication: Returning:", { user, authLoading, authError })
   return {
     user,
     authLoading,
