@@ -33,8 +33,6 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
   updatePlayerGame,
   updatePlayerStats,
   initialDataLoaded,
-
-
 }) => {
   const {
     showModal,
@@ -49,8 +47,8 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
     confirmGiveUp,
     handleConfettiStop,
     provideGuessFeedback,
- isLoading,
-    error
+    isLoading,
+    error,
   } = useGameLogic({
     initialDataLoaded,
     player,
@@ -74,18 +72,35 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
     }
   }, [showModal])
 
-  console.log('MoviesContainer state:', { isLoading, error, isNetworkConnected, playerGame: !!playerGame });
+  console.log("MoviesContainer state:", {
+    isLoading,
+    error,
+    isNetworkConnected,
+    playerGame: !!playerGame,
+  })
 
   if (isLoading) {
-    return <View><Text>Loading...</Text></View>;
+    return (
+      <View>
+        <Text>Loading...</Text>
+      </View>
+    )
   }
 
   if (error) {
-    return <View><Text>Error: {error}</Text></View>;
+    return (
+      <View>
+        <Text>Error: {error}</Text>
+      </View>
+    )
   }
 
   if (!isNetworkConnected) {
-    return <View><Text>No Network Connection</Text></View>;
+    return (
+      <View>
+        <Text>No Network Connection</Text>
+      </View>
+    )
   }
 
   return (

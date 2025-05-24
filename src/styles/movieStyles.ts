@@ -42,9 +42,7 @@ export const movieStyles = StyleSheet.create({
     borderWidth: 2,
     elevation: 0,
     justifyContent: "center",
-    marginBottom: responsive.scale(30),
-    marginTop: responsive.scale(25),
-    padding: responsive.scale(12),
+    padding: responsive.scale(8),
     width: "90%",
   },
   giveUpButtonText: {

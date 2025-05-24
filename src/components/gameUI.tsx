@@ -74,7 +74,6 @@ const GameUI: React.FC<GameUIProps> = ({
     >
       <View style={movieStyles.container}>
         <NetworkContainer isConnected={isNetworkConnected} />
-        <TitleHeader />
         <CluesContainer
           correctGuess={playerGame.correctAnswer}
           guesses={playerGame.guesses}

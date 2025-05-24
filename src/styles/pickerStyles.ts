@@ -34,7 +34,7 @@ export const pickerStyles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    minHeight: responsive.scale(220),
+    minHeight: responsive.scale(190),
     maxWidth: responsive.scale(400),
     width: "95%",
     alignSelf: "center",
@@ -63,7 +63,7 @@ export const pickerStyles = StyleSheet.create({
   inputContainer: {
     alignItems: "center",
     flexDirection: "row",
-    marginBottom: responsive.scale(8),
+    marginBottom: responsive.scale(4),
     position: "relative",
     width: "100%",
   },
@@ -81,9 +81,9 @@ export const pickerStyles = StyleSheet.create({
     padding: responsive.scale(6),
   },
   resultsContainer: {
-    marginBottom: responsive.scale(8),
-    maxHeight: responsive.scale(100),
-    minHeight: responsive.scale(60),
+    marginBottom: responsive.scale(4),
+    maxHeight: responsive.scale(75),
+    minHeight: responsive.scale(75),
     maxWidth: responsive.scale(400),
     overflow: "hidden",
     borderColor: colors.lightGrey,
