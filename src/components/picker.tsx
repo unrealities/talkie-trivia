@@ -1,4 +1,4 @@
-import React, { useCallback, memo } from "react"
+import React, { useCallback, memo, useState } from "react"
 import { Pressable, Text, ListRenderItemInfo } from "react-native"
 import Animated, { useAnimatedStyle } from "react-native-reanimated"
 import { BasicMovie } from "../models/movie"
@@ -26,6 +26,8 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
     onGuessFeedback,
     setShowConfetti,
   }) => {
+    const [isMovieSelected, setIsMovieSelected] = useState(false)
+
     const isInteractionsDisabled =
       playerGame.correctAnswer ||
       playerGame.guesses.length >= playerGame.game.guessesMax ||
@@ -38,11 +40,10 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
       selectedMovie,
       buttonScale,
       DEFAULT_BUTTON_TEXT,
-      handleInputChange,
-      handleMovieSelection,
-      onPressCheck,
-      handleFocus,
-      handleBlur,
+      handleInputChange, // Original handleInputChange from hook
+      onPressCheck, // Original onPressCheck from hook
+      handleFocus, // Original handleFocus from hook
+      handleBlur, // Original handleBlur from hook
     } = usePickerLogic({
       movies,
       playerGame,
@@ -51,6 +52,25 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
       onGuessFeedback,
       setShowConfetti,
     })
+
+    const { handleMovieSelection: originalHandleMovieSelection } =
+      usePickerLogic({
+        movies,
+        playerGame,
+        isInteractionsDisabled,
+        updatePlayerGame,
+        onGuessFeedback,
+        setShowConfetti,
+      })
+
+    // Create a new handleMovieSelection function that calls the original and updates local state
+    const handleMovieSelectionWrapper = useCallback(
+      (movie: BasicMovie) => {
+        originalHandleMovieSelection(movie)
+        setIsMovieSelected(true)
+      },
+      [originalHandleMovieSelection, setIsMovieSelected]
+    )
 
     const animatedButtonStyle = useAnimatedStyle(() => {
       return {
@@ -89,7 +109,7 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
             accessibilityRole="button"
             aria-label={`Select movie: ${movie.title}, ID: ${movie.id}`}
             key={movie.id}
-            onPress={() => handleMovieSelection(movie)}
+            onPress={() => handleMovieSelectionWrapper(movie)}
             style={[
               pickerStyles.pressableText,
               selectedMovie.id === movie.id && pickerStyles.selectedMovie,
@@ -97,7 +117,7 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
             android_ripple={{ color: colors.quinary }}
             disabled={isInteractionsDisabled}
           >
-            <Text
+            <Text // Use Text component to display movie title
               style={pickerStyles.unselected}
               numberOfLines={1}
               ellipsizeMode="tail"
@@ -107,7 +127,7 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
           </Pressable>
         )
       },
-      [handleMovieSelection, selectedMovie.id, isInteractionsDisabled]
+      [handleMovieSelectionWrapper, selectedMovie.id, isInteractionsDisabled]
     )
 
     return (
@@ -120,6 +140,7 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
         selectedMovieTitle={selectedMovie.title}
         isInteractionsDisabled={isInteractionsDisabled}
         DEFAULT_BUTTON_TEXT={DEFAULT_BUTTON_TEXT}
+        isMovieSelectedForGuess={isMovieSelected}
         animatedButtonStyle={animatedButtonStyle}
         handleInputChange={handleInputChange}
         renderItem={renderItem}

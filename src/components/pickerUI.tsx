@@ -22,6 +22,7 @@ interface PickerUIProps {
   selectedMovieTitle: string
   isInteractionsDisabled: boolean
   DEFAULT_BUTTON_TEXT: string
+  isMovieSelectedForGuess: boolean
   animatedButtonStyle: any
 
   handleInputChange: (text: string) => void
@@ -41,6 +42,7 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
     selectedMovieTitle,
     isInteractionsDisabled,
     DEFAULT_BUTTON_TEXT,
+    isMovieSelectedForGuess,
     animatedButtonStyle,
     handleInputChange,
     renderItem,
@@ -73,14 +75,8 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
             />
           )}
         </View>
-
-        {isLoading ? (
-          <ActivityIndicator size="large" color={colors.primary} />
-        ) : error ? (
-          <Text accessibilityRole="text" style={pickerStyles.errorText}>
-            {error}
-          </Text>
-        ) : (
+        {/* Search Results List */}
+        {!isMovieSelectedForGuess && foundMovies.length > 0 && (
           <View style={pickerStyles.resultsContainer}>
             <FlatList
               data={foundMovies}
@@ -88,22 +84,26 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
               keyExtractor={(item) => item.id.toString()}
               style={pickerStyles.resultsShow}
               keyboardShouldPersistTaps="handled"
-              ListEmptyComponent={
-                foundMovies.length === 0 && searchText.length > 0 ? (
-                  <Text style={pickerStyles.noResultsText}>
-                    No movies found
-                  </Text>
-                ) : null
-              }
+              ListEmptyComponent={null} // Handled by conditional rendering of resultsContainer
             />
           </View>
         )}
-
+        {/* Loading Indicator */}
+        {isLoading && !isMovieSelectedForGuess && (
+          <ActivityIndicator size="large" color={colors.primary} />
+        )}
+        {/* Error Message */}
+        {!isMovieSelectedForGuess && (
+          <Text accessibilityRole="text" style={pickerStyles.errorText}>
+            {error}
+          </Text>
+        )}
+        {/* Submit Button */}
         <Animated.View style={[pickerStyles.button, animatedButtonStyle]}>
           <Pressable
             accessible
             aria-label={
-              isInteractionsDisabled
+              isInteractionsDisabled || isMovieSelectedForGuess
                 ? "Submit button disabled"
                 : "Submit button enabled"
             }
@@ -128,7 +128,9 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
                 selectedMovieTitle.length > 35 && pickerStyles.buttonTextSmall,
               ]}
             >
-              {selectedMovieTitle}
+              {isMovieSelectedForGuess
+                ? selectedMovieTitle
+                : DEFAULT_BUTTON_TEXT}
             </Text>
           </Pressable>
         </Animated.View>
