@@ -4,7 +4,7 @@ import { colors, responsive } from "./global"
 export const guessesStyles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: responsive.scale(0),
+    marginTop: responsive.scale(10),
     marginBottom: responsive.scale(15),
     minHeight: responsive.scale(70),
     paddingBottom: responsive.scale(10),
