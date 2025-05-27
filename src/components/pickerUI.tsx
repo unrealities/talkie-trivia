@@ -75,6 +75,7 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
             />
           )}
         </View>
+
         {/* Search Results List */}
         {!isMovieSelectedForGuess && foundMovies.length > 0 && (
           <View style={pickerStyles.resultsContainer}>
@@ -98,6 +99,7 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
             {error}
           </Text>
         )}
+
         {/* Submit Button */}
         <Animated.View style={[pickerStyles.button, animatedButtonStyle]}>
           <Pressable

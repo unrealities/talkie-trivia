@@ -50,7 +50,9 @@ export function usePickerLogic({
   )
 
   const handleInputChange = useCallback((text: string) => {
-    setSearchText(text)
+    if (selectedMovie.id !== 0) {
+      setSelectedMovie({ id: 0, title: DEFAULT_BUTTON_TEXT })
+    }
     setIsSearching(true)
   }, [])
 

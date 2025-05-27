@@ -1,4 +1,4 @@
-import React, { useCallback, memo, useState } from "react"
+import React, { useCallback, memo } from "react"
 import { Pressable, Text, ListRenderItemInfo } from "react-native"
 import Animated, { useAnimatedStyle } from "react-native-reanimated"
 import { BasicMovie } from "../models/movie"
@@ -26,8 +26,6 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
     onGuessFeedback,
     setShowConfetti,
   }) => {
-    const [isMovieSelected, setIsMovieSelected] = useState(false)
-
     const isInteractionsDisabled =
       playerGame.correctAnswer ||
       playerGame.guesses.length >= playerGame.game.guessesMax ||
@@ -40,10 +38,11 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
       selectedMovie,
       buttonScale,
       DEFAULT_BUTTON_TEXT,
-      handleInputChange, // Original handleInputChange from hook
-      onPressCheck, // Original onPressCheck from hook
-      handleFocus, // Original handleFocus from hook
-      handleBlur, // Original handleBlur from hook
+      handleInputChange,
+      handleMovieSelection, // Destructure handleMovieSelection directly from the hook
+      onPressCheck,
+      handleFocus,
+      handleBlur,
     } = usePickerLogic({
       movies,
       playerGame,
@@ -53,24 +52,8 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
       setShowConfetti,
     })
 
-    const { handleMovieSelection: originalHandleMovieSelection } =
-      usePickerLogic({
-        movies,
-        playerGame,
-        isInteractionsDisabled,
-        updatePlayerGame,
-        onGuessFeedback,
-        setShowConfetti,
-      })
-
-    // Create a new handleMovieSelection function that calls the original and updates local state
-    const handleMovieSelectionWrapper = useCallback(
-      (movie: BasicMovie) => {
-        originalHandleMovieSelection(movie)
-        setIsMovieSelected(true)
-      },
-      [originalHandleMovieSelection, setIsMovieSelected]
-    )
+    // Determine if a movie is selected based on selectedMovie from the hook
+    const isMovieSelectedForGuess = selectedMovie.id !== undefined // Adjust condition based on initial selectedMovie state in usePickerLogic
 
     const animatedButtonStyle = useAnimatedStyle(() => {
       return {
@@ -109,7 +92,7 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
             accessibilityRole="button"
             aria-label={`Select movie: ${movie.title}, ID: ${movie.id}`}
             key={movie.id}
-            onPress={() => handleMovieSelectionWrapper(movie)}
+            onPress={() => handleMovieSelection(movie)} // Use handleMovieSelection from the hook directly
             style={[
               pickerStyles.pressableText,
               selectedMovie.id === movie.id && pickerStyles.selectedMovie,
@@ -127,20 +110,20 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
           </Pressable>
         )
       },
-      [handleMovieSelectionWrapper, selectedMovie.id, isInteractionsDisabled]
+      [handleMovieSelection, selectedMovie.id, isInteractionsDisabled] // Update dependencies
     )
 
     return (
       <PickerUI
         searchText={searchText}
         isSearching={isSearching}
-        isLoading={false}
-        error={null}
+        isLoading={false} // Assuming usePickerLogic handles loading internally or passes a loading state
+        error={null} // Assuming usePickerLogic handles errors internally or passes an error state
         foundMovies={foundMovies}
         selectedMovieTitle={selectedMovie.title}
         isInteractionsDisabled={isInteractionsDisabled}
         DEFAULT_BUTTON_TEXT={DEFAULT_BUTTON_TEXT}
-        isMovieSelectedForGuess={isMovieSelected}
+        isMovieSelectedForGuess={isMovieSelectedForGuess} // Pass the derived state
         animatedButtonStyle={animatedButtonStyle}
         handleInputChange={handleInputChange}
         renderItem={renderItem}
