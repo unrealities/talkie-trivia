@@ -49,12 +49,16 @@ export function usePickerLogic({
     [movies]
   )
 
-  const handleInputChange = useCallback((text: string) => {
-    if (selectedMovie.id !== 0) {
-      setSelectedMovie({ id: 0, title: DEFAULT_BUTTON_TEXT })
-    }
-    setIsSearching(true)
-  }, [])
+  const handleInputChange = useCallback(
+    (text: string) => {
+      if (selectedMovie.id !== 0) {
+        setSelectedMovie({ id: 0, title: DEFAULT_BUTTON_TEXT })
+      }
+      setSearchText(text)
+      setIsSearching(true)
+    },
+    [selectedMovie]
+  ) // selectedMovie added to dependencies
 
   useEffect(() => {
     const handler = setTimeout(() => {

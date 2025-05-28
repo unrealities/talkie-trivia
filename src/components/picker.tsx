@@ -53,29 +53,16 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
     })
 
     // Determine if a movie is selected based on selectedMovie from the hook
-    const isMovieSelectedForGuess = selectedMovie.id !== undefined // Adjust condition based on initial selectedMovie state in usePickerLogic
+    const isMovieSelectedForGuess = selectedMovie.id !== 0 // Adjust condition based on initial selectedMovie state in usePickerLogic
 
     const animatedButtonStyle = useAnimatedStyle(() => {
       return {
+        backgroundColor: isMovieSelectedForGuess
+          ? colors.primary
+          : "transparent",
+        borderColor: isMovieSelectedForGuess ? colors.primary : colors.primary,
+        opacity: isMovieSelectedForGuess && !isInteractionsDisabled ? 1 : 1,
         transform: [{ scale: buttonScale.value }],
-        backgroundColor:
-          isInteractionsDisabled ||
-          selectedMovie.title === DEFAULT_BUTTON_TEXT ||
-          selectedMovie.title.length > 35
-            ? "transparent"
-            : undefined,
-        borderColor:
-          isInteractionsDisabled ||
-          selectedMovie.title === DEFAULT_BUTTON_TEXT ||
-          selectedMovie.title.length > 35
-            ? colors.tertiary
-            : colors.primary,
-        opacity:
-          isInteractionsDisabled ||
-          selectedMovie.title === DEFAULT_BUTTON_TEXT ||
-          selectedMovie.title.length > 35
-            ? 0.5
-            : 1,
       }
     })
 

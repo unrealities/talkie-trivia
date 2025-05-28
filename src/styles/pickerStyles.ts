@@ -68,6 +68,9 @@ export const pickerStyles = StyleSheet.create({
     position: "relative",
     width: "100%",
   },
+  lightInputText: {
+    color: colors.secondary,
+  },
   noResultsText: {
     color: colors.tertiary,
     fontFamily: "Arvo-Regular",
