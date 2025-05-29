@@ -9,6 +9,7 @@ export const cluesStyles = StyleSheet.create({
     minHeight: responsive.scale(220),
     paddingHorizontal: responsive.scale(4),
     width: "100%",
+    maxWidth: responsive.scale(400),
     alignSelf: "stretch",
   },
   countContainer: {

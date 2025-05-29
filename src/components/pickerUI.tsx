@@ -76,29 +76,33 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
           )}
         </View>
 
-        {/* Search Results List */}
-        {!isMovieSelectedForGuess && foundMovies.length > 0 && (
-          <View style={pickerStyles.resultsContainer}>
-            <FlatList
-              data={foundMovies}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.id.toString()}
-              style={pickerStyles.resultsShow}
-              keyboardShouldPersistTaps="handled"
-              ListEmptyComponent={null} // Handled by conditional rendering of resultsContainer
-            />
-          </View>
-        )}
-        {/* Loading Indicator */}
-        {isLoading && !isMovieSelectedForGuess && (
-          <ActivityIndicator size="large" color={colors.primary} />
-        )}
-        {/* Error Message */}
-        {!isMovieSelectedForGuess && (
-          <Text accessibilityRole="text" style={pickerStyles.errorText}>
-            {error}
-          </Text>
-        )}
+        {/* Search Results Area */}
+        <View style={pickerStyles.resultsContainer}>
+          {/* Search Results List */}
+          {!isLoading &&
+            !error &&
+            !isMovieSelectedForGuess &&
+            foundMovies.length > 0 && (
+              <FlatList
+                data={foundMovies}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.id.toString()}
+                style={pickerStyles.resultsShow}
+                keyboardShouldPersistTaps="handled"
+                ListEmptyComponent={null}
+              />
+            )}
+          {/* Loading Indicator */}
+          {isLoading && !isMovieSelectedForGuess && (
+            <ActivityIndicator size="large" color={colors.primary} />
+          )}
+          {/* Error Message */}
+          {!isLoading && error && !isMovieSelectedForGuess && (
+            <Text accessibilityRole="text" style={pickerStyles.errorText}>
+              {error}
+            </Text>
+          )}
+        </View>
 
         {/* Submit Button */}
         <Animated.View style={[pickerStyles.button, animatedButtonStyle]}>

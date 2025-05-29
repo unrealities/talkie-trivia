@@ -20,7 +20,7 @@ export const pickerStyles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 2,
     borderColor: colors.primary,
-    marginTop: responsive.scale(-20),
+    marginTop: responsive.scale(0),
     minHeight: responsive.scale(60),
   },
   buttonText: {
@@ -38,6 +38,8 @@ export const pickerStyles = StyleSheet.create({
     minHeight: responsive.scale(200),
     maxWidth: responsive.scale(400),
     width: "95%",
+    justifyContent: "space-between", // Add justifyContent to distribute space
+    flexDirection: "column", // Ensure flex direction is column
     alignSelf: "center",
   },
   errorText: {
