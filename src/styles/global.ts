@@ -45,6 +45,29 @@ const responsiveFontSize = (size: number) => {
   )
 }
 
+export const typography = {
+  heading1: {
+    fontFamily: "Arvo-Bold",
+    fontSize: responsiveFontSize(28),
+    lineHeight: responsiveFontSize(34),
+  },
+  heading2: {
+    fontFamily: "Arvo-Bold",
+    fontSize: responsiveFontSize(22),
+    lineHeight: responsiveFontSize(28),
+  },
+  bodyText: {
+    fontFamily: "Arvo-Regular",
+    fontSize: responsiveFontSize(16),
+    lineHeight: responsiveFontSize(20),
+  },
+  caption: {
+    fontFamily: "Arvo-Regular",
+    fontSize: responsiveFontSize(12),
+    lineHeight: responsiveFontSize(16),
+  },
+}
+
 export const responsive = {
   scale,
   responsiveFontSize,
@@ -56,4 +79,12 @@ export const responsive = {
   isSmallScreen,
   isMediumScreen,
   isLargeScreen,
+}
+
+export const spacing = {
+  extraSmall: responsive.scale(4),
+  small: responsive.scale(8),
+  medium: responsive.scale(16),
+  large: responsive.scale(24),
+  extraLarge: responsive.scale(32),
 }

@@ -1,13 +1,13 @@
 import { StyleSheet } from "react-native"
-import { colors, responsive } from "./global"
+import { colors, responsive, spacing } from "./global"
 
 export const cluesStyles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "flex-start",
-    marginVertical: responsive.scale(4),
+    marginVertical: spacing.small,
     minHeight: responsive.scale(220),
-    paddingHorizontal: responsive.scale(4),
+    paddingHorizontal: spacing.small,
     width: "100%",
     maxWidth: responsive.scale(400),
     alignSelf: "stretch",
@@ -15,24 +15,24 @@ export const cluesStyles = StyleSheet.create({
   countContainer: {
     alignSelf: "flex-end",
     marginBottom: responsive.scale(12),
-    marginRight: responsive.scale(20),
-    marginTop: responsive.scale(4),
+    marginRight: spacing.extraLarge,
+    marginTop: spacing.small,
   },
   mostRecentClue: {
-    paddingHorizontal: responsive.scale(8)
+    paddingHorizontal: spacing.medium,
   },
   scrollView: {
     flexGrow: 1,
-    marginBottom: responsive.scale(15),
+    marginBottom: spacing.large,
     width: "100%",
     alignSelf: "stretch",
   },
   scrollViewContent: {
-    paddingVertical: responsive.scale(10),
+    paddingVertical: spacing.large,
   },
   skeletonContainer: {
-    paddingHorizontal: responsive.scale(10),
-    paddingTop: responsive.scale(10),
+    paddingHorizontal: spacing.large,
+    paddingTop: spacing.large,
   },
   skeletonLine: {
     backgroundColor: colors.tertiary,
@@ -48,13 +48,13 @@ export const cluesStyles = StyleSheet.create({
     fontFamily: "Arvo-Regular",
     fontSize: responsive.responsiveFontSize(14),
     lineHeight: responsive.responsiveFontSize(18),
-    paddingBottom: responsive.scale(6),
+    paddingBottom: spacing.extraSmall,
     flexWrap: "wrap",
   },
   textContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    paddingHorizontal: responsive.scale(10),
+    paddingHorizontal: spacing.large,
     width: "100%",
   },
   wordCountText: {

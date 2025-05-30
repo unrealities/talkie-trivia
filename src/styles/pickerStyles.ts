@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native"
-import { colors, responsive } from "./global"
+import { colors, responsive, spacing } from "./global"
 
 export const pickerStyles = StyleSheet.create({
   activityIndicator: {
@@ -10,7 +10,7 @@ export const pickerStyles = StyleSheet.create({
   button: {
     backgroundColor: "transparent",
     borderRadius: responsive.scale(10),
-    paddingVertical: responsive.scale(2),
+    paddingVertical: spacing.extraSmall,
     paddingHorizontal: responsive.scale(12),
     width: "100%",
     height: "auto",
@@ -20,7 +20,7 @@ export const pickerStyles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 2,
     borderColor: colors.primary,
-    marginTop: responsive.scale(0),
+    marginTop: spacing.none,
     minHeight: responsive.scale(60),
   },
   buttonText: {
@@ -29,7 +29,7 @@ export const pickerStyles = StyleSheet.create({
     fontFamily: "Arvo-Regular",
     textAlign: "center",
     paddingVertical: responsive.scale(2),
-  },
+  }, // assuming 2 is extraSmall
   buttonTextSmall: {
     fontSize: responsive.responsiveFontSize(13),
   },
@@ -45,7 +45,7 @@ export const pickerStyles = StyleSheet.create({
   errorText: {
     color: colors.quaternary,
     fontFamily: "Arvo-Regular",
-    fontSize: responsive.responsiveFontSize(14),
+    fontSize: responsive.responsiveFontSize(14), // Assuming no spacing change here
     padding: responsive.scale(10),
     textAlign: "center",
   },
@@ -57,10 +57,10 @@ export const pickerStyles = StyleSheet.create({
     color: colors.secondary,
     fontFamily: "Arvo-Regular",
     fontSize: responsive.responsiveFontSize(14),
-    marginBottom: responsive.scale(8),
+    marginBottom: spacing.medium,
     maxWidth: responsive.scale(400),
     padding: responsive.scale(8),
-    textAlign: "left",
+    textAlign: "left", // Assuming no spacing change here
     width: "100%",
   },
   inputContainer: {
@@ -68,7 +68,7 @@ export const pickerStyles = StyleSheet.create({
     flexDirection: "row",
     marginBottom: responsive.scale(4),
     position: "relative",
-    width: "100%",
+    width: "100%", // Assuming no spacing change here
   },
   lightInputText: {
     color: colors.secondary,
@@ -77,14 +77,14 @@ export const pickerStyles = StyleSheet.create({
     color: colors.tertiary,
     fontFamily: "Arvo-Regular",
     fontSize: responsive.responsiveFontSize(14),
-    padding: responsive.scale(8),
+    padding: spacing.medium,
     textAlign: "center",
     fontWeight: "bold",
   },
   pressableText: {
     borderRadius: responsive.scale(5),
     flex: 1,
-    fontFamily: "Arvo-Regular",
+    fontFamily: "Arvo-Regular", // Assuming no spacing change here
     padding: responsive.scale(6),
   },
   resultsContainer: {
@@ -96,14 +96,14 @@ export const pickerStyles = StyleSheet.create({
     width: "100%",
   },
   resultsShow: {
-    flex: 1,
+    flex: 1, // Assuming no spacing change here
     maxWidth: responsive.scale(320),
   },
   searchIndicator: {
     marginLeft: responsive.scale(-25),
   },
   selectedMovie: {
-    backgroundColor: colors.grey,
+    backgroundColor: colors.grey, // Assuming no spacing change here
   },
   text: {
     fontFamily: "Arvo-Regular",
@@ -111,7 +111,7 @@ export const pickerStyles = StyleSheet.create({
     lineHeight: responsive.responsiveFontSize(16),
     marginBottom: responsive.scale(10),
     padding: responsive.scale(10),
-  },
+  }, // Assuming 10 corresponds to medium or some other defined spacing
   unselected: {
     color: colors.lightGrey,
     fontFamily: "Arvo-Italic",

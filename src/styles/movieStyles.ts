@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from "react-native"
-import { responsive, colors } from "../styles/global"
+import { responsive, colors, spacing } from "../styles/global"
 
 const { width, height } = Dimensions.get("window")
 
@@ -13,7 +13,7 @@ export const movieStyles = StyleSheet.create({
     maxWidth: responsive.scale(400),
     width: "95%",
     alignSelf: "center",
-    marginBottom: responsive.scale(20),
+    marginBottom: spacing.extraLarge,
   },
   disabledButton: {
     opacity: 0.6,
@@ -22,9 +22,9 @@ export const movieStyles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: colors.quinary,
     borderRadius: responsive.scale(8),
-    marginBottom: responsive.scale(15),
-    marginTop: responsive.scale(15),
-    padding: responsive.scale(10),
+    marginBottom: spacing.large,
+    marginTop: spacing.large,
+    padding: spacing.medium,
     width: "100%",
   },
   feedbackText: {
@@ -42,7 +42,7 @@ export const movieStyles = StyleSheet.create({
     borderWidth: 2,
     elevation: 0,
     justifyContent: "center",
-    padding: responsive.scale(8),
+    padding: spacing.medium,
     width: "90%",
   },
   giveUpButtonText: {
@@ -55,8 +55,8 @@ export const movieStyles = StyleSheet.create({
     opacity: 0.8,
   },
   scrollContentContainer: {
-    paddingBottom: responsive.scale(20),
-    paddingTop: responsive.scale(20),
+    paddingBottom: spacing.extraLarge,
+    paddingTop: spacing.extraLarge,
     alignItems: "center",
     flexGrow: 1,
   },
