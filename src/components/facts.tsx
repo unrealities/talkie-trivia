@@ -100,6 +100,7 @@ const Facts = memo(
         <ScrollView
           contentContainerStyle={factsStyles.scrollContainer}
           keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
           {movie.tagline && (
             <Text style={factsStyles.subHeaderSmall}>{movie.tagline}</Text>

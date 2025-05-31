@@ -133,6 +133,7 @@ const CluesContainer = React.memo<CluesProps>(
               ref={scrollViewRef}
               style={cluesStyles.scrollView}
               contentContainerStyle={cluesStyles.scrollViewContent}
+              showsVerticalScrollIndicator={false}
             >
               <Animated.Text style={[cluesStyles.text, animatedTextStyle]}>
                 {revealedClues.map((clue, index) => {

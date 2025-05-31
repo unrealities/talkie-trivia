@@ -72,6 +72,7 @@ const GameUI: React.FC<GameUIProps> = ({
     <ScrollView
       contentContainerStyle={movieStyles.scrollContentContainer}
       style={{ flex: 1 }}
+      showsVerticalScrollIndicator={false}
     >
       <View style={movieStyles.container}>
         <NetworkContainer isConnected={isNetworkConnected} />
