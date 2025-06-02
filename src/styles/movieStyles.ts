@@ -6,8 +6,6 @@ const { width, height } = Dimensions.get("window")
 export const movieStyles = StyleSheet.create({
   container: {
     alignItems: "center",
-    flex: 1,
-    flexDirection: "column",
     flexGrow: 1,
     minWidth: responsive.scale(320),
     maxWidth: responsive.scale(400),

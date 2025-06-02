@@ -18,7 +18,7 @@ export const pickerStyles = StyleSheet.create({
     boxShadow: "none",
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 2,
+    borderWidth: responsive.scale(2),
     borderColor: colors.primary,
     marginTop: spacing.none,
     minHeight: responsive.scale(60),
@@ -52,7 +52,7 @@ export const pickerStyles = StyleSheet.create({
   input: {
     alignSelf: "flex-start",
     borderColor: colors.lightGrey,
-    borderRadius: responsive.scale(8),
+    borderRadius: responsive.scale(4),
     borderWidth: 2,
     color: colors.secondary,
     fontFamily: "Arvo-Regular",
@@ -103,7 +103,8 @@ export const pickerStyles = StyleSheet.create({
     marginLeft: responsive.scale(-25),
   },
   selectedMovie: {
-    backgroundColor: colors.grey, // Assuming no spacing change here
+    backgroundColor: colors.quinary,
+    fontWeight: "bold",
   },
   text: {
     fontFamily: "Arvo-Regular",
