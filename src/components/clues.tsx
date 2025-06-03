@@ -114,7 +114,7 @@ const CluesContainer = React.memo<CluesProps>(
 
     const highlightStyle = useAnimatedStyle(() => ({
       backgroundColor:
-        clueHighlightAnim.value > 0.5 ? colors.quinary : "rgba(0, 0, 0, 0)",
+        clueHighlightAnim.value > 0.5 ? colors.quaternary : "rgba(0, 0, 0, 0)",
     }))
 
     return (

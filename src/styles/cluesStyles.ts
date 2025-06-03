@@ -19,7 +19,7 @@ export const cluesStyles = StyleSheet.create({
     marginTop: spacing.small,
   },
   mostRecentClue: {
-    paddingHorizontal: spacing.medium,
+    paddingHorizontal: spacing.extraSmall,
   },
   scrollView: {
     flexGrow: 1,
@@ -35,7 +35,7 @@ export const cluesStyles = StyleSheet.create({
     paddingTop: spacing.large,
   },
   skeletonLine: {
-    backgroundColor: colors.tertiary,
+    backgroundColor: colors.quaternary,
     borderRadius: responsive.scale(4),
     height: responsive.scale(16),
     marginBottom: responsive.scale(12),
