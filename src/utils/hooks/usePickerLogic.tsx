@@ -92,6 +92,10 @@ export function usePickerLogic({
     [isInteractionsDisabled]
   )
 
+  const resetSelectedMovie = useCallback(() => {
+    setSelectedMovie({ id: 0, title: DEFAULT_BUTTON_TEXT });
+  }, [setSelectedMovie]);
+
   const onPressCheck = useCallback(() => {
     if (
       !isInteractionsDisabled &&
@@ -147,5 +151,6 @@ export function usePickerLogic({
     onPressCheck,
     handleFocus,
     handleBlur,
+    resetSelectedMovie
   }
 }

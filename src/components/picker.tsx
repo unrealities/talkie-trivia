@@ -43,6 +43,7 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
       onPressCheck,
       handleFocus,
       handleBlur,
+      resetSelectedMovie,
     } = usePickerLogic({
       movies,
       playerGame,
@@ -116,6 +117,7 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
         renderItem={renderItem}
         onPressCheck={onPressCheck}
         handleFocus={handleFocus}
+        onClearSelectedMovie={resetSelectedMovie}
         handleBlur={handleBlur}
       />
     )

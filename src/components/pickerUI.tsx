@@ -7,10 +7,11 @@ import {
   TextInput,
   View,
   ListRenderItem,
+  StyleSheet, // Import StyleSheet for inline styles
 } from "react-native"
 import Animated from "react-native-reanimated"
 import { BasicMovie } from "../models/movie"
-import { colors } from "../styles/global"
+import { colors, responsive } from "../styles/global"
 import { pickerStyles } from "../styles/pickerStyles"
 
 interface PickerUIProps {
@@ -30,6 +31,7 @@ interface PickerUIProps {
   onPressCheck: () => void
   handleFocus: () => void
   handleBlur: () => void
+  onClearSelectedMovie: () => void // Add this prop
 }
 
 export const PickerUI: React.FC<PickerUIProps> = memo(
@@ -49,6 +51,7 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
     onPressCheck,
     handleFocus,
     handleBlur,
+    onClearSelectedMovie, // Destructure the new prop
   }) => {
     return (
       <View style={pickerStyles.container}>
@@ -96,12 +99,20 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
           {isLoading && !isMovieSelectedForGuess && (
             <ActivityIndicator size="large" color={colors.primary} />
           )}
-          {/* Error Message */}
+          {/* Error Message */}'
           {!isLoading && error && !isMovieSelectedForGuess && (
             <Text accessibilityRole="text" style={pickerStyles.errorText}>
               {error}
             </Text>
           )}
+          {/* "No movies found" message */}
+          {!isLoading &&
+            !error &&
+            !isMovieSelectedForGuess &&
+            foundMovies.length === 0 &&
+            searchText.length > 0 && (
+              <Text style={pickerStyles.noResultsText}>No movies found</Text>
+            )}
         </View>
 
         {/* Submit Button */}
@@ -138,9 +149,37 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
                 ? selectedMovieTitle
                 : DEFAULT_BUTTON_TEXT}
             </Text>
+
+            {/* Clear Selected Movie Button */}
+            {isMovieSelectedForGuess && !isInteractionsDisabled && (
+              <Pressable
+                onPress={onClearSelectedMovie}
+                style={styles.clearButton} // Use a StyleSheet style for better practice
+              >
+                <Text style={styles.clearButtonText}>x</Text>
+              </Pressable>
+            )}
           </Pressable>
         </Animated.View>
       </View>
     )
   }
 )
+
+const styles = StyleSheet.create({
+  clearButton: {
+    position: "absolute",
+    right: responsive.scale(5),
+    top: responsive.scale(5),
+    backgroundColor: colors.grey,
+    borderRadius: responsive.scale(10),
+    width: responsive.scale(20),
+    height: responsive.scale(20),
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  clearButtonText: {
+    color: colors.white,
+    fontSize: responsive.responsiveFontSize(12),
+  },
+})
