@@ -123,6 +123,21 @@ export const pickerStyles = StyleSheet.create({
     borderColor: colors.tertiary,
     opacity: 0.5,
   },
+  clearButton: {
+    position: "absolute",
+    right: responsive.scale(5),
+    top: responsive.scale(5),
+    backgroundColor: colors.grey,
+    borderRadius: responsive.scale(10),
+    width: responsive.scale(20),
+    height: responsive.scale(20),
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  clearButtonText: {
+    color: colors.white,
+    fontSize: responsive.responsiveFontSize(12),
+  },
 })
 
 export default pickerStyles

@@ -154,9 +154,9 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
             {isMovieSelectedForGuess && !isInteractionsDisabled && (
               <Pressable
                 onPress={onClearSelectedMovie}
-                style={styles.clearButton} // Use a StyleSheet style for better practice
+                style={pickerStyles.clearButton}
               >
-                <Text style={styles.clearButtonText}>x</Text>
+                <Text style={pickerStyles.clearButtonText}>x</Text>
               </Pressable>
             )}
           </Pressable>
@@ -166,20 +166,3 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
   }
 )
 
-const styles = StyleSheet.create({
-  clearButton: {
-    position: "absolute",
-    right: responsive.scale(5),
-    top: responsive.scale(5),
-    backgroundColor: colors.grey,
-    borderRadius: responsive.scale(10),
-    width: responsive.scale(20),
-    height: responsive.scale(20),
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  clearButtonText: {
-    color: colors.white,
-    fontSize: responsive.responsiveFontSize(12),
-  },
-})
