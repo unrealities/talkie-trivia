@@ -29,7 +29,7 @@ export const pickerStyles = StyleSheet.create({
     fontFamily: "Arvo-Regular",
     textAlign: "center",
     paddingVertical: responsive.scale(2),
-  }, // assuming 2 is extraSmall
+  },
   buttonTextSmall: {
     fontSize: responsive.responsiveFontSize(13),
   },
@@ -38,14 +38,14 @@ export const pickerStyles = StyleSheet.create({
     minHeight: responsive.scale(200),
     maxWidth: responsive.scale(400),
     width: "95%",
-    justifyContent: "space-between", // Add justifyContent to distribute space
-    flexDirection: "column", // Ensure flex direction is column
+    justifyContent: "space-between",
+    flexDirection: "column",
     alignSelf: "center",
   },
   errorText: {
     color: colors.quaternary,
     fontFamily: "Arvo-Regular",
-    fontSize: responsive.responsiveFontSize(14), // Assuming no spacing change here
+    fontSize: responsive.responsiveFontSize(14),
     padding: responsive.scale(10),
     textAlign: "center",
   },
@@ -60,7 +60,7 @@ export const pickerStyles = StyleSheet.create({
     marginBottom: spacing.medium,
     maxWidth: responsive.scale(400),
     padding: responsive.scale(8),
-    textAlign: "left", // Assuming no spacing change here
+    textAlign: "left",
     width: "100%",
   },
   inputContainer: {
@@ -68,7 +68,7 @@ export const pickerStyles = StyleSheet.create({
     flexDirection: "row",
     marginBottom: responsive.scale(4),
     position: "relative",
-    width: "100%", // Assuming no spacing change here
+    width: "100%",
   },
   lightInputText: {
     color: colors.secondary,
@@ -84,7 +84,7 @@ export const pickerStyles = StyleSheet.create({
   pressableText: {
     borderRadius: responsive.scale(5),
     flex: 1,
-    fontFamily: "Arvo-Regular", // Assuming no spacing change here
+    fontFamily: "Arvo-Regular",
     padding: responsive.scale(6),
   },
   resultsContainer: {
@@ -96,7 +96,7 @@ export const pickerStyles = StyleSheet.create({
     width: "100%",
   },
   resultsShow: {
-    flex: 1, // Assuming no spacing change here
+    flex: 1,
     maxWidth: responsive.scale(320),
   },
   searchIndicator: {
@@ -112,7 +112,7 @@ export const pickerStyles = StyleSheet.create({
     lineHeight: responsive.responsiveFontSize(16),
     marginBottom: responsive.scale(10),
     padding: responsive.scale(10),
-  }, // Assuming 10 corresponds to medium or some other defined spacing
+  },
   unselected: {
     color: colors.lightGrey,
     fontFamily: "Arvo-Italic",
@@ -125,8 +125,8 @@ export const pickerStyles = StyleSheet.create({
   },
   clearButton: {
     position: "absolute",
-    right: responsive.scale(5),
-    top: responsive.scale(5),
+    right: responsive.scale(2),
+    top: responsive.scale(14),
     backgroundColor: colors.grey,
     borderRadius: responsive.scale(10),
     width: responsive.scale(20),
