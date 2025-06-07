@@ -126,6 +126,9 @@ const CluesContainer = React.memo<CluesProps>(
             <View
               style={[cluesStyles.skeletonLine, cluesStyles.skeletonLineShort]}
             />
+            <View
+              style={[cluesStyles.skeletonLine, cluesStyles.skeletonLineShort]}
+            />
           </View>
         ) : (
           <>

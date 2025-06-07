@@ -31,17 +31,17 @@ export const cluesStyles = StyleSheet.create({
     paddingVertical: spacing.large,
   },
   skeletonContainer: {
-    paddingHorizontal: spacing.large,
-    paddingTop: spacing.large,
+    paddingHorizontal: spacing.small,
+    paddingVertical: spacing.small,
   },
   skeletonLine: {
-    backgroundColor: colors.quaternary,
+    backgroundColor: colors.grey,
     borderRadius: responsive.scale(4),
-    height: responsive.scale(16),
-    marginBottom: responsive.scale(12),
+    height: responsive.responsiveFontSize(14),
+    marginBottom: spacing.small,
   },
   skeletonLineShort: {
-    width: "60%",
+    width: "70%",
   },
   text: {
     color: colors.secondary,
