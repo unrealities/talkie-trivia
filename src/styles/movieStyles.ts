@@ -8,7 +8,7 @@ export const movieStyles = StyleSheet.create({
     alignItems: "center",
     flexGrow: 1,
     minWidth: responsive.scale(320),
-    maxWidth: responsive.scale(400),
+    maxWidth: responsive.scale(320),
     width: "95%",
     alignSelf: "center",
     marginBottom: spacing.extraLarge,
