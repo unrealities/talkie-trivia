@@ -1,14 +1,23 @@
 import React, { useEffect } from "react"
 import { Text, View, StyleSheet } from "react-native"
-import Animated, { useSharedValue, withTiming, Easing, runOnJS, useAnimatedStyle } from "react-native-reanimated"
+import Animated, {
+  useSharedValue,
+  withTiming,
+  Easing,
+  runOnJS,
+  useAnimatedStyle,
+} from "react-native-reanimated"
 import { colors, responsive } from "../styles/global" // Assuming colors and responsive are in global.ts
 
-interface FlashMessageProps {
+interface flashMessageProps {
   message: string | null
   duration?: number
 }
 
-const FlashMessage: React.FC<FlashMessageProps> = ({ message, duration = 3000 }) => {
+const flashMessages: React.FC<flashMessageProps> = ({
+  message,
+  duration = 3000,
+}) => {
   const opacity = useSharedValue(0)
 
   const showMessage = () => {
@@ -76,4 +85,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default FlashMessage
+export default flashMessages

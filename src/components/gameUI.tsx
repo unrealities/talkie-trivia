@@ -16,7 +16,7 @@ import PlayerStats from "../models/playerStats"
 import HintContainer from "./hint"
 import ConfettiCelebration from "./confettiCelebration"
 import ConfirmationModal from "./confirmationModal"
-import FlashMessage from "./flashMessage"
+import FlashMessages from "./flashMessages"
 
 interface GameUIProps {
   isNetworkConnected: boolean
@@ -143,7 +143,7 @@ const GameUI: React.FC<GameUIProps> = ({
           onConfirm={confirmGiveUp}
           onCancel={cancelGiveUp}
         />
-        <FlashMessage message={guessFeedback} />
+        <FlashMessages message={guessFeedback} />
       </View>
     </ScrollView>
   )
