@@ -40,8 +40,7 @@ export function useHintLogic({
 
   useEffect(() => {
     console.log("useHintLogic: Resetting state due to guess change.")
-    setHintUsedThisGuess(false)
- setHintUsedThisGuess(false) // Explicitly reset when guess count changes
+    setHintUsedThisGuess(false) // Explicitly reset when guess count changes
     setSelectedHintType(null)
     setDisplayedHintText(null)
     setShowHintOptions(false)
@@ -107,9 +106,8 @@ export function useHintLogic({
       console.log(`useHintLogic: Selecting hint - ${hint}`)
       setSelectedHintType(hint)
       setHintUsedThisGuess(true)
-      setDisplayedHintText(text)
+      setDisplayedHintText(getHintText(hint))
       setIsHintSelectionDisabled(true)
-      setHintUsedThisGuess(true)
       setShowHintOptions(false)
 
       updatePlayerGame({
