@@ -20,7 +20,7 @@ export const pickerStyles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: responsive.scale(2),
     borderColor: colors.primary,
-    marginTop: spacing.none,
+    marginBottom: spacing.small,
     minHeight: responsive.scale(60),
   },
   buttonText: {
@@ -35,8 +35,6 @@ export const pickerStyles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    minHeight: responsive.scale(200),
-    maxWidth: responsive.scale(400),
     width: "95%",
     justifyContent: "space-between",
     flexDirection: "column",
@@ -57,7 +55,7 @@ export const pickerStyles = StyleSheet.create({
     color: colors.secondary,
     fontFamily: "Arvo-Regular",
     fontSize: responsive.responsiveFontSize(14),
-    marginBottom: spacing.medium,
+    marginBottom: spacing.extraSmall,
     maxWidth: responsive.scale(400),
     padding: responsive.scale(8),
     textAlign: "left",
@@ -66,7 +64,6 @@ export const pickerStyles = StyleSheet.create({
   inputContainer: {
     alignItems: "center",
     flexDirection: "row",
-    marginBottom: responsive.scale(4),
     position: "relative",
     width: "100%",
   },
@@ -88,16 +85,13 @@ export const pickerStyles = StyleSheet.create({
     padding: responsive.scale(6),
   },
   resultsContainer: {
-    marginBottom: responsive.scale(4),
     maxHeight: responsive.scale(95),
     minHeight: responsive.scale(95),
-    maxWidth: responsive.scale(400),
     overflow: "hidden",
     width: "100%",
   },
   resultsShow: {
     flex: 1,
-    maxWidth: responsive.scale(320),
   },
   searchIndicator: {
     marginLeft: responsive.scale(-25),
@@ -105,13 +99,6 @@ export const pickerStyles = StyleSheet.create({
   selectedMovie: {
     backgroundColor: colors.quinary,
     fontWeight: "bold",
-  },
-  text: {
-    fontFamily: "Arvo-Regular",
-    fontSize: responsive.responsiveFontSize(12),
-    lineHeight: responsive.responsiveFontSize(16),
-    marginBottom: responsive.scale(10),
-    padding: responsive.scale(10),
   },
   unselected: {
     color: colors.lightGrey,

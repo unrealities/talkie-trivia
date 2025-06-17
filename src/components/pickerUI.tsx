@@ -55,6 +55,53 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
   }) => {
     return (
       <View style={pickerStyles.container}>
+                {/* Submit Button */}
+        <Animated.View style={[pickerStyles.button, animatedButtonStyle]}>
+          <Pressable
+            accessible
+            aria-label={
+              isInteractionsDisabled || isMovieSelectedForGuess
+                ? "Submit button disabled"
+                : "Submit button enabled"
+            }
+            role="button"
+            disabled={
+              isInteractionsDisabled ||
+              selectedMovieTitle === DEFAULT_BUTTON_TEXT
+            }
+            onPress={onPressCheck}
+            style={{
+              width: "100%",
+              height: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text
+              numberOfLines={2}
+              ellipsizeMode="tail"
+              style={[
+                pickerStyles.buttonText,
+                selectedMovieTitle.length > 35 && pickerStyles.buttonTextSmall,
+              ]}
+            >
+              {isMovieSelectedForGuess
+                ? selectedMovieTitle
+                : DEFAULT_BUTTON_TEXT}
+            </Text>
+
+            {/* Clear Selected Movie Button */}
+            {isMovieSelectedForGuess && !isInteractionsDisabled && (
+              <Pressable
+                onPress={onClearSelectedMovie}
+                style={pickerStyles.clearButton}
+              >
+                <Text style={pickerStyles.clearButtonText}>x</Text>
+              </Pressable>
+            )}
+          </Pressable>
+        </Animated.View>
+
         <View style={pickerStyles.inputContainer}>
           <TextInput
             accessible
@@ -114,53 +161,6 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
               <Text style={pickerStyles.noResultsText}>No movies found</Text>
             )}
         </View>
-
-        {/* Submit Button */}
-        <Animated.View style={[pickerStyles.button, animatedButtonStyle]}>
-          <Pressable
-            accessible
-            aria-label={
-              isInteractionsDisabled || isMovieSelectedForGuess
-                ? "Submit button disabled"
-                : "Submit button enabled"
-            }
-            role="button"
-            disabled={
-              isInteractionsDisabled ||
-              selectedMovieTitle === DEFAULT_BUTTON_TEXT
-            }
-            onPress={onPressCheck}
-            style={{
-              width: "100%",
-              height: "100%",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              numberOfLines={2}
-              ellipsizeMode="tail"
-              style={[
-                pickerStyles.buttonText,
-                selectedMovieTitle.length > 35 && pickerStyles.buttonTextSmall,
-              ]}
-            >
-              {isMovieSelectedForGuess
-                ? selectedMovieTitle
-                : DEFAULT_BUTTON_TEXT}
-            </Text>
-
-            {/* Clear Selected Movie Button */}
-            {isMovieSelectedForGuess && !isInteractionsDisabled && (
-              <Pressable
-                onPress={onClearSelectedMovie}
-                style={pickerStyles.clearButton}
-              >
-                <Text style={pickerStyles.clearButtonText}>x</Text>
-              </Pressable>
-            )}
-          </Pressable>
-        </Animated.View>
       </View>
     )
   }

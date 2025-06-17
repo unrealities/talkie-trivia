@@ -3,7 +3,7 @@ import { BasicMovie } from "../../models/movie"
 import { PlayerGame } from "../../models/game"
 import { useSharedValue, withTiming } from "react-native-reanimated"
 
-const DEFAULT_BUTTON_TEXT = "Select a Movie"
+const DEFAULT_BUTTON_TEXT = "Search for a Movie below"
 
 interface UsePickerLogicProps {
   movies: readonly BasicMovie[]

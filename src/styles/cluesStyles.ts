@@ -5,7 +5,7 @@ export const cluesStyles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "flex-start",
-    marginVertical: spacing.small,
+    marginVertical: spacing.extraSmall,
     minHeight: responsive.scale(220),
     paddingHorizontal: spacing.small,
     width: "100%",
