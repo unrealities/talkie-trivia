@@ -89,20 +89,49 @@ export function useHintLogic({
 
   const handleHintSelection = useCallback(
     (hint: HintType) => {
-      if (
-        isInteractionsDisabled || // Cannot select if game is over/disabled
-        hintUsedThisGuess || // Cannot use more than one hint per guess
-        playerGame.guesses.length >= 3 || // Cannot use hints after the 3rd guess
-        playerGame.hintsUsed[playerGame.guesses.length] || // Cannot use a hint if one is already used for this guess (redundant with hintUsedThisGuess but good check)
-        Object.keys(playerGame.hintsUsed || {}).length >= 3 || // Cannot use more than 3 hints in total per game
-        !playerGame?.game?.movie || // Cannot get a hint if no movie is loaded
-        !getHintText(hint) || // Cannot use if the hint text is unavailable
-        !showHintOptions
-      ) {
-        console.log("useHintLogic: Hint selection prevented.")
-        return
+      // Destructure relevant properties from playerGame for clarity
+      const { guesses, hintsUsed, game } = playerGame;
+
+      // Check if interactions are disabled
+      if (isInteractionsDisabled) {
+        console.log("useHintLogic: Interactions are disabled.");
+        return;
       }
 
+      // Check if the current guess already has a hint used
+      const currentGuessIndex = guesses.length;
+      if (hintsUsed[currentGuessIndex]) {
+        console.log(`useHintLogic: Hint already used for guess ${currentGuessIndex + 1}.`);
+        return;
+      }
+
+      // Check if the total number of hints used has reached the limit
+      const totalHintsUsed = Object.keys(hintsUsed || {}).length;
+      if (totalHintsUsed >= 3) {
+        console.log("useHintLogic: Maximum number of hints used.");
+        return;
+      }
+
+      // Check if a movie is loaded
+      if (!game?.movie) {
+        console.log("useHintLogic: No movie loaded.");
+        return;
+      }
+
+      // Check if the hint text is available
+      if (!getHintText(hint)) {
+        console.log("useHintLogic: Hint text unavailable.");
+        return;
+      }
+
+      // Check if hint options are shown
+      if (!showHintOptions) {
+          console.log("useHintLogic: Hint options are not shown.");
+          return;
+      }
+
+
+      // If all checks pass, proceed with hint logic
       console.log(`useHintLogic: Selecting hint - ${hint}`)
       setSelectedHintType(hint)
       setHintUsedThisGuess(true)
