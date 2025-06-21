@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useCallback } from "react"
 import { View, Text } from "react-native"
 import {
   useSharedValue,
@@ -34,6 +34,28 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
   updatePlayerStats,
   initialDataLoaded,
 }) => {
+  const updatePlayerData = useCallback(async () => {
+    if (!playerGame || !playerStats) return
+    const latestGuessIndex =
+      playerGame.guesses.length > 0 ? playerGame.guesses.length - 1 : -1
+    const hintUsedForLatestGuess =
+      latestGuessIndex !== -1 &&
+      playerGame.hintsUsed &&
+      playerGame.hintsUsed[latestGuessIndex] !== undefined
+
+    const hintsAvailableAfterGuess = Math.max(
+      0,
+      (playerStats?.hintsAvailable ?? 0) - (hintUsedForLatestGuess ? 1 : 0)
+    )
+
+    const updatedStats = {
+      ...playerStats,
+      hintsAvailable: hintsAvailableAfterGuess,
+    }
+
+    updatePlayerStats(updatedStats)
+  }, [playerGame, playerStats, updatePlayerStats])
+
   const {
     showModal,
     setShowModal,
