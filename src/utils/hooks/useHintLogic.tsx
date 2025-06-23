@@ -1,6 +1,7 @@
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback, useEffect, useMemo } from "react"
 import { LayoutAnimation, Platform, UIManager } from "react-native"
 import { PlayerGame } from "../../models/game"
+import PlayerStats from "../../models/playerStats"
 
 if (
   Platform.OS === "android" &&
@@ -14,30 +15,28 @@ type HintType = "decade" | "director" | "actor" | "genre"
 interface UseHintLogicProps {
   playerGame: PlayerGame
   isInteractionsDisabled: boolean
-  hintsAvailable: number
+  playerStats: PlayerStats
   updatePlayerGame: (updatedPlayerGame: PlayerGame) => void
-  updatePlayerStats: (updatedPlayerStats: any) => void
+  updatePlayerStats: (updatedPlayerStats: PlayerStats) => void
 }
 
 export function useHintLogic({
   playerGame,
   isInteractionsDisabled,
-  hintsAvailable,
+  playerStats,
   updatePlayerGame,
   updatePlayerStats,
 }: UseHintLogicProps) {
-  const [hintUsedThisGuess, setHintUsedThisGuess] = useState<boolean>(false)
   const [showHintOptions, setShowHintOptions] = useState(false)
   const [displayedHintText, setDisplayedHintText] = useState<string | null>(
     null
   )
 
-  useEffect(() => {
-    console.log("useHintLogic: Resetting state for new guess.")
-    setHintUsedThisGuess(false)
-    setDisplayedHintText(null)
-    setShowHintOptions(false)
-  }, [playerGame.guesses.length])
+  const hintsAvailable = playerStats?.hintsAvailable ?? 0
+
+  const hintUsedThisTurn = useMemo(() => {
+    return playerGame.hintsUsed?.[playerGame.guesses.length] !== undefined
+  }, [playerGame.hintsUsed, playerGame.guesses.length])
 
   const getHintText = useCallback(
     (hintType: HintType): string => {
@@ -74,30 +73,31 @@ export function useHintLogic({
         console.error("Error getting hint text:", e)
         text = "Error fetching hint"
       }
-      console.log(`useHintLogic: Generated Hint Text (${hintType}):`, text)
       return text
     },
     [playerGame.game.movie]
   )
 
+  useEffect(() => {
+    const currentGuessIndex = playerGame.guesses.length
+    const hintForCurrentTurn = playerGame.hintsUsed?.[currentGuessIndex]
+
+    if (hintForCurrentTurn) {
+      setDisplayedHintText(getHintText(hintForCurrentTurn))
+      setShowHintOptions(false)
+    } else {
+      setDisplayedHintText(null)
+    }
+  }, [playerGame.hintsUsed, playerGame.guesses.length, getHintText])
+
   const handleHintSelection = useCallback(
     (hint: HintType) => {
-      const { guesses, hintsUsed, game } = playerGame
-
-      if (
-        isInteractionsDisabled ||
-        hintsAvailable <= 0 ||
-        (hintsUsed && hintsUsed[guesses.length]) || // Check if hint was already used for this guess index
-        !game?.movie ||
-        !getHintText(hint)
-      ) {
+      if (isInteractionsDisabled || hintsAvailable <= 0 || hintUsedThisTurn) {
         return
       }
 
-      console.log(`useHintLogic: Selecting hint - ${hint}`)
-      setHintUsedThisGuess(true)
-      setDisplayedHintText(getHintText(hint))
       setShowHintOptions(false)
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
 
       updatePlayerGame({
         ...playerGame,
@@ -107,55 +107,46 @@ export function useHintLogic({
         },
       })
 
-      // Decrement available hints from the player's stats.
-      updatePlayerStats((prevStats: any) => ({
-        ...prevStats,
-        hintsAvailable: Math.max(0, (prevStats?.hintsAvailable ?? 0) - 1),
-      }))
-
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+      const newPlayerStats: PlayerStats = {
+        ...playerStats,
+        hintsAvailable: Math.max(0, hintsAvailable - 1),
+        hintsUsedCount: (playerStats.hintsUsedCount || 0) + 1,
+      }
+      updatePlayerStats(newPlayerStats)
     },
     [
       isInteractionsDisabled,
       hintsAvailable,
-      getHintText,
+      hintUsedThisTurn,
       playerGame,
+      playerStats,
       updatePlayerGame,
       updatePlayerStats,
+      getHintText,
     ]
   )
 
   const handleToggleHintOptions = useCallback(() => {
-    // Allow toggling only if the game is active, hints are available, and one hasn't been used for this guess.
-    if (isInteractionsDisabled || hintsAvailable <= 0 || hintUsedThisGuess) {
+    if (isInteractionsDisabled || hintsAvailable <= 0 || hintUsedThisTurn) {
       return
     }
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setShowHintOptions((prevShow) => !prevShow)
-  }, [isInteractionsDisabled, hintsAvailable, hintUsedThisGuess])
+  }, [isInteractionsDisabled, hintsAvailable, hintUsedThisTurn])
 
-  const getHintLabelText = useCallback(() => {
-    // If a hint has been used for the current guess, show remaining count.
-    if (hintUsedThisGuess) {
-      return `${hintsAvailable} Hint${
-        hintsAvailable !== 1 ? "s" : ""
-      } remaining`
-    }
-    // If no hints are left at all.
+  const hintLabelText = useMemo(() => {
     if (hintsAvailable <= 0) {
       return "Out of hints!"
     }
-    // Default prompt.
+    if (hintUsedThisTurn) {
+      return `Make a guess to use another hint`
+    }
     return `Need a Hint? (${hintsAvailable} available)`
-  }, [hintsAvailable, hintUsedThisGuess])
-
-  const hintLabelText = getHintLabelText()
+  }, [hintsAvailable, hintUsedThisTurn])
 
   const isToggleDisabled =
-    isInteractionsDisabled || hintsAvailable <= 0 || hintUsedThisGuess
-
-  const areHintButtonsDisabled =
-    isInteractionsDisabled || hintUsedThisGuess || hintsAvailable <= 0
+    isInteractionsDisabled || hintsAvailable <= 0 || hintUsedThisTurn
+  const areHintButtonsDisabled = isToggleDisabled
 
   return {
     showHintOptions,

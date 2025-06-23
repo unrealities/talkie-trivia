@@ -2,12 +2,13 @@ import React, { memo } from "react"
 import { PlayerGame } from "../models/game"
 import { useHintLogic } from "../utils/hooks/useHintLogic"
 import HintUI from "./hintUI"
+import PlayerStats from "../models/playerStats"
 
 interface HintContainerProps {
   playerGame: PlayerGame
   updatePlayerGame: (updatedPlayerGame: PlayerGame) => void
   isInteractionsDisabled: boolean
-  hintsAvailable: number
+  playerStats: PlayerStats
   updatePlayerStats: (updatedPlayerStats: any) => void
 }
 
@@ -16,9 +17,11 @@ const HintContainer: React.FC<HintContainerProps> = memo(
     playerGame,
     updatePlayerGame,
     isInteractionsDisabled,
-    hintsAvailable,
+    playerStats,
     updatePlayerStats,
   }: HintContainerProps) => {
+    const hintsAvailable = playerStats?.hintsAvailable ?? 0
+
     const {
       showHintOptions,
       displayedHintText,
@@ -30,7 +33,7 @@ const HintContainer: React.FC<HintContainerProps> = memo(
     } = useHintLogic({
       playerGame,
       isInteractionsDisabled,
-      hintsAvailable,
+      playerStats,
       updatePlayerGame,
       updatePlayerStats,
     })

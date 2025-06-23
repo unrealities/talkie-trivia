@@ -7,7 +7,6 @@ import GuessesContainer from "./guesses"
 import NetworkContainer from "./network"
 import MovieModal from "./modal"
 import PickerContainer from "./picker"
-import TitleHeader from "./titleHeader"
 import { movieStyles } from "../styles/movieStyles"
 import { BasicMovie } from "../models/movie"
 import { PlayerGame } from "../models/game"
@@ -66,8 +65,6 @@ const GameUI: React.FC<GameUIProps> = ({
   updatePlayerGame,
   updatePlayerStats,
 }) => {
-  const hintsAvailable = playerStats?.hintsAvailable ?? 0
-
   return (
     <ScrollView
       contentContainerStyle={movieStyles.scrollContentContainer}
@@ -87,7 +84,7 @@ const GameUI: React.FC<GameUIProps> = ({
           playerGame={playerGame}
           updatePlayerGame={updatePlayerGame}
           isInteractionsDisabled={isInteractionsDisabled}
-          hintsAvailable={hintsAvailable}
+          playerStats={playerStats}
           updatePlayerStats={updatePlayerStats}
         />
         <PickerContainer
