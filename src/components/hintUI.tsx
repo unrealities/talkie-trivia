@@ -1,17 +1,18 @@
 import React, { memo } from "react"
-import { View, Pressable, Text } from "react-native"
+import { View, Pressable, Text, StyleProp, ViewStyle } from "react-native"
 import Icon from "react-native-vector-icons/FontAwesome"
 import { hintStyles } from "../styles/hintStyles"
 import { responsive, colors } from "../styles/global"
 
 type HintType = "decade" | "director" | "actor" | "genre"
+type HintStatus = "available" | "used" | "disabled"
 
 interface HintButtonProps {
   hintType: HintType
   iconName: keyof typeof Icon.glyphMap
   label: string
   onPress: (type: HintType) => void
-  disabled: boolean
+  status: HintStatus
   accessibilityHintCount: number
 }
 
@@ -20,42 +21,69 @@ const HintButton: React.FC<HintButtonProps> = ({
   iconName,
   label,
   onPress,
-  disabled,
+  status,
   accessibilityHintCount,
-}) => (
-  <Pressable
-    style={[hintStyles.hintButton, disabled && hintStyles.disabled]}
-    onPress={() => onPress(hintType)}
-    disabled={disabled}
-    accessible
-    accessibilityRole="button"
-    accessibilityState={{ disabled }}
-    accessibilityLabel={
-      disabled
-        ? `${label} hint unavailable`
-        : `Get the movie's ${label.toLowerCase()} hint. ${accessibilityHintCount} hints available.`
+}) => {
+  const buttonStyle: StyleProp<ViewStyle> = [hintStyles.hintButton]
+  if (status === "disabled") {
+    buttonStyle.push(hintStyles.disabled)
+  } else if (status === "used") {
+    buttonStyle.push(hintStyles.usedHintButton)
+  }
+
+  const getAccessibilityLabel = () => {
+    switch (status) {
+      case "used":
+        return `Re-view the ${label.toLowerCase()} hint.`
+      case "disabled":
+        return `${label} hint unavailable.`
+      case "available":
+      default:
+        return `Get the movie's ${label.toLowerCase()} hint. ${accessibilityHintCount} hints available.`
     }
-  >
-    <Icon
-      name={iconName}
-      size={responsive.scale(20)}
-      color={disabled ? colors.grey : colors.secondary}
-    />
-    <Text
-      style={[hintStyles.buttonTextSmall, disabled && { color: colors.grey }]}
+  }
+
+  return (
+    <Pressable
+      style={buttonStyle}
+      onPress={() => onPress(hintType)}
+      disabled={status === "disabled"}
+      accessible
+      accessibilityRole="button"
+      accessibilityState={{ disabled: status === "disabled" }}
+      accessibilityLabel={getAccessibilityLabel()}
     >
-      {label}
-    </Text>
-  </Pressable>
-)
+      <Icon
+        name={iconName}
+        size={responsive.scale(20)}
+        color={
+          status === "disabled"
+            ? colors.grey
+            : status === "used"
+            ? colors.tertiary
+            : colors.secondary
+        }
+      />
+      <Text
+        style={[
+          hintStyles.buttonTextSmall,
+          status === "disabled" && { color: colors.grey },
+          status === "used" && { color: colors.tertiary },
+        ]}
+      >
+        {label}
+      </Text>
+    </Pressable>
+  )
+}
 
 interface HintUIProps {
   showHintOptions: boolean
   displayedHintText: string | null
   hintLabelText: string
   isToggleDisabled: boolean
-  areHintButtonsDisabled: boolean
   hintsAvailable: number
+  hintStatuses: Record<HintType, HintStatus>
 
   handleToggleHintOptions: () => void
   handleHintSelection: (type: HintType) => void
@@ -67,14 +95,13 @@ const HintUI: React.FC<HintUIProps> = memo(
     displayedHintText,
     hintLabelText,
     isToggleDisabled,
-    areHintButtonsDisabled,
     hintsAvailable,
+    hintStatuses,
     handleToggleHintOptions,
     handleHintSelection,
   }) => {
     return (
       <View style={hintStyles.container}>
-        {/* Main Toggle Button */}
         <Pressable
           onPress={handleToggleHintOptions}
           disabled={isToggleDisabled}
@@ -89,13 +116,11 @@ const HintUI: React.FC<HintUIProps> = memo(
               hintStyles.hintLabel,
               isToggleDisabled && { color: colors.grey },
             ]}
-            accessibilityLabelledBy="hintLabel"
           >
             {hintLabelText}
           </Text>
         </Pressable>
 
-        {/* Hint Selection Buttons (Conditional) */}
         {showHintOptions && (
           <View style={hintStyles.hintButtonsContainer}>
             <View style={hintStyles.hintButtonArea}>
@@ -104,7 +129,7 @@ const HintUI: React.FC<HintUIProps> = memo(
                 iconName="calendar"
                 label="Decade"
                 onPress={handleHintSelection}
-                disabled={areHintButtonsDisabled}
+                status={hintStatuses.decade}
                 accessibilityHintCount={hintsAvailable}
               />
               <HintButton
@@ -112,7 +137,7 @@ const HintUI: React.FC<HintUIProps> = memo(
                 iconName="video-camera"
                 label="Director"
                 onPress={handleHintSelection}
-                disabled={areHintButtonsDisabled}
+                status={hintStatuses.director}
                 accessibilityHintCount={hintsAvailable}
               />
               <HintButton
@@ -120,7 +145,7 @@ const HintUI: React.FC<HintUIProps> = memo(
                 iconName="user"
                 label="Actor"
                 onPress={handleHintSelection}
-                disabled={areHintButtonsDisabled}
+                status={hintStatuses.actor}
                 accessibilityHintCount={hintsAvailable}
               />
               <HintButton
@@ -128,14 +153,13 @@ const HintUI: React.FC<HintUIProps> = memo(
                 iconName="folder-open"
                 label="Genre"
                 onPress={handleHintSelection}
-                disabled={areHintButtonsDisabled}
+                status={hintStatuses.genre}
                 accessibilityHintCount={hintsAvailable}
               />
             </View>
           </View>
         )}
 
-        {/* Displayed Hint Text (Conditional) */}
         {displayedHintText && (
           <Text style={hintStyles.hintText}>{displayedHintText}</Text>
         )}

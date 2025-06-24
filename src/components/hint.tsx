@@ -27,7 +27,7 @@ const HintContainer: React.FC<HintContainerProps> = memo(
       displayedHintText,
       hintLabelText,
       isToggleDisabled,
-      areHintButtonsDisabled,
+      hintStatuses,
       handleToggleHintOptions,
       handleHintSelection,
     } = useHintLogic({
@@ -44,8 +44,8 @@ const HintContainer: React.FC<HintContainerProps> = memo(
         displayedHintText={displayedHintText}
         hintLabelText={hintLabelText}
         isToggleDisabled={isToggleDisabled}
-        areHintButtonsDisabled={areHintButtonsDisabled}
         hintsAvailable={hintsAvailable}
+        hintStatuses={hintStatuses}
         handleToggleHintOptions={handleToggleHintOptions}
         handleHintSelection={handleHintSelection}
       />

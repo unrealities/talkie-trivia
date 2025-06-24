@@ -44,7 +44,7 @@ export const hintStyles = StyleSheet.create({
   },
   usedHintButton: {
     backgroundColor: "transparent",
-    opacity: 0.6,
+    opacity: 0.8,
     borderColor: colors.tertiary,
   },
   buttonText: {
