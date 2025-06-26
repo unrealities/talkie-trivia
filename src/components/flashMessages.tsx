@@ -7,7 +7,7 @@ import Animated, {
   runOnJS,
   useAnimatedStyle,
 } from "react-native-reanimated"
-import { colors, responsive } from "../styles/global" // Assuming colors and responsive are in global.ts
+import { colors, responsive } from "../styles/global"
 
 interface flashMessageProps {
   message: string | null
@@ -63,24 +63,24 @@ const flashMessages: React.FC<flashMessageProps> = ({
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    top: responsive.scale(50), // Adjust positioning as needed
+    top: responsive.scale(4),
     left: 0,
     right: 0,
-    zIndex: 1000, // Ensure it's on top
+    zIndex: 1000,
     alignItems: "center",
     justifyContent: "center",
   },
   messageBox: {
-    backgroundColor: colors.quinary, // Example background color
+    backgroundColor: colors.quinary,
     borderRadius: responsive.scale(8),
     paddingVertical: responsive.scale(10),
     paddingHorizontal: responsive.scale(20),
     marginHorizontal: responsive.scale(20),
   },
   messageText: {
-    color: colors.background, // Example text color
+    color: colors.background,
     fontSize: responsive.responsiveFontSize(16),
-    fontFamily: "Arvo-Bold", // Assuming you have this font
+    fontFamily: "Arvo-Bold",
     textAlign: "center",
   },
 })
