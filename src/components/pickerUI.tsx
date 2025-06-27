@@ -7,11 +7,11 @@ import {
   TextInput,
   View,
   ListRenderItem,
-  StyleSheet, // Import StyleSheet for inline styles
 } from "react-native"
 import Animated from "react-native-reanimated"
+import { FontAwesome } from "@expo/vector-icons"
 import { BasicMovie } from "../models/movie"
-import { colors, responsive } from "../styles/global"
+import { colors } from "../styles/global"
 import { pickerStyles } from "../styles/pickerStyles"
 
 interface PickerUIProps {
@@ -20,18 +20,16 @@ interface PickerUIProps {
   isLoading: boolean
   error: string | null
   foundMovies: readonly BasicMovie[]
-  selectedMovieTitle: string
+  selectedMovie: BasicMovie | null
+  animatedInputStyle: any
   isInteractionsDisabled: boolean
-  DEFAULT_BUTTON_TEXT: string
-  isMovieSelectedForGuess: boolean
-  animatedButtonStyle: any
 
   handleInputChange: (text: string) => void
   renderItem: ListRenderItem<BasicMovie>
   onPressCheck: () => void
   handleFocus: () => void
   handleBlur: () => void
-  onClearSelectedMovie: () => void // Add this prop
+  onClearSelectedMovie: () => void
 }
 
 export const PickerUI: React.FC<PickerUIProps> = memo(
@@ -41,98 +39,91 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
     isLoading,
     error,
     foundMovies,
-    selectedMovieTitle,
+    selectedMovie,
+    animatedInputStyle,
     isInteractionsDisabled,
-    DEFAULT_BUTTON_TEXT,
-    isMovieSelectedForGuess,
-    animatedButtonStyle,
     handleInputChange,
     renderItem,
     onPressCheck,
     handleFocus,
     handleBlur,
-    onClearSelectedMovie, // Destructure the new prop
+    onClearSelectedMovie,
   }) => {
+    const isMovieSelectedForGuess = selectedMovie !== null
+    const releaseYear = selectedMovie?.release_date
+      ? ` (${selectedMovie.release_date.toString().substring(0, 4)})`
+      : ""
+    const selectedMovieTitleWithYear = selectedMovie
+      ? `${selectedMovie.title}${releaseYear}`
+      : ""
+
     return (
       <View style={pickerStyles.container}>
-                {/* Submit Button */}
-        <Animated.View style={[pickerStyles.button, animatedButtonStyle]}>
-          <Pressable
-            accessible
-            aria-label={
-              isInteractionsDisabled || isMovieSelectedForGuess
-                ? "Submit button disabled"
-                : "Submit button enabled"
-            }
-            role="button"
-            disabled={
-              isInteractionsDisabled ||
-              selectedMovieTitle === DEFAULT_BUTTON_TEXT
-            }
-            onPress={onPressCheck}
-            style={{
-              width: "100%",
-              height: "100%",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              numberOfLines={2}
-              ellipsizeMode="tail"
-              style={[
-                pickerStyles.buttonText,
-                selectedMovieTitle.length > 35 && pickerStyles.buttonTextSmall,
-              ]}
-            >
-              {isMovieSelectedForGuess
-                ? selectedMovieTitle
-                : DEFAULT_BUTTON_TEXT}
+        {isMovieSelectedForGuess && (
+          <View style={pickerStyles.selectionContainer}>
+            <Text style={pickerStyles.selectionText} numberOfLines={2}>
+              {selectedMovieTitleWithYear}
             </Text>
-
-            {/* Clear Selected Movie Button */}
-            {isMovieSelectedForGuess && !isInteractionsDisabled && (
+            {!isInteractionsDisabled && (
               <Pressable
                 onPress={onClearSelectedMovie}
-                style={pickerStyles.clearButton}
+                style={pickerStyles.clearSelectionButton}
+                hitSlop={10}
               >
-                <Text style={pickerStyles.clearButtonText}>x</Text>
+                <FontAwesome
+                  name="times-circle"
+                  size={24}
+                  color={colors.lightGrey}
+                />
               </Pressable>
             )}
-          </Pressable>
+          </View>
+        )}
+
+        <Animated.View style={animatedInputStyle}>
+          <View style={pickerStyles.inputContainer}>
+            <TextInput
+              accessible
+              accessibilityRole="search"
+              aria-label="Search for a movie"
+              maxLength={100}
+              onBlur={handleBlur}
+              onChangeText={handleInputChange}
+              onFocus={handleFocus}
+              placeholder={
+                isMovieSelectedForGuess
+                  ? "Selection made. Press Submit."
+                  : "Search for a movie title"
+              }
+              placeholderTextColor={colors.tertiary}
+              style={[
+                pickerStyles.input,
+                (isInteractionsDisabled || isMovieSelectedForGuess) && {
+                  backgroundColor: colors.grey,
+                },
+              ]}
+              value={searchText}
+              editable={!isInteractionsDisabled && !isMovieSelectedForGuess}
+            />
+            {isSearching && (
+              <ActivityIndicator
+                size="small"
+                color={colors.primary}
+                style={pickerStyles.activityIndicator}
+              />
+            )}
+          </View>
         </Animated.View>
 
-        <View style={pickerStyles.inputContainer}>
-          <TextInput
-            accessible
-            accessibilityRole="search"
-            aria-label="Search for a movie"
-            maxLength={100}
-            onBlur={handleBlur}
-            onChangeText={handleInputChange}
-            onFocus={handleFocus}
-            placeholder="Search for a movie title"
-            placeholderTextColor={colors.tertiary}
-            style={pickerStyles.input}
-            value={searchText}
-            readOnly={isInteractionsDisabled}
-          />
-          {isSearching && (
-            <ActivityIndicator
-              size="small"
-              color={colors.primary}
-              style={pickerStyles.activityIndicator}
-            />
-          )}
-        </View>
-
-        {/* Search Results Area */}
-        <View style={pickerStyles.resultsContainer}>
-          {/* Search Results List */}
-          {!isLoading &&
-            !error &&
-            !isMovieSelectedForGuess &&
-            foundMovies.length > 0 && (
+        {!isMovieSelectedForGuess && (
+          <View style={pickerStyles.resultsContainer}>
+            {isLoading ? (
+              <ActivityIndicator size="large" color={colors.primary} />
+            ) : error ? (
+              <Text accessibilityRole="text" style={pickerStyles.errorText}>
+                {error}
+              </Text>
+            ) : foundMovies.length > 0 ? (
               <FlatList
                 data={foundMovies}
                 renderItem={renderItem}
@@ -141,28 +132,28 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
                 keyboardShouldPersistTaps="handled"
                 ListEmptyComponent={null}
               />
-            )}
-          {/* Loading Indicator */}
-          {isLoading && !isMovieSelectedForGuess && (
-            <ActivityIndicator size="large" color={colors.primary} />
-          )}
-          {/* Error Message */}'
-          {!isLoading && error && !isMovieSelectedForGuess && (
-            <Text accessibilityRole="text" style={pickerStyles.errorText}>
-              {error}
-            </Text>
-          )}
-          {/* "No movies found" message */}
-          {!isLoading &&
-            !error &&
-            !isMovieSelectedForGuess &&
-            foundMovies.length === 0 &&
-            searchText.length > 0 && (
+            ) : searchText.length > 0 ? (
               <Text style={pickerStyles.noResultsText}>No movies found</Text>
-            )}
-        </View>
+            ) : null}
+          </View>
+        )}
+
+        <Pressable
+          accessible
+          aria-label="Submit Guess"
+          role="button"
+          disabled={!isMovieSelectedForGuess || isInteractionsDisabled}
+          onPress={onPressCheck}
+          style={({ pressed }) => [
+            pickerStyles.button,
+            (!isMovieSelectedForGuess || isInteractionsDisabled) &&
+              pickerStyles.disabledButton,
+            pressed && { opacity: 0.8 },
+          ]}
+        >
+          <Text style={pickerStyles.buttonText}>Submit Guess</Text>
+        </Pressable>
       </View>
     )
   }
 )
-

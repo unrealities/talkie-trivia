@@ -1,9 +1,20 @@
 import { useState, useCallback, useEffect } from "react"
+import { LayoutAnimation, Platform, UIManager } from "react-native"
 import { BasicMovie } from "../../models/movie"
 import { PlayerGame } from "../../models/game"
-import { useSharedValue, withTiming } from "react-native-reanimated"
+import {
+  useSharedValue,
+  withSequence,
+  withRepeat,
+  withTiming,
+} from "react-native-reanimated"
 
-const DEFAULT_BUTTON_TEXT = "Search for a Movie below"
+if (
+  Platform.OS === "android" &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
+  UIManager.setLayoutAnimationEnabledExperimental(true)
+}
 
 interface UsePickerLogicProps {
   movies: readonly BasicMovie[]
@@ -25,15 +36,20 @@ export function usePickerLogic({
   const [isFocused, setIsFocused] = useState(false)
   const [isSearching, setIsSearching] = useState(false)
   const [foundMovies, setFoundMovies] = useState<BasicMovie[]>([])
-  const [selectedMovie, setSelectedMovie] = useState<{
-    id: number
-    title: string
-  }>({
-    id: 0,
-    title: DEFAULT_BUTTON_TEXT,
-  })
+  const [selectedMovie, setSelectedMovie] = useState<BasicMovie | null>(null)
   const [searchText, setSearchText] = useState<string>("")
+
   const buttonScale = useSharedValue(1)
+  const shakeAnimation = useSharedValue(0)
+
+  // Function to trigger the shake animation.
+  const triggerShake = () => {
+    shakeAnimation.value = withSequence(
+      withTiming(-10, { duration: 50 }),
+      withRepeat(withTiming(10, { duration: 100 }), 3, true),
+      withTiming(0, { duration: 50 })
+    )
+  }
 
   const filterMovies = useCallback(
     (searchTerm: string) => {
@@ -49,16 +65,10 @@ export function usePickerLogic({
     [movies]
   )
 
-  const handleInputChange = useCallback(
-    (text: string) => {
-      if (selectedMovie.id !== 0) {
-        setSelectedMovie({ id: 0, title: DEFAULT_BUTTON_TEXT })
-      }
-      setSearchText(text)
-      setIsSearching(true)
-    },
-    [selectedMovie]
-  ) // selectedMovie added to dependencies
+  const handleInputChange = useCallback((text: string) => {
+    setSearchText(text)
+    setIsSearching(true)
+  }, [])
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -77,14 +87,7 @@ export function usePickerLogic({
   const handleMovieSelection = useCallback(
     (movie: BasicMovie) => {
       if (!isInteractionsDisabled) {
-        const releaseYear = movie.release_date
-          ? ` (${movie.release_date.toString().substring(0, 4)})`
-          : ""
-        setSelectedMovie({
-          id: movie.id,
-          title: `${movie.title}${releaseYear}`,
-        })
-
+        setSelectedMovie(movie)
         setSearchText("")
         setFoundMovies([])
       }
@@ -93,15 +96,11 @@ export function usePickerLogic({
   )
 
   const resetSelectedMovie = useCallback(() => {
-    setSelectedMovie({ id: 0, title: DEFAULT_BUTTON_TEXT });
-  }, [setSelectedMovie]);
+    setSelectedMovie(null)
+  }, [])
 
   const onPressCheck = useCallback(() => {
-    if (
-      !isInteractionsDisabled &&
-      selectedMovie.id > 0 &&
-      playerGame.game.movie?.id
-    ) {
+    if (!isInteractionsDisabled && selectedMovie && playerGame.game.movie?.id) {
       const newGuesses = [...(playerGame.guesses || []), selectedMovie.id]
       const isCorrectAnswer = playerGame.game.movie.id === selectedMovie.id
 
@@ -110,7 +109,11 @@ export function usePickerLogic({
         setShowConfetti?.(true)
       } else {
         onGuessFeedback("Incorrect Guess")
+        triggerShake()
       }
+
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+      // --- End of UX Improvement ---
 
       const updatedPlayerGame = {
         ...playerGame,
@@ -119,7 +122,7 @@ export function usePickerLogic({
       }
 
       updatePlayerGame(updatedPlayerGame)
-      setSelectedMovie({ id: 0, title: DEFAULT_BUTTON_TEXT })
+      setSelectedMovie(null)
 
       buttonScale.value = withTiming(0.9, { duration: 150 }, () => {
         buttonScale.value = withTiming(1, { duration: 150 })
@@ -145,12 +148,12 @@ export function usePickerLogic({
     selectedMovie,
     isFocused,
     buttonScale,
-    DEFAULT_BUTTON_TEXT,
+    shakeAnimation,
     handleInputChange,
     handleMovieSelection,
     onPressCheck,
     handleFocus,
     handleBlur,
-    resetSelectedMovie
+    resetSelectedMovie,
   }
 }

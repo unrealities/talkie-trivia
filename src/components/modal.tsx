@@ -1,5 +1,11 @@
-import React, { memo } from "react"
+import React, { memo, useEffect } from "react"
 import { Modal, Pressable, Text, View } from "react-native"
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  Easing,
+} from "react-native-reanimated"
 import { modalStyles } from "../styles/modalStyles"
 import Facts from "./facts"
 import { Movie } from "../models/movie"
@@ -12,25 +18,31 @@ interface MovieModalProps {
 
 const MovieModal: React.FC<MovieModalProps> = memo(
   ({ movie, show, toggleModal }) => {
+    const animatedValue = useSharedValue(0)
+
+    const animatedModalContentStyle = useAnimatedStyle(() => {
+      return {
+        opacity: animatedValue.value,
+        transform: [{ scale: animatedValue.value }],
+      }
+    })
+
+    useEffect(() => {
+      animatedValue.value = withTiming(show ? 1 : 0, {
+        duration: 300,
+        easing: Easing.out(Easing.exp),
+      })
+    }, [show, animatedValue])
+
     const renderContent = () => {
       if (!movie) {
-        return (
-          <View style={modalStyles.modalView}>
-            <Text style={modalStyles.errorText}>
-              No movie information available
-            </Text>
-            <Pressable
-              style={modalStyles.button}
-              onPress={() => toggleModal(false)}
-            >
-              <Text style={modalStyles.buttonText}>Dismiss</Text>
-            </Pressable>
-          </View>
-        )
+        return null
       }
 
       return (
-        <View style={modalStyles.modalView}>
+        <Animated.View
+          style={[modalStyles.modalView, animatedModalContentStyle]}
+        >
           <Facts movie={movie} />
           <Pressable
             style={modalStyles.button}
@@ -38,13 +50,13 @@ const MovieModal: React.FC<MovieModalProps> = memo(
           >
             <Text style={modalStyles.buttonText}>Close</Text>
           </Pressable>
-        </View>
+        </Animated.View>
       )
     }
 
     return (
       <Modal
-        animationType="slide"
+        animationType="none"
         transparent={true}
         visible={show}
         onRequestClose={() => toggleModal(false)}
