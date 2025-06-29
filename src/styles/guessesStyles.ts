@@ -4,9 +4,7 @@ import { colors, responsive } from "./global"
 export const guessesStyles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: responsive.scale(10),
-    marginBottom: responsive.scale(15),
-    minHeight: responsive.scale(70),
+    minHeight: responsive.scale(240),
     paddingBottom: responsive.scale(10),
     paddingTop: responsive.scale(10),
     width: "95%",
@@ -26,10 +24,9 @@ export const guessesStyles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "center",
     backgroundColor: colors.grey,
-    borderRadius: responsive.scale(5),
+    borderRadius: responsive.scale(4),
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: responsive.scale(4),
+    marginTop: responsive.scale(2),
     paddingHorizontal: responsive.scale(8),
     paddingVertical: responsive.scale(6),
     width: "100%",
