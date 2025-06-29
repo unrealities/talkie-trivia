@@ -24,7 +24,7 @@ export const googleLoginStyles = StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
-    width: responsive.isLargeScreen() ? "60%" : "95%",
+    width: "100%",
     maxWidth: responsive.scale(400),
     alignSelf: "center",
     paddingVertical: responsive.scale(25),

@@ -7,7 +7,7 @@ export const playerStatsStyles = StyleSheet.create({
     flex: 1,
     padding: responsive.scale(10),
     textAlign: "center",
-    width: "95%",
+    width: "100%",
   },
   header: {
     color: colors.lightGrey,

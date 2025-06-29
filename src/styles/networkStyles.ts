@@ -19,7 +19,7 @@ export const networkStyles = StyleSheet.create({
     maxHeight: responsive.scale(80),
     minHeight: responsive.scale(25),
     alignSelf: "center",
-    width: "95%",
+    width: "100%",
     maxWidth: responsive.scale(500),
     marginBottom: responsive.scale(15),
     paddingVertical: responsive.scale(12),

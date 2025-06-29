@@ -5,10 +5,7 @@ export const factsStyles = StyleSheet.create({
   container: {
     alignItems: "center",
     flex: 1,
-    paddingBottom: responsive.scale(20),
-    paddingHorizontal: responsive.scale(20),
-    width: responsive.isLargeScreen() ? "70%" : "95%",
-    maxWidth: responsive.scale(600),
+    width: "100%",
   },
   header: {
     fontFamily: "Arvo-Bold",

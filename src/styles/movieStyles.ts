@@ -7,9 +7,8 @@ export const movieStyles = StyleSheet.create({
   container: {
     alignItems: "center",
     flexGrow: 1,
-    width: "90%",
-    minWidth: 400,
-    maxWidth: 600,
+    width: "100%",
+    maxWidth: responsive.scale(500),
     alignSelf: "center",
     marginBottom: spacing.extraLarge,
   },
@@ -41,7 +40,7 @@ export const movieStyles = StyleSheet.create({
     elevation: 0,
     justifyContent: "center",
     padding: spacing.medium,
-    width: "90%",
+    width: "100%",
   },
   giveUpButtonText: {
     color: colors.secondary,

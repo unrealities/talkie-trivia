@@ -16,6 +16,7 @@ export const modalStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     boxShadow: "none",
+    marginTop: responsive.scale(15),
   },
 
   centeredView: {
@@ -26,22 +27,12 @@ export const modalStyles = StyleSheet.create({
   },
 
   modalView: {
-    width: responsive.isTablet ? "75%" : "90%",
+    width: "90%",
+    maxHeight: "85%",
+    maxWidth: responsive.scale(500),
     alignItems: "center",
     backgroundColor: colors.background,
     borderRadius: responsive.scale(15),
-    justifyContent: "space-between",
-    margin: responsive.scale(10),
-    minWidth: responsive.isSmallScreen()
-      ? width * 0.85
-      : responsive.isTablet
-      ? width * 0.65
-      : width * 0.8,
-    maxHeight: responsive.isSmallScreen()
-      ? height * 0.7
-      : responsive.isTablet
-      ? height * 0.8
-      : height * 0.7,
     padding: responsive.scale(20),
     boxShadow: "none",
   },

@@ -31,10 +31,9 @@ export const pickerStyles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    width: "95%",
+    width: "100%",
     justifyContent: "space-between",
     flexDirection: "column",
-    alignSelf: "center",
   },
   errorText: {
     color: colors.quaternary,

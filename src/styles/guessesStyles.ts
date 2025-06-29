@@ -7,8 +7,7 @@ export const guessesStyles = StyleSheet.create({
     minHeight: responsive.scale(240),
     paddingBottom: responsive.scale(10),
     paddingTop: responsive.scale(10),
-    width: "95%",
-    alignSelf: "center",
+    width: "100%",
   },
   guess: {
     color: colors.secondary,
