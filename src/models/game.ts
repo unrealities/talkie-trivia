@@ -19,4 +19,5 @@ export class PlayerGame {
     [guessNumber: number]: "decade" | "director" | "actor" | "genre"
   }
   gaveUp: boolean
+  statsProcessed?: boolean
 }

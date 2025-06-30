@@ -73,9 +73,9 @@ export const pickerStyles = StyleSheet.create({
   },
   pressableText: {
     borderRadius: responsive.scale(5),
-    flex: 1,
     fontFamily: "Arvo-Regular",
     padding: responsive.scale(8),
+    flexDirection: "row",
   },
   resultsContainer: {
     maxHeight: responsive.scale(100),
@@ -98,6 +98,7 @@ export const pickerStyles = StyleSheet.create({
     color: colors.lightGrey,
     fontFamily: "Arvo-Italic",
     fontSize: responsive.responsiveFontSize(14),
+    flex: 1,
   },
   disabledButton: {
     backgroundColor: colors.grey,

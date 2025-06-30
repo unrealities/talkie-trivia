@@ -1,57 +1,53 @@
-import React, { useEffect, Suspense, lazy, useState } from "react"
-import { View, Text } from "react-native"
+import React, { lazy, Suspense } from "react"
+import { View } from "react-native"
 import LoadingIndicator from "../../components/loadingIndicator"
 import ErrorMessage from "../../components/errorMessage"
 import { appStyles } from "../../styles/appStyles"
-import { useAppContext } from "../../contexts/appContext"
-import useNetworkStatus from "../../utils/hooks/useNetworkStatus"
-import useMovieData from "../../utils/hooks/useMovieData"
-import usePlayerData from "../../utils/hooks/usePlayerData"
-import { useAuthentication } from "../../utils/hooks/useAuthentication"
+
+import { useNetwork } from "../../contexts/networkContext"
+import { useAssets } from "../../contexts/assetsContext"
+import { useAuth } from "../../contexts/authContext"
+import { useGameData } from "../../contexts/gameDataContext"
 
 const MoviesContainer = lazy(() => import("../../components/movie"))
 
 const GameScreen = () => {
-  const { state, dispatch } = useAppContext()
+  const { isNetworkConnected } = useNetwork()
   const {
-    isNetworkConnected,
     basicMovies,
-    player,
+    loading: assetsLoading,
+    error: assetsError,
+  } = useAssets()
+  const { player, loading: authLoading, error: authError } = useAuth()
+  const {
     playerGame,
     playerStats,
-    isLoading: isGlobalLoading,
-    dataLoadingError,
-  } = state
+    loading: gameDataLoading,
+    error: gameDataError,
+    updatePlayerGame,
+    updatePlayerStats,
+  } = useGameData()
 
-  const { loading: movieDataLoading, error: movieDataError } = useMovieData()
-  const { error: playerDataError, playerDataLoaded } = usePlayerData()
-  const { authLoading, authError } = useAuthentication()
-  useNetworkStatus()
-
-  const isLoading =
-    isGlobalLoading || movieDataLoading || authLoading || !playerDataLoaded
-
-  const updatePlayerGame = (newPlayerGame) => {
-    console.log("GameScreen: Dispatching new playerGame:", newPlayerGame)
-    dispatch({ type: "SET_PLAYER_GAME", payload: newPlayerGame })
-  }
-  const updatePlayerStats = (newPlayerStats) => {
-    dispatch({ type: "SET_PLAYER_STATS", payload: newPlayerStats })
-  }
-
-  const combinedError =
-    dataLoadingError || movieDataError || playerDataError || authError
+  const isLoading = assetsLoading || authLoading || gameDataLoading
+  const error = assetsError || authError || gameDataError
 
   if (isLoading) {
-    console.log(
-      `GameScreen: Still loading... Global: ${isGlobalLoading}, Movie: ${movieDataLoading}, Auth: ${authLoading}, PlayerDataLoaded: ${playerDataLoaded}`
-    )
     return <LoadingIndicator />
   }
 
-  if (combinedError) {
-    console.log("GameScreen: Data loading error:", combinedError)
-    return <ErrorMessage message={combinedError} />
+  if (error) {
+    return <ErrorMessage message={error} />
+  }
+
+  // Ensure we have all the data needed to play
+  if (
+    !player ||
+    !playerGame ||
+    !playerStats ||
+    !basicMovies ||
+    basicMovies.length === 0
+  ) {
+    return <LoadingIndicator />
   }
 
   return (
@@ -65,7 +61,6 @@ const GameScreen = () => {
           playerStats={playerStats}
           updatePlayerGame={updatePlayerGame}
           updatePlayerStats={updatePlayerStats}
-          initialDataLoaded={playerDataLoaded}
         />
       </Suspense>
     </View>

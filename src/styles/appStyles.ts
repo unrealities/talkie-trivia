@@ -3,7 +3,6 @@ import { colors, responsive } from "./global"
 
 export const appStyles = StyleSheet.create({
   container: {
-    alignItems: "center",
     backgroundColor: colors.background,
     flex: 1,
     paddingTop: Platform.select({

@@ -1,25 +1,34 @@
 import React, { lazy } from "react"
 import { View } from "react-native"
 import LoadingIndicator from "../../components/loadingIndicator"
+import ErrorMessage from "../../components/errorMessage"
 import { appStyles } from "../../styles/appStyles"
 
 const GoogleLogin = lazy(() => import("../../components/googleLogin"))
 const PlayerStatsContainer = lazy(() => import("../../components/playerStats"))
-import { useAppContext } from "../../contexts/appContext"
+import { useAuth } from "../../contexts/authContext"
+import { useGameData } from "../../contexts/gameDataContext"
 
 const ProfileScreen: React.FC<{}> = () => {
-  console.log("ProfileScreen is rendering")
-  const { state, dispatch } = useAppContext()
-  const { player, playerStats } = state
-  const updatePlayer = (newPlayer) => {
-    dispatch({ type: "SET_PLAYER", payload: newPlayer })
-  }
+  const { player, loading: authLoading, error: authError } = useAuth()
+  const {
+    playerStats,
+    loading: gameDataLoading,
+    error: gameDataError,
+  } = useGameData()
+
+  const isLoading = authLoading || gameDataLoading
+  const error = authError || gameDataError
 
   return (
     <View style={appStyles.container}>
       <React.Suspense fallback={<LoadingIndicator />}>
-        <GoogleLogin player={player} onAuthStateChange={updatePlayer} />
-        <PlayerStatsContainer player={player} playerStats={playerStats} />
+        <GoogleLogin />
+        {isLoading && <LoadingIndicator />}
+        {error && <ErrorMessage message={error} />}
+        {!isLoading && !error && player && playerStats && (
+          <PlayerStatsContainer player={player} playerStats={playerStats} />
+        )}
       </React.Suspense>
     </View>
   )
