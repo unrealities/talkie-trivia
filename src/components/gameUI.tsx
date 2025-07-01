@@ -18,6 +18,7 @@ import ConfirmationModal from "./confirmationModal"
 import FlashMessages from "./flashMessages"
 
 interface GameUIProps {
+  isDataLoading: boolean // New prop
   isNetworkConnected: boolean
   movies: readonly BasicMovie[]
   player: Player
@@ -44,6 +45,7 @@ interface GameUIProps {
 }
 
 const GameUI: React.FC<GameUIProps> = ({
+  isDataLoading,
   isNetworkConnected,
   movies,
   player,
@@ -76,11 +78,12 @@ const GameUI: React.FC<GameUIProps> = ({
         <CluesContainer
           correctGuess={playerGame.correctAnswer}
           guesses={playerGame.guesses}
-          summary={playerGame.game.movie.overview}
+          summary={playerGame?.game?.movie?.overview}
           playerGame={playerGame}
           isGameOver={isInteractionsDisabled}
         />
         <HintContainer
+          isLoading={isDataLoading} // Pass loading state
           playerGame={playerGame}
           updatePlayerGame={updatePlayerGame}
           isInteractionsDisabled={isInteractionsDisabled}
@@ -88,14 +91,15 @@ const GameUI: React.FC<GameUIProps> = ({
           updatePlayerStats={updatePlayerStats}
         />
         <PickerContainer
-          enableSubmit={true}
-          playerGame={playerGame}
+          isLoading={isDataLoading}
           movies={movies}
+          playerGame={playerGame}
           updatePlayerGame={updatePlayerGame}
           onGuessFeedback={provideGuessFeedback}
           setShowConfetti={setShowConfetti}
         />
         <GuessesContainer
+          isLoading={isDataLoading}
           guesses={playerGame.guesses}
           movie={playerGame.game.movie}
           movies={movies}
@@ -104,10 +108,11 @@ const GameUI: React.FC<GameUIProps> = ({
           onPress={handleGiveUp}
           style={({ pressed }) => [
             movieStyles.giveUpButton,
-            isInteractionsDisabled && movieStyles.disabledButton,
+            (isInteractionsDisabled || isDataLoading) &&
+              movieStyles.disabledButton,
             pressed && movieStyles.pressedButton,
           ]}
-          disabled={isInteractionsDisabled}
+          disabled={isInteractionsDisabled || isDataLoading}
           accessible={true}
           accessibilityLabel="Give Up"
           accessibilityHint="Gives up on the current movie."

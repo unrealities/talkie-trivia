@@ -1,16 +1,17 @@
-import React, { useEffect, memo } from "react"
+import React, { memo } from "react"
 import { Text, View } from "react-native"
 import { BasicMovie, Movie } from "../models/movie"
 import { guessesStyles } from "../styles/guessesStyles"
 
 interface GuessesContainerProps {
+  isLoading: boolean // New prop
   guesses: number[]
   movie: Movie
   movies: readonly BasicMovie[]
 }
 
 const GuessesContainer = memo(
-  ({ guesses, movies }: GuessesContainerProps) => {
+  ({ isLoading, guesses, movies }: GuessesContainerProps) => {
     const getMovieTitle = (id: number | undefined) => {
       if (id && id > 0) {
         const movie = movies.find((m) => m.id === id)
@@ -20,6 +21,19 @@ const GuessesContainer = memo(
         return movie ? `${movie.title}${releaseYear}` : "-"
       }
       return "-"
+    }
+
+    if (isLoading) {
+      return (
+        <View style={guessesStyles.container}>
+          {Array.from({ length: 5 }).map((_, index) => (
+            <View key={index} style={guessesStyles.skeletonRow}>
+              <Text style={guessesStyles.guessNumber}>{index + 1}</Text>
+              <View style={guessesStyles.skeletonText} />
+            </View>
+          ))}
+        </View>
+      )
     }
 
     return (
@@ -49,6 +63,7 @@ const GuessesContainer = memo(
   },
   (prevProps, nextProps) => {
     return (
+      prevProps.isLoading === nextProps.isLoading &&
       JSON.stringify(prevProps.guesses) === JSON.stringify(nextProps.guesses) &&
       prevProps.movie === nextProps.movie &&
       prevProps.movies === nextProps.movies

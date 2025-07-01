@@ -1,6 +1,11 @@
-import React, { memo } from "react"
+import React, { memo, useEffect } from "react"
 import { View, Pressable, Text, StyleProp, ViewStyle } from "react-native"
 import Icon from "react-native-vector-icons/FontAwesome"
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated"
 import { hintStyles } from "../styles/hintStyles"
 import { responsive, colors } from "../styles/global"
 
@@ -89,6 +94,8 @@ interface HintUIProps {
   handleHintSelection: (type: HintType) => void
 }
 
+const HINT_CONTAINER_HEIGHT = responsive.scale(60)
+
 const HintUI: React.FC<HintUIProps> = memo(
   ({
     showHintOptions,
@@ -100,6 +107,26 @@ const HintUI: React.FC<HintUIProps> = memo(
     handleToggleHintOptions,
     handleHintSelection,
   }) => {
+    const animatedHeight = useSharedValue(0)
+
+    const animatedContainerStyle = useAnimatedStyle(() => {
+      return {
+        height: animatedHeight.value,
+        opacity: withTiming(animatedHeight.value > 0 ? 1 : 0, {
+          duration: 150,
+        }),
+      }
+    })
+
+    useEffect(() => {
+      animatedHeight.value = withTiming(
+        showHintOptions ? HINT_CONTAINER_HEIGHT : 0,
+        {
+          duration: 300,
+        }
+      )
+    }, [showHintOptions, animatedHeight])
+
     return (
       <View style={hintStyles.container}>
         <Pressable
@@ -121,44 +148,44 @@ const HintUI: React.FC<HintUIProps> = memo(
           </Text>
         </Pressable>
 
-        {showHintOptions && (
-          <View style={hintStyles.hintButtonsContainer}>
-            <View style={hintStyles.hintButtonArea}>
-              <HintButton
-                hintType="decade"
-                iconName="calendar"
-                label="Decade"
-                onPress={handleHintSelection}
-                status={hintStatuses.decade}
-                accessibilityHintCount={hintsAvailable}
-              />
-              <HintButton
-                hintType="director"
-                iconName="video-camera"
-                label="Director"
-                onPress={handleHintSelection}
-                status={hintStatuses.director}
-                accessibilityHintCount={hintsAvailable}
-              />
-              <HintButton
-                hintType="actor"
-                iconName="user"
-                label="Actor"
-                onPress={handleHintSelection}
-                status={hintStatuses.actor}
-                accessibilityHintCount={hintsAvailable}
-              />
-              <HintButton
-                hintType="genre"
-                iconName="folder-open"
-                label="Genre"
-                onPress={handleHintSelection}
-                status={hintStatuses.genre}
-                accessibilityHintCount={hintsAvailable}
-              />
-            </View>
+        <Animated.View
+          style={[hintStyles.hintButtonsContainer, animatedContainerStyle]}
+        >
+          <View style={hintStyles.hintButtonArea}>
+            <HintButton
+              hintType="decade"
+              iconName="calendar"
+              label="Decade"
+              onPress={handleHintSelection}
+              status={hintStatuses.decade}
+              accessibilityHintCount={hintsAvailable}
+            />
+            <HintButton
+              hintType="director"
+              iconName="video-camera"
+              label="Director"
+              onPress={handleHintSelection}
+              status={hintStatuses.director}
+              accessibilityHintCount={hintsAvailable}
+            />
+            <HintButton
+              hintType="actor"
+              iconName="user"
+              label="Actor"
+              onPress={handleHintSelection}
+              status={hintStatuses.actor}
+              accessibilityHintCount={hintsAvailable}
+            />
+            <HintButton
+              hintType="genre"
+              iconName="folder-open"
+              label="Genre"
+              onPress={handleHintSelection}
+              status={hintStatuses.genre}
+              accessibilityHintCount={hintsAvailable}
+            />
           </View>
-        )}
+        </Animated.View>
 
         {displayedHintText && (
           <Text style={hintStyles.hintText}>{displayedHintText}</Text>

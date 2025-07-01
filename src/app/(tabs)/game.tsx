@@ -28,25 +28,14 @@ const GameScreen = () => {
     updatePlayerStats,
   } = useGameData()
 
-  const isLoading = assetsLoading || authLoading || gameDataLoading
+  const isDataLoading = assetsLoading || authLoading || gameDataLoading
   const error = assetsError || authError || gameDataError
-
-  if (isLoading) {
-    return <LoadingIndicator />
-  }
 
   if (error) {
     return <ErrorMessage message={error} />
   }
 
-  // Ensure we have all the data needed to play
-  if (
-    !player ||
-    !playerGame ||
-    !playerStats ||
-    !basicMovies ||
-    basicMovies.length === 0
-  ) {
+  if (!player || !basicMovies || basicMovies.length === 0) {
     return <LoadingIndicator />
   }
 
@@ -61,6 +50,7 @@ const GameScreen = () => {
           playerStats={playerStats}
           updatePlayerGame={updatePlayerGame}
           updatePlayerStats={updatePlayerStats}
+          isDataLoading={isDataLoading}
         />
       </Suspense>
     </View>

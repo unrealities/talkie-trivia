@@ -7,8 +7,10 @@ import { colors } from "../styles/global"
 import { pickerStyles } from "../styles/pickerStyles"
 import { usePickerLogic } from "../utils/hooks/usePickerLogic"
 import { PickerUI } from "./pickerUI"
+import PickerSkeleton from "./pickerSkeleton"
 
 interface PickerContainerProps {
+  isLoading: boolean // New prop
   movies: readonly BasicMovie[]
   playerGame: PlayerGame
   updatePlayerGame: (updatedPlayerGame: PlayerGame) => void
@@ -18,6 +20,7 @@ interface PickerContainerProps {
 
 const PickerContainer: React.FC<PickerContainerProps> = memo(
   ({
+    isLoading,
     movies,
     playerGame,
     updatePlayerGame,
@@ -89,6 +92,10 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
       },
       [handleMovieSelection, selectedMovie, isInteractionsDisabled]
     )
+
+    if (isLoading) {
+      return <PickerSkeleton />
+    }
 
     return (
       <PickerUI

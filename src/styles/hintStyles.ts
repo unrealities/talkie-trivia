@@ -12,7 +12,7 @@ export const hintStyles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     width: "100%",
-    flexWrap: "wrap",
+    overflow: "hidden",
   },
   hintLabel: {
     color: colors.lightGrey,
@@ -23,12 +23,18 @@ export const hintStyles = StyleSheet.create({
     width: "100%",
     paddingVertical: responsive.scale(4),
   },
+  skeletonLabel: {
+    backgroundColor: colors.grey,
+    height: responsive.scale(20),
+    width: "50%",
+    borderRadius: responsive.scale(4),
+    marginVertical: responsive.scale(10),
+  },
   hintButtonArea: {
     flexDirection: "row",
     justifyContent: "center",
     flexWrap: "nowrap",
     width: "100%",
-    overflow: "hidden",
   },
   hintButton: {
     borderRadius: responsive.scale(4),
@@ -72,5 +78,3 @@ export const hintStyles = StyleSheet.create({
     marginVertical: responsive.scale(10),
   },
 })
-
-export const hintStyle = StyleSheet.create({})

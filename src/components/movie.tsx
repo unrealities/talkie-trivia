@@ -1,5 +1,4 @@
-import React, { useEffect, useCallback } from "react"
-import { View, Text } from "react-native"
+import React, { useEffect } from "react"
 import {
   useSharedValue,
   useAnimatedStyle,
@@ -12,6 +11,7 @@ import Player from "../models/player"
 import PlayerStats from "../models/playerStats"
 import { useGameLogic } from "../utils/hooks/useGameLogic"
 import GameUI from "./gameUI"
+import ErrorMessage from "./errorMessage"
 
 interface MoviesContainerProps {
   isNetworkConnected: boolean
@@ -21,7 +21,7 @@ interface MoviesContainerProps {
   playerStats: PlayerStats
   updatePlayerGame: (game: PlayerGame) => void
   updatePlayerStats: (stats: any) => void
-  initialDataLoaded: boolean
+  isDataLoading: boolean
 }
 
 const MoviesContainer: React.FC<MoviesContainerProps> = ({
@@ -32,30 +32,8 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
   playerStats,
   updatePlayerGame,
   updatePlayerStats,
-  initialDataLoaded,
+  isDataLoading,
 }) => {
-  const updatePlayerData = useCallback(async () => {
-    if (!playerGame || !playerStats) return
-    const latestGuessIndex =
-      playerGame.guesses.length > 0 ? playerGame.guesses.length - 1 : -1
-    const hintUsedForLatestGuess =
-      latestGuessIndex !== -1 &&
-      playerGame.hintsUsed &&
-      playerGame.hintsUsed[latestGuessIndex] !== undefined
-
-    const hintsAvailableAfterGuess = Math.max(
-      0,
-      (playerStats?.hintsAvailable ?? 0) - (hintUsedForLatestGuess ? 1 : 0)
-    )
-
-    const updatedStats = {
-      ...playerStats,
-      hintsAvailable: hintsAvailableAfterGuess,
-    }
-
-    updatePlayerStats(updatedStats)
-  }, [playerGame, playerStats, updatePlayerStats])
-
   const {
     showModal,
     setShowModal,
@@ -69,11 +47,8 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
     confirmGiveUp,
     handleConfettiStop,
     provideGuessFeedback,
-    isLoading,
     error,
   } = useGameLogic({
-    initialDataLoaded,
-    player,
     playerGame,
     playerStats,
     updatePlayerGame,
@@ -92,41 +67,21 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
     } else {
       modalOpacity.value = withTiming(0, { duration: 300 })
     }
-  }, [showModal])
-
-  console.log("MoviesContainer state:", {
-    isLoading,
-    error,
-    isNetworkConnected,
-    playerGame: !!playerGame,
-  })
-
-  if (isLoading) {
-    return (
-      <View>
-        <Text>Loading...</Text>
-      </View>
-    )
-  }
+  }, [showModal, modalOpacity])
 
   if (error) {
-    return (
-      <View>
-        <Text>Error: {error}</Text>
-      </View>
-    )
+    return <ErrorMessage message={error} />
   }
 
   if (!isNetworkConnected) {
     return (
-      <View>
-        <Text>No Network Connection</Text>
-      </View>
+      <ErrorMessage message="No Network Connection. Please check your internet and try again." />
     )
   }
 
   return (
     <GameUI
+      isDataLoading={isDataLoading}
       isNetworkConnected={isNetworkConnected}
       movies={movies}
       player={player}
