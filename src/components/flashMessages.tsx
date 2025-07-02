@@ -34,7 +34,7 @@ const flashMessages: React.FC<flashMessageProps> = ({
   useEffect(() => {
     let cleanup: (() => void) | undefined
     if (message) {
-      cleanup = runOnJS(showMessage)()
+      cleanup = showMessage()
     } else {
       opacity.value = withTiming(0, { duration: 300, easing: Easing.ease })
     }

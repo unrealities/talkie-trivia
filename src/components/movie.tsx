@@ -47,12 +47,7 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
     confirmGiveUp,
     handleConfettiStop,
     provideGuessFeedback,
-    error,
-  } = useGameLogic({
-    playerGame,
-    playerStats,
-    updatePlayerGame,
-  })
+  } = useGameLogic()
 
   const modalOpacity = useSharedValue(0)
   const animatedModalStyles = useAnimatedStyle(() => {
@@ -68,10 +63,6 @@ const MoviesContainer: React.FC<MoviesContainerProps> = ({
       modalOpacity.value = withTiming(0, { duration: 300 })
     }
   }, [showModal, modalOpacity])
-
-  if (error) {
-    return <ErrorMessage message={error} />
-  }
 
   if (!isNetworkConnected) {
     return (

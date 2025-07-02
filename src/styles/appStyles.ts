@@ -19,6 +19,13 @@ export const appStyles = StyleSheet.create({
     backgroundColor: colors.background,
     width: "100%",
   },
+  messageText: {
+    marginTop: responsive.scale(20),
+    fontFamily: "Arvo-Regular",
+    fontSize: responsive.responsiveFontSize(16),
+    color: colors.secondary,
+    textAlign: "center",
+  },
   errorContainer: {
     flex: 1,
     justifyContent: "center",
