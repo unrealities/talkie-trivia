@@ -27,31 +27,29 @@ const GameScreen = () => {
     updatePlayerGame,
     updatePlayerStats,
   } = useGameData()
-
   const isDataLoading = assetsLoading || authLoading || gameDataLoading
   const error = assetsError || authError || gameDataError
 
   if (error) {
     return <ErrorMessage message={error} />
   }
-
-  if (!player || !basicMovies || basicMovies.length === 0) {
-    return <LoadingIndicator />
-  }
-
   return (
     <View style={appStyles.container}>
       <Suspense fallback={<LoadingIndicator />}>
-        <MoviesContainer
-          isNetworkConnected={isNetworkConnected}
-          movies={basicMovies}
-          player={player}
-          playerGame={playerGame}
-          playerStats={playerStats}
-          updatePlayerGame={updatePlayerGame}
-          updatePlayerStats={updatePlayerStats}
-          isDataLoading={isDataLoading}
-        />
+        {player && basicMovies && basicMovies.length > 0 ? (
+          <MoviesContainer
+            isNetworkConnected={isNetworkConnected}
+            movies={basicMovies}
+            player={player}
+            playerGame={playerGame}
+            playerStats={playerStats}
+            updatePlayerGame={updatePlayerGame}
+            updatePlayerStats={updatePlayerStats}
+            isDataLoading={isDataLoading}
+          />
+        ) : (
+          <LoadingIndicator />
+        )}
       </Suspense>
     </View>
   )

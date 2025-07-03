@@ -16,7 +16,7 @@ const WinChart = memo(
     const data = keys.map((key, index) => ({
       name: key,
       x: key,
-      y: wins[index] || 0, // Ensure y is 0 for undefined values
+      y: wins[index] || 0,
       label:
         wins[index] > 0
           ? `${(wins[index] / wins.reduce((a, b) => a + b, 0)) * 100}%`
@@ -46,7 +46,7 @@ const WinChart = memo(
       >
         <PieChart
           data={data}
-          width={screenWidth * 0.6} // Use 60% of the screen width
+          width={screenWidth * 0.6}
           height={220}
           chartConfig={chartConfig}
           accessor="y"

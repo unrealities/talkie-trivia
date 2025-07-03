@@ -1,10 +1,12 @@
 import React, { memo } from "react"
 import { View } from "react-native"
+import Animated from "react-native-reanimated"
 import { PlayerGame } from "../models/game"
 import { useHintLogic } from "../utils/hooks/useHintLogic"
 import HintUI from "./hintUI"
 import PlayerStats from "../models/playerStats"
 import { hintStyles } from "../styles/hintStyles"
+import { useSkeletonAnimation } from "../utils/hooks/useSkeletonAnimation"
 
 interface HintContainerProps {
   isLoading: boolean
@@ -14,6 +16,15 @@ interface HintContainerProps {
   playerStats: PlayerStats
   updatePlayerStats: (updatedPlayerStats: any) => void
 }
+
+const HintSkeleton = memo(() => {
+  const animatedStyle = useSkeletonAnimation()
+  return (
+    <View style={hintStyles.container}>
+      <Animated.View style={[hintStyles.skeletonLabel, animatedStyle]} />
+    </View>
+  )
+})
 
 const HintContainer: React.FC<HintContainerProps> = memo(
   ({
@@ -43,11 +54,7 @@ const HintContainer: React.FC<HintContainerProps> = memo(
     })
 
     if (isLoading) {
-      return (
-        <View style={hintStyles.container}>
-          <View style={hintStyles.skeletonLabel} />
-        </View>
-      )
+      return <HintSkeleton />
     }
 
     return (

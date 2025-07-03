@@ -50,10 +50,14 @@ export const guessesStyles = StyleSheet.create({
     marginTop: responsive.scale(4),
     width: "100%",
   },
-  skeletonText: {
+  skeletonTextContainer: {
     backgroundColor: "#444",
-    height: responsive.scale(16),
     flex: 1,
     borderRadius: responsive.scale(4),
+    overflow: "hidden",
+  },
+  skeletonText: {
+    height: responsive.scale(16),
+    width: "100%",
   },
 })

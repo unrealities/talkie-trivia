@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useMemo } from "react"
 import { LayoutAnimation, Platform, UIManager } from "react-native"
 import { PlayerGame } from "../../models/game"
 import PlayerStats from "../../models/playerStats"
+import * as Haptics from "expo-haptics"
 
 if (
   Platform.OS === "android" &&
@@ -88,18 +89,18 @@ export function useHintLogic({
 
   const handleHintSelection = useCallback(
     (hintType: HintType) => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+
       const status = hintStatuses[hintType]
       setShowHintOptions(false)
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
 
       if (status === "used") {
-        // Re-viewing a previously purchased hint
         setDisplayedHintText(getHintText(hintType))
         return
       }
 
       if (status === "available") {
-        // Purchasing a new hint
         updatePlayerGame({
           ...playerGame,
           hintsUsed: {
@@ -116,7 +117,6 @@ export function useHintLogic({
         updatePlayerStats(newPlayerStats)
         setDisplayedHintText(getHintText(hintType))
       }
-      // If status is 'disabled', do nothing.
     },
     [
       hintStatuses,
@@ -129,13 +129,13 @@ export function useHintLogic({
     ]
   )
 
-  // This effect clears the displayed hint text when a new turn starts
   useEffect(() => {
     setDisplayedHintText(null)
   }, [playerGame.guesses.length])
 
   const handleToggleHintOptions = useCallback(() => {
-    // Hide hint text if we are opening the options
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+
     if (!showHintOptions) {
       setDisplayedHintText(null)
     }
@@ -156,8 +156,6 @@ export function useHintLogic({
     playerGame.hintsUsed,
   ])
 
-  // The main "Need a Hint?" button should be disabled if the game is over.
-  // We still want to allow viewing hints even if hintsAvailable is 0.
   const isToggleDisabled = isInteractionsDisabled
 
   return {

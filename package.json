@@ -62,7 +62,8 @@
     "react-native-web": "~0.19.13",
     "resize-observer-polyfill": "^1.5.1",
     "victory-native": "^41.16.1",
-    "vm": "^0.1.0"
+    "vm": "^0.1.0",
+    "expo-haptics": "~14.0.1"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.26.0",

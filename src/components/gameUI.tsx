@@ -1,6 +1,7 @@
 import React from "react"
 import { View, Pressable, Text, ScrollView } from "react-native"
 import Animated from "react-native-reanimated"
+import * as Haptics from "expo-haptics"
 
 import CluesContainer from "./clues"
 import GuessesContainer from "./guesses"
@@ -18,7 +19,7 @@ import ConfirmationModal from "./confirmationModal"
 import FlashMessages from "./flashMessages"
 
 interface GameUIProps {
-  isDataLoading: boolean // New prop
+  isDataLoading: boolean
   isNetworkConnected: boolean
   movies: readonly BasicMovie[]
   player: Player
@@ -67,6 +68,11 @@ const GameUI: React.FC<GameUIProps> = ({
   updatePlayerGame,
   updatePlayerStats,
 }) => {
+  const onGiveUpPress = () => {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
+    handleGiveUp()
+  }
+
   return (
     <ScrollView
       contentContainerStyle={movieStyles.scrollContentContainer}
@@ -83,7 +89,7 @@ const GameUI: React.FC<GameUIProps> = ({
           isGameOver={isInteractionsDisabled}
         />
         <HintContainer
-          isLoading={isDataLoading} // Pass loading state
+          isLoading={isDataLoading}
           playerGame={playerGame}
           updatePlayerGame={updatePlayerGame}
           isInteractionsDisabled={isInteractionsDisabled}
@@ -105,7 +111,7 @@ const GameUI: React.FC<GameUIProps> = ({
           movies={movies}
         />
         <Pressable
-          onPress={handleGiveUp}
+          onPress={onGiveUpPress}
           style={({ pressed }) => [
             movieStyles.giveUpButton,
             (isInteractionsDisabled || isDataLoading) &&

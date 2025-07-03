@@ -10,7 +10,7 @@ import { PickerUI } from "./pickerUI"
 import PickerSkeleton from "./pickerSkeleton"
 
 interface PickerContainerProps {
-  isLoading: boolean // New prop
+  isLoading: boolean
   movies: readonly BasicMovie[]
   playerGame: PlayerGame
   updatePlayerGame: (updatedPlayerGame: PlayerGame) => void

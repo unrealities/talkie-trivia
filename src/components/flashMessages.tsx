@@ -22,7 +22,6 @@ const flashMessages: React.FC<flashMessageProps> = ({
 
   const showMessage = () => {
     opacity.value = withTiming(1, { duration: 300, easing: Easing.ease })
-    // Hide message after duration
     if (message) {
       const timer = setTimeout(() => {
         opacity.value = withTiming(0, { duration: 300, easing: Easing.ease })
@@ -48,7 +47,7 @@ const flashMessages: React.FC<flashMessageProps> = ({
   })
 
   if (!message) {
-    return null // Don't render anything if no message
+    return null
   }
 
   return (

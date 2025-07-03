@@ -8,6 +8,7 @@ import {
   withRepeat,
   withTiming,
 } from "react-native-reanimated"
+import * as Haptics from "expo-haptics"
 
 if (
   Platform.OS === "android" &&
@@ -90,6 +91,7 @@ export function usePickerLogic({
         setSelectedMovie(movie)
         setSearchText("")
         setFoundMovies([])
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
       }
     },
     [isInteractionsDisabled]
@@ -101,19 +103,22 @@ export function usePickerLogic({
 
   const onPressCheck = useCallback(() => {
     if (!isInteractionsDisabled && selectedMovie && playerGame.game.movie?.id) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+
       const newGuesses = [...(playerGame.guesses || []), selectedMovie.id]
       const isCorrectAnswer = playerGame.game.movie.id === selectedMovie.id
 
       if (isCorrectAnswer) {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
         onGuessFeedback("Correct Guess!")
         setShowConfetti?.(true)
       } else {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
         onGuessFeedback("Incorrect Guess")
         triggerShake()
       }
 
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-      // --- End of UX Improvement ---
 
       const updatedPlayerGame = {
         ...playerGame,

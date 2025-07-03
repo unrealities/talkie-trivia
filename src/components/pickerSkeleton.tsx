@@ -1,11 +1,15 @@
 import React from "react"
 import { View } from "react-native"
+import Animated from "react-native-reanimated"
 import { pickerStyles } from "../styles/pickerStyles"
 import { colors } from "../styles/global"
+import { useSkeletonAnimation } from "../utils/hooks/useSkeletonAnimation"
 
 const PickerSkeleton = () => {
+  const animatedStyle = useSkeletonAnimation()
+
   return (
-    <View style={pickerStyles.container}>
+    <Animated.View style={[pickerStyles.container, animatedStyle]}>
       <View style={pickerStyles.inputContainer}>
         <View
           style={[
@@ -16,7 +20,7 @@ const PickerSkeleton = () => {
       </View>
       <View style={pickerStyles.resultsContainer} />
       <View style={[pickerStyles.button, pickerStyles.disabledButton]} />
-    </View>
+    </Animated.View>
   )
 }
 

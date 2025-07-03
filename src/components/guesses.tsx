@@ -1,14 +1,28 @@
 import React, { memo } from "react"
 import { Text, View } from "react-native"
+import Animated from "react-native-reanimated"
 import { BasicMovie, Movie } from "../models/movie"
 import { guessesStyles } from "../styles/guessesStyles"
+import { useSkeletonAnimation } from "../utils/hooks/useSkeletonAnimation"
 
 interface GuessesContainerProps {
-  isLoading: boolean // New prop
+  isLoading: boolean
   guesses: number[]
   movie: Movie
   movies: readonly BasicMovie[]
 }
+
+const SkeletonRow = memo(() => {
+  const animatedStyle = useSkeletonAnimation()
+  return (
+    <Animated.View style={[guessesStyles.skeletonRow, animatedStyle]}>
+      <Text style={guessesStyles.guessNumber}>-</Text>
+      <View style={guessesStyles.skeletonTextContainer}>
+        <View style={guessesStyles.skeletonText} />
+      </View>
+    </Animated.View>
+  )
+})
 
 const GuessesContainer = memo(
   ({ isLoading, guesses, movies }: GuessesContainerProps) => {
@@ -27,10 +41,7 @@ const GuessesContainer = memo(
       return (
         <View style={guessesStyles.container}>
           {Array.from({ length: 5 }).map((_, index) => (
-            <View key={index} style={guessesStyles.skeletonRow}>
-              <Text style={guessesStyles.guessNumber}>{index + 1}</Text>
-              <View style={guessesStyles.skeletonText} />
-            </View>
+            <SkeletonRow key={index} />
           ))}
         </View>
       )
