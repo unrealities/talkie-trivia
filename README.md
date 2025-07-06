@@ -23,8 +23,9 @@ Before you begin, ensure you have the following installed and configured:
 You need to provide credentials for both the TMDB API and the Firebase Admin SDK. These files are listed in `.gitignore` and **should never be committed to version control.**
 
 1. **TMDB API Key:**
-    *  In the `utils/` directory, create a file named `secrets.json` based on `secrets.example.json`.
-    *  Add your TMDB API key to it:
+    * In the `utils/` directory, create a file named `secrets.json` based on `secrets.example.json`.
+    * Add your TMDB API key to it:
+
         ```json
         // utils/secrets.json
         {
@@ -32,7 +33,7 @@ You need to provide credentials for both the TMDB API and the Firebase Admin SDK
         }
         ```
 
-2. **Firebase Admin Credentials:**
+1. **Firebase Admin Credentials:**
     * In your Firebase Console, navigate to **Project Settings > Service accounts**.
     * Click **"Generate new private key"** and save the downloaded JSON file.
     * Move this file to `utils/serviceAccountKey.json`. The Go scripts are configured to look for it there.
@@ -47,7 +48,8 @@ Run these scripts sequentially from the root of the repository. Each script buil
     ```bash
     cd utils/fetchPopularMovies && go run .
     ```
-    *  **Output:** Creates `utils/fetchPopularMovies/popular_movies_raw.json`.
+
+    * **Output:** Creates `utils/fetchPopularMovies/popular_movies_raw.json`.
 
 2. **Fetch Detailed Movie Info**
     This script reads the raw popular movies file and fetches detailed information for each one.
@@ -55,7 +57,8 @@ Run these scripts sequentially from the root of the repository. Each script buil
     ```bash
     cd ../fetchMovies && go run .
     ```
-    *   **Output:** Creates `utils/fetchMovies/movies.txt`, which is then processed into `data/movies.json`.
+
+    * **Output:** Creates `utils/fetchMovies/movies.txt`, which is then processed into `data/movies.json`.
 
 3. **Fetch Movie Credits**
     This script fetches the cast and crew (specifically directors) for every movie in `data/movies.json`.
@@ -63,7 +66,8 @@ Run these scripts sequentially from the root of the repository. Each script buil
     ```bash
     cd ../fetchMoviesCredits && go run .
     ```
-    *   **Output:** Creates `utils/fetchMoviesCredits/credits.txt`, which is processed into `data/credits.json`.
+
+    * **Output:** Creates `utils/fetchMoviesCredits/credits.txt`, which is processed into `data/credits.json`.
 
 4. **Process Credits Data**
     This script aggregates the raw credits data into structured files for actors and directors.
@@ -71,7 +75,8 @@ Run these scripts sequentially from the root of the repository. Each script buil
     ```bash
     cd ../credits && go run .
     ```
-    *   **Output:** Creates `data/movieActors.json` and `data/movieDirectors.json`.
+
+    * **Output:** Creates `data/movieActors.json` and `data/movieDirectors.json`.
 
 5. **Generate Client-Side Search List**
     This script creates a lightweight JSON file containing only the ID, title, and release year for movies. This is bundled with the app to power the search picker.
@@ -79,4 +84,5 @@ Run these scripts sequentially from the root of the repository. Each script buil
     ```bash
     cd ../basicMovies && go run .
     ```
-    *   **Output:** Creates `data/basicMovies.json`.
+
+    * **Output:** Creates `data/basicMovies.json`.
