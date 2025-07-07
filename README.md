@@ -4,7 +4,7 @@ A React Native mobile game that challenges you to name the movie from its plot s
 
 ## Data Retrieval and Backend Setup
 
-The game relies on a curated list of movies stored in Firebase Firestore. A daily Cloud Function selects a new movie for players. The following steps detail how to fetch movie data from TMDB, process it, and populate your Firebase backend.
+The game relies on a curated list of movies stored in Firebase Firestore. A daily Cloud Function selects a new movie for players. The following steps detail how to fetch movie data from TMDB, process it, and generate the necessary JSON files for your Firebase backend and application client.
 
 The data processing scripts are located in the `utils/` directory and are written in Go.
 
@@ -18,9 +18,9 @@ Before you begin, ensure you have the following installed and configured:
 4. **TMDB API Key:** Get a free API key from [themoviedb.org](https://www.themoviedb.org/documentation/api).
 5. **Firebase Project:** A Firebase project with Firestore and Cloud Functions enabled.
 
-### Step 1: Configuration
+### Configuration
 
-You need to provide credentials for both the TMDB API and the Firebase Admin SDK. These files are listed in `.gitignore` and **should never be committed to version control.**
+You need to provide credentials for the TMDB API. This file is listed in `.gitignore` and **should never be committed to version control.**
 
 1. **TMDB API Key:**
     * In the `utils/` directory, create a file named `secrets.json` based on `secrets.example.json`.
@@ -33,12 +33,44 @@ You need to provide credentials for both the TMDB API and the Firebase Admin SDK
         }
         ```
 
-1. **Firebase Admin Credentials:**
+2. **Firebase Admin Credentials (For Uploading):**
+    * To upload the generated data to Firestore or run the Cloud Functions, you will need Firebase Admin credentials.
     * In your Firebase Console, navigate to **Project Settings > Service accounts**.
     * Click **"Generate new private key"** and save the downloaded JSON file.
-    * Move this file to `utils/serviceAccountKey.json`. The Go scripts are configured to look for it there.
+    * The Cloud Functions are configured to use these credentials automatically when deployed. For local upload scripts, you might place this file at the root of your functions directory.
+    * **Note:** The Go data-generation scripts below do *not* require this key, as they only create local files.
 
-### Step 2: Running the Data Processing Scripts
+---
+
+### Alternate (Recommended) Process: Unified Data Generation Script
+
+#### Step 1: Run the Unified Script
+
+Run the script from the new directory. It will handle fetching popular movie IDs, their details, and their credits, then process and filter everything before writing the final files.
+
+```bash
+cd utils/generateAllData && go run .
+```
+
+The script will log its progress as it fetches pages and processes movies.
+
+#### Step 2: Review the Output
+
+This single command performs all necessary API calls and generates the final data files directly in the correct location.
+
+* **Output Location:** `src/data/`
+
+* **Generated Files:**
+ * `popularMovies.json`: A complete list of movie objects, including details, genres, actors, and directors. This file is ready to be uploaded to Firestore and replaces the need for the old `movies.json`, `movieActors.json`, and `movieDirectors.json`.
+ * `basicMovies.json`: A lightweight list containing only movie ID, title, and release year. This is bundled with the mobile app to power the search picker.
+
+After running this script, you can proceed with uploading `popularMovies.json` to your Firebase Firestore database.
+
+---
+
+### Original Multi-Step Process (Legacy)
+
+The following is the original, multi-step process for generating the data. It is recommended to use the new, unified script above.
 
 Run these scripts sequentially from the root of the repository. Each script builds upon the output of the previous one.
 

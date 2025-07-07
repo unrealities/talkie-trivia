@@ -166,8 +166,6 @@ func writeJSONFile(filePath string, data interface{}) error {
 	return encoder.Encode(data)
 }
 
-// --- Main Logic ---
-
 func main() {
 	log.Println("Starting data generation pipeline...")
 
@@ -209,7 +207,6 @@ func main() {
 			movieID := movieStub.ID
 			log.Printf("Processing movie ID: %d", movieID)
 
-			// Fetch detailed info
 			detailsBody, err := fetchFromAPI(client, fmt.Sprintf("/movie/%d", movieID), apiKey, nil)
 			if err != nil {
 				log.Printf("Warning: Failed to fetch details for movie %d: %v", movieID, err)
@@ -218,7 +215,6 @@ func main() {
 			var details TMDBDetailsResponse
 			json.Unmarshal(detailsBody, &details)
 
-			// Fetch credits
 			creditsBody, err := fetchFromAPI(client, fmt.Sprintf("/movie/%d/credits", movieID), apiKey, nil)
 			if err != nil {
 				log.Printf("Warning: Failed to fetch credits for movie %d: %v", movieID, err)
@@ -227,13 +223,11 @@ func main() {
 			var credits TMDBCreditsResponse
 			json.Unmarshal(creditsBody, &credits)
 
-			// --- Apply Filtering Logic ---
 			if len(details.Overview) >= 400 || len(details.Overview) <= 60 ||
 				details.Runtime <= 75 || details.Popularity <= 10 || details.VoteAverage <= 4.9 || details.VoteCount <= 400 {
 				continue
 			}
 
-			// --- Assemble Final Movie Struct ---
 			var director MovieDirector
 			for _, crew := range credits.Crew {
 				if crew.Job == "Director" {
@@ -243,7 +237,7 @@ func main() {
 						Popularity:  crew.Popularity,
 						ProfilePath: crew.ProfilePath,
 					}
-					break // Found the primary director
+					break
 				}
 			}
 
@@ -275,7 +269,6 @@ func main() {
 			}
 			finalMovies = append(finalMovies, movie)
 
-			// --- Assemble Basic Movie Struct ---
 			basicMovie := BasicMovie{
 				ID:          details.ID,
 				Title:       details.Title,
@@ -283,14 +276,12 @@ func main() {
 			}
 			finalBasicMovies = append(finalBasicMovies, basicMovie)
 
-			// Respect API rate limits
 			time.Sleep(100 * time.Millisecond)
 		}
 	}
 
 	log.Printf("Fetched and processed %d valid movies.", len(finalMovies))
 
-	// --- Post-processing for Basic Movies (Deduplication and Sorting) ---
 	log.Println("De-duplicating and sorting basic movies list...")
 	titleCounts := make(map[string]int)
 	for _, m := range finalBasicMovies {
@@ -308,7 +299,6 @@ func main() {
 		return finalBasicMovies[i].Title < finalBasicMovies[j].Title
 	})
 
-	// --- Write final files ---
 	log.Printf("Writing output files to %s...", outputDir)
 	if err := os.MkdirAll(outputDir, os.ModePerm); err != nil {
 		log.Fatalf("Failed to create output directory: %v", err)
