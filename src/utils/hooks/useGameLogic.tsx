@@ -48,10 +48,8 @@ export function useGameLogic() {
     }
   }, [])
 
-  // Effect to handle game state changes and save data
   useEffect(() => {
     const processGameState = async () => {
-      // Don't do anything for the default/uninitialized game state
       if (playerGame.id === "") return
 
       const isGameOverNow =
@@ -60,10 +58,8 @@ export function useGameLogic() {
         playerGame.guesses.length >= playerGame.game.guessesMax
 
       if (isGameOverNow) {
-        // Create a fresh stats object for update to avoid mutation issues
         const updatedStats: PlayerStats = { ...playerStats }
 
-        // This check prevents updating stats multiple times for the same game
         if (!playerGame.statsProcessed) {
           updatedStats.games = (updatedStats.games || 0) + 1
 
@@ -81,27 +77,22 @@ export function useGameLogic() {
             }
             updatedStats.wins = winsArray
           } else {
-            // Loss or gave up
             updatedStats.currentStreak = 0
           }
-
-          // Mark game as processed and update state before saving
           const finalPlayerGame = { ...playerGame, statsProcessed: true }
           updatePlayerGame(finalPlayerGame)
 
-          // Now save the final state
           await saveGameData()
         }
 
         setShowModal(true)
       } else {
-        // If it's just a regular guess (not game over), save progress
         await saveGameData()
       }
     }
 
     processGameState()
-  }, [playerGame.correctAnswer, playerGame.gaveUp, playerGame.guesses.length])
+  }, [playerGame])
 
   return {
     showModal,

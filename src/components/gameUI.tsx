@@ -1,5 +1,5 @@
 import React from "react"
-import { View, Pressable, Text, ScrollView } from "react-native"
+import { View, Pressable, Text, ScrollView, Platform } from "react-native"
 import Animated from "react-native-reanimated"
 import * as Haptics from "expo-haptics"
 
@@ -69,7 +69,9 @@ const GameUI: React.FC<GameUIProps> = ({
   updatePlayerStats,
 }) => {
   const onGiveUpPress = () => {
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
+    if (Platform.OS !== "web") {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
+    }
     handleGiveUp()
   }
 

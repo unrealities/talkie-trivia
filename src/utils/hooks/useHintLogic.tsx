@@ -89,7 +89,9 @@ export function useHintLogic({
 
   const handleHintSelection = useCallback(
     (hintType: HintType) => {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+      if (Platform.OS !== "web") {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+      }
 
       const status = hintStatuses[hintType]
       setShowHintOptions(false)
@@ -134,7 +136,9 @@ export function useHintLogic({
   }, [playerGame.guesses.length])
 
   const handleToggleHintOptions = useCallback(() => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+    if (Platform.OS !== "web") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+    }
 
     if (!showHintOptions) {
       setDisplayedHintText(null)

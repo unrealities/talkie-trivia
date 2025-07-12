@@ -91,7 +91,9 @@ export function usePickerLogic({
         setSelectedMovie(movie)
         setSearchText("")
         setFoundMovies([])
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        if (Platform.OS !== "web") {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        }
       }
     },
     [isInteractionsDisabled]
@@ -103,17 +105,23 @@ export function usePickerLogic({
 
   const onPressCheck = useCallback(() => {
     if (!isInteractionsDisabled && selectedMovie && playerGame.game.movie?.id) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+      if (Platform.OS !== "web") {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+      }
 
       const newGuesses = [...(playerGame.guesses || []), selectedMovie.id]
       const isCorrectAnswer = playerGame.game.movie.id === selectedMovie.id
 
       if (isCorrectAnswer) {
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+        if (Platform.OS !== "web") {
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+        }
         onGuessFeedback("Correct Guess!")
         setShowConfetti?.(true)
       } else {
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
+        if (Platform.OS !== "web") {
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
+        }
         onGuessFeedback("Incorrect Guess")
         triggerShake()
       }
