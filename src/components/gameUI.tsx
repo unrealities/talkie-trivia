@@ -132,7 +132,9 @@ const GameUI: React.FC<GameUIProps> = ({
         <Animated.View style={[animatedModalStyles]}>
           <MovieModal
             movie={
-              playerGame.correctAnswer || playerGame.gaveUp
+              playerGame.correctAnswer ||
+              playerGame.gaveUp ||
+              playerGame.guesses.length >= playerGame.game.guessesMax
                 ? playerGame.game.movie
                 : null
             }
