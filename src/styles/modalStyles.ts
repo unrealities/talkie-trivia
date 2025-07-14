@@ -28,13 +28,15 @@ export const modalStyles = StyleSheet.create({
 
   modalView: {
     width: "90%",
-    maxHeight: "85%",
+    maxHeight: "70%",
     maxWidth: responsive.scale(500),
+    alignSelf: "center",
     alignItems: "center",
     backgroundColor: colors.background,
     borderRadius: responsive.scale(15),
     padding: responsive.scale(20),
     boxShadow: "none",
+    marginTop: responsive.scale(120)
   },
 
   buttonText: {
