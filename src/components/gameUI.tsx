@@ -1,5 +1,13 @@
 import React from "react"
-import { View, Pressable, Text, ScrollView, Platform } from "react-native"
+import {
+  View,
+  Pressable,
+  Text,
+  ScrollView,
+  Platform,
+  StyleProp,
+  ViewStyle,
+} from "react-native"
 import Animated from "react-native-reanimated"
 import * as Haptics from "expo-haptics"
 
@@ -31,7 +39,7 @@ interface GameUIProps {
   guessFeedback: string | null
   showGiveUpConfirmationDialog: boolean
   isInteractionsDisabled: boolean
-  animatedModalStyles: any
+  animatedModalStyles: StyleProp<ViewStyle>
 
   handleGiveUp: () => void
   cancelGiveUp: () => void
@@ -42,7 +50,7 @@ interface GameUIProps {
   setShowConfetti: (show: boolean) => void
 
   updatePlayerGame: (game: PlayerGame) => void
-  updatePlayerStats: (stats: any) => void
+  updatePlayerStats: (stats: PlayerStats) => void
 }
 
 const GameUI: React.FC<GameUIProps> = ({

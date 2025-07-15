@@ -7,6 +7,8 @@ import {
   TextInput,
   View,
   ListRenderItem,
+  StyleProp,
+  ViewStyle,
 } from "react-native"
 import Animated from "react-native-reanimated"
 import { FontAwesome } from "@expo/vector-icons"
@@ -21,7 +23,7 @@ interface PickerUIProps {
   error: string | null
   foundMovies: readonly BasicMovie[]
   selectedMovie: BasicMovie | null
-  animatedInputStyle: any
+  animatedInputStyle: StyleProp<ViewStyle>
   isInteractionsDisabled: boolean
 
   handleInputChange: (text: string) => void

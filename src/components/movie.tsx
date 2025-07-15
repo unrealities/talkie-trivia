@@ -20,7 +20,7 @@ interface MoviesContainerProps {
   playerGame: PlayerGame
   playerStats: PlayerStats
   updatePlayerGame: (game: PlayerGame) => void
-  updatePlayerStats: (stats: any) => void
+  updatePlayerStats: (stats: PlayerStats) => void
   isDataLoading: boolean
 }
 

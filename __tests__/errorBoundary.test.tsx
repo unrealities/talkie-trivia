@@ -1,4 +1,4 @@
-import React from "react"
+import React, { ErrorInfo } from "react"
 import { render, screen, fireEvent, act } from "@testing-library/react-native"
 import ErrorBoundary from "../src/components/errorBoundary"
 import { Text, Alert } from "react-native"
@@ -65,9 +65,9 @@ describe("ErrorBoundary", () => {
 
   it("componentDidCatch logs the error and errorInfo", () => {
     const error = new Error("Test Error")
-    const errorInfo = { componentStack: "TestComponent" }
+    const errorInfo: ErrorInfo = { componentStack: "TestComponent" }
     const instance = new ErrorBoundary({})
-    instance.componentDidCatch(error, errorInfo as any)
+    instance.componentDidCatch(error, errorInfo)
     expect(console.error).toHaveBeenCalledWith(
       "ErrorBoundary details:",
       error,

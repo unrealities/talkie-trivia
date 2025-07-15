@@ -1,13 +1,16 @@
-import { doc, writeBatch, updateDoc } from "firebase/firestore"
+import { doc, writeBatch } from "firebase/firestore"
 import { db } from "../config/firebase"
 import { playerStatsConverter } from "./firestore/converters/playerStats"
 import { playerGameConverter } from "./firestore/converters/playerGame"
+import PlayerStats from "../models/playerStats"
+import { PlayerGame } from "../models/game"
+import Player from "../models/player"
 
 export const batchUpdatePlayerData = async (
-  playerStats: any,
-  playerGame: any,
+  playerStats: PlayerStats,
+  playerGame: PlayerGame,
   playerId: string,
-  playerUpdate: any = null
+  playerUpdate: Partial<Player> | null = null
 ): Promise<{ success: boolean }> => {
   console.log("batchUpdatePlayerData called with:", {
     playerStats,
@@ -32,12 +35,7 @@ export const batchUpdatePlayerData = async (
     batch.set(statsDocRef, playerStats, { merge: true })
   }
 
-  if (
-    playerGame &&
-    Object.keys(playerGame).length > 0 &&
-    playerGame.game.movie.id !== 0 &&
-    playerGame.id
-  ) {
+  if (playerGame && playerGame.id && playerGame.game?.movie?.id !== 0) {
     const gameDocRef = doc(db, "playerGames", playerGame.id).withConverter(
       playerGameConverter
     )
@@ -55,6 +53,6 @@ export const batchUpdatePlayerData = async (
     return { success: true }
   } catch (error) {
     console.error("batchUpdatePlayerData: Batch update failed:", error)
-    return { success: false }
+    throw error
   }
 }
