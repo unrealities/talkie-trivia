@@ -9,6 +9,45 @@ import { PickerUI } from "./pickerUI"
 import PickerSkeleton from "./pickerSkeleton"
 import { useGameplay } from "../contexts/gameplayContext"
 
+interface MovieItemProps {
+  movie: BasicMovie
+  isSelected: boolean
+  isDisabled: boolean
+  onSelect: (movie: BasicMovie) => void
+}
+
+const MovieItem = memo<MovieItemProps>(
+  ({ movie, isSelected, isDisabled, onSelect }) => {
+    const releaseYear = movie.release_date
+      ? ` (${movie.release_date.toString().substring(0, 4)})`
+      : ""
+    const titleWithYear = `${movie.title}${releaseYear}`
+
+    return (
+      <Pressable
+        accessible
+        accessibilityRole="button"
+        aria-label={`Select movie: ${movie.title}, ID: ${movie.id}`}
+        onPress={() => onSelect(movie)}
+        style={[
+          pickerStyles.pressableText,
+          isSelected && pickerStyles.selectedMovie,
+        ]}
+        android_ripple={{ color: colors.quinary }}
+        disabled={isDisabled}
+      >
+        <Text
+          style={pickerStyles.unselected}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
+          {titleWithYear}
+        </Text>
+      </Pressable>
+    )
+  }
+)
+
 const PickerContainer: React.FC = memo(() => {
   const {
     isDataLoading,
@@ -48,37 +87,17 @@ const PickerContainer: React.FC = memo(() => {
   })
 
   const renderItem = useCallback(
-    ({ item: movie }: ListRenderItemInfo<BasicMovie>) => {
-      const releaseYear = movie.release_date
-        ? ` (${movie.release_date.toString().substring(0, 4)})`
-        : ""
-      const titleWithYear = `${movie.title}${releaseYear}`
-
+    ({ item }: ListRenderItemInfo<BasicMovie>) => {
       return (
-        <Pressable
-          accessible
-          accessibilityRole="button"
-          aria-label={`Select movie: ${movie.title}, ID: ${movie.id}`}
-          key={movie.id}
-          onPress={() => handleMovieSelection(movie)}
-          style={[
-            pickerStyles.pressableText,
-            selectedMovie?.id === movie.id && pickerStyles.selectedMovie,
-          ]}
-          android_ripple={{ color: colors.quinary }}
-          disabled={isInteractionsDisabled}
-        >
-          <Text
-            style={pickerStyles.unselected}
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
-            {titleWithYear}
-          </Text>
-        </Pressable>
+        <MovieItem
+          movie={item}
+          isSelected={selectedMovie?.id === item.id}
+          isDisabled={isInteractionsDisabled}
+          onSelect={handleMovieSelection}
+        />
       )
     },
-    [handleMovieSelection, selectedMovie, isInteractionsDisabled]
+    [selectedMovie, isInteractionsDisabled, handleMovieSelection]
   )
 
   if (isDataLoading) {
