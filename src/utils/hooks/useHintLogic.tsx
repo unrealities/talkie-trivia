@@ -20,14 +20,21 @@ interface UseHintLogicProps {
   playerStats: PlayerStats
   updatePlayerGame: (updatedPlayerGame: PlayerGame) => void
   updatePlayerStats: (updatedPlayerStats: PlayerStats) => void
+  provideGuessFeedback: (message: string | null) => void
 }
 
+/**
+ * Manages the state and logic for the hint system.
+ * Note: Hints are intended to be replenished on a daily basis,
+ * which is handled by server-side logic or when a new playerGame is generated.
+ */
 export function useHintLogic({
   playerGame,
   isInteractionsDisabled,
   playerStats,
   updatePlayerGame,
   updatePlayerStats,
+  provideGuessFeedback,
 }: UseHintLogicProps) {
   const [showHintOptions, setShowHintOptions] = useState(false)
   const [displayedHintText, setDisplayedHintText] = useState<string | null>(
@@ -140,12 +147,25 @@ export function useHintLogic({
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
     }
 
+    if (
+      hintsAvailable <= 0 &&
+      !Object.keys(playerGame.hintsUsed || {}).length
+    ) {
+      provideGuessFeedback("You are out of hints for today!")
+      return
+    }
+
     if (!showHintOptions) {
       setDisplayedHintText(null)
     }
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setShowHintOptions((prevShow) => !prevShow)
-  }, [showHintOptions])
+  }, [
+    showHintOptions,
+    hintsAvailable,
+    playerGame.hintsUsed,
+    provideGuessFeedback,
+  ])
 
   const hintLabelText = useMemo(() => {
     if (isInteractionsDisabled) return "Game Over"

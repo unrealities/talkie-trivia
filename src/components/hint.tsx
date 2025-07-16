@@ -24,6 +24,7 @@ const HintContainer: React.FC = memo(() => {
     isInteractionsDisabled,
     playerStats,
     updatePlayerStats,
+    provideGuessFeedback,
   } = useGameplay()
 
   const hintsAvailable = playerStats?.hintsAvailable ?? 0
@@ -42,6 +43,7 @@ const HintContainer: React.FC = memo(() => {
     playerStats,
     updatePlayerGame,
     updatePlayerStats,
+    provideGuessFeedback,
   })
 
   if (isDataLoading) {
