@@ -1,13 +1,5 @@
 import React from "react"
-import {
-  View,
-  Pressable,
-  Text,
-  ScrollView,
-  Platform,
-  StyleProp,
-  ViewStyle,
-} from "react-native"
+import { View, Pressable, Text, ScrollView, Platform } from "react-native"
 import Animated from "react-native-reanimated"
 import * as Haptics from "expo-haptics"
 
@@ -17,65 +9,30 @@ import NetworkContainer from "./network"
 import MovieModal from "./modal"
 import PickerContainer from "./picker"
 import { movieStyles } from "../styles/movieStyles"
-import { BasicMovie } from "../models/movie"
-import { PlayerGame } from "../models/game"
-import Player from "../models/player"
-import PlayerStats from "../models/playerStats"
 import HintContainer from "./hint"
 import ConfettiCelebration from "./confettiCelebration"
 import ConfirmationModal from "./confirmationModal"
 import FlashMessages from "./flashMessages"
+import { useGameplay } from "../contexts/gameplayContext" 
 
-interface GameUIProps {
-  isDataLoading: boolean
-  isNetworkConnected: boolean
-  movies: readonly BasicMovie[]
-  player: Player
-  playerGame: PlayerGame
-  playerStats: PlayerStats
+const GameUI: React.FC = () => {
+  const {
+    isDataLoading,
+    isNetworkConnected,
+    playerGame,
+    showModal,
+    showConfetti,
+    guessFeedback,
+    showGiveUpConfirmationDialog,
+    isInteractionsDisabled,
+    animatedModalStyles,
+    handleGiveUp,
+    cancelGiveUp,
+    confirmGiveUp,
+    handleConfettiStop,
+    setShowModal,
+  } = useGameplay()
 
-  showModal: boolean
-  showConfetti: boolean
-  guessFeedback: string | null
-  showGiveUpConfirmationDialog: boolean
-  isInteractionsDisabled: boolean
-  animatedModalStyles: StyleProp<ViewStyle>
-
-  handleGiveUp: () => void
-  cancelGiveUp: () => void
-  confirmGiveUp: () => void
-  handleConfettiStop: () => void
-  provideGuessFeedback: (message: string | null) => void
-  setShowModal: (show: boolean) => void
-  setShowConfetti: (show: boolean) => void
-
-  updatePlayerGame: (game: PlayerGame) => void
-  updatePlayerStats: (stats: PlayerStats) => void
-}
-
-const GameUI: React.FC<GameUIProps> = ({
-  isDataLoading,
-  isNetworkConnected,
-  movies,
-  player,
-  playerGame,
-  playerStats,
-  showModal,
-  showConfetti,
-  guessFeedback,
-  showGiveUpConfirmationDialog,
-  isInteractionsDisabled,
-  animatedModalStyles,
-  handleGiveUp,
-  cancelGiveUp,
-  confirmGiveUp,
-  handleConfettiStop,
-  provideGuessFeedback,
-  setShowModal,
-  setShowConfetti,
-  updatePlayerGame,
-  updatePlayerStats,
-}) => {
   const onGiveUpPress = () => {
     if (Platform.OS !== "web") {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
@@ -91,35 +48,11 @@ const GameUI: React.FC<GameUIProps> = ({
     >
       <View style={movieStyles.container}>
         <NetworkContainer isConnected={isNetworkConnected} />
-        <CluesContainer
-          correctGuess={playerGame.correctAnswer}
-          guesses={playerGame.guesses}
-          summary={playerGame?.game?.movie?.overview}
-          playerGame={playerGame}
-          isGameOver={isInteractionsDisabled}
-        />
-        <HintContainer
-          isLoading={isDataLoading}
-          playerGame={playerGame}
-          updatePlayerGame={updatePlayerGame}
-          isInteractionsDisabled={isInteractionsDisabled}
-          playerStats={playerStats}
-          updatePlayerStats={updatePlayerStats}
-        />
-        <PickerContainer
-          isLoading={isDataLoading}
-          movies={movies}
-          playerGame={playerGame}
-          updatePlayerGame={updatePlayerGame}
-          onGuessFeedback={provideGuessFeedback}
-          setShowConfetti={setShowConfetti}
-        />
-        <GuessesContainer
-          isLoading={isDataLoading}
-          guesses={playerGame.guesses}
-          movie={playerGame.game.movie}
-          movies={movies}
-        />
+        <CluesContainer />
+        <HintContainer />
+        <PickerContainer />
+        <GuessesContainer />
+
         <Pressable
           onPress={onGiveUpPress}
           style={({ pressed }) => [

@@ -117,7 +117,12 @@ const ActorContainer = memo(
 )
 
 export const Actors = memo(
-  ({ actors, maxDisplay = 3, containerStyle, onActorPress }: ActorsProps & { onActorPress?: (actor: Actor) => void }) => {
+  ({
+    actors,
+    maxDisplay = 3,
+    containerStyle,
+    onActorPress,
+  }: ActorsProps & { onActorPress?: (actor: Actor) => void }) => {
     if (!actors || actors.length === 0) {
       return null
     }
@@ -138,9 +143,9 @@ export const Actors = memo(
   (prevProps, nextProps) => {
     return (
       prevProps.actors === nextProps.actors &&
-        prevProps.maxDisplay === nextProps.maxDisplay &&
-        prevProps.containerStyle === nextProps.containerStyle &&
-        prevProps.onActorPress === nextProps.onActorPress
+      prevProps.maxDisplay === nextProps.maxDisplay &&
+      prevProps.containerStyle === nextProps.containerStyle &&
+      prevProps.onActorPress === nextProps.onActorPress
     )
   }
 )
