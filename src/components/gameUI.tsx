@@ -13,7 +13,7 @@ import HintContainer from "./hint"
 import ConfettiCelebration from "./confettiCelebration"
 import ConfirmationModal from "./confirmationModal"
 import FlashMessages from "./flashMessages"
-import { useGameplay } from "../contexts/gameplayContext" 
+import { useGameplay } from "../contexts/gameplayContext"
 
 const GameUI: React.FC = () => {
   const {
@@ -75,8 +75,8 @@ const GameUI: React.FC = () => {
             movie={
               playerGame.correctAnswer ||
               playerGame.gaveUp ||
-              playerGame.guesses.length >= playerGame.game.guessesMax
-                ? playerGame.game.movie
+              playerGame.guesses.length >= playerGame.guessesMax
+                ? playerGame.movie
                 : null
             }
             show={showModal}

@@ -42,8 +42,8 @@ const CluesContainer = memo(() => {
   const { correctAnswer, guesses } = playerGame
 
   const clues = useMemo(
-    () => splitSummary(playerGame?.game?.movie?.overview || ""),
-    [playerGame?.game?.movie?.overview]
+    () => splitSummary(playerGame?.movie?.overview || ""),
+    [playerGame?.movie?.overview]
   )
 
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -54,10 +54,10 @@ const CluesContainer = memo(() => {
   const scrollViewRef = useRef<ScrollView>(null)
 
   useEffect(() => {
-    if (playerGame?.game?.movie?.overview) {
+    if (playerGame?.movie?.overview) {
       setIsLoading(false)
     }
-  }, [playerGame?.game?.movie?.overview])
+  }, [playerGame?.movie?.overview])
 
   useEffect(() => {
     if (isLoading) return
@@ -167,8 +167,8 @@ const CluesContainer = memo(() => {
             currentWordLength={revealedClues.join(" ").split(" ").length}
             guessNumber={guesses.length}
             totalWordLength={
-              playerGame?.game?.movie?.overview
-                ? playerGame.game.movie.overview.split(" ").length
+              playerGame?.movie?.overview
+                ? playerGame.movie.overview.split(" ").length
                 : 0
             }
             correctGuess={correctAnswer}

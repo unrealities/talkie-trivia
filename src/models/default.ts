@@ -1,5 +1,5 @@
 import { Movie } from "../models/movie"
-import { Game, PlayerGame } from "../models/game"
+import { PlayerGame } from "../models/game"
 import PlayerStats from "../models/playerStats"
 
 export const defaultMovie: Movie = {
@@ -18,23 +18,18 @@ export const defaultMovie: Movie = {
   vote_count: 0,
 }
 
-export const defaultBaseGame: Game = {
-  date: new Date(),
-  guessesMax: 5,
-  id: "",
-  movie: defaultMovie,
-}
-
 export const defaultPlayerGame: PlayerGame = {
-  correctAnswer: false,
-  endDate: new Date(),
-  game: defaultBaseGame,
-  guesses: [],
   id: "",
   playerID: "",
-  startDate: new Date(),
-  hintsUsed: {},
+  movie: defaultMovie,
+  guessesMax: 5,
+  guesses: [],
+  correctAnswer: false,
   gaveUp: false,
+  startDate: new Date(),
+  endDate: new Date(),
+  hintsUsed: {},
+  statsProcessed: false,
 }
 
 export const defaultPlayerStats: PlayerStats = {

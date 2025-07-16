@@ -43,7 +43,6 @@ export function usePickerLogic({
   const buttonScale = useSharedValue(1)
   const shakeAnimation = useSharedValue(0)
 
-  // Function to trigger the shake animation.
   const triggerShake = () => {
     shakeAnimation.value = withSequence(
       withTiming(-10, { duration: 50 }),
@@ -104,13 +103,13 @@ export function usePickerLogic({
   }, [])
 
   const onPressCheck = useCallback(() => {
-    if (!isInteractionsDisabled && selectedMovie && playerGame.game.movie?.id) {
+    if (!isInteractionsDisabled && selectedMovie && playerGame.movie?.id) {
       if (Platform.OS !== "web") {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
       }
 
       const newGuesses = [...(playerGame.guesses || []), selectedMovie.id]
-      const isCorrectAnswer = playerGame.game.movie.id === selectedMovie.id
+      const isCorrectAnswer = playerGame.movie.id === selectedMovie.id
 
       if (isCorrectAnswer) {
         if (Platform.OS !== "web") {

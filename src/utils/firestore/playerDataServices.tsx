@@ -3,6 +3,7 @@ import {
   doc,
   getDoc,
   setDoc,
+  updateDoc,
   Firestore,
 } from "firebase/firestore"
 import { playerConverter } from "./converters/player"
@@ -10,13 +11,9 @@ import { playerGameConverter } from "./converters/playerGame"
 import { playerStatsConverter } from "./converters/playerStats"
 import Player from "../../models/player"
 import PlayerStats from "../../models/playerStats"
-import { PlayerGame, Game } from "../../models/game"
+import { PlayerGame } from "../../models/game"
 import { Movie } from "../../models/movie"
-import {
-  defaultPlayerGame,
-  defaultBaseGame,
-  defaultPlayerStats,
-} from "../../models/default"
+import { defaultPlayerGame, defaultPlayerStats } from "../../models/default"
 
 export const fetchOrCreatePlayer = async (
   db: Firestore,
@@ -42,6 +39,12 @@ export const fetchOrCreatePlayerGame = async (
   today: Date,
   movieForToday: Movie
 ): Promise<PlayerGame> => {
+  if (!movieForToday || !movieForToday.id) {
+    throw new Error(
+      "Invalid 'movieForToday' provided to fetchOrCreatePlayerGame."
+    )
+  }
+
   const playerGameRef = doc(
     db,
     "playerGames",
@@ -51,30 +54,22 @@ export const fetchOrCreatePlayerGame = async (
 
   if (gameSnap.exists()) {
     const existingGame = gameSnap.data()
-
-    if (movieForToday && existingGame.game.movie.id !== movieForToday.id) {
+    // If the movie for today has changed since the game was created, update it.
+    if (existingGame.movie.id !== movieForToday.id) {
       console.log(`Updating movie for existing game ${existingGame.id}`)
-
-      return {
-        ...existingGame,
-        game: { ...existingGame.game, movie: movieForToday },
-      }
+      await updateDoc(playerGameRef, { movie: movieForToday })
+      return { ...existingGame, movie: movieForToday }
     }
     return existingGame
   } else {
     console.log(`Creating new playerGame for date: ${dateId}`)
     const newPlayerGame: PlayerGame = {
       ...defaultPlayerGame,
-      playerID: playerId,
       id: `${playerId}-${dateId}`,
+      playerID: playerId,
+      movie: movieForToday,
       startDate: today,
       endDate: today,
-      game: {
-        ...defaultBaseGame,
-        date: today,
-        id: `${playerId}-${dateId}`,
-        movie: movieForToday,
-      },
     }
     await setDoc(playerGameRef, newPlayerGame)
     return newPlayerGame

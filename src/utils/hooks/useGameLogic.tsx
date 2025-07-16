@@ -15,7 +15,7 @@ export function useGameLogic() {
   const isGameOver =
     playerGame.correctAnswer ||
     playerGame.gaveUp ||
-    playerGame.guesses.length >= playerGame.game.guessesMax
+    playerGame.guesses.length >= playerGame.guessesMax
   const isInteractionsDisabled = isGameOver
 
   const cancelGiveUp = useCallback(() => {
@@ -55,7 +55,7 @@ export function useGameLogic() {
       const isGameOverNow =
         playerGame.correctAnswer ||
         playerGame.gaveUp ||
-        playerGame.guesses.length >= playerGame.game.guessesMax
+        playerGame.guesses.length >= playerGame.guessesMax
 
       if (isGameOverNow) {
         const updatedStats: PlayerStats = { ...playerStats }

@@ -1,31 +1,48 @@
 import { PlayerGame } from "../../../models/game"
+import { defaultPlayerGame } from "../../../models/default"
+import { Timestamp } from "firebase/firestore"
 
 export const playerGameConverter = {
-  toFirestore: (playerGame) => {
-    let pg: PlayerGame = {
-      correctAnswer: playerGame.correctAnswer,
-      endDate: playerGame.endDate,
-      game: playerGame.game,
-      guesses: playerGame.guesses,
+  /**
+   * Converts a PlayerGame object to a Firestore-compatible object.
+   * The Firestore SDK automatically handles converting JS Date objects to Timestamps.
+   */
+  toFirestore: (playerGame: PlayerGame) => {
+    return {
       id: playerGame.id,
       playerID: playerGame.playerID,
+      movie: playerGame.movie,
+      guessesMax: playerGame.guessesMax,
+      guesses: playerGame.guesses,
+      correctAnswer: playerGame.correctAnswer,
+      gaveUp: playerGame.gaveUp,
       startDate: playerGame.startDate,
-      hintsUsed: playerGame.hintsUsed,
+      endDate: playerGame.endDate,
+      hintsUsed: playerGame.hintsUsed || {},
+      statsProcessed: playerGame.statsProcessed || false,
     }
-    return pg
   },
-  fromFirestore: (snapshot, options) => {
+
+  /**
+   * Converts a Firestore document snapshot into a PlayerGame object.
+   * This version assumes the data is always in the new, flat format.
+   */
+  fromFirestore: (snapshot: any, options: any): PlayerGame => {
     const data = snapshot.data(options)
-    let pg: PlayerGame = {
-      correctAnswer: data.correctAnswer,
-      endDate: data.endDate,
-      game: data.game,
-      guesses: data.guesses,
-      id: data.id,
-      playerID: data.playerID,
-      startDate: data.startDate,
-      hintsUsed: data.hintsUsed || {},
+
+    // Helper to safely convert Firestore Timestamps back to JS Dates.
+    const safeToDate = (field: any): Date => {
+      if (field instanceof Timestamp) {
+        return field.toDate()
+      }
+      return field // Assumes it might already be a Date object
     }
-    return pg
+
+    return {
+      ...defaultPlayerGame,
+      ...data,
+      startDate: safeToDate(data.startDate),
+      endDate: safeToDate(data.endDate),
+    }
   },
 }

@@ -67,8 +67,8 @@ export function useHintLogic({
 
   const getHintText = useCallback(
     (hintType: HintType): string => {
-      if (!playerGame?.game?.movie) return "Hint unavailable"
-      const { movie } = playerGame.game
+      if (!playerGame?.movie) return "Hint unavailable"
+      const { movie } = playerGame
       switch (hintType) {
         case "decade":
           return movie.release_date
@@ -84,7 +84,7 @@ export function useHintLogic({
           return "Invalid hint type"
       }
     },
-    [playerGame.game.movie]
+    [playerGame.movie]
   )
 
   const handleHintSelection = useCallback(
