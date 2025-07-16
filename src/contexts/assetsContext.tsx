@@ -30,7 +30,9 @@ export const AssetsProvider: React.FC<{ children: ReactNode }> = ({
 
   useEffect(() => {
     try {
-      console.log("AssetsContext: Loading static movie data...")
+      if (__DEV__) {
+        console.log("AssetsContext: Loading static movie data...")
+      }
       if (!popularMoviesData || popularMoviesData.length === 0) {
         throw new Error("Invalid or empty popular movies data.")
       }
@@ -40,7 +42,9 @@ export const AssetsProvider: React.FC<{ children: ReactNode }> = ({
 
       setMovies(popularMoviesData as Movie[])
       setBasicMovies(basicMoviesData as BasicMovie[])
-      console.log("AssetsContext: Static movie data loaded successfully.")
+      if (__DEV__) {
+        console.log("AssetsContext: Static movie data loaded successfully.")
+      }
     } catch (e: any) {
       console.error("AssetsContext: Error loading movie data:", e)
       setError(e.message)

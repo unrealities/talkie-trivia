@@ -56,7 +56,9 @@ export const GameDataProvider: React.FC<{ children: ReactNode }> = ({
       setError(null)
 
       try {
-        console.log("GameDataContext: Initializing player game data...")
+        if (__DEV__) {
+          console.log("GameDataContext: Initializing player game data...")
+        }
         const db = getFirestore()
         const today = new Date()
         const dateId = generateDateId(today)
@@ -68,9 +70,11 @@ export const GameDataProvider: React.FC<{ children: ReactNode }> = ({
 
         setPlayerGame(game)
         setPlayerStats(stats)
-        console.log(
-          "GameDataContext: Player game data initialized successfully."
-        )
+        if (__DEV__) {
+          console.log(
+            "GameDataContext: Player game data initialized successfully."
+          )
+        }
       } catch (e: any) {
         console.error("GameDataContext: Error initializing data:", e)
         setError(`Failed to load game data: ${e.message}`)
@@ -98,7 +102,9 @@ export const GameDataProvider: React.FC<{ children: ReactNode }> = ({
     }
     try {
       await batchUpdatePlayerData(playerStats, playerGame, player.id)
-      console.log("GameDataContext: Game data saved successfully.")
+      if (__DEV__) {
+        console.log("GameDataContext: Game data saved successfully.")
+      }
     } catch (e: any) {
       console.error("GameDataContext: Failed to save game data", e)
       setError(`Failed to save progress: ${e.message}`)

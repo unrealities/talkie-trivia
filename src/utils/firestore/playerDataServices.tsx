@@ -25,7 +25,9 @@ export const fetchOrCreatePlayer = async (
   if (playerSnap.exists()) {
     return playerSnap.data()
   } else {
-    console.log(`Creating new player: ${playerId}`)
+    if (__DEV__) {
+      console.log(`Creating new player: ${playerId}`)
+    }
     const newPlayer = new Player(playerId, playerName)
     await setDoc(playerRef, newPlayer)
     return newPlayer
@@ -56,13 +58,18 @@ export const fetchOrCreatePlayerGame = async (
     const existingGame = gameSnap.data()
     // If the movie for today has changed since the game was created, update it.
     if (existingGame.movie.id !== movieForToday.id) {
-      console.log(`Updating movie for existing game ${existingGame.id}`)
+      if (__DEV__) {
+        console.log(`Updating movie for existing game ${existingGame.id}`)
+      }
       await updateDoc(playerGameRef, { movie: movieForToday })
+      // Return the game data with the newly updated movie
       return { ...existingGame, movie: movieForToday }
     }
     return existingGame
   } else {
-    console.log(`Creating new playerGame for date: ${dateId}`)
+    if (__DEV__) {
+      console.log(`Creating new playerGame for date: ${dateId}`)
+    }
     const newPlayerGame: PlayerGame = {
       ...defaultPlayerGame,
       id: `${playerId}-${dateId}`,
@@ -87,7 +94,9 @@ export const fetchOrCreatePlayerStats = async (
   if (statsSnap.exists()) {
     return statsSnap.data()
   } else {
-    console.log(`Creating new playerStats for player: ${playerId}`)
+    if (__DEV__) {
+      console.log(`Creating new playerStats for player: ${playerId}`)
+    }
     const newPlayerStats = new PlayerStats(
       playerId,
       defaultPlayerStats.currentStreak,

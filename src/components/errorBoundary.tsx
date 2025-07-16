@@ -30,7 +30,9 @@ class ErrorBoundary extends Component<Props, State> {
 
   private handleReload = async () => {
     try {
-      console.log("Attempting to reload app via Updates API...")
+      if (__DEV__) {
+        console.log("Attempting to reload app via Updates API...")
+      }
       await Updates.reloadAsync()
     } catch (e) {
       console.error("Failed to reload the app via Updates API:", e)

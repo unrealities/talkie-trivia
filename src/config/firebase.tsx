@@ -28,9 +28,13 @@ const firebaseConfig: FirebaseConfig = {
   measurementId: Constants?.expoConfig?.extra?.firebaseMeasurementId,
 }
 
-console.log("firebase.tsx: attempting to initilize firebase app")
+if (__DEV__) {
+  console.log("firebase.tsx: attempting to initialize firebase app")
+}
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig)
-console.log("firebase.tsx: firebase app initialized")
+if (__DEV__) {
+  console.log("firebase.tsx: firebase app initialized")
+}
 
 const db = initializeFirestore(app, {
   localCache: persistentLocalCache({

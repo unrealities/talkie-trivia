@@ -12,12 +12,14 @@ export const batchUpdatePlayerData = async (
   playerId: string,
   playerUpdate: Partial<Player> | null = null
 ): Promise<{ success: boolean }> => {
-  console.log("batchUpdatePlayerData called with:", {
-    playerStats,
-    playerGame,
-    playerId,
-    playerUpdate,
-  })
+  if (__DEV__) {
+    console.log("batchUpdatePlayerData called with:", {
+      playerStats,
+      playerGame,
+      playerId,
+      playerUpdate,
+    })
+  }
 
   if (!playerId) {
     console.warn(
@@ -35,7 +37,7 @@ export const batchUpdatePlayerData = async (
     batch.set(statsDocRef, playerStats, { merge: true })
   }
 
-  if (playerGame && playerGame.id && playerGame.game?.movie?.id !== 0) {
+  if (playerGame && playerGame.id && playerGame.movie?.id !== 0) {
     const gameDocRef = doc(db, "playerGames", playerGame.id).withConverter(
       playerGameConverter
     )
@@ -49,7 +51,9 @@ export const batchUpdatePlayerData = async (
 
   try {
     await batch.commit()
-    console.log("batchUpdatePlayerData: Batch update successful.")
+    if (__DEV__) {
+      console.log("batchUpdatePlayerData: Batch update successful.")
+    }
     return { success: true }
   } catch (error) {
     console.error("batchUpdatePlayerData: Batch update failed:", error)

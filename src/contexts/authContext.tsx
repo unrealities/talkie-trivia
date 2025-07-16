@@ -58,7 +58,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
         try {
           if (firebaseUser) {
-            console.log("AuthContext: User is signed in:", firebaseUser.uid)
+            if (__DEV__) {
+              console.log("AuthContext: User is signed in:", firebaseUser.uid)
+            }
             setUser(firebaseUser)
             const db = getFirestore()
             const fetchedPlayer = await fetchOrCreatePlayer(
@@ -68,9 +70,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
             )
             setPlayer(fetchedPlayer)
           } else {
-            console.log(
-              "AuthContext: No user signed in, attempting anonymous sign-in."
-            )
+            if (__DEV__) {
+              console.log(
+                "AuthContext: No user signed in, attempting anonymous sign-in."
+              )
+            }
             await signInAnonymously(auth)
             // The onAuthStateChanged listener will re-trigger with the new anonymous user
           }
