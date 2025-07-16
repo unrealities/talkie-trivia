@@ -62,18 +62,17 @@ const CluesContainer = memo(() => {
   useEffect(() => {
     if (isLoading) return
 
-    let cluesToReveal
-    let newRevealedClues
+    // Determine how many clue segments should be visible.
+    const numCluesToReveal =
+      correctAnswer || isInteractionsDisabled
+        ? clues.length
+        : Math.min(guesses.length + 1, clues.length)
 
-    if (correctAnswer || isInteractionsDisabled) {
-      cluesToReveal = clues
-      newRevealedClues = clues
-    } else {
-      cluesToReveal = Math.min(guesses.length + 1, clues.length)
-      newRevealedClues = clues.slice(0, cluesToReveal)
-    }
+    // Only update and animate if the number of visible clues has changed.
+    if (numCluesToReveal !== revealedClues.length) {
+      const newRevealedClues = clues.slice(0, numCluesToReveal)
 
-    if (newRevealedClues.join(" ") !== revealedClues.join(" ")) {
+      // Start animations
       fadeAnim.value = withTiming(0)
       slideAnim.value = withTiming(-10)
       clueHighlightAnim.value = withTiming(0)
@@ -98,14 +97,7 @@ const CluesContainer = memo(() => {
 
       scrollViewRef.current?.scrollToEnd({ animated: true })
     }
-  }, [
-    guesses,
-    clues,
-    isLoading,
-    correctAnswer,
-    isInteractionsDisabled,
-    revealedClues,
-  ])
+  }, [isLoading, correctAnswer, isInteractionsDisabled, guesses.length, clues])
 
   const animatedTextStyle = useAnimatedStyle(() => ({
     opacity: fadeAnim.value,
