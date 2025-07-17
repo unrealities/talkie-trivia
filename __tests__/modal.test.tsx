@@ -2,6 +2,8 @@ import React from "react"
 import { render, fireEvent } from "@testing-library/react-native"
 import MovieModal from "../src/components/modal"
 import { Movie } from "../src/models/movie"
+import { PlayerGame } from "../src/models/game"
+import { Share } from "react-native"
 
 const mockMovie: Movie = {
   id: 1,
@@ -12,81 +14,105 @@ const mockMovie: Movie = {
   overview: "This is a test movie.",
   tagline: "Test tagline",
   genres: [{ id: 1, name: "Action" }],
-  credits: {
-    cast: [
-      {
-        id: 1,
-        name: "Actor One",
-        character: "Character One",
-        profile_path: "/actor1.jpg",
-        order: 1,
-        job: "Acting",
-      },
-    ],
-    crew: [
-      {
-        id: 2,
-        name: "Director One",
-        job: "Director",
-        profile_path: "/director1.jpg",
-        department: "Directing",
-      },
-    ],
-  },
-  runtime: 120,
+  director: { id: 1, name: "Test Director" },
+  actors: [],
+  imdb_id: 12345,
+  popularity: 100,
+  vote_count: 1000,
 }
 
+const mockPlayerGame: PlayerGame = {
+  id: "test-pg-1",
+  playerID: "player-1",
+  movie: mockMovie,
+  guesses: [10, 1],
+  guessesMax: 5,
+  correctAnswer: true,
+  gaveUp: false,
+  startDate: new Date(),
+  endDate: new Date(),
+}
+
+jest.mock("react-native/Libraries/Share/Share", () => ({
+  ...jest.requireActual("react-native/Libraries/Share/Share"),
+  share: jest.fn(),
+}))
+
 describe("MovieModal", () => {
-  it("renders correctly when hidden", () => {
-    const toggleModal = jest.fn()
-    const { queryByTestId } = render(
-      <MovieModal movie={mockMovie} show={false} toggleModal={toggleModal} />
-    )
-    expect(queryByTestId("movie-modal")).toBeNull()
+  afterEach(() => {
+    jest.clearAllMocks()
   })
 
-  it("renders correctly when shown with a movie", () => {
+  it("renders nothing when hidden", () => {
+    const toggleModal = jest.fn()
+    const { container } = render(
+      <MovieModal
+        playerGame={mockPlayerGame}
+        show={false}
+        toggleModal={toggleModal}
+      />
+    )
+    expect(container.children.length).toBe(0)
+  })
+
+  it("renders correctly when shown with a playerGame", () => {
     const toggleModal = jest.fn()
     const { getByText } = render(
-      <MovieModal movie={mockMovie} show={true} toggleModal={toggleModal} />
+      <MovieModal
+        playerGame={mockPlayerGame}
+        show={true}
+        toggleModal={toggleModal}
+      />
     )
     expect(getByText("Test Movie")).toBeTruthy()
     expect(getByText("Close")).toBeTruthy()
+    expect(getByText("Share")).toBeTruthy()
   })
 
-  it("renders correctly when shown without a movie", () => {
+  it("renders nothing when shown without a playerGame", () => {
     const toggleModal = jest.fn()
-    const { getByText } = render(
-      <MovieModal movie={null} show={true} toggleModal={toggleModal} />
+    const { queryByText } = render(
+      <MovieModal playerGame={null} show={true} toggleModal={toggleModal} />
     )
-    expect(getByText("No movie information available")).toBeTruthy()
-    expect(getByText("Dismiss")).toBeTruthy()
+    expect(queryByText("Close")).toBeNull()
+    expect(queryByText("Share")).toBeNull()
   })
 
   it("calls toggleModal when the close button is pressed", () => {
     const toggleModal = jest.fn()
     const { getByText } = render(
-      <MovieModal movie={mockMovie} show={true} toggleModal={toggleModal} />
+      <MovieModal
+        playerGame={mockPlayerGame}
+        show={true}
+        toggleModal={toggleModal}
+      />
     )
     fireEvent.press(getByText("Close"))
     expect(toggleModal).toHaveBeenCalledWith(false)
   })
 
-  it("calls toggleModal when the dismiss button is pressed", () => {
+  it("calls Share.share when the share button is pressed", async () => {
     const toggleModal = jest.fn()
     const { getByText } = render(
-      <MovieModal movie={null} show={true} toggleModal={toggleModal} />
+      <MovieModal
+        playerGame={mockPlayerGame}
+        show={true}
+        toggleModal={toggleModal}
+      />
     )
-    fireEvent.press(getByText("Dismiss"))
-    expect(toggleModal).toHaveBeenCalledWith(false)
+    fireEvent.press(getByText("Share"))
+    expect(Share.share).toHaveBeenCalled()
   })
 
   it("calls toggleModal when tapping outside the modal", () => {
     const toggleModal = jest.fn()
     const { getByLabelText } = render(
-      <MovieModal movie={mockMovie} show={true} toggleModal={toggleModal} />
+      <MovieModal
+        playerGame={mockPlayerGame}
+        show={true}
+        toggleModal={toggleModal}
+      />
     )
-    // Assuming the Pressable with accessibilityLabel "Close modal by tapping outside" covers the background
     fireEvent.press(getByLabelText("Close modal by tapping outside"))
     expect(toggleModal).toHaveBeenCalledWith(false)
   })

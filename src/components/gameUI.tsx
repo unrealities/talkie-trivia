@@ -40,6 +40,11 @@ const GameUI: React.FC = () => {
     handleGiveUp()
   }
 
+  const isGameOver =
+    playerGame.correctAnswer ||
+    playerGame.gaveUp ||
+    playerGame.guesses.length >= playerGame.guessesMax
+
   return (
     <ScrollView
       contentContainerStyle={movieStyles.scrollContentContainer}
@@ -72,13 +77,7 @@ const GameUI: React.FC = () => {
 
         <Animated.View style={[animatedModalStyles]}>
           <MovieModal
-            movie={
-              playerGame.correctAnswer ||
-              playerGame.gaveUp ||
-              playerGame.guesses.length >= playerGame.guessesMax
-                ? playerGame.movie
-                : null
-            }
+            playerGame={isGameOver ? playerGame : null}
             show={showModal}
             toggleModal={setShowModal}
           />

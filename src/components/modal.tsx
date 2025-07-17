@@ -1,5 +1,5 @@
 import React, { memo, useEffect } from "react"
-import { Modal, Pressable, Text, View } from "react-native"
+import { Modal, Pressable, Text, View, Share, Alert } from "react-native"
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -8,16 +8,17 @@ import Animated, {
 } from "react-native-reanimated"
 import { modalStyles } from "../styles/modalStyles"
 import Facts from "./facts"
-import { Movie } from "../models/movie"
+import { PlayerGame } from "../models/game"
+import { generateShareMessage } from "../utils/shareUtils"
 
 interface MovieModalProps {
-  movie: Movie | null
+  playerGame: PlayerGame | null
   show: boolean
   toggleModal: (show: boolean) => void
 }
 
 const MovieModal: React.FC<MovieModalProps> = memo(
-  ({ movie, show, toggleModal }) => {
+  ({ playerGame, show, toggleModal }) => {
     const animatedValue = useSharedValue(0)
 
     const animatedModalContentStyle = useAnimatedStyle(() => {
@@ -34,8 +35,26 @@ const MovieModal: React.FC<MovieModalProps> = memo(
       })
     }, [show, animatedValue])
 
+    const handleShare = async () => {
+      if (!playerGame) return
+      try {
+        const message = generateShareMessage(playerGame)
+        await Share.share(
+          {
+            message,
+            title: "Talkie Trivia Results",
+          },
+          {
+            dialogTitle: "Share your Talkie Trivia results!", // Android only
+          }
+        )
+      } catch (error: any) {
+        Alert.alert("Share Error", error.message)
+      }
+    }
+
     const renderContent = () => {
-      if (!movie) {
+      if (!playerGame) {
         return null
       }
 
@@ -43,13 +62,18 @@ const MovieModal: React.FC<MovieModalProps> = memo(
         <Animated.View
           style={[modalStyles.modalView, animatedModalContentStyle]}
         >
-          <Facts movie={movie} />
-          <Pressable
-            style={modalStyles.button}
-            onPress={() => toggleModal(false)}
-          >
-            <Text style={modalStyles.buttonText}>Close</Text>
-          </Pressable>
+          <Facts movie={playerGame.movie} />
+          <View style={modalStyles.buttonContainer}>
+            <Pressable
+              style={modalStyles.button}
+              onPress={() => toggleModal(false)}
+            >
+              <Text style={modalStyles.buttonText}>Close</Text>
+            </Pressable>
+            <Pressable style={modalStyles.shareButton} onPress={handleShare}>
+              <Text style={modalStyles.buttonText}>Share</Text>
+            </Pressable>
+          </View>
         </Animated.View>
       )
     }
@@ -78,7 +102,8 @@ const MovieModal: React.FC<MovieModalProps> = memo(
     )
   },
   (prevProps, nextProps) =>
-    prevProps.movie === nextProps.movie && prevProps.show === nextProps.show
+    prevProps.playerGame === nextProps.playerGame &&
+    prevProps.show === nextProps.show
 )
 
 export default MovieModal

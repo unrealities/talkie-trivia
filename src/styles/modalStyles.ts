@@ -4,21 +4,6 @@ import { colors, responsive } from "./global"
 const { width, height } = Dimensions.get("window")
 
 export const modalStyles = StyleSheet.create({
-  button: {
-    backgroundColor: "transparent",
-    borderColor: colors.primary,
-    borderRadius: responsive.scale(8),
-    borderWidth: 2,
-    padding: responsive.scale(10),
-    elevation: 0,
-    minWidth: responsive.isSmallScreen() ? "40%" : "30%",
-    minHeight: responsive.scale(40),
-    justifyContent: "center",
-    alignItems: "center",
-    boxShadow: "none",
-    marginTop: responsive.scale(15),
-  },
-
   centeredView: {
     flex: 1,
     justifyContent: "center",
@@ -36,7 +21,38 @@ export const modalStyles = StyleSheet.create({
     borderRadius: responsive.scale(15),
     padding: responsive.scale(20),
     boxShadow: "none",
-    marginTop: responsive.scale(120)
+    marginTop: responsive.scale(120),
+  },
+
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    width: "100%",
+    marginTop: responsive.scale(15),
+  },
+
+  button: {
+    backgroundColor: "transparent",
+    borderColor: colors.secondary,
+    borderRadius: responsive.scale(8),
+    borderWidth: 2,
+    paddingVertical: responsive.scale(10),
+    paddingHorizontal: responsive.scale(20),
+    minHeight: responsive.scale(40),
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  shareButton: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+    borderRadius: responsive.scale(8),
+    borderWidth: 2,
+    paddingVertical: responsive.scale(10),
+    paddingHorizontal: responsive.scale(20),
+    minHeight: responsive.scale(40),
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   buttonText: {
