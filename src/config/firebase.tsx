@@ -6,17 +6,8 @@ import {
   persistentMultipleTabManager,
 } from "firebase/firestore"
 import { getPerformance } from "firebase/performance"
+import { getAnalytics, isSupported } from "firebase/analytics"
 import Constants from "expo-constants"
-
-interface FirebaseConfig {
-  apiKey: string
-  authDomain: string
-  projectId: string
-  storageBucket: string
-  messagingSenderId: string
-  appId: string
-  measurementId: string
-}
 
 const firebaseConfig: FirebaseConfig = {
   apiKey: Constants?.expoConfig?.extra?.firebaseApiKey,
@@ -36,6 +27,26 @@ if (__DEV__) {
   console.log("firebase.tsx: firebase app initialized")
 }
 
+let analytics
+isSupported()
+  .then((supported) => {
+    if (supported) {
+      analytics = getAnalytics(app)
+      if (__DEV__) {
+        console.log("firebase.tsx: Firebase Analytics initialized.")
+      }
+    } else {
+      if (__DEV__) {
+        console.log(
+          "firebase.tsx: Firebase Analytics not supported in this environment."
+        )
+      }
+    }
+  })
+  .catch((error) => {
+    console.error("firebase.tsx: Error checking Analytics support:", error)
+  })
+
 const db = initializeFirestore(app, {
   localCache: persistentLocalCache({
     cacheSizeBytes: CACHE_SIZE_UNLIMITED,
@@ -45,4 +56,4 @@ const db = initializeFirestore(app, {
 
 const perf = getPerformance(app)
 
-export { db, firebaseConfig, perf }
+export { db, firebaseConfig, perf, app, analytics }

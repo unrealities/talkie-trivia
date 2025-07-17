@@ -21,6 +21,7 @@ import {
   fetchOrCreatePlayerStats,
 } from "../utils/firestore/playerDataServices"
 import { batchUpdatePlayerData } from "../utils/firebaseService"
+import { analyticsService } from "../utils/analyticsService"
 
 interface GameDataState {
   playerGame: PlayerGame
@@ -67,6 +68,15 @@ export const GameDataProvider: React.FC<{ children: ReactNode }> = ({
           fetchOrCreatePlayerGame(db, player.id, dateId, today, movieForToday),
           fetchOrCreatePlayerStats(db, player.id),
         ])
+
+        // Track game start only if the game hasn't already ended
+        if (
+          !game.correctAnswer &&
+          !game.gaveUp &&
+          game.guesses.length < game.guessesMax
+        ) {
+          analyticsService.trackGameStart(game.movie.id, game.movie.title)
+        }
 
         setPlayerGame(game)
         setPlayerStats(stats)

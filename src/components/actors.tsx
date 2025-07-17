@@ -11,6 +11,7 @@ import * as Linking from "expo-linking"
 import { actorsStyles } from "../styles/actorsStyles"
 import { Actor } from "../models/movie"
 import { Image } from "expo-image"
+import { analyticsService } from "../utils/analyticsService"
 
 type ImageSource = { uri: string } | number
 
@@ -39,6 +40,8 @@ const ActorContainer = memo(
         onActorPress(actor)
         return
       }
+
+      analyticsService.trackActorLinkTapped(actor.name)
 
       if (imdbURI) {
         Linking.canOpenURL(imdbURI)

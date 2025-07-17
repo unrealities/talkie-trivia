@@ -10,6 +10,7 @@ import { modalStyles } from "../styles/modalStyles"
 import Facts from "./facts"
 import { PlayerGame } from "../models/game"
 import { generateShareMessage } from "../utils/shareUtils"
+import { analyticsService } from "../utils/analyticsService"
 
 interface MovieModalProps {
   playerGame: PlayerGame | null
@@ -38,6 +39,15 @@ const MovieModal: React.FC<MovieModalProps> = memo(
     const handleShare = async () => {
       if (!playerGame) return
       try {
+        let outcome: "win" | "lose" | "give_up" = "lose"
+        if (playerGame.correctAnswer) {
+          outcome = "win"
+        } else if (playerGame.gaveUp) {
+          outcome = "give_up"
+        }
+
+        analyticsService.trackShareResults(outcome)
+
         const message = generateShareMessage(playerGame)
         await Share.share(
           {

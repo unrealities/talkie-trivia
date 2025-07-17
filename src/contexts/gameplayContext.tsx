@@ -1,9 +1,17 @@
-import React, { createContext, useContext, ReactNode } from "react"
+import React, {
+  createContext,
+  useContext,
+  ReactNode,
+  useState,
+  useEffect,
+  useCallback,
+} from "react"
 import {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 import { useGameData } from "./gameDataContext"
 import { useGameLogic } from "../utils/hooks/useGameLogic"
@@ -16,6 +24,9 @@ import { PlayerGame } from "../models/game"
 import Player from "../models/player"
 import PlayerStats from "../models/playerStats"
 import { StyleProp, ViewStyle } from "react-native"
+import { analyticsService } from "../utils/analyticsService"
+
+const ONBOARDING_STORAGE_KEY = "hasSeenOnboarding"
 
 interface GameplayContextState {
   // Data from other contexts
@@ -33,6 +44,7 @@ interface GameplayContextState {
   showGiveUpConfirmationDialog: boolean
   isInteractionsDisabled: boolean
   animatedModalStyles: StyleProp<ViewStyle>
+  showOnboarding: boolean
 
   // Handlers
   handleGiveUp: () => void
@@ -42,6 +54,7 @@ interface GameplayContextState {
   provideGuessFeedback: (message: string | null) => void
   setShowModal: (show: boolean) => void
   setShowConfetti: (show: boolean) => void
+  handleDismissOnboarding: () => void
 
   // Update functions
   updatePlayerGame: (game: PlayerGame) => void
@@ -66,6 +79,8 @@ export const GameplayProvider: React.FC<{ children: ReactNode }> = ({
     updatePlayerStats,
   } = useGameData()
 
+  const [showOnboarding, setShowOnboarding] = useState(false)
+
   const {
     showModal,
     setShowModal,
@@ -80,6 +95,33 @@ export const GameplayProvider: React.FC<{ children: ReactNode }> = ({
     handleConfettiStop,
     provideGuessFeedback,
   } = useGameLogic()
+
+  useEffect(() => {
+    const checkOnboardingStatus = async () => {
+      try {
+        const hasSeen = await AsyncStorage.getItem(ONBOARDING_STORAGE_KEY)
+        if (hasSeen === null) {
+          analyticsService.trackOnboardingStarted()
+          setShowOnboarding(true)
+        }
+      } catch (e) {
+        console.error("Failed to read onboarding status from storage", e)
+      }
+    }
+    checkOnboardingStatus()
+  }, [])
+
+  const handleDismissOnboarding = useCallback(async () => {
+    try {
+      analyticsService.trackOnboardingCompleted()
+      await AsyncStorage.setItem(ONBOARDING_STORAGE_KEY, "true")
+      setShowOnboarding(false)
+    } catch (e) {
+      console.error("Failed to save onboarding status to storage", e)
+      // Still hide the modal for a good user experience
+      setShowOnboarding(false)
+    }
+  }, [])
 
   const modalOpacity = useSharedValue(0)
   const animatedModalStyles = useAnimatedStyle(() => ({
@@ -101,6 +143,7 @@ export const GameplayProvider: React.FC<{ children: ReactNode }> = ({
     showGiveUpConfirmationDialog,
     isInteractionsDisabled,
     animatedModalStyles,
+    showOnboarding,
     handleGiveUp,
     cancelGiveUp,
     confirmGiveUp,
@@ -108,6 +151,7 @@ export const GameplayProvider: React.FC<{ children: ReactNode }> = ({
     provideGuessFeedback,
     setShowModal,
     setShowConfetti,
+    handleDismissOnboarding,
     updatePlayerGame,
     updatePlayerStats,
   }

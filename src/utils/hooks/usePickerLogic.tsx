@@ -9,6 +9,7 @@ import {
   withTiming,
 } from "react-native-reanimated"
 import * as Haptics from "expo-haptics"
+import { analyticsService } from "../analyticsService"
 
 if (
   Platform.OS === "android" &&
@@ -110,6 +111,13 @@ export function usePickerLogic({
 
       const newGuesses = [...(playerGame.guesses || []), selectedMovie.id]
       const isCorrectAnswer = playerGame.movie.id === selectedMovie.id
+
+      analyticsService.trackGuessMade(
+        newGuesses.length,
+        isCorrectAnswer,
+        selectedMovie.id,
+        selectedMovie.title
+      )
 
       if (isCorrectAnswer) {
         if (Platform.OS !== "web") {

@@ -16,6 +16,7 @@ import { getFirestore, doc } from "firebase/firestore"
 import { fetchOrCreatePlayer } from "../utils/firestore/playerDataServices"
 import Player from "../models/player"
 import { useGoogleAuth } from "../utils/hooks/useGoogleAuth"
+import { analyticsService } from "../utils/analyticsService"
 
 interface AuthState {
   player: Player | null
@@ -69,6 +70,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
               firebaseUser.displayName || "Guest"
             )
             setPlayer(fetchedPlayer)
+
+            // Identify user for analytics
+            if (firebaseUser.isAnonymous) {
+              analyticsService.trackAnonymousSignIn(firebaseUser.uid)
+            } else {
+              analyticsService.identifyUser(firebaseUser.uid, {
+                name: firebaseUser.displayName,
+                email: firebaseUser.email,
+              })
+            }
           } else {
             if (__DEV__) {
               console.log(

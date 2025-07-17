@@ -1,8 +1,8 @@
-require("dotenv").config()
+require("dotenv").config();
 
-const myValue = "talkie-trivia"
+const myValue = "talkie-trivia";
 
-export default ({ config }) => ({
+module.exports = ({ config }) => ({
   ...config,
   expo: {
     name: myValue,
@@ -58,4 +58,4 @@ export default ({ config }) => ({
       webClientId: process.env.CLIENTID_WEB
     },
   },
-})
+});

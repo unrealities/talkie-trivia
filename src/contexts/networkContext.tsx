@@ -6,6 +6,7 @@ import React, {
   ReactNode,
 } from "react"
 import * as Network from "expo-network"
+import { analyticsService } from "../utils/analyticsService"
 
 interface NetworkState {
   isNetworkConnected: boolean
@@ -19,20 +20,34 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
   const [isNetworkConnected, setIsNetworkConnected] = useState(true)
 
   useEffect(() => {
+    let mounted = true
+
     const checkNetwork = async () => {
       const state = await Network.getNetworkStateAsync()
-      setIsNetworkConnected(state.isInternetReachable ?? false)
+      const isConnected = state.isInternetReachable ?? false
+      if (mounted) {
+        setIsNetworkConnected(isConnected)
+        analyticsService.trackNetworkStatusChange(isConnected)
+      }
     }
 
     checkNetwork()
     const subscription = Network.addNetworkStateListener((state) => {
-      setIsNetworkConnected(state.isInternetReachable ?? false)
+      if (mounted) {
+        const isConnected = state.isInternetReachable ?? false
+        // Only track if the state actually changed
+        if (isConnected !== isNetworkConnected) {
+          setIsNetworkConnected(isConnected)
+          analyticsService.trackNetworkStatusChange(isConnected)
+        }
+      }
     })
 
     return () => {
+      mounted = false
       subscription.remove()
     }
-  }, [])
+  }, [isNetworkConnected])
 
   const value = { isNetworkConnected }
 

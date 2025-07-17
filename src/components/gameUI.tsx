@@ -14,6 +14,7 @@ import ConfettiCelebration from "./confettiCelebration"
 import ConfirmationModal from "./confirmationModal"
 import FlashMessages from "./flashMessages"
 import { useGameplay } from "../contexts/gameplayContext"
+import OnboardingModal from "./onboardingModal"
 
 const GameUI: React.FC = () => {
   const {
@@ -26,11 +27,13 @@ const GameUI: React.FC = () => {
     showGiveUpConfirmationDialog,
     isInteractionsDisabled,
     animatedModalStyles,
+    showOnboarding,
     handleGiveUp,
     cancelGiveUp,
     confirmGiveUp,
     handleConfettiStop,
     setShowModal,
+    handleDismissOnboarding,
   } = useGameplay()
 
   const onGiveUpPress = () => {
@@ -82,6 +85,10 @@ const GameUI: React.FC = () => {
             toggleModal={setShowModal}
           />
         </Animated.View>
+        <OnboardingModal
+          isVisible={showOnboarding}
+          onDismiss={handleDismissOnboarding}
+        />
         <ConfettiCelebration
           startConfetti={showConfetti}
           onConfettiStop={handleConfettiStop}

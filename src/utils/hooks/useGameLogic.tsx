@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from "react"
 import { useGameData } from "../../contexts/gameDataContext"
 import PlayerStats from "../../models/playerStats"
+import { analyticsService } from "../analyticsService"
 
 export function useGameLogic() {
   const { playerGame, playerStats, updatePlayerGame, saveGameData } =
@@ -25,6 +26,10 @@ export function useGameLogic() {
   const confirmGiveUp = useCallback(() => {
     setShowGiveUpConfirmationDialog(false)
     if (playerGame && !playerGame.correctAnswer) {
+      analyticsService.trackGameGiveUp(
+        playerGame.guesses.length,
+        Object.keys(playerGame.hintsUsed || {}).length
+      )
       const updatedPlayerGameGiveUp = {
         ...playerGame,
         gaveUp: true,
@@ -76,8 +81,18 @@ export function useGameLogic() {
               winsArray[guessCount - 1] = (winsArray[guessCount - 1] || 0) + 1
             }
             updatedStats.wins = winsArray
+
+            analyticsService.trackGameWin(
+              playerGame.guesses.length,
+              Object.keys(playerGame.hintsUsed || {}).length
+            )
           } else {
             updatedStats.currentStreak = 0
+            if (!playerGame.gaveUp) {
+              analyticsService.trackGameLose(
+                Object.keys(playerGame.hintsUsed || {}).length
+              )
+            }
           }
           const finalPlayerGame = { ...playerGame, statsProcessed: true }
           updatePlayerGame(finalPlayerGame)

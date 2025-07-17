@@ -3,6 +3,7 @@ import { LayoutAnimation, Platform, UIManager } from "react-native"
 import { PlayerGame } from "../../models/game"
 import PlayerStats from "../../models/playerStats"
 import * as Haptics from "expo-haptics"
+import { analyticsService } from "../analyticsService"
 
 if (
   Platform.OS === "android" &&
@@ -110,6 +111,11 @@ export function useHintLogic({
       }
 
       if (status === "available") {
+        analyticsService.trackHintUsed(
+          hintType,
+          playerGame.guesses.length,
+          hintsAvailable - 1
+        )
         updatePlayerGame({
           ...playerGame,
           hintsUsed: {
@@ -156,6 +162,7 @@ export function useHintLogic({
     }
 
     if (!showHintOptions) {
+      analyticsService.trackHintOptionsToggled()
       setDisplayedHintText(null)
     }
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)

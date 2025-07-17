@@ -12,6 +12,7 @@ import { Image } from "expo-image"
 import { Actors } from "./actors"
 import { Movie } from "../models/movie"
 import { factsStyles } from "../styles/factsStyles"
+import { analyticsService } from "../utils/analyticsService"
 
 type ImageSource = { uri: string } | number
 
@@ -59,6 +60,8 @@ const Facts = memo(
         return
       }
 
+      analyticsService.trackImdbLinkTapped(movie.title)
+
       Linking.canOpenURL(imdbURI)
         .then((supported) => {
           if (supported) {
@@ -77,7 +80,7 @@ const Facts = memo(
             }`
           )
         })
-    }, [imdbURI])
+    }, [imdbURI, movie.title])
 
     return (
       <View style={factsStyles.container}>

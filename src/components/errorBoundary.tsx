@@ -3,6 +3,7 @@ import { View, Text, Button, Alert } from "react-native"
 import * as Updates from "expo-updates"
 import { appStyles } from "../styles/appStyles"
 import { colors } from "../styles/global"
+import { analyticsService } from "../utils/analyticsService"
 
 interface Props {
   children: ReactNode
@@ -21,6 +22,7 @@ class ErrorBoundary extends Component<Props, State> {
 
   public static getDerivedStateFromError(error: Error): State {
     console.error("ErrorBoundary caught an error:", error)
+    analyticsService.trackErrorBoundary(error.message)
     return { hasError: true, error }
   }
 
