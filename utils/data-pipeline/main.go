@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -60,20 +61,22 @@ type TMDBCreditsResponse struct {
 	} `json:"crew"`
 }
 
+// This is the final struct we will write to our JSON and Firestore
 type Movie struct {
-	Actors      []MovieActor  `json:"actors"`
-	Director    MovieDirector `json:"director"`
-	Genres      []Genre       `json:"genres"`
-	ImdbID      string        `json:"imdb_id"`
-	ID          int           `json:"id"`
-	Overview    string        `json:"overview"`
-	Popularity  float64       `json:"popularity"`
-	PosterPath  string        `json:"poster_path"`
-	ReleaseDate string        `json:"release_date"`
-	Tagline     string        `json:"tagline"`
-	Title       string        `json:"title"`
-	VoteAverage float64       `json:"vote_average"`
-	VoteCount   int           `json:"vote_count"`
+	Actors           []MovieActor  `json:"actors"`
+	Director         MovieDirector `json:"director"`
+	Genres           []Genre       `json:"genres"`
+	ID               int           `json:"id"`
+	ImdbID           string        `json:"imdb_id"`
+	OriginalOverview string        `json:"original_overview"`
+	Overview         string        `json:"overview"`
+	Popularity       float64       `json:"popularity"`
+	PosterPath       string        `json:"poster_path"`
+	ReleaseDate      string        `json:"release_date"`
+	Tagline          string        `json:"tagline"`
+	Title            string        `json:"title"`
+	VoteAverage      float64       `json:"vote_average"`
+	VoteCount        int           `json:"vote_count"`
 }
 
 type BasicMovie struct {
@@ -100,6 +103,47 @@ type MovieDirector struct {
 	Name        string  `json:"name"`
 	Popularity  float64 `json:"popularity"`
 	ProfilePath string  `json:"profile_path"`
+}
+
+// List of common words to ignore in titles when looking for sensitive keywords
+var stopWords = map[string]bool{
+	"the": true, "a": true, "an": true, "of": true, "in": true, "and": true, "or": true,
+	"&": true, "to": true, "is": true, "on": true, "for": true, "with": true, "s": true,
+	"from": true, "by": true, "at": true, "part": true, "i": true, "ii": true, "iii": true,
+}
+
+// sanitizeOverview intelligently removes keywords from the movie title from its overview.
+func sanitizeOverview(title, overview string) string {
+	// 1. Extract significant words from the title
+	re := regexp.MustCompile(`[a-zA-Z0-9']+`)
+	titleWords := re.FindAllString(strings.ToLower(title), -1)
+
+	var sensitiveWords []string
+	for _, word := range titleWords {
+		if !stopWords[word] && len(word) > 2 {
+			sensitiveWords = append(sensitiveWords, word)
+		}
+	}
+
+	if len(sensitiveWords) == 0 {
+		return overview
+	}
+
+	sanitizedOverview := overview
+
+	// 3. Handle general cases for all other sensitive words
+	placeholder := "[the protagonist]"
+	if len(sensitiveWords) > 1 {
+		placeholder = "[a key figure]"
+	}
+
+	for _, word := range sensitiveWords {
+		// Use a case-insensitive, whole-word regex for replacement
+		regexToReplace := regexp.MustCompile(`(?i)\b` + regexp.QuoteMeta(word) + `\b`)
+		sanitizedOverview = regexToReplace.ReplaceAllString(sanitizedOverview, placeholder)
+	}
+
+	return sanitizedOverview
 }
 
 func getTMDBKey() (string, error) {
@@ -228,6 +272,8 @@ func main() {
 				continue
 			}
 
+			sanitizedOverview := sanitizeOverview(details.Title, details.Overview)
+
 			var director MovieDirector
 			for _, crew := range credits.Crew {
 				if crew.Job == "Director" {
@@ -253,19 +299,20 @@ func main() {
 			}
 
 			movie := Movie{
-				Actors:      actors,
-				Director:    director,
-				Genres:      details.Genres,
-				ID:          details.ID,
-				ImdbID:      details.ImdbID,
-				Overview:    details.Overview,
-				Popularity:  details.Popularity,
-				PosterPath:  details.PosterPath,
-				ReleaseDate: details.ReleaseDate,
-				Tagline:     details.Tagline,
-				Title:       details.Title,
-				VoteAverage: details.VoteAverage,
-				VoteCount:   details.VoteCount,
+				Actors:           actors,
+				Director:         director,
+				Genres:           details.Genres,
+				ID:               details.ID,
+				ImdbID:           details.ImdbID,
+				OriginalOverview: details.Overview,
+				Overview:         sanitizedOverview,
+				Popularity:       details.Popularity,
+				PosterPath:       details.PosterPath,
+				ReleaseDate:      details.ReleaseDate,
+				Tagline:          details.Tagline,
+				Title:            details.Title,
+				VoteAverage:      details.VoteAverage,
+				VoteCount:        details.VoteCount,
 			}
 			finalMovies = append(finalMovies, movie)
 

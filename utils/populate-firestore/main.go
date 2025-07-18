@@ -14,21 +14,21 @@ import (
 	"google.golang.org/api/option"
 )
 
-// Match the structure of popularMovies.json
 type Movie struct {
-	Actors      interface{} `json:"actors"`
-	Director    interface{} `json:"director"`
-	Genres      interface{} `json:"genres"`
-	ID          int         `json:"id"`
-	ImdbID      string      `json:"imdb_id"`
-	Overview    string      `json:"overview"`
-	Popularity  float64     `json:"popularity"`
-	PosterPath  string      `json:"poster_path"`
-	ReleaseDate string      `json:"release_date"`
-	Tagline     string      `json:"tagline"`
-	Title       string      `json:"title"`
-	VoteAverage float64     `json:"vote_average"`
-	VoteCount   int         `json:"vote_count"`
+	Actors           interface{} `json:"actors"`
+	Director         interface{} `json:"director"`
+	Genres           interface{} `json:"genres"`
+	ID               int         `json:"id"`
+	ImdbID           string      `json:"imdb_id"`
+	OriginalOverview string      `json:"original_overview"`
+	Overview         string      `json:"overview"`
+	Popularity       float64     `json:"popularity"`
+	PosterPath       string      `json:"poster_path"`
+	ReleaseDate      string      `json:"release_date"`
+	Tagline          string      `json:"tagline"`
+	Title            string      `json:"title"`
+	VoteAverage      float64     `json:"vote_average"`
+	VoteCount        int         `json:"vote_count"`
 }
 
 const (
@@ -77,7 +77,6 @@ func main() {
 		batch.Set(docRef, movie)
 
 		// Firestore batches are limited to 500 operations.
-		// We commit every 400 to be safe.
 		if (i+1)%400 == 0 || i == len(movies)-1 {
 			log.Printf("Committing batch %d...", commitCounter+1)
 			_, err := batch.Commit(ctx)
@@ -89,7 +88,7 @@ func main() {
 			// Start a new batch
 			batch = client.Batch()
 			commitCounter++
-			time.Sleep(1 * time.Second) // Be nice to the API
+			time.Sleep(1 * time.Second)
 		}
 	}
 
