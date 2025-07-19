@@ -8,7 +8,7 @@ import { useAuth } from "../../contexts/authContext"
 import { useAssets } from "../../contexts/assetsContext"
 import { GameplayProvider } from "../../contexts/gameplayContext"
 
-const MoviesContainer = lazy(() => import("../../components/movie"))
+const GameUI = lazy(() => import("../../components/gameUI"))
 
 const GameScreen = () => {
   const {
@@ -35,7 +35,7 @@ const GameScreen = () => {
           <LoadingIndicator />
         ) : (
           <GameplayProvider>
-            <MoviesContainer />
+            <GameUI />
           </GameplayProvider>
         )}
       </Suspense>
