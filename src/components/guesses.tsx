@@ -3,7 +3,7 @@ import { Text, View } from "react-native"
 import Animated from "react-native-reanimated"
 import { guessesStyles } from "../styles/guessesStyles"
 import { useSkeletonAnimation } from "../utils/hooks/useSkeletonAnimation"
-import { useGameplay } from "../contexts/gameplayContext"
+import { useGame } from "../contexts/gameContext"
 import { BasicMovie } from "../models/movie"
 
 const SkeletonRow = memo(() => {
@@ -19,7 +19,7 @@ const SkeletonRow = memo(() => {
 })
 
 const GuessesContainer = memo(() => {
-  const { isDataLoading, playerGame, movies } = useGameplay()
+  const { loading: isDataLoading, playerGame, movies } = useGame()
   const { guesses } = playerGame
 
   const getMovieTitle = (id: number | undefined) => {

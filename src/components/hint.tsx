@@ -5,7 +5,7 @@ import { useHintLogic } from "../utils/hooks/useHintLogic"
 import HintUI from "./hintUI"
 import { hintStyles } from "../styles/hintStyles"
 import { useSkeletonAnimation } from "../utils/hooks/useSkeletonAnimation"
-import { useGameplay } from "../contexts/gameplayContext"
+import { useGame } from "../contexts/gameContext"
 
 const HintSkeleton = memo(() => {
   const animatedStyle = useSkeletonAnimation()
@@ -18,14 +18,14 @@ const HintSkeleton = memo(() => {
 
 const HintContainer: React.FC = memo(() => {
   const {
-    isDataLoading,
+    loading: isDataLoading,
     playerGame,
     updatePlayerGame,
     isInteractionsDisabled,
     playerStats,
     updatePlayerStats,
     provideGuessFeedback,
-  } = useGameplay()
+  } = useGame()
 
   const hintsAvailable = playerStats?.hintsAvailable ?? 0
 

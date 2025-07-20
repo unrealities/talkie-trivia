@@ -5,7 +5,7 @@ import ErrorBoundary from "../components/errorBoundary"
 import { NetworkProvider, useNetwork } from "../contexts/networkContext"
 import { AssetsProvider } from "../contexts/assetsContext"
 import { AuthProvider } from "../contexts/authContext"
-import { GameDataProvider } from "../contexts/gameDataContext"
+import { GameProvider } from "../contexts/gameContext"
 import LoadingIndicator from "../components/loadingIndicator"
 import ErrorMessage from "../components/errorMessage"
 import { appStyles } from "../styles/appStyles"
@@ -13,7 +13,7 @@ import { appStyles } from "../styles/appStyles"
 const AppProviders = ({ children }: { children: React.ReactNode }) => (
   <AssetsProvider>
     <AuthProvider>
-      <GameDataProvider>{children}</GameDataProvider>
+      <GameProvider>{children}</GameProvider>
     </AuthProvider>
   </AssetsProvider>
 )

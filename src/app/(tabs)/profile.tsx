@@ -7,7 +7,7 @@ import { appStyles } from "../../styles/appStyles"
 const GoogleLogin = lazy(() => import("../../components/googleLogin"))
 const PlayerStatsContainer = lazy(() => import("../../components/playerStats"))
 import { useAuth } from "../../contexts/authContext"
-import { useGameData } from "../../contexts/gameDataContext"
+import { useGame } from "../../contexts/gameContext"
 
 const ProfileScreen: React.FC<{}> = () => {
   const { player, loading: authLoading, error: authError } = useAuth()
@@ -15,7 +15,7 @@ const ProfileScreen: React.FC<{}> = () => {
     playerStats,
     loading: gameDataLoading,
     error: gameDataError,
-  } = useGameData()
+  } = useGame()
 
   const isLoading = authLoading || gameDataLoading
   const error = authError || gameDataError

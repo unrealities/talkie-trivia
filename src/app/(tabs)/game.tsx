@@ -6,7 +6,7 @@ import { appStyles } from "../../styles/appStyles"
 
 import { useAuth } from "../../contexts/authContext"
 import { useAssets } from "../../contexts/assetsContext"
-import { GameplayProvider } from "../../contexts/gameplayContext"
+import { useGame } from "../../contexts/gameContext"
 
 const GameUI = lazy(() => import("../../components/gameUI"))
 
@@ -17,9 +17,10 @@ const GameScreen = () => {
     error: assetsError,
   } = useAssets()
   const { player, loading: authLoading, error: authError } = useAuth()
+  const { loading: gameLoading, error: gameError } = useGame()
 
-  const isDataLoading = assetsLoading || authLoading
-  const error = assetsError || authError
+  const isDataLoading = assetsLoading || authLoading || gameLoading
+  const error = assetsError || authError || gameError
 
   if (error) {
     return <ErrorMessage message={error} />
@@ -34,9 +35,7 @@ const GameScreen = () => {
         basicMovies.length === 0 ? (
           <LoadingIndicator />
         ) : (
-          <GameplayProvider>
-            <GameUI />
-          </GameplayProvider>
+          <GameUI />
         )}
       </Suspense>
     </View>

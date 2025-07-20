@@ -8,7 +8,7 @@ import Animated, {
 } from "react-native-reanimated"
 import { cluesStyles } from "../styles/cluesStyles"
 import { colors } from "../styles/global"
-import { useGameplay } from "../contexts/gameplayContext"
+import { useGame } from "../contexts/gameContext"
 
 const splitSummary = (summary: string, splits: number = 5): string[] => {
   if (!summary) return Array(splits).fill("")
@@ -38,7 +38,7 @@ const CountContainer = memo<CountContainerProps>(
 )
 
 const CluesContainer = memo(() => {
-  const { playerGame, isInteractionsDisabled } = useGameplay()
+  const { playerGame, isInteractionsDisabled } = useGame()
   const { correctAnswer, guesses } = playerGame
 
   const clues = useMemo(

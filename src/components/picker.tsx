@@ -7,7 +7,7 @@ import { pickerStyles } from "../styles/pickerStyles"
 import { usePickerLogic } from "../utils/hooks/usePickerLogic"
 import { PickerUI } from "./pickerUI"
 import PickerSkeleton from "./pickerSkeleton"
-import { useGameplay } from "../contexts/gameplayContext"
+import { useGame } from "../contexts/gameContext"
 
 interface MovieItemProps {
   movie: BasicMovie
@@ -50,14 +50,14 @@ const MovieItem = memo<MovieItemProps>(
 
 const PickerContainer: React.FC = memo(() => {
   const {
-    isDataLoading,
+    loading: isDataLoading,
     movies,
     playerGame,
     isInteractionsDisabled,
     updatePlayerGame,
     provideGuessFeedback,
     setShowConfetti,
-  } = useGameplay()
+  } = useGame()
 
   const {
     searchText,

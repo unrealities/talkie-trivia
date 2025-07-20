@@ -13,13 +13,13 @@ import HintContainer from "./hint"
 import ConfettiCelebration from "./confettiCelebration"
 import ConfirmationModal from "./confirmationModal"
 import FlashMessages from "./flashMessages"
-import { useGameplay } from "../contexts/gameplayContext"
+import { useGame } from "../contexts/gameContext"
+import { useNetwork } from "../contexts/networkContext"
 import OnboardingModal from "./onboardingModal"
 
 const GameUI: React.FC = () => {
   const {
-    isDataLoading,
-    isNetworkConnected,
+    loading: isDataLoading,
     playerGame,
     showModal,
     showConfetti,
@@ -34,7 +34,8 @@ const GameUI: React.FC = () => {
     handleConfettiStop,
     setShowModal,
     handleDismissOnboarding,
-  } = useGameplay()
+  } = useGame()
+  const { isNetworkConnected } = useNetwork()
 
   const onGiveUpPress = () => {
     if (Platform.OS !== "web") {
@@ -55,7 +56,7 @@ const GameUI: React.FC = () => {
       showsVerticalScrollIndicator={false}
     >
       <View style={movieStyles.container}>
-        <NetworkContainer isConnected={isNetworkConnected} />
+        <NetworkContainer isConnected={isNetworkConnected || false} />
         <CluesContainer />
         <HintContainer />
         <PickerContainer />
