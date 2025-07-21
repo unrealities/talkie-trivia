@@ -33,6 +33,7 @@ import {
 } from "../utils/firestore/playerDataServices"
 import { batchUpdatePlayerData } from "../utils/firebaseService"
 import { analyticsService } from "../utils/analyticsService"
+import { GameHistoryEntry } from "../models/gameHistory" // ADDED
 
 const ONBOARDING_STORAGE_KEY = "hasSeenOnboarding"
 
@@ -73,20 +74,15 @@ interface GameContextState {
 
 const GameContext = createContext<GameContextState | undefined>(undefined)
 
-export const GameProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+const useGameController = (): GameContextState => {
   const { player, loading: authLoading } = useAuth()
   const { movieForToday, basicMovies, loading: assetsLoading } = useAssets()
 
-  // --- Data State ---
   const [playerGame, setPlayerGame] = useState<PlayerGame>(defaultPlayerGame)
   const [playerStats, setPlayerStats] =
     useState<PlayerStats>(defaultPlayerStats)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-
-  // --- UI State ---
   const [showModal, setShowModal] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
   const [guessFeedback, setGuessFeedback] = useState<string | null>(null)
@@ -100,26 +96,35 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({
 
   const isInteractionsDisabled =
     loading ||
+    authLoading ||
+    assetsLoading ||
     playerGame.correctAnswer ||
     playerGame.gaveUp ||
     playerGame.guesses.length >= playerGame.guessesMax
 
-  // --- Data Fetching and Persistence ---
-  const saveGameData = useCallback(async () => {
-    if (!player) {
-      console.error("GameContext: Cannot save data, player is not available.")
-      return
-    }
-    try {
-      await batchUpdatePlayerData(playerStats, playerGame, player.id)
-      if (__DEV__) {
-        console.log("GameContext: Game data saved successfully.")
+  const saveGameData = useCallback(
+    async (historyEntry: GameHistoryEntry | null = null) => {
+      if (!player) {
+        console.error("GameContext: Cannot save data, player is not available.")
+        return
       }
-    } catch (e: any) {
-      console.error("GameContext: Failed to save game data", e)
-      setError(`Failed to save progress: ${e.message}`)
-    }
-  }, [player, playerGame, playerStats])
+      try {
+        await batchUpdatePlayerData(
+          playerStats,
+          playerGame,
+          player.id,
+          historyEntry
+        ) // MODIFIED
+        if (__DEV__) {
+          console.log("GameContext: Game data saved successfully.")
+        }
+      } catch (e: any) {
+        console.error("GameContext: Failed to save game data", e)
+        setError(`Failed to save progress: ${e.message}`)
+      }
+    },
+    [player, playerGame, playerStats]
+  )
 
   useEffect(() => {
     const initializeData = async () => {
@@ -204,7 +209,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({
     }
   }, [])
 
-  // Effect to process game state changes (win/loss/give up)
   useEffect(() => {
     const processGameState = async () => {
       if (playerGame.id === "") return
@@ -215,6 +219,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({
         playerGame.guesses.length >= playerGame.guessesMax
 
       if (isGameOverNow) {
+        let historyEntry: GameHistoryEntry | null = null // ADDED
+
         if (!playerGame.statsProcessed) {
           const updatedStats: PlayerStats = { ...playerStats }
           updatedStats.games = (updatedStats.games || 0) + 1
@@ -244,22 +250,32 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({
             }
           }
 
+          historyEntry = new GameHistoryEntry(
+            generateDateId(playerGame.startDate),
+            playerGame.movie.id,
+            playerGame.movie.title,
+            playerGame.movie.poster_path,
+            playerGame.correctAnswer,
+            playerGame.gaveUp,
+            playerGame.guesses.length,
+            playerGame.guessesMax
+          )
+
           const finalPlayerGame = { ...playerGame, statsProcessed: true }
           setPlayerGame(finalPlayerGame)
           setPlayerStats(updatedStats)
 
-          await saveGameData()
+          await saveGameData(historyEntry)
         }
         setShowModal(true)
       } else {
-        await saveGameData()
+        await saveGameData(null)
       }
     }
 
     processGameState()
   }, [playerGame.correctAnswer, playerGame.gaveUp, playerGame.guesses.length])
 
-  // --- Onboarding Logic ---
   useEffect(() => {
     const checkOnboardingStatus = async () => {
       try {
@@ -286,8 +302,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({
     }
   }, [])
 
-  // --- Context Value ---
-  const value: GameContextState = {
+  return {
     playerGame,
     playerStats,
     loading: loading || authLoading || assetsLoading,
@@ -312,8 +327,18 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({
     movies: basicMovies,
     player,
   }
+}
 
-  return <GameContext.Provider value={value}>{children}</GameContext.Provider>
+export const GameProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const gameControllerState = useGameController()
+
+  return (
+    <GameContext.Provider value={gameControllerState}>
+      {children}
+    </GameContext.Provider>
+  )
 }
 
 export const useGame = () => {

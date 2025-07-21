@@ -49,7 +49,7 @@ const Facts = memo(
       : null
 
     const imageSource: ImageSource = movie.poster_path
-      ? { uri: `https://image.tmdb.org/t/p/original${movie.poster_path}` }
+      ? { uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}` }
       : defaultMovieImage
 
     const placeholderSource: ImageSource = defaultMovieImage

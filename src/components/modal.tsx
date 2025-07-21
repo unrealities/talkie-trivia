@@ -11,6 +11,7 @@ import Facts from "./facts"
 import { PlayerGame } from "../models/game"
 import { generateShareMessage } from "../utils/shareUtils"
 import { analyticsService } from "../utils/analyticsService"
+import { hapticsService } from "../utils/hapticsService"
 
 interface MovieModalProps {
   playerGame: PlayerGame | null
@@ -38,6 +39,7 @@ const MovieModal: React.FC<MovieModalProps> = memo(
 
     const handleShare = async () => {
       if (!playerGame) return
+      hapticsService.medium()
       try {
         let outcome: "win" | "lose" | "give_up" = "lose"
         if (playerGame.correctAnswer) {
@@ -63,6 +65,11 @@ const MovieModal: React.FC<MovieModalProps> = memo(
       }
     }
 
+    const handleClose = () => {
+      hapticsService.light()
+      toggleModal(false)
+    }
+
     const renderContent = () => {
       if (!playerGame) {
         return null
@@ -74,10 +81,7 @@ const MovieModal: React.FC<MovieModalProps> = memo(
         >
           <Facts movie={playerGame.movie} />
           <View style={modalStyles.buttonContainer}>
-            <Pressable
-              style={modalStyles.button}
-              onPress={() => toggleModal(false)}
-            >
+            <Pressable style={modalStyles.button} onPress={handleClose}>
               <Text style={modalStyles.buttonText}>Close</Text>
             </Pressable>
             <Pressable style={modalStyles.shareButton} onPress={handleShare}>
@@ -93,13 +97,13 @@ const MovieModal: React.FC<MovieModalProps> = memo(
         animationType="none"
         transparent={true}
         visible={show}
-        onRequestClose={() => toggleModal(false)}
+        onRequestClose={handleClose}
         hardwareAccelerated
         statusBarTranslucent
       >
         <Pressable
           style={modalStyles.centeredView}
-          onPress={() => toggleModal(false)}
+          onPress={handleClose}
           accessible={true}
           accessibilityLabel="Close modal by tapping outside"
         >

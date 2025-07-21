@@ -3,6 +3,7 @@ import { Pressable, Text, View, ActivityIndicator } from "react-native"
 import { googleLoginStyles } from "../styles/googleLoginStyles"
 import { useAuth } from "../contexts/authContext"
 import ErrorMessage from "./errorMessage"
+import { hapticsService } from "../utils/hapticsService"
 
 const GoogleLogin: React.FC = memo(() => {
   const { player, user, handleSignIn, handleSignOut, isSigningIn, error } =
@@ -20,13 +21,21 @@ const GoogleLogin: React.FC = memo(() => {
   const accessibilityHint = isSignedIn
     ? "Signs you out of the game"
     : "Signs you in with your Google account"
-  const onPressAction = isSignedIn ? handleSignOut : handleSignIn
+
+  const handlePress = () => {
+    hapticsService.medium()
+    if (isSignedIn) {
+      handleSignOut()
+    } else {
+      handleSignIn()
+    }
+  }
 
   return (
     <View style={googleLoginStyles.container}>
       <Pressable
         testID="googleButton"
-        onPress={onPressAction}
+        onPress={handlePress}
         style={({ pressed }) => [
           googleLoginStyles.button,
           { opacity: pressed || isSigningIn ? 0.7 : 1 },

@@ -3,6 +3,7 @@ import { Modal, Pressable, Text, View } from "react-native"
 import { onboardingModalStyles as styles } from "../styles/onboardingModalStyles"
 import Icon from "react-native-vector-icons/FontAwesome"
 import { colors } from "../styles/global"
+import { hapticsService } from "../utils/hapticsService"
 
 interface OnboardingModalProps {
   isVisible: boolean
@@ -30,12 +31,17 @@ const tutorialSteps = [
 
 const OnboardingModal: React.FC<OnboardingModalProps> = memo(
   ({ isVisible, onDismiss }) => {
+    const handleDismiss = () => {
+      hapticsService.medium()
+      onDismiss()
+    }
+
     return (
       <Modal
         animationType="fade"
         transparent={true}
         visible={isVisible}
-        onRequestClose={onDismiss}
+        onRequestClose={handleDismiss}
       >
         <View style={styles.centeredView} testID="onboarding-modal-container">
           <View style={styles.modalView}>
@@ -58,7 +64,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = memo(
 
             <Pressable
               style={styles.button}
-              onPress={onDismiss}
+              onPress={handleDismiss}
               accessibilityLabel="Got it, let's play"
               accessibilityRole="button"
             >

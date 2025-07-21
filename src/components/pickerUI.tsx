@@ -132,6 +132,9 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
                 keyExtractor={(item) => item.id.toString()}
                 style={pickerStyles.resultsShow}
                 keyboardShouldPersistTaps="handled"
+                initialNumToRender={10}
+                maxToRenderPerBatch={10}
+                windowSize={11}
                 ListEmptyComponent={null}
               />
             ) : searchText.length > 0 ? (

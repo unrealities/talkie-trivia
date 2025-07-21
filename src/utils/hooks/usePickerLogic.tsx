@@ -8,8 +8,8 @@ import {
   withRepeat,
   withTiming,
 } from "react-native-reanimated"
-import * as Haptics from "expo-haptics"
 import { analyticsService } from "../analyticsService"
+import { hapticsService } from "../hapticsService"
 
 if (
   Platform.OS === "android" &&
@@ -91,9 +91,7 @@ export function usePickerLogic({
         setSelectedMovie(movie)
         setSearchText("")
         setFoundMovies([])
-        if (Platform.OS !== "web") {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-        }
+        hapticsService.light()
       }
     },
     [isInteractionsDisabled]
@@ -105,9 +103,7 @@ export function usePickerLogic({
 
   const onPressCheck = useCallback(() => {
     if (!isInteractionsDisabled && selectedMovie && playerGame.movie?.id) {
-      if (Platform.OS !== "web") {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
-      }
+      hapticsService.medium()
 
       const newGuesses = [...(playerGame.guesses || []), selectedMovie.id]
       const isCorrectAnswer = playerGame.movie.id === selectedMovie.id
@@ -120,15 +116,11 @@ export function usePickerLogic({
       )
 
       if (isCorrectAnswer) {
-        if (Platform.OS !== "web") {
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-        }
+        hapticsService.success()
         onGuessFeedback("Correct Guess!")
         setShowConfetti?.(true)
       } else {
-        if (Platform.OS !== "web") {
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
-        }
+        hapticsService.error()
         onGuessFeedback("Incorrect Guess")
         triggerShake()
       }

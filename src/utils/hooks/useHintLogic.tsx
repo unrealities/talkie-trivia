@@ -2,8 +2,8 @@ import { useState, useCallback, useEffect, useMemo } from "react"
 import { LayoutAnimation, Platform, UIManager } from "react-native"
 import { PlayerGame } from "../../models/game"
 import PlayerStats from "../../models/playerStats"
-import * as Haptics from "expo-haptics"
 import { analyticsService } from "../analyticsService"
+import { hapticsService } from "../hapticsService" // CHANGED
 
 if (
   Platform.OS === "android" &&
@@ -97,9 +97,7 @@ export function useHintLogic({
 
   const handleHintSelection = useCallback(
     (hintType: HintType) => {
-      if (Platform.OS !== "web") {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
-      }
+      hapticsService.medium() // CHANGED
 
       const status = hintStatuses[hintType]
       setShowHintOptions(false)
@@ -149,9 +147,7 @@ export function useHintLogic({
   }, [playerGame.guesses.length])
 
   const handleToggleHintOptions = useCallback(() => {
-    if (Platform.OS !== "web") {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-    }
+    hapticsService.light() // CHANGED
 
     if (
       hintsAvailable <= 0 &&

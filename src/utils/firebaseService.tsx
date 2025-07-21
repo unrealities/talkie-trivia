@@ -2,14 +2,17 @@ import { doc, writeBatch } from "firebase/firestore"
 import { db } from "../config/firebase"
 import { playerStatsConverter } from "./firestore/converters/playerStats"
 import { playerGameConverter } from "./firestore/converters/playerGame"
+import { gameHistoryEntryConverter } from "./firestore/converters/gameHistoryEntry"
 import PlayerStats from "../models/playerStats"
 import { PlayerGame } from "../models/game"
 import Player from "../models/player"
+import { GameHistoryEntry } from "../models/gameHistory"
 
 export const batchUpdatePlayerData = async (
   playerStats: PlayerStats,
   playerGame: PlayerGame,
   playerId: string,
+  gameHistoryEntry: GameHistoryEntry | null = null, // ADDED
   playerUpdate: Partial<Player> | null = null
 ): Promise<{ success: boolean }> => {
   if (__DEV__) {
@@ -17,6 +20,7 @@ export const batchUpdatePlayerData = async (
       playerStats,
       playerGame,
       playerId,
+      gameHistoryEntry, // ADDED
       playerUpdate,
     })
   }
@@ -42,6 +46,15 @@ export const batchUpdatePlayerData = async (
       playerGameConverter
     )
     batch.set(gameDocRef, playerGame, { merge: true })
+  }
+
+  if (gameHistoryEntry) {
+    const historyDocRef = doc(
+      db,
+      `players/${playerId}/gameHistory`,
+      gameHistoryEntry.dateId
+    ).withConverter(gameHistoryEntryConverter)
+    batch.set(historyDocRef, gameHistoryEntry)
   }
 
   if (playerUpdate && Object.keys(playerUpdate).length > 0) {

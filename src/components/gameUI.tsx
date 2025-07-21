@@ -1,7 +1,6 @@
 import React from "react"
-import { View, Pressable, Text, ScrollView, Platform } from "react-native"
+import { View, Pressable, Text, ScrollView } from "react-native"
 import Animated from "react-native-reanimated"
-import * as Haptics from "expo-haptics"
 
 import CluesContainer from "./clues"
 import GuessesContainer from "./guesses"
@@ -16,6 +15,7 @@ import FlashMessages from "./flashMessages"
 import { useGame } from "../contexts/gameContext"
 import { useNetwork } from "../contexts/networkContext"
 import OnboardingModal from "./onboardingModal"
+import { hapticsService } from "../utils/hapticsService"
 
 const GameUI: React.FC = () => {
   const {
@@ -38,9 +38,7 @@ const GameUI: React.FC = () => {
   const { isNetworkConnected } = useNetwork()
 
   const onGiveUpPress = () => {
-    if (Platform.OS !== "web") {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
-    }
+    hapticsService.warning()
     handleGiveUp()
   }
 

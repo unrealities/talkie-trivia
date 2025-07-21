@@ -32,7 +32,7 @@ const defaultActorImage = require("../../assets/actor_default.png")
 
 const ActorContainer = memo(
   ({ actor, imdbId, style, onActorPress }: ActorProps) => {
-    const imageURI = "https://image.tmdb.org/t/p/original"
+    const imageURI = "https://image.tmdb.org/t/p/w185"
     const imdbURI = imdbId ? `https://www.imdb.com/name/${imdbId}` : null
 
     const handlePress = useCallback(() => {
