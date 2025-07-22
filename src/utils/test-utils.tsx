@@ -1,20 +1,17 @@
 import React, { ReactElement } from "react"
 import { render, RenderOptions } from "@testing-library/react-native"
 import { NetworkProvider } from "../contexts/networkContext"
-import { AssetsProvider } from "../contexts/assetsContext"
 import { AuthProvider } from "../contexts/authContext"
-import { GameDataProvider } from "../contexts/gameDataContext"
+import { GameProvider } from "../contexts/gameContext"
 
 const AllTheProviders: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   return (
     <NetworkProvider>
-      <AssetsProvider>
-        <AuthProvider>
-          <GameDataProvider>{children}</GameDataProvider>
-        </AuthProvider>
-      </AssetsProvider>
+      <AuthProvider>
+        <GameProvider>{children}</GameProvider>
+      </AuthProvider>
     </NetworkProvider>
   )
 }

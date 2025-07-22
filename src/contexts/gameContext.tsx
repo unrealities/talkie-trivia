@@ -7,6 +7,7 @@ import React, {
   useCallback,
   StyleProp,
   ViewStyle,
+  useMemo,
 } from "react"
 import {
   useSharedValue,
@@ -15,13 +16,14 @@ import {
 } from "react-native-reanimated"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { getFirestore } from "firebase/firestore"
+import { Movie, BasicMovie } from "../models/movie"
+import popularMoviesData from "../../data/popularMovies.json"
+import basicMoviesData from "../../data/basicMovies.json"
 
 import { useAuth } from "./authContext"
-import { useAssets } from "./assetsContext"
 import { PlayerGame } from "../models/game"
 import PlayerStats from "../models/playerStats"
 import Player from "../models/player"
-import { BasicMovie } from "../models/movie"
 import {
   defaultPlayerGame,
   defaultPlayerStats,
@@ -33,7 +35,7 @@ import {
 } from "../utils/firestore/playerDataServices"
 import { batchUpdatePlayerData } from "../utils/firebaseService"
 import { analyticsService } from "../utils/analyticsService"
-import { GameHistoryEntry } from "../models/gameHistory" // ADDED
+import { GameHistoryEntry } from "../models/gameHistory"
 
 const ONBOARDING_STORAGE_KEY = "hasSeenOnboarding"
 
@@ -43,20 +45,18 @@ interface GameContextState {
   playerStats: PlayerStats
   loading: boolean
   error: string | null
+  movies: readonly Movie[]
+  basicMovies: readonly BasicMovie[]
 
   // UI state
   showModal: boolean
   showConfetti: boolean
   guessFeedback: string | null
-  showGiveUpConfirmationDialog: boolean
   isInteractionsDisabled: boolean
   animatedModalStyles: StyleProp<ViewStyle>
   showOnboarding: boolean
 
   // Handlers
-  handleGiveUp: () => void
-  cancelGiveUp: () => void
-  confirmGiveUp: () => void
   handleConfettiStop: () => void
   provideGuessFeedback: (message: string | null) => void
   setShowModal: (show: boolean) => void
@@ -68,7 +68,6 @@ interface GameContextState {
   updatePlayerStats: (stats: PlayerStats) => void
 
   // Convenience accessors
-  movies: readonly BasicMovie[]
   player: Player | null
 }
 
@@ -76,19 +75,21 @@ const GameContext = createContext<GameContextState | undefined>(undefined)
 
 const useGameController = (): GameContextState => {
   const { player, loading: authLoading } = useAuth()
-  const { movieForToday, basicMovies, loading: assetsLoading } = useAssets()
-
+  const [movies, setMovies] = useState<readonly Movie[]>([])
+  const [basicMovies, setBasicMovies] = useState<readonly BasicMovie[]>([])
+  const [assetsLoading, setAssetsLoading] = useState(true)
+  const [assetsError, setAssetsError] = useState<string | null>(null)
   const [playerGame, setPlayerGame] = useState<PlayerGame>(defaultPlayerGame)
   const [playerStats, setPlayerStats] =
     useState<PlayerStats>(defaultPlayerStats)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [gameDataLoading, setGameDataLoading] = useState(true)
+  const [gameDataError, setGameDataError] = useState<string | null>(null)
   const [showModal, setShowModal] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
   const [guessFeedback, setGuessFeedback] = useState<string | null>(null)
-  const [showGiveUpConfirmationDialog, setShowGiveUpConfirmationDialog] =
-    useState(false)
   const [showOnboarding, setShowOnboarding] = useState(false)
+  const loading = assetsLoading || authLoading || gameDataLoading
+  const error = assetsError || gameDataError
 
   const animatedModalStyles = useAnimatedStyle(() => ({
     opacity: withTiming(showModal ? 1 : 0, { duration: 300 }),
@@ -96,11 +97,48 @@ const useGameController = (): GameContextState => {
 
   const isInteractionsDisabled =
     loading ||
-    authLoading ||
-    assetsLoading ||
     playerGame.correctAnswer ||
     playerGame.gaveUp ||
     playerGame.guesses.length >= playerGame.guessesMax
+
+  useEffect(() => {
+    try {
+      if (__DEV__) console.log("GameContext: Loading static movie data...")
+      if (!popularMoviesData || popularMoviesData.length === 0)
+        throw new Error("Invalid or empty popular movies data.")
+      if (!basicMoviesData || basicMoviesData.length === 0)
+        throw new Error("Invalid or empty basic movies data.")
+
+      setMovies(popularMoviesData as Movie[])
+      setBasicMovies(basicMoviesData as BasicMovie[])
+      if (__DEV__)
+        console.log("GameContext: Static movie data loaded successfully.")
+    } catch (e: any) {
+      console.error("GameContext: Error loading movie data:", e)
+      setAssetsError(e.message)
+    } finally {
+      setAssetsLoading(false)
+    }
+  }, [])
+
+  const movieForToday = useMemo(() => {
+    if (movies.length === 0) return null
+    const today = new Date()
+    const start = new Date(today.getFullYear(), 0, 0)
+    const diff = (today as any) - (start as any)
+    const oneDay = 1000 * 60 * 60 * 24
+    const dayOfYear = Math.floor(diff / oneDay)
+
+    const todayMovieIndex = dayOfYear % movies.length
+    const movie = movies[todayMovieIndex]
+
+    if (!movie || !movie.id || !movie.overview) {
+      console.error("GameContext: Invalid movie for today selected.")
+      setAssetsError("Could not determine a valid movie for today.")
+      return null
+    }
+    return movie
+  }, [movies])
 
   const saveGameData = useCallback(
     async (historyEntry: GameHistoryEntry | null = null) => {
@@ -114,13 +152,11 @@ const useGameController = (): GameContextState => {
           playerGame,
           player.id,
           historyEntry
-        ) // MODIFIED
-        if (__DEV__) {
-          console.log("GameContext: Game data saved successfully.")
-        }
+        )
+        if (__DEV__) console.log("GameContext: Game data saved successfully.")
       } catch (e: any) {
         console.error("GameContext: Failed to save game data", e)
-        setError(`Failed to save progress: ${e.message}`)
+        setGameDataError(`Failed to save progress: ${e.message}`)
       }
     },
     [player, playerGame, playerStats]
@@ -132,8 +168,8 @@ const useGameController = (): GameContextState => {
         return
       }
 
-      setLoading(true)
-      setError(null)
+      setGameDataLoading(true)
+      setGameDataError(null)
 
       try {
         if (__DEV__)
@@ -161,9 +197,9 @@ const useGameController = (): GameContextState => {
           console.log("GameContext: Player game data initialized successfully.")
       } catch (e: any) {
         console.error("GameContext: Error initializing data:", e)
-        setError(`Failed to load game data: ${e.message}`)
+        setGameDataError(`Failed to load game data: ${e.message}`)
       } finally {
-        setLoading(false)
+        setGameDataLoading(false)
       }
     }
     initializeData()
@@ -175,27 +211,6 @@ const useGameController = (): GameContextState => {
 
   const updatePlayerStats = useCallback((newPlayerStats: PlayerStats) => {
     setPlayerStats(newPlayerStats)
-  }, [])
-
-  // --- Game Logic ---
-  const cancelGiveUp = useCallback(() => {
-    setShowGiveUpConfirmationDialog(false)
-  }, [])
-
-  const confirmGiveUp = useCallback(() => {
-    setShowGiveUpConfirmationDialog(false)
-    if (playerGame && !playerGame.correctAnswer) {
-      analyticsService.trackGameGiveUp(
-        playerGame.guesses.length,
-        Object.keys(playerGame.hintsUsed || {}).length
-      )
-      const updatedPlayerGameGiveUp = { ...playerGame, gaveUp: true }
-      updatePlayerGame(updatedPlayerGameGiveUp)
-    }
-  }, [playerGame, updatePlayerGame])
-
-  const handleGiveUp = useCallback(() => {
-    setShowGiveUpConfirmationDialog(true)
   }, [])
 
   const handleConfettiStop = useCallback(() => {
@@ -219,7 +234,7 @@ const useGameController = (): GameContextState => {
         playerGame.guesses.length >= playerGame.guessesMax
 
       if (isGameOverNow) {
-        let historyEntry: GameHistoryEntry | null = null // ADDED
+        let historyEntry: GameHistoryEntry | null = null
 
         if (!playerGame.statsProcessed) {
           const updatedStats: PlayerStats = { ...playerStats }
@@ -305,18 +320,16 @@ const useGameController = (): GameContextState => {
   return {
     playerGame,
     playerStats,
-    loading: loading || authLoading || assetsLoading,
+    loading,
     error,
+    movies,
+    basicMovies,
     showModal,
     showConfetti,
     guessFeedback,
-    showGiveUpConfirmationDialog,
     isInteractionsDisabled,
     animatedModalStyles,
     showOnboarding,
-    handleGiveUp,
-    cancelGiveUp,
-    confirmGiveUp,
     handleConfettiStop,
     provideGuessFeedback,
     setShowModal,
@@ -324,7 +337,6 @@ const useGameController = (): GameContextState => {
     handleDismissOnboarding,
     updatePlayerGame,
     updatePlayerStats,
-    movies: basicMovies,
     player,
   }
 }
@@ -333,7 +345,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const gameControllerState = useGameController()
-
   return (
     <GameContext.Provider value={gameControllerState}>
       {children}

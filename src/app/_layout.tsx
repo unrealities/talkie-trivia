@@ -3,7 +3,6 @@ import { Slot } from "expo-router"
 import { View } from "react-native"
 import ErrorBoundary from "../components/errorBoundary"
 import { NetworkProvider, useNetwork } from "../contexts/networkContext"
-import { AssetsProvider } from "../contexts/assetsContext"
 import { AuthProvider } from "../contexts/authContext"
 import { GameProvider } from "../contexts/gameContext"
 import LoadingIndicator from "../components/loadingIndicator"
@@ -11,11 +10,9 @@ import ErrorMessage from "../components/errorMessage"
 import { appStyles } from "../styles/appStyles"
 
 const AppProviders = ({ children }: { children: React.ReactNode }) => (
-  <AssetsProvider>
-    <AuthProvider>
-      <GameProvider>{children}</GameProvider>
-    </AuthProvider>
-  </AssetsProvider>
+  <AuthProvider>
+    <GameProvider>{children}</GameProvider>
+  </AuthProvider>
 )
 
 const AppInitializer = () => {
@@ -23,16 +20,13 @@ const AppInitializer = () => {
   const [retryKey, setRetryKey] = useState(0)
 
   const handleRetry = useCallback(() => {
-    // Incrementing the key will force a re-mount of AppProviders
     setRetryKey((prevKey) => prevKey + 1)
   }, [])
 
-  // While the initial network state is being determined, show a loader.
   if (isNetworkConnected === null) {
     return <LoadingIndicator />
   }
 
-  // If the initial check finds we are offline, show a retry screen.
   if (!isNetworkConnected) {
     return (
       <View style={appStyles.container}>
@@ -44,16 +38,17 @@ const AppInitializer = () => {
     )
   }
 
-  // If online, render the app providers. The key ensures a full reset on retry.
-  return <AppProviders key={retryKey}>{<Slot />}</AppProviders>
+  return (
+    <NetworkProvider>
+      <AppProviders key={retryKey}>{<Slot />}</AppProviders>
+    </NetworkProvider>
+  )
 }
 
 export default function RootLayout() {
   return (
     <ErrorBoundary>
-      <NetworkProvider>
-        <AppInitializer />
-      </NetworkProvider>
+      <AppInitializer />
     </ErrorBoundary>
   )
 }

@@ -3,7 +3,7 @@ import { LayoutAnimation, Platform, UIManager } from "react-native"
 import { PlayerGame } from "../../models/game"
 import PlayerStats from "../../models/playerStats"
 import { analyticsService } from "../analyticsService"
-import { hapticsService } from "../hapticsService" // CHANGED
+import { hapticsService } from "../hapticsService" 
 
 if (
   Platform.OS === "android" &&
@@ -97,7 +97,7 @@ export function useHintLogic({
 
   const handleHintSelection = useCallback(
     (hintType: HintType) => {
-      hapticsService.medium() // CHANGED
+      hapticsService.medium()
 
       const status = hintStatuses[hintType]
       setShowHintOptions(false)
@@ -147,7 +147,7 @@ export function useHintLogic({
   }, [playerGame.guesses.length])
 
   const handleToggleHintOptions = useCallback(() => {
-    hapticsService.light() // CHANGED
+    hapticsService.light()
 
     if (
       hintsAvailable <= 0 &&

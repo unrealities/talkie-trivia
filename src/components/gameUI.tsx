@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState, useCallback } from "react"
 import { View, Pressable, Text, ScrollView } from "react-native"
 import Animated from "react-native-reanimated"
 
@@ -16,31 +16,47 @@ import { useGame } from "../contexts/gameContext"
 import { useNetwork } from "../contexts/networkContext"
 import OnboardingModal from "./onboardingModal"
 import { hapticsService } from "../utils/hapticsService"
+import { analyticsService } from "../utils/analyticsService"
 
 const GameUI: React.FC = () => {
   const {
     loading: isDataLoading,
     playerGame,
+    updatePlayerGame,
     showModal,
     showConfetti,
     guessFeedback,
-    showGiveUpConfirmationDialog,
     isInteractionsDisabled,
     animatedModalStyles,
     showOnboarding,
-    handleGiveUp,
-    cancelGiveUp,
-    confirmGiveUp,
     handleConfettiStop,
     setShowModal,
     handleDismissOnboarding,
   } = useGame()
   const { isNetworkConnected } = useNetwork()
 
-  const onGiveUpPress = () => {
+  const [showGiveUpConfirmation, setShowGiveUpConfirmation] = useState(false)
+
+  const handleGiveUpPress = useCallback(() => {
     hapticsService.warning()
-    handleGiveUp()
-  }
+    setShowGiveUpConfirmation(true)
+  }, [])
+
+  const cancelGiveUp = useCallback(() => {
+    setShowGiveUpConfirmation(false)
+  }, [])
+
+  const confirmGiveUp = useCallback(() => {
+    setShowGiveUpConfirmation(false)
+    if (playerGame && !playerGame.correctAnswer) {
+      analyticsService.trackGameGiveUp(
+        playerGame.guesses.length,
+        Object.keys(playerGame.hintsUsed || {}).length
+      )
+      const updatedPlayerGameGiveUp = { ...playerGame, gaveUp: true }
+      updatePlayerGame(updatedPlayerGameGiveUp)
+    }
+  }, [playerGame, updatePlayerGame])
 
   const isGameOver =
     playerGame.correctAnswer ||
@@ -61,7 +77,7 @@ const GameUI: React.FC = () => {
         <GuessesContainer />
 
         <Pressable
-          onPress={onGiveUpPress}
+          onPress={handleGiveUpPress}
           style={({ pressed }) => [
             movieStyles.giveUpButton,
             (isInteractionsDisabled || isDataLoading) &&
@@ -93,7 +109,7 @@ const GameUI: React.FC = () => {
           onConfettiStop={handleConfettiStop}
         />
         <ConfirmationModal
-          isVisible={showGiveUpConfirmationDialog}
+          isVisible={showGiveUpConfirmation}
           title="Give Up?"
           message="Are you sure you want to give up?"
           confirmText="Give Up"
