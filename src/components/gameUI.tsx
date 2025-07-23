@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react"
+import React, { useState, useCallback, useEffect } from "react"
 import { View, Pressable, Text, ScrollView } from "react-native"
 import Animated from "react-native-reanimated"
 
@@ -25,7 +25,6 @@ const GameUI: React.FC = () => {
     updatePlayerGame,
     showModal,
     showConfetti,
-    guessFeedback,
     isInteractionsDisabled,
     animatedModalStyles,
     showOnboarding,
@@ -35,7 +34,21 @@ const GameUI: React.FC = () => {
   } = useGame()
   const { isNetworkConnected } = useNetwork()
 
+  const [guessFeedback, setGuessFeedback] = useState<string | null>(null)
   const [showGiveUpConfirmation, setShowGiveUpConfirmation] = useState(false)
+
+  const provideGuessFeedback = useCallback((message: string | null) => {
+    setGuessFeedback(message)
+  }, [])
+
+  useEffect(() => {
+    if (guessFeedback) {
+      const timer = setTimeout(() => {
+        setGuessFeedback(null)
+      }, 2000)
+      return () => clearTimeout(timer)
+    }
+  }, [guessFeedback])
 
   const handleGiveUpPress = useCallback(() => {
     hapticsService.warning()
@@ -72,8 +85,8 @@ const GameUI: React.FC = () => {
       <View style={movieStyles.container}>
         <NetworkContainer isConnected={isNetworkConnected || false} />
         <CluesContainer />
-        <HintContainer />
-        <PickerContainer />
+        <HintContainer provideGuessFeedback={provideGuessFeedback} />
+        <PickerContainer provideGuessFeedback={provideGuessFeedback} />
         <GuessesContainer />
 
         <Pressable

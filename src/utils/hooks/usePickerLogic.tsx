@@ -27,6 +27,12 @@ interface UsePickerLogicProps {
   setShowConfetti?: (show: boolean) => void
 }
 
+type PickerState =
+  | { status: "idle" }
+  | { status: "searching"; query: string }
+  | { status: "results"; query: string; results: readonly BasicMovie[] }
+  | { status: "selected"; movie: BasicMovie }
+
 export function usePickerLogic({
   movies,
   playerGame,
@@ -35,13 +41,9 @@ export function usePickerLogic({
   onGuessFeedback,
   setShowConfetti,
 }: UsePickerLogicProps) {
-  const [isFocused, setIsFocused] = useState(false)
-  const [isSearching, setIsSearching] = useState(false)
-  const [foundMovies, setFoundMovies] = useState<BasicMovie[]>([])
-  const [selectedMovie, setSelectedMovie] = useState<BasicMovie | null>(null)
-  const [searchText, setSearchText] = useState<string>("")
-
-  const buttonScale = useSharedValue(1)
+  const [pickerState, setPickerState] = useState<PickerState>({
+    status: "idle",
+  })
   const shakeAnimation = useSharedValue(0)
 
   const triggerShake = () => {
@@ -55,117 +57,111 @@ export function usePickerLogic({
   const filterMovies = useCallback(
     (searchTerm: string) => {
       const trimmedTerm = searchTerm.trim().toLowerCase()
-      if (trimmedTerm === "") {
-        return []
-      }
-
-      return Array.from(movies).filter((movie) =>
+      if (trimmedTerm === "") return []
+      return movies.filter((movie) =>
         movie.title.toLowerCase().includes(trimmedTerm)
       )
     },
     [movies]
   )
 
-  const handleInputChange = useCallback((text: string) => {
-    setSearchText(text)
-    setIsSearching(true)
-  }, [])
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      if (searchText) {
-        const filtered = filterMovies(searchText)
-        setFoundMovies(filtered)
+  const handleInputChange = useCallback(
+    (text: string) => {
+      if (isInteractionsDisabled) return
+      if (text === "") {
+        setPickerState({ status: "idle" })
       } else {
-        setFoundMovies([])
-      }
-      setIsSearching(false)
-    }, 300)
-
-    return () => clearTimeout(handler)
-  }, [searchText, filterMovies])
-
-  const handleMovieSelection = useCallback(
-    (movie: BasicMovie) => {
-      if (!isInteractionsDisabled) {
-        setSelectedMovie(movie)
-        setSearchText("")
-        setFoundMovies([])
-        hapticsService.light()
+        setPickerState({ status: "searching", query: text })
       }
     },
     [isInteractionsDisabled]
   )
 
+  useEffect(() => {
+    if (pickerState.status !== "searching") return
+
+    const handler = setTimeout(() => {
+      const filtered = filterMovies(pickerState.query)
+      setPickerState({
+        status: "results",
+        query: pickerState.query,
+        results: filtered,
+      })
+    }, 300)
+
+    return () => clearTimeout(handler)
+  }, [pickerState, filterMovies])
+
+  const handleMovieSelection = useCallback(
+    (movie: BasicMovie) => {
+      if (isInteractionsDisabled) return
+      setPickerState({ status: "selected", movie })
+      hapticsService.light()
+    },
+    [isInteractionsDisabled]
+  )
+
   const resetSelectedMovie = useCallback(() => {
-    setSelectedMovie(null)
-  }, [])
+    if (isInteractionsDisabled) return
+    setPickerState({ status: "idle" })
+  }, [isInteractionsDisabled])
 
   const onPressCheck = useCallback(() => {
-    if (!isInteractionsDisabled && selectedMovie && playerGame.movie?.id) {
-      hapticsService.medium()
+    if (
+      isInteractionsDisabled ||
+      pickerState.status !== "selected" ||
+      !playerGame.movie?.id
+    )
+      return
 
-      const newGuesses = [...(playerGame.guesses || []), selectedMovie.id]
-      const isCorrectAnswer = playerGame.movie.id === selectedMovie.id
+    hapticsService.medium()
+    const { movie: selectedMovie } = pickerState
 
-      analyticsService.trackGuessMade(
-        newGuesses.length,
-        isCorrectAnswer,
-        selectedMovie.id,
-        selectedMovie.title
-      )
+    const newGuesses = [...(playerGame.guesses || []), selectedMovie.id]
+    const isCorrectAnswer = playerGame.movie.id === selectedMovie.id
 
-      if (isCorrectAnswer) {
-        hapticsService.success()
-        onGuessFeedback("Correct Guess!")
-        setShowConfetti?.(true)
-      } else {
-        hapticsService.error()
-        onGuessFeedback("Incorrect Guess")
-        triggerShake()
-      }
+    analyticsService.trackGuessMade(
+      newGuesses.length,
+      isCorrectAnswer,
+      selectedMovie.id,
+      selectedMovie.title
+    )
 
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-
-      const updatedPlayerGame = {
-        ...playerGame,
-        guesses: newGuesses,
-        correctAnswer: isCorrectAnswer,
-      }
-
-      updatePlayerGame(updatedPlayerGame)
-      setSelectedMovie(null)
-
-      buttonScale.value = withTiming(0.9, { duration: 150 }, () => {
-        buttonScale.value = withTiming(1, { duration: 150 })
-      })
+    if (isCorrectAnswer) {
+      hapticsService.success()
+      onGuessFeedback("Correct Guess!")
+      setShowConfetti?.(true)
+    } else {
+      hapticsService.error()
+      onGuessFeedback("Incorrect Guess")
+      triggerShake()
     }
+
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+
+    const updatedPlayerGame = {
+      ...playerGame,
+      guesses: newGuesses,
+      correctAnswer: isCorrectAnswer,
+    }
+
+    updatePlayerGame(updatedPlayerGame)
+    setPickerState({ status: "idle" })
   }, [
     isInteractionsDisabled,
-    selectedMovie,
+    pickerState,
     playerGame,
     updatePlayerGame,
     onGuessFeedback,
     setShowConfetti,
-    buttonScale,
   ])
 
-  const handleFocus = useCallback(() => setIsFocused(true), [])
-  const handleBlur = useCallback(() => setIsFocused(false), [])
-
   return {
-    searchText,
-    isSearching,
-    foundMovies,
-    selectedMovie,
-    isFocused,
-    buttonScale,
+    pickerState,
     shakeAnimation,
     handleInputChange,
     handleMovieSelection,
     onPressCheck,
-    handleFocus,
-    handleBlur,
     resetSelectedMovie,
   }
 }

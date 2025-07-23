@@ -38,17 +38,15 @@ const AppInitializer = () => {
     )
   }
 
-  return (
-    <NetworkProvider>
-      <AppProviders key={retryKey}>{<Slot />}</AppProviders>
-    </NetworkProvider>
-  )
+  return <AppProviders key={retryKey}>{<Slot />}</AppProviders>
 }
 
 export default function RootLayout() {
   return (
     <ErrorBoundary>
-      <AppInitializer />
+      <NetworkProvider>
+        <AppInitializer />
+      </NetworkProvider>
     </ErrorBoundary>
   )
 }

@@ -48,80 +48,75 @@ const MovieItem = memo<MovieItemProps>(
   }
 )
 
-const PickerContainer: React.FC = memo(() => {
-  const {
-    loading: isDataLoading,
-    movies,
-    playerGame,
-    isInteractionsDisabled,
-    updatePlayerGame,
-    provideGuessFeedback,
-    setShowConfetti,
-  } = useGame()
+interface PickerContainerProps {
+  provideGuessFeedback: (message: string | null) => void
+}
 
-  const {
-    searchText,
-    isSearching,
-    foundMovies,
-    selectedMovie,
-    shakeAnimation,
-    handleInputChange,
-    handleMovieSelection,
-    onPressCheck,
-    handleFocus,
-    handleBlur,
-    resetSelectedMovie,
-  } = usePickerLogic({
-    movies,
-    playerGame,
-    isInteractionsDisabled,
-    updatePlayerGame,
-    onGuessFeedback: provideGuessFeedback,
-    setShowConfetti,
-  })
+const PickerContainer: React.FC<PickerContainerProps> = memo(
+  ({ provideGuessFeedback }) => {
+    const {
+      loading: isDataLoading,
+      movies,
+      playerGame,
+      isInteractionsDisabled,
+      updatePlayerGame,
+      setShowConfetti,
+    } = useGame()
 
-  const animatedInputStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateX: shakeAnimation.value }],
+    const {
+      pickerState,
+      shakeAnimation,
+      handleInputChange,
+      handleMovieSelection,
+      onPressCheck,
+      resetSelectedMovie,
+    } = usePickerLogic({
+      movies,
+      playerGame,
+      isInteractionsDisabled,
+      updatePlayerGame,
+      onGuessFeedback: provideGuessFeedback,
+      setShowConfetti,
+    })
+
+    const animatedInputStyle = useAnimatedStyle(() => {
+      return {
+        transform: [{ translateX: shakeAnimation.value }],
+      }
+    })
+
+    const renderItem = useCallback(
+      ({ item }: ListRenderItemInfo<BasicMovie>) => {
+        const isSelected =
+          pickerState.status === "selected" && pickerState.movie.id === item.id
+        return (
+          <MovieItem
+            movie={item}
+            isSelected={isSelected}
+            isDisabled={isInteractionsDisabled}
+            onSelect={handleMovieSelection}
+          />
+        )
+      },
+      [pickerState, isInteractionsDisabled, handleMovieSelection]
+    )
+
+    if (isDataLoading) {
+      return <PickerSkeleton />
     }
-  })
 
-  const renderItem = useCallback(
-    ({ item }: ListRenderItemInfo<BasicMovie>) => {
-      return (
-        <MovieItem
-          movie={item}
-          isSelected={selectedMovie?.id === item.id}
-          isDisabled={isInteractionsDisabled}
-          onSelect={handleMovieSelection}
-        />
-      )
-    },
-    [selectedMovie, isInteractionsDisabled, handleMovieSelection]
-  )
-
-  if (isDataLoading) {
-    return <PickerSkeleton />
+    return (
+      <PickerUI
+        pickerState={pickerState}
+        animatedInputStyle={animatedInputStyle}
+        isInteractionsDisabled={isInteractionsDisabled}
+        handleInputChange={handleInputChange}
+        renderItem={renderItem}
+        onPressCheck={onPressCheck}
+        onClearSelectedMovie={resetSelectedMovie}
+      />
+    )
   }
-
-  return (
-    <PickerUI
-      searchText={searchText}
-      isSearching={isSearching}
-      isLoading={false}
-      error={null}
-      foundMovies={foundMovies}
-      selectedMovie={selectedMovie}
-      animatedInputStyle={animatedInputStyle}
-      isInteractionsDisabled={isInteractionsDisabled}
-      handleInputChange={handleInputChange}
-      renderItem={renderItem}
-      onPressCheck={onPressCheck}
-      handleFocus={handleFocus}
-      onClearSelectedMovie={resetSelectedMovie}
-      handleBlur={handleBlur}
-    />
-  )
-})
+)
 
 export default PickerContainer

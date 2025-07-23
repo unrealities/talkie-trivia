@@ -16,48 +16,51 @@ import { BasicMovie } from "../models/movie"
 import { colors } from "../styles/global"
 import { pickerStyles } from "../styles/pickerStyles"
 
+type PickerState =
+  | { status: "idle" }
+  | { status: "searching"; query: string }
+  | { status: "results"; query: string; results: readonly BasicMovie[] }
+  | { status: "selected"; movie: BasicMovie }
+
 interface PickerUIProps {
-  searchText: string
-  isSearching: boolean
-  isLoading: boolean
-  error: string | null
-  foundMovies: readonly BasicMovie[]
-  selectedMovie: BasicMovie | null
+  pickerState: PickerState
   animatedInputStyle: StyleProp<ViewStyle>
   isInteractionsDisabled: boolean
-
   handleInputChange: (text: string) => void
   renderItem: ListRenderItem<BasicMovie>
   onPressCheck: () => void
-  handleFocus: () => void
-  handleBlur: () => void
   onClearSelectedMovie: () => void
 }
 
 export const PickerUI: React.FC<PickerUIProps> = memo(
   ({
-    searchText,
-    isSearching,
-    isLoading,
-    error,
-    foundMovies,
-    selectedMovie,
+    pickerState,
     animatedInputStyle,
     isInteractionsDisabled,
     handleInputChange,
     renderItem,
     onPressCheck,
-    handleFocus,
-    handleBlur,
     onClearSelectedMovie,
   }) => {
-    const isMovieSelectedForGuess = selectedMovie !== null
+    const isMovieSelectedForGuess = pickerState.status === "selected"
+    const selectedMovie = isMovieSelectedForGuess ? pickerState.movie : null
+
     const releaseYear = selectedMovie?.release_date
       ? ` (${selectedMovie.release_date.toString().substring(0, 4)})`
       : ""
     const selectedMovieTitleWithYear = selectedMovie
       ? `${selectedMovie.title}${releaseYear}`
       : ""
+
+    const getSearchText = () => {
+      if (
+        pickerState.status === "searching" ||
+        pickerState.status === "results"
+      ) {
+        return pickerState.query
+      }
+      return ""
+    }
 
     return (
       <View style={pickerStyles.container}>
@@ -89,9 +92,7 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
               accessibilityRole="search"
               aria-label="Search for a movie"
               maxLength={100}
-              onBlur={handleBlur}
               onChangeText={handleInputChange}
-              onFocus={handleFocus}
               placeholder={
                 isMovieSelectedForGuess
                   ? "Selection made. Press Submit."
@@ -104,10 +105,10 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
                   backgroundColor: colors.grey,
                 },
               ]}
-              value={searchText}
+              value={getSearchText()}
               editable={!isInteractionsDisabled && !isMovieSelectedForGuess}
             />
-            {isSearching && (
+            {pickerState.status === "searching" && (
               <ActivityIndicator
                 size="small"
                 color={colors.primary}
@@ -119,15 +120,11 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
 
         {!isMovieSelectedForGuess && (
           <View style={pickerStyles.resultsContainer}>
-            {isLoading ? (
+            {pickerState.status === "searching" ? (
               <ActivityIndicator size="large" color={colors.primary} />
-            ) : error ? (
-              <Text accessibilityRole="text" style={pickerStyles.errorText}>
-                {error}
-              </Text>
-            ) : foundMovies.length > 0 ? (
+            ) : pickerState.status === "results" ? (
               <FlatList
-                data={foundMovies}
+                data={pickerState.results}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id.toString()}
                 style={pickerStyles.resultsShow}
@@ -135,10 +132,12 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
                 initialNumToRender={10}
                 maxToRenderPerBatch={10}
                 windowSize={11}
-                ListEmptyComponent={null}
+                ListEmptyComponent={
+                  <Text style={pickerStyles.noResultsText}>
+                    No movies found
+                  </Text>
+                }
               />
-            ) : searchText.length > 0 ? (
-              <Text style={pickerStyles.noResultsText}>No movies found</Text>
             ) : null}
           </View>
         )}
