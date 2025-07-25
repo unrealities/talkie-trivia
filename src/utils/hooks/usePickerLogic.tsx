@@ -31,7 +31,6 @@ type PickerState =
   | { status: "idle" }
   | { status: "searching"; query: string }
   | { status: "results"; query: string; results: readonly BasicMovie[] }
-  | { status: "selected"; movie: BasicMovie }
 
 export function usePickerLogic({
   movies,
@@ -93,75 +92,54 @@ export function usePickerLogic({
   }, [pickerState, filterMovies])
 
   const handleMovieSelection = useCallback(
-    (movie: BasicMovie) => {
-      if (isInteractionsDisabled) return
-      setPickerState({ status: "selected", movie })
-      hapticsService.light()
+    (selectedMovie: BasicMovie) => {
+      if (isInteractionsDisabled || !playerGame.movie?.id) return
+
+      hapticsService.medium()
+      setPickerState({ status: "idle" })
+
+      const newGuesses = [...(playerGame.guesses || []), selectedMovie.id]
+      const isCorrectAnswer = playerGame.movie.id === selectedMovie.id
+
+      analyticsService.trackGuessMade(
+        newGuesses.length,
+        isCorrectAnswer,
+        selectedMovie.id,
+        selectedMovie.title
+      )
+
+      if (isCorrectAnswer) {
+        hapticsService.success()
+        onGuessFeedback("Correct Guess!")
+        setShowConfetti?.(true)
+      } else {
+        hapticsService.error()
+        onGuessFeedback("Incorrect Guess")
+        triggerShake()
+      }
+
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+
+      const updatedPlayerGame = {
+        ...playerGame,
+        guesses: newGuesses,
+        correctAnswer: isCorrectAnswer,
+      }
+      updatePlayerGame(updatedPlayerGame)
     },
-    [isInteractionsDisabled]
+    [
+      isInteractionsDisabled,
+      playerGame,
+      updatePlayerGame,
+      onGuessFeedback,
+      setShowConfetti,
+    ]
   )
-
-  const resetSelectedMovie = useCallback(() => {
-    if (isInteractionsDisabled) return
-    setPickerState({ status: "idle" })
-  }, [isInteractionsDisabled])
-
-  const onPressCheck = useCallback(() => {
-    if (
-      isInteractionsDisabled ||
-      pickerState.status !== "selected" ||
-      !playerGame.movie?.id
-    )
-      return
-
-    hapticsService.medium()
-    const { movie: selectedMovie } = pickerState
-
-    const newGuesses = [...(playerGame.guesses || []), selectedMovie.id]
-    const isCorrectAnswer = playerGame.movie.id === selectedMovie.id
-
-    analyticsService.trackGuessMade(
-      newGuesses.length,
-      isCorrectAnswer,
-      selectedMovie.id,
-      selectedMovie.title
-    )
-
-    if (isCorrectAnswer) {
-      hapticsService.success()
-      onGuessFeedback("Correct Guess!")
-      setShowConfetti?.(true)
-    } else {
-      hapticsService.error()
-      onGuessFeedback("Incorrect Guess")
-      triggerShake()
-    }
-
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-
-    const updatedPlayerGame = {
-      ...playerGame,
-      guesses: newGuesses,
-      correctAnswer: isCorrectAnswer,
-    }
-
-    updatePlayerGame(updatedPlayerGame)
-    setPickerState({ status: "idle" })
-  }, [
-    isInteractionsDisabled,
-    pickerState,
-    playerGame,
-    updatePlayerGame,
-    onGuessFeedback,
-    setShowConfetti,
-  ])
 
   return {
     pickerState,
     shakeAnimation,
     handleInputChange,
     handleMovieSelection,
-    onPressCheck,
-    resetSelectedMovie,
   }
 }

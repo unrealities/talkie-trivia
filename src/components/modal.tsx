@@ -7,20 +7,20 @@ import Animated, {
   Easing,
 } from "react-native-reanimated"
 import { modalStyles } from "../styles/modalStyles"
-import Facts from "./facts"
 import { PlayerGame } from "../models/game"
 import { generateShareMessage } from "../utils/shareUtils"
 import { analyticsService } from "../utils/analyticsService"
 import { hapticsService } from "../utils/hapticsService"
 
 interface MovieModalProps {
-  playerGame: PlayerGame | null
+  playerGame?: PlayerGame | null
   show: boolean
   toggleModal: (show: boolean) => void
+  children: React.ReactNode
 }
 
 const MovieModal: React.FC<MovieModalProps> = memo(
-  ({ playerGame, show, toggleModal }) => {
+  ({ playerGame, show, toggleModal, children }) => {
     const animatedValue = useSharedValue(0)
 
     const animatedModalContentStyle = useAnimatedStyle(() => {
@@ -71,22 +71,20 @@ const MovieModal: React.FC<MovieModalProps> = memo(
     }
 
     const renderContent = () => {
-      if (!playerGame) {
-        return null
-      }
-
       return (
         <Animated.View
           style={[modalStyles.modalView, animatedModalContentStyle]}
         >
-          <Facts movie={playerGame.movie} />
+          {children}
           <View style={modalStyles.buttonContainer}>
             <Pressable style={modalStyles.button} onPress={handleClose}>
               <Text style={modalStyles.buttonText}>Close</Text>
             </Pressable>
-            <Pressable style={modalStyles.shareButton} onPress={handleShare}>
-              <Text style={modalStyles.buttonText}>Share</Text>
-            </Pressable>
+            {playerGame && (
+              <Pressable style={modalStyles.shareButton} onPress={handleShare}>
+                <Text style={modalStyles.buttonText}>Share</Text>
+              </Pressable>
+            )}
           </View>
         </Animated.View>
       )
@@ -114,10 +112,7 @@ const MovieModal: React.FC<MovieModalProps> = memo(
         </Pressable>
       </Modal>
     )
-  },
-  (prevProps, nextProps) =>
-    prevProps.playerGame === nextProps.playerGame &&
-    prevProps.show === nextProps.show
+  }
 )
 
 export default MovieModal

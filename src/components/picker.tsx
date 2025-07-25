@@ -11,42 +11,39 @@ import { useGame } from "../contexts/gameContext"
 
 interface MovieItemProps {
   movie: BasicMovie
-  isSelected: boolean
   isDisabled: boolean
   onSelect: (movie: BasicMovie) => void
 }
 
-const MovieItem = memo<MovieItemProps>(
-  ({ movie, isSelected, isDisabled, onSelect }) => {
-    const releaseYear = movie.release_date
-      ? ` (${movie.release_date.toString().substring(0, 4)})`
-      : ""
-    const titleWithYear = `${movie.title}${releaseYear}`
+const MovieItem = memo<MovieItemProps>(({ movie, isDisabled, onSelect }) => {
+  const releaseYear = movie.release_date
+    ? ` (${movie.release_date.toString().substring(0, 4)})`
+    : ""
+  const titleWithYear = `${movie.title}${releaseYear}`
 
-    return (
-      <Pressable
-        accessible
-        accessibilityRole="button"
-        aria-label={`Select movie: ${movie.title}, ID: ${movie.id}`}
-        onPress={() => onSelect(movie)}
-        style={[
-          pickerStyles.pressableText,
-          isSelected && pickerStyles.selectedMovie,
-        ]}
-        android_ripple={{ color: colors.quinary }}
-        disabled={isDisabled}
+  return (
+    <Pressable
+      accessible
+      accessibilityRole="button"
+      aria-label={`Select and guess movie: ${movie.title}`}
+      onPress={() => onSelect(movie)}
+      style={({ pressed }) => [
+        pickerStyles.pressableText,
+        pressed && { backgroundColor: colors.quinary },
+      ]}
+      android_ripple={{ color: colors.quinary }}
+      disabled={isDisabled}
+    >
+      <Text
+        style={pickerStyles.unselected}
+        numberOfLines={1}
+        ellipsizeMode="tail"
       >
-        <Text
-          style={pickerStyles.unselected}
-          numberOfLines={1}
-          ellipsizeMode="tail"
-        >
-          {titleWithYear}
-        </Text>
-      </Pressable>
-    )
-  }
-)
+        {titleWithYear}
+      </Text>
+    </Pressable>
+  )
+})
 
 interface PickerContainerProps {
   provideGuessFeedback: (message: string | null) => void
@@ -68,8 +65,6 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
       shakeAnimation,
       handleInputChange,
       handleMovieSelection,
-      onPressCheck,
-      resetSelectedMovie,
     } = usePickerLogic({
       movies,
       playerGame,
@@ -86,19 +81,14 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
     })
 
     const renderItem = useCallback(
-      ({ item }: ListRenderItemInfo<BasicMovie>) => {
-        const isSelected =
-          pickerState.status === "selected" && pickerState.movie.id === item.id
-        return (
-          <MovieItem
-            movie={item}
-            isSelected={isSelected}
-            isDisabled={isInteractionsDisabled}
-            onSelect={handleMovieSelection}
-          />
-        )
-      },
-      [pickerState, isInteractionsDisabled, handleMovieSelection]
+      ({ item }: ListRenderItemInfo<BasicMovie>) => (
+        <MovieItem
+          movie={item}
+          isDisabled={isInteractionsDisabled}
+          onSelect={handleMovieSelection}
+        />
+      ),
+      [isInteractionsDisabled, handleMovieSelection]
     )
 
     if (isDataLoading) {
@@ -112,8 +102,6 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
         isInteractionsDisabled={isInteractionsDisabled}
         handleInputChange={handleInputChange}
         renderItem={renderItem}
-        onPressCheck={onPressCheck}
-        onClearSelectedMovie={resetSelectedMovie}
       />
     )
   }

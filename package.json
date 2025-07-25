@@ -63,8 +63,10 @@
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.19.13",
     "resize-observer-polyfill": "^1.5.1",
-    "victory-native": "^41.16.1",
-    "vm": "^0.1.0"
+    "victory-native": "^41.17.4",
+    "vm": "^0.1.0",
+    "@shopify/react-native-skia": "1.5.0",
+    "react-native-gesture-handler": "~2.20.2"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.26.0",

@@ -1,4 +1,4 @@
-import { doc, writeBatch } from "firebase/firestore"
+import { doc, getDoc, writeBatch } from "firebase/firestore"
 import { db } from "../config/firebase"
 import { playerStatsConverter } from "./firestore/converters/playerStats"
 import { playerGameConverter } from "./firestore/converters/playerGame"
@@ -7,12 +7,31 @@ import PlayerStats from "../models/playerStats"
 import { PlayerGame } from "../models/game"
 import Player from "../models/player"
 import { GameHistoryEntry } from "../models/gameHistory"
+import { Movie } from "../models/movie"
+
+export const fetchMovieById = async (
+  movieId: number
+): Promise<Movie | null> => {
+  if (!movieId) return null
+  try {
+    const movieDocRef = doc(db, "movies", movieId.toString())
+    const movieSnap = await getDoc(movieDocRef)
+    if (movieSnap.exists()) {
+      return movieSnap.data() as Movie
+    }
+    console.warn(`Movie with ID ${movieId} not found in Firestore.`)
+    return null
+  } catch (error) {
+    console.error(`Error fetching movie with ID ${movieId}:`, error)
+    throw error
+  }
+}
 
 export const batchUpdatePlayerData = async (
   playerStats: PlayerStats,
   playerGame: PlayerGame,
   playerId: string,
-  gameHistoryEntry: GameHistoryEntry | null = null, // ADDED
+  gameHistoryEntry: GameHistoryEntry | null = null,
   playerUpdate: Partial<Player> | null = null
 ): Promise<{ success: boolean }> => {
   if (__DEV__) {
@@ -20,7 +39,7 @@ export const batchUpdatePlayerData = async (
       playerStats,
       playerGame,
       playerId,
-      gameHistoryEntry, // ADDED
+      gameHistoryEntry,
       playerUpdate,
     })
   }

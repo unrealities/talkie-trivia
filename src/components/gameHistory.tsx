@@ -1,5 +1,11 @@
 import React, { useState, useEffect, memo, useCallback } from "react"
-import { View, Text, FlatList, ActivityIndicator } from "react-native"
+import {
+  View,
+  Text,
+  FlatList,
+  ActivityIndicator,
+  Pressable,
+} from "react-native"
 import {
   getFirestore,
   collection,
@@ -18,9 +24,10 @@ import { colors } from "../styles/global"
 
 interface GameHistoryItemProps {
   item: GameHistoryEntry
+  onPress: (item: GameHistoryEntry) => void
 }
 
-const GameHistoryItem = memo(({ item }: GameHistoryItemProps) => {
+const GameHistoryItem = memo(({ item, onPress }: GameHistoryItemProps) => {
   const posterUri = `https://image.tmdb.org/t/p/w185${item.posterPath}`
   const date = new Date(item.dateId)
   const formattedDate = date.toLocaleDateString("en-US", {
@@ -45,7 +52,13 @@ const GameHistoryItem = memo(({ item }: GameHistoryItemProps) => {
   }
 
   return (
-    <View style={styles.itemContainer}>
+    <Pressable
+      onPress={() => onPress(item)}
+      style={({ pressed }) => [
+        styles.itemContainer,
+        pressed && { backgroundColor: colors.grey },
+      ]}
+    >
       <Image source={{ uri: posterUri }} style={styles.posterImage} />
       <View style={styles.infoContainer}>
         <Text style={styles.movieTitle} numberOfLines={2}>
@@ -54,11 +67,15 @@ const GameHistoryItem = memo(({ item }: GameHistoryItemProps) => {
         <Text style={styles.dateText}>{formattedDate}</Text>
         {getResultText()}
       </View>
-    </View>
+    </Pressable>
   )
 })
 
-const GameHistory = () => {
+interface GameHistoryProps {
+  onHistoryItemPress: (item: GameHistoryEntry) => void
+}
+
+const GameHistory = ({ onHistoryItemPress }: GameHistoryProps) => {
   const { player } = useAuth()
   const [history, setHistory] = useState<GameHistoryEntry[]>([])
   const [loading, setLoading] = useState(true)
@@ -93,8 +110,10 @@ const GameHistory = () => {
   }, [player])
 
   const renderItem = useCallback(
-    ({ item }: { item: GameHistoryEntry }) => <GameHistoryItem item={item} />,
-    []
+    ({ item }: { item: GameHistoryEntry }) => (
+      <GameHistoryItem item={item} onPress={onHistoryItemPress} />
+    ),
+    [onHistoryItemPress]
   )
 
   if (loading) {
