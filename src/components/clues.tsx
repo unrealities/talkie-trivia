@@ -9,6 +9,7 @@ import Animated, {
 import { cluesStyles } from "../styles/cluesStyles"
 import { colors } from "../styles/global"
 import { useGame } from "../contexts/gameContext"
+import { hapticsService } from "../utils/hapticsService"
 
 const splitSummary = (summary: string, splits: number = 5): string[] => {
   if (!summary) return Array(splits).fill("")
@@ -62,17 +63,16 @@ const CluesContainer = memo(() => {
   useEffect(() => {
     if (isLoading) return
 
-    // Determine how many clue segments should be visible.
     const numCluesToReveal =
       correctAnswer || isInteractionsDisabled
         ? clues.length
         : Math.min(guesses.length + 1, clues.length)
 
-    // Only update and animate if the number of visible clues has changed.
     if (numCluesToReveal !== revealedClues.length) {
+      hapticsService.light()
+
       const newRevealedClues = clues.slice(0, numCluesToReveal)
 
-      // Start animations
       fadeAnim.value = withTiming(0)
       slideAnim.value = withTiming(-10)
       clueHighlightAnim.value = withTiming(0)

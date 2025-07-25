@@ -11,12 +11,13 @@ import { movieStyles } from "../styles/movieStyles"
 import HintContainer from "./hint"
 import ConfettiCelebration from "./confettiCelebration"
 import ConfirmationModal from "./confirmationModal"
-import FlashMessages from "./flashMessages"
 import { useGame } from "../contexts/gameContext"
 import { useNetwork } from "../contexts/networkContext"
 import OnboardingModal from "./onboardingModal"
 import { hapticsService } from "../utils/hapticsService"
 import { analyticsService } from "../utils/analyticsService"
+
+type GuessResult = { movieId: number; correct: boolean } | null
 
 const GameUI: React.FC = () => {
   const {
@@ -30,25 +31,30 @@ const GameUI: React.FC = () => {
     showOnboarding,
     handleConfettiStop,
     setShowModal,
+    setShowConfetti,
     handleDismissOnboarding,
   } = useGame()
   const { isNetworkConnected } = useNetwork()
 
-  const [guessFeedback, setGuessFeedback] = useState<string | null>(null)
+  const [lastGuessResult, setLastGuessResult] = useState<GuessResult>(null)
   const [showGiveUpConfirmation, setShowGiveUpConfirmation] = useState(false)
 
-  const provideGuessFeedback = useCallback((message: string | null) => {
-    setGuessFeedback(message)
-  }, [])
-
   useEffect(() => {
-    if (guessFeedback) {
-      const timer = setTimeout(() => {
-        setGuessFeedback(null)
-      }, 2000)
-      return () => clearTimeout(timer)
-    }
-  }, [guessFeedback])
+    setLastGuessResult(null)
+  }, [playerGame.guesses.length])
+
+  const handleGuessMade = useCallback(
+    (result: { movieId: number; correct: boolean }) => {
+      setLastGuessResult(result)
+      if (result.correct) {
+        setShowConfetti(true)
+        hapticsService.success()
+      } else {
+        hapticsService.error()
+      }
+    },
+    [setShowConfetti]
+  )
 
   const handleGiveUpPress = useCallback(() => {
     hapticsService.warning()
@@ -85,9 +91,9 @@ const GameUI: React.FC = () => {
       <View style={movieStyles.container}>
         <NetworkContainer isConnected={isNetworkConnected || false} />
         <CluesContainer />
-        <HintContainer provideGuessFeedback={provideGuessFeedback} />
-        <PickerContainer provideGuessFeedback={provideGuessFeedback} />
-        <GuessesContainer />
+        <HintContainer provideGuessFeedback={() => {}} />
+        <PickerContainer onGuessMade={handleGuessMade} />
+        <GuessesContainer lastGuessResult={lastGuessResult} />
 
         <Pressable
           onPress={handleGiveUpPress}
@@ -130,7 +136,6 @@ const GameUI: React.FC = () => {
           onConfirm={confirmGiveUp}
           onCancel={cancelGiveUp}
         />
-        <FlashMessages message={guessFeedback} />
       </View>
     </ScrollView>
   )

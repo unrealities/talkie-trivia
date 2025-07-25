@@ -1,5 +1,5 @@
-import React, { lazy, useState, useCallback } from "react"
-import { View, ScrollView, ActivityIndicator } from "react-native"
+import React, { lazy, useState, useCallback, Suspense } from "react"
+import { View, ScrollView, ActivityIndicator, StyleSheet } from "react-native"
 import LoadingIndicator from "../../components/loadingIndicator"
 import ErrorMessage from "../../components/errorMessage"
 import { appStyles } from "../../styles/appStyles"
@@ -8,12 +8,13 @@ import { useGame } from "../../contexts/gameContext"
 import { GameHistoryEntry } from "../../models/gameHistory"
 import { Movie } from "../../models/movie"
 import { fetchMovieById } from "../../utils/firebaseService"
-import { colors } from "../../styles/global"
+import { colors, responsive } from "../../styles/global"
 
 const GoogleLogin = lazy(() => import("../../components/googleLogin"))
 const PlayerStatsContainer = lazy(() => import("../../components/playerStats"))
 const GameHistory = lazy(() => import("../../components/gameHistory"))
 const MovieModal = lazy(() => import("../../components/modal"))
+const Facts = lazy(() => import("../../components/facts"))
 
 const ProfileScreen: React.FC<{}> = () => {
   const { player } = useAuth()
@@ -25,8 +26,8 @@ const ProfileScreen: React.FC<{}> = () => {
 
   const handleHistoryItemPress = useCallback(async (item: GameHistoryEntry) => {
     if (!item.movieId) return
-    setIsHistoryMovieLoading(true)
     setIsModalVisible(true)
+    setIsHistoryMovieLoading(true)
     try {
       const movie = await fetchMovieById(item.movieId)
       if (movie) {
@@ -47,44 +48,64 @@ const ProfileScreen: React.FC<{}> = () => {
     setSelectedHistoryMovie(null)
   }, [])
 
+  const renderModalContent = () => {
+    if (isHistoryMovieLoading) {
+      return (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      )
+    }
+    if (selectedHistoryMovie) {
+      return <Facts movie={selectedHistoryMovie} />
+    }
+    return null
+  }
+
   return (
     <>
       <ScrollView style={appStyles.container}>
-        <React.Suspense fallback={<LoadingIndicator />}>
+        <Suspense fallback={<LoadingIndicator />}>
           <GoogleLogin />
           {loading && <LoadingIndicator />}
           {error && <ErrorMessage message={error} />}
           {!loading && !error && player && playerStats && (
             <>
               <PlayerStatsContainer player={player} playerStats={playerStats} />
-              {/* --- UX IMPROVEMENT: Pass the handler to GameHistory --- */}
               <GameHistory onHistoryItemPress={handleHistoryItemPress} />
             </>
           )}
-        </React.Suspense>
+        </Suspense>
       </ScrollView>
 
       {isModalVisible && (
-        <React.Suspense fallback={null}>
+        <Suspense fallback={null}>
           <MovieModal show={isModalVisible} toggleModal={handleModalClose}>
-            {isHistoryMovieLoading ? (
-              <View
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: 200,
-                }}
-              >
-                <ActivityIndicator size="large" color={colors.primary} />
-              </View>
-            ) : selectedHistoryMovie ? (
-              <Facts movie={selectedHistoryMovie} />
-            ) : null}
+            {/* The Suspense here handles lazy loading of the Facts component */}
+            <Suspense
+              fallback={
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator size="large" color={colors.primary} />
+                </View>
+              }
+            >
+              {renderModalContent()}
+            </Suspense>
           </MovieModal>
-        </React.Suspense>
+        </Suspense>
       )}
     </>
   )
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: responsive.scale(200),
+    paddingVertical: responsive.scale(50),
+    width: "100%",
+  },
+})
 
 export default ProfileScreen

@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from "react"
 import { LayoutAnimation, Platform, UIManager } from "react-native"
+import { search } from "fast-fuzzy"
 import { BasicMovie } from "../../models/movie"
 import { PlayerGame } from "../../models/game"
 import {
@@ -23,8 +24,7 @@ interface UsePickerLogicProps {
   playerGame: PlayerGame
   isInteractionsDisabled: boolean
   updatePlayerGame: (updatedPlayerGame: PlayerGame) => void
-  onGuessFeedback: (message: string | null) => void
-  setShowConfetti?: (show: boolean) => void
+  onGuessMade: (result: { movieId: number; correct: boolean }) => void
 }
 
 type PickerState =
@@ -37,8 +37,7 @@ export function usePickerLogic({
   playerGame,
   isInteractionsDisabled,
   updatePlayerGame,
-  onGuessFeedback,
-  setShowConfetti,
+  onGuessMade,
 }: UsePickerLogicProps) {
   const [pickerState, setPickerState] = useState<PickerState>({
     status: "idle",
@@ -54,12 +53,16 @@ export function usePickerLogic({
   }
 
   const filterMovies = useCallback(
-    (searchTerm: string) => {
-      const trimmedTerm = searchTerm.trim().toLowerCase()
-      if (trimmedTerm === "") return []
-      return movies.filter((movie) =>
-        movie.title.toLowerCase().includes(trimmedTerm)
-      )
+    (searchTerm: string): BasicMovie[] => {
+      const trimmedTerm = searchTerm.trim()
+      if (trimmedTerm.length < 2) return []
+
+      const results = search(trimmedTerm, movies, {
+        keySelector: (movie) => movie.title,
+        threshold: 0.8,
+      })
+
+      return results
     },
     [movies]
   )
@@ -81,6 +84,10 @@ export function usePickerLogic({
 
     const handler = setTimeout(() => {
       const filtered = filterMovies(pickerState.query)
+      if (filtered.length > 0) {
+        hapticsService.light()
+      }
+
       setPickerState({
         status: "results",
         query: pickerState.query,
@@ -95,7 +102,6 @@ export function usePickerLogic({
     (selectedMovie: BasicMovie) => {
       if (isInteractionsDisabled || !playerGame.movie?.id) return
 
-      hapticsService.medium()
       setPickerState({ status: "idle" })
 
       const newGuesses = [...(playerGame.guesses || []), selectedMovie.id]
@@ -108,15 +114,11 @@ export function usePickerLogic({
         selectedMovie.title
       )
 
-      if (isCorrectAnswer) {
-        hapticsService.success()
-        onGuessFeedback("Correct Guess!")
-        setShowConfetti?.(true)
-      } else {
-        hapticsService.error()
-        onGuessFeedback("Incorrect Guess")
+      if (!isCorrectAnswer) {
         triggerShake()
       }
+
+      onGuessMade({ movieId: selectedMovie.id, correct: isCorrectAnswer })
 
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
 
@@ -127,13 +129,7 @@ export function usePickerLogic({
       }
       updatePlayerGame(updatedPlayerGame)
     },
-    [
-      isInteractionsDisabled,
-      playerGame,
-      updatePlayerGame,
-      onGuessFeedback,
-      setShowConfetti,
-    ]
+    [isInteractionsDisabled, playerGame, updatePlayerGame, onGuessMade]
   )
 
   return {

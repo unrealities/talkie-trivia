@@ -9,6 +9,11 @@ export const guessesStyles = StyleSheet.create({
     paddingTop: responsive.scale(10),
     width: "100%",
   },
+  guessRow: {
+    overflow: "hidden",
+    borderRadius: responsive.scale(4),
+    marginTop: responsive.scale(4),
+  },
   guess: {
     color: colors.secondary,
     flex: 1,
@@ -21,11 +26,8 @@ export const guessesStyles = StyleSheet.create({
   },
   guessContainer: {
     alignItems: "center",
-    alignSelf: "center",
-    backgroundColor: colors.grey,
-    borderRadius: responsive.scale(4),
+    alignSelf: "stretch",
     flexDirection: "row",
-    marginTop: responsive.scale(4),
     paddingHorizontal: responsive.scale(8),
     paddingVertical: responsive.scale(8),
     width: "100%",

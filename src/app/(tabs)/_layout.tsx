@@ -28,6 +28,13 @@ const TabLayout = () => {
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.secondary,
+        tabBarActiveBackgroundColor: colors.grey,
+        tabBarItemStyle: {
+          marginVertical: 5,
+          marginHorizontal: 10,
+          borderRadius: 10,
+          paddingVertical: 5,
+        },
         tabBarLabelStyle: {
           fontFamily: "Arvo-Bold",
           fontSize: 16,

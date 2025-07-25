@@ -46,18 +46,17 @@ const MovieItem = memo<MovieItemProps>(({ movie, isDisabled, onSelect }) => {
 })
 
 interface PickerContainerProps {
-  provideGuessFeedback: (message: string | null) => void
+  onGuessMade: (result: { movieId: number; correct: boolean }) => void
 }
 
 const PickerContainer: React.FC<PickerContainerProps> = memo(
-  ({ provideGuessFeedback }) => {
+  ({ onGuessMade }) => {
     const {
       loading: isDataLoading,
       movies,
       playerGame,
       isInteractionsDisabled,
       updatePlayerGame,
-      setShowConfetti,
     } = useGame()
 
     const {
@@ -70,8 +69,7 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
       playerGame,
       isInteractionsDisabled,
       updatePlayerGame,
-      onGuessFeedback: provideGuessFeedback,
-      setShowConfetti,
+      onGuessMade,
     })
 
     const animatedInputStyle = useAnimatedStyle(() => {
