@@ -83,6 +83,7 @@ type BasicMovie struct {
 	ID          int    `json:"id"`
 	Title       string `json:"title"`
 	ReleaseDate string `json:"release_date"`
+	PosterPath  string `json:"poster_path"`
 }
 
 type Genre struct {
@@ -320,6 +321,7 @@ func main() {
 				ID:          details.ID,
 				Title:       details.Title,
 				ReleaseDate: details.ReleaseDate,
+				PosterPath:  details.PosterPath,
 			}
 			finalBasicMovies = append(finalBasicMovies, basicMovie)
 

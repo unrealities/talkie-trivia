@@ -1,4 +1,4 @@
-import React, { useCallback, memo } from "react"
+import React, { useCallback, memo, useState } from "react"
 import { Pressable, Text, ListRenderItemInfo } from "react-native"
 import Animated, { useAnimatedStyle } from "react-native-reanimated"
 import { BasicMovie } from "../models/movie"
@@ -8,42 +8,49 @@ import { usePickerLogic } from "../utils/hooks/usePickerLogic"
 import { PickerUI } from "./pickerUI"
 import PickerSkeleton from "./pickerSkeleton"
 import { useGame } from "../contexts/gameContext"
+import { hapticsService } from "../utils/hapticsService"
+import PreviewModal from "../components/previewModal"
 
 interface MovieItemProps {
   movie: BasicMovie
   isDisabled: boolean
   onSelect: (movie: BasicMovie) => void
+  onLongPress: (movie: BasicMovie) => void
 }
 
-const MovieItem = memo<MovieItemProps>(({ movie, isDisabled, onSelect }) => {
-  const releaseYear = movie.release_date
-    ? ` (${movie.release_date.toString().substring(0, 4)})`
-    : ""
-  const titleWithYear = `${movie.title}${releaseYear}`
+const MovieItem = memo<MovieItemProps>(
+  ({ movie, isDisabled, onSelect, onLongPress }) => {
+    const releaseYear = movie.release_date
+      ? ` (${movie.release_date.toString().substring(0, 4)})`
+      : ""
+    const titleWithYear = `${movie.title}${releaseYear}`
 
-  return (
-    <Pressable
-      accessible
-      accessibilityRole="button"
-      aria-label={`Select and guess movie: ${movie.title}`}
-      onPress={() => onSelect(movie)}
-      style={({ pressed }) => [
-        pickerStyles.pressableText,
-        pressed && { backgroundColor: colors.quinary },
-      ]}
-      android_ripple={{ color: colors.quinary }}
-      disabled={isDisabled}
-    >
-      <Text
-        style={pickerStyles.unselected}
-        numberOfLines={1}
-        ellipsizeMode="tail"
+    return (
+      <Pressable
+        accessible
+        accessibilityRole="button"
+        aria-label={`Select and guess movie: ${movie.title}`}
+        onPress={() => onSelect(movie)}
+        onLongPress={() => onLongPress(movie)}
+        delayLongPress={200}
+        style={({ pressed }) => [
+          pickerStyles.pressableText,
+          pressed && { backgroundColor: colors.quinary },
+        ]}
+        android_ripple={{ color: colors.quinary }}
+        disabled={isDisabled}
       >
-        {titleWithYear}
-      </Text>
-    </Pressable>
-  )
-})
+        <Text
+          style={pickerStyles.unselected}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
+          {titleWithYear}
+        </Text>
+      </Pressable>
+    )
+  }
+)
 
 interface PickerContainerProps {
   onGuessMade: (result: { movieId: number; correct: boolean }) => void
@@ -58,6 +65,8 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
       isInteractionsDisabled,
       updatePlayerGame,
     } = useGame()
+
+    const [previewMovie, setPreviewMovie] = useState<BasicMovie | null>(null)
 
     const {
       pickerState,
@@ -78,15 +87,33 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
       }
     })
 
+    const handleLongPressMovie = useCallback((movie: BasicMovie) => {
+      hapticsService.light()
+      setPreviewMovie(movie)
+    }, [])
+
+    const handleClosePreview = useCallback(() => {
+      setPreviewMovie(null)
+    }, [])
+
+    const handlePreviewSubmit = useCallback(
+      (movie: BasicMovie) => {
+        handleMovieSelection(movie)
+        handleClosePreview()
+      },
+      [handleMovieSelection, handleClosePreview]
+    )
+
     const renderItem = useCallback(
       ({ item }: ListRenderItemInfo<BasicMovie>) => (
         <MovieItem
           movie={item}
           isDisabled={isInteractionsDisabled}
           onSelect={handleMovieSelection}
+          onLongPress={handleLongPressMovie}
         />
       ),
-      [isInteractionsDisabled, handleMovieSelection]
+      [isInteractionsDisabled, handleMovieSelection, handleLongPressMovie]
     )
 
     if (isDataLoading) {
@@ -94,13 +121,21 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
     }
 
     return (
-      <PickerUI
-        pickerState={pickerState}
-        animatedInputStyle={animatedInputStyle}
-        isInteractionsDisabled={isInteractionsDisabled}
-        handleInputChange={handleInputChange}
-        renderItem={renderItem}
-      />
+      <>
+        <PickerUI
+          pickerState={pickerState}
+          animatedInputStyle={animatedInputStyle}
+          isInteractionsDisabled={isInteractionsDisabled}
+          handleInputChange={handleInputChange}
+          renderItem={renderItem}
+        />
+        <PreviewModal
+          movie={previewMovie}
+          isVisible={!!previewMovie}
+          onClose={handleClosePreview}
+          onSubmit={handlePreviewSubmit}
+        />
+      </>
     )
   }
 )

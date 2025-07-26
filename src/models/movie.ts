@@ -10,6 +10,7 @@ export interface BasicMovie {
   id: number
   release_date: string
   title: string
+  poster_path: string // Added poster path for the preview modal
 }
 
 export interface Director {
