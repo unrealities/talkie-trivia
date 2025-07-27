@@ -5,6 +5,9 @@ import Animated, {
   withTiming,
   useAnimatedStyle,
   runOnJS,
+  withSequence,
+  withDelay,
+  interpolateColor,
 } from "react-native-reanimated"
 import { cluesStyles } from "../styles/cluesStyles"
 import { colors } from "../styles/global"
@@ -68,14 +71,10 @@ const CluesContainer = memo(() => {
         ? clues.length
         : Math.min(guesses.length + 1, clues.length)
 
-    if (numCluesToReveal !== revealedClues.length) {
+    if (numCluesToReveal > revealedClues.length) {
       hapticsService.light()
 
       const newRevealedClues = clues.slice(0, numCluesToReveal)
-
-      fadeAnim.value = withTiming(0)
-      slideAnim.value = withTiming(-10)
-      clueHighlightAnim.value = withTiming(0)
 
       const startAnimations = () => {
         fadeAnim.value = withTiming(1, {
@@ -86,28 +85,41 @@ const CluesContainer = memo(() => {
           duration: 500,
           easing: Easing.inOut(Easing.ease),
         })
-        clueHighlightAnim.value = withTiming(1, {
-          duration: 700,
-          easing: Easing.linear,
-        })
+        clueHighlightAnim.value = withSequence(
+          withTiming(1, { duration: 400 }),
+          withDelay(800, withTiming(0, { duration: 500 }))
+        )
       }
 
       setRevealedClues(newRevealedClues)
       runOnJS(startAnimations)()
 
       scrollViewRef.current?.scrollToEnd({ animated: true })
+    } else if (numCluesToReveal < revealedClues.length) {
+      setRevealedClues(clues.slice(0, numCluesToReveal))
     }
   }, [isLoading, correctAnswer, isInteractionsDisabled, guesses.length, clues])
 
-  const animatedTextStyle = useAnimatedStyle(() => ({
+  const animatedContainerStyle = useAnimatedStyle(() => ({
     opacity: fadeAnim.value,
     transform: [{ translateY: slideAnim.value }],
   }))
 
-  const highlightStyle = useAnimatedStyle(() => ({
-    backgroundColor:
-      clueHighlightAnim.value > 0.5 ? colors.primary : "rgba(0, 0, 0, 0)",
-  }))
+  const highlightStyle = useAnimatedStyle(() => {
+    const backgroundColor = interpolateColor(
+      clueHighlightAnim.value,
+      [0, 1],
+      ["transparent", colors.primary]
+    )
+    return {
+      backgroundColor,
+    }
+  })
+
+  const oldCluesText = revealedClues.slice(0, -1).join(" ")
+  const lastClueText =
+    revealedClues.length > 0 ? revealedClues[revealedClues.length - 1] : ""
+  const isGameOver = correctAnswer || isInteractionsDisabled
 
   return (
     <View style={cluesStyles.container}>
@@ -130,33 +142,32 @@ const CluesContainer = memo(() => {
             contentContainerStyle={cluesStyles.scrollViewContent}
             showsVerticalScrollIndicator={false}
           >
-            <Animated.Text style={[cluesStyles.text, animatedTextStyle]}>
-              {revealedClues.map((clue, index) => {
-                const isLastClue = index === revealedClues.length - 1
-                return (
+            <Animated.View style={animatedContainerStyle}>
+              <Text style={cluesStyles.textContainer}>
+                <Text style={cluesStyles.text}>{oldCluesText}</Text>
+                {oldCluesText && lastClueText ? (
+                  <Text style={cluesStyles.text}> </Text>
+                ) : null}
+                {isGameOver ? (
+                  <Text style={cluesStyles.text}>{lastClueText}</Text>
+                ) : (
                   <Animated.Text
-                    key={index}
                     style={[
                       cluesStyles.text,
-                      !correctAnswer &&
-                        !isInteractionsDisabled &&
-                        isLastClue &&
-                        cluesStyles.mostRecentClue,
-                      !correctAnswer &&
-                        !isInteractionsDisabled &&
-                        isLastClue &&
-                        highlightStyle,
+                      cluesStyles.mostRecentClue,
+                      highlightStyle,
                     ]}
                   >
-                    {clue}
-                    {index < revealedClues.length - 1 ? " " : ""}
+                    {lastClueText}
                   </Animated.Text>
-                )
-              })}
-            </Animated.Text>
+                )}
+              </Text>
+            </Animated.View>
           </ScrollView>
           <CountContainer
-            currentWordLength={revealedClues.join(" ").split(" ").length}
+            currentWordLength={
+              revealedClues.join(" ").split(" ").filter(Boolean).length
+            }
             guessNumber={guesses.length}
             totalWordLength={
               playerGame?.movie?.overview

@@ -1,8 +1,6 @@
 import React, { memo } from "react"
 import { Modal, Pressable, Text, View } from "react-native"
 import { onboardingModalStyles as styles } from "../styles/onboardingModalStyles"
-import Icon from "react-native-vector-icons/FontAwesome"
-import { colors } from "../styles/global"
 import { hapticsService } from "../utils/hapticsService"
 
 interface OnboardingModalProps {
@@ -18,6 +16,10 @@ const tutorialSteps = [
   {
     icon: "search",
     text: "Search for the movie title you think it is.",
+  },
+  {
+    icon: "hand-pointer-o",
+    text: "Long-press a result to see a preview before you guess!",
   },
   {
     icon: "list-ol",
@@ -51,12 +53,6 @@ const OnboardingModal: React.FC<OnboardingModalProps> = memo(
             <View style={styles.stepsContainer}>
               {tutorialSteps.map((step, index) => (
                 <View style={styles.stepRow} key={index}>
-                  <Icon
-                    name={step.icon as any}
-                    size={20}
-                    color={colors.primary}
-                    style={styles.icon}
-                  />
                   <Text style={styles.stepText}>{step.text}</Text>
                 </View>
               ))}

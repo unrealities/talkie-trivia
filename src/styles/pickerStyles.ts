@@ -69,6 +69,22 @@ export const pickerStyles = StyleSheet.create({
     fontSize: responsive.responsiveFontSize(14),
     flex: 1,
   },
+  previewHintContainer: {
+    position: "absolute",
+    top: responsive.scale(5),
+    right: responsive.scale(10),
+    backgroundColor: colors.tertiary,
+    borderRadius: responsive.scale(10),
+    paddingVertical: responsive.scale(4),
+    paddingHorizontal: responsive.scale(8),
+    zIndex: 1,
+    elevation: 1,
+  },
+  previewHintText: {
+    fontFamily: "Arvo-Italic",
+    fontSize: responsive.responsiveFontSize(11),
+    color: colors.background,
+  },
 })
 
 export default pickerStyles

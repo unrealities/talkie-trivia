@@ -1,4 +1,4 @@
-import React, { useCallback, memo, useState } from "react"
+import React, { useCallback, memo, useState, useEffect } from "react"
 import { Pressable, Text, ListRenderItemInfo } from "react-native"
 import Animated, { useAnimatedStyle } from "react-native-reanimated"
 import { BasicMovie } from "../models/movie"
@@ -67,6 +67,8 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
     } = useGame()
 
     const [previewMovie, setPreviewMovie] = useState<BasicMovie | null>(null)
+    const [hintShownThisGame, setHintShownThisGame] = useState(false)
+    const [showPreviewHint, setShowPreviewHint] = useState(false)
 
     const {
       pickerState,
@@ -80,6 +82,27 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
       updatePlayerGame,
       onGuessMade,
     })
+
+    useEffect(() => {
+      setHintShownThisGame(false)
+    }, [playerGame.id])
+
+    useEffect(() => {
+      if (
+        pickerState.status === "results" &&
+        !hintShownThisGame &&
+        pickerState.results.length > 0
+      ) {
+        setShowPreviewHint(true)
+        setHintShownThisGame(true)
+
+        const timer = setTimeout(() => {
+          setShowPreviewHint(false)
+        }, 4000)
+
+        return () => clearTimeout(timer)
+      }
+    }, [pickerState.status, pickerState.results, hintShownThisGame])
 
     const animatedInputStyle = useAnimatedStyle(() => {
       return {
@@ -128,6 +151,7 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
           isInteractionsDisabled={isInteractionsDisabled}
           handleInputChange={handleInputChange}
           renderItem={renderItem}
+          showPreviewHint={showPreviewHint}
         />
         <PreviewModal
           movie={previewMovie}

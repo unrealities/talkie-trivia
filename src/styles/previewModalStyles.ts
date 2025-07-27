@@ -14,6 +14,8 @@ export const previewModalStyles = StyleSheet.create({
     borderRadius: responsive.scale(15),
     padding: spacing.medium,
     alignItems: "center",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.4)",
+    elevation: 5,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -21,7 +23,6 @@ export const previewModalStyles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5,
   },
   posterImage: {
     width: "100%",
