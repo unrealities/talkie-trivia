@@ -17,9 +17,7 @@ export const cluesStyles = StyleSheet.create({
     marginRight: spacing.extraLarge,
     marginTop: spacing.small,
   },
-  mostRecentClue: {
-    borderRadius: responsive.scale(4),
-  },
+  mostRecentClue: {},
   scrollView: {
     flexGrow: 1,
     marginBottom: spacing.large,
@@ -42,16 +40,19 @@ export const cluesStyles = StyleSheet.create({
   skeletonLineShort: {
     width: "70%",
   },
+  cluesBox: {
+    paddingHorizontal: spacing.large,
+    width: "100%",
+  },
   text: {
     color: colors.secondary,
     fontFamily: "Arvo-Regular",
     fontSize: responsive.responsiveFontSize(14),
     lineHeight: responsive.responsiveFontSize(20),
-  },
-  textContainer: {
-    paddingHorizontal: spacing.large,
     width: "100%",
+    padding: 0,
   },
+  textContainer: {},
   wordCountText: {
     color: colors.primary,
     fontFamily: "Arvo-Regular",

@@ -3,6 +3,7 @@ import { Modal, View, Text, Pressable } from "react-native"
 import { Image } from "expo-image"
 import { BasicMovie } from "../models/movie"
 import { previewModalStyles as styles } from "../styles/previewModalStyles"
+import { hapticsService } from "../utils/hapticsService"
 
 interface PreviewModalProps {
   movie: BasicMovie | null
@@ -20,7 +21,13 @@ const PreviewModal: React.FC<PreviewModalProps> = memo(
     }
 
     const handleSubmit = () => {
+      hapticsService.medium()
       onSubmit(movie)
+    }
+
+    const handleClose = () => {
+      hapticsService.light()
+      onClose()
     }
 
     const imageSource = movie.poster_path
@@ -36,10 +43,10 @@ const PreviewModal: React.FC<PreviewModalProps> = memo(
         animationType="fade"
         transparent={true}
         visible={isVisible}
-        onRequestClose={onClose}
+        onRequestClose={handleClose}
         statusBarTranslucent
       >
-        <Pressable style={styles.centeredView} onPress={onClose}>
+        <Pressable style={styles.centeredView} onPress={handleClose}>
           <Pressable
             style={styles.modalView}
             onPress={(e) => e.stopPropagation()}
@@ -58,10 +65,22 @@ const PreviewModal: React.FC<PreviewModalProps> = memo(
             </View>
 
             <View style={styles.buttonContainer}>
-              <Pressable style={styles.closeButton} onPress={onClose}>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.closeButton,
+                  pressed && { opacity: 0.7 },
+                ]}
+                onPress={handleClose}
+              >
                 <Text style={styles.closeButtonText}>Close</Text>
               </Pressable>
-              <Pressable style={styles.submitButton} onPress={handleSubmit}>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.submitButton,
+                  pressed && { opacity: 0.7 },
+                ]}
+                onPress={handleSubmit}
+              >
                 <Text style={styles.submitButtonText}>Submit Guess</Text>
               </Pressable>
             </View>

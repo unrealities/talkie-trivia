@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from "react"
+import React, { memo } from "react"
 import {
   ActivityIndicator,
   FlatList,
@@ -9,11 +9,7 @@ import {
   StyleProp,
   ViewStyle,
 } from "react-native"
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated"
+import Animated from "react-native-reanimated"
 import { BasicMovie } from "../models/movie"
 import { colors } from "../styles/global"
 import { pickerStyles } from "../styles/pickerStyles"
@@ -29,7 +25,6 @@ interface PickerUIProps {
   isInteractionsDisabled: boolean
   handleInputChange: (text: string) => void
   renderItem: ListRenderItem<BasicMovie>
-  showPreviewHint: boolean
 }
 
 export const PickerUI: React.FC<PickerUIProps> = memo(
@@ -39,7 +34,6 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
     isInteractionsDisabled,
     handleInputChange,
     renderItem,
-    showPreviewHint,
   }) => {
     const getSearchText = () => {
       if (
@@ -50,20 +44,6 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
       }
       return ""
     }
-
-    const hintOpacity = useSharedValue(0)
-
-    useEffect(() => {
-      hintOpacity.value = withTiming(showPreviewHint ? 1 : 0, {
-        duration: 500,
-      })
-    }, [showPreviewHint, hintOpacity])
-
-    const hintAnimatedStyle = useAnimatedStyle(() => {
-      return {
-        opacity: hintOpacity.value,
-      }
-    })
 
     return (
       <View style={pickerStyles.container}>
@@ -97,28 +77,33 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
         </Animated.View>
 
         <View style={pickerStyles.resultsContainer}>
-          <Animated.View
-            style={[pickerStyles.previewHintContainer, hintAnimatedStyle]}
-            pointerEvents="none"
-          >
-            <Text style={pickerStyles.previewHintText}>Hold for preview</Text>
-          </Animated.View>
           {pickerState.status === "searching" ? (
             <ActivityIndicator size="large" color={colors.primary} />
           ) : pickerState.status === "results" ? (
-            <FlatList
-              data={pickerState.results}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.id.toString()}
-              style={pickerStyles.resultsShow}
-              keyboardShouldPersistTaps="handled"
-              initialNumToRender={10}
-              maxToRenderPerBatch={10}
-              windowSize={11}
-              ListEmptyComponent={
-                <Text style={pickerStyles.noResultsText}>No movies found</Text>
-              }
-            />
+            <>
+              <FlatList
+                data={pickerState.results}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.id.toString()}
+                style={pickerStyles.resultsShow}
+                keyboardShouldPersistTaps="handled"
+                initialNumToRender={10}
+                maxToRenderPerBatch={10}
+                windowSize={11}
+                ListEmptyComponent={
+                  <Text style={pickerStyles.noResultsText}>
+                    No movies found
+                  </Text>
+                }
+              />
+              {pickerState.results.length > 0 && (
+                <View style={pickerStyles.previewHintContainer}>
+                  <Text style={pickerStyles.previewHintText}>
+                    💡 Hold any result to preview
+                  </Text>
+                </View>
+              )}
+            </>
           ) : null}
         </View>
       </View>

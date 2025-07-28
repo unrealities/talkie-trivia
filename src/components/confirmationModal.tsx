@@ -1,6 +1,7 @@
 import React, { memo } from "react"
 import { Modal, Pressable, Text, View } from "react-native"
 import { confirmationModalStyles } from "../styles/confirmationModalStyles"
+import { hapticsService } from "../utils/hapticsService"
 
 interface ConfirmationModalProps {
   isVisible: boolean
@@ -22,45 +23,58 @@ const ConfirmationModal = memo(
     onConfirm,
     onCancel,
   }: ConfirmationModalProps) => {
+    const handleConfirm = () => {
+      hapticsService.heavy()
+      onConfirm()
+    }
+    const handleCancel = () => {
+      hapticsService.light()
+      onCancel()
+    }
+
     return (
       <Modal
         animationType="fade"
         transparent={true}
         visible={isVisible}
-        onRequestClose={onCancel}
+        onRequestClose={handleCancel}
       >
         {isVisible && (
-          <View style={confirmationModalStyles.centeredView} testID="confirmation-modal-container">
-
-          <View style={confirmationModalStyles.modalView}>
-            <Text style={confirmationModalStyles.title}>{title}</Text>
-            <Text style={confirmationModalStyles.message}>{message}</Text>
-            <View style={confirmationModalStyles.buttonContainer}>
-              <Pressable
-                style={[
-                  confirmationModalStyles.button,
-                  confirmationModalStyles.cancelButton,
-                ]}
-                onPress={onCancel}
-              >
-                <Text style={confirmationModalStyles.cancelButtonText}>
-                  {cancelText}
-                </Text>
-              </Pressable>
-              <Pressable
-                style={[
-                  confirmationModalStyles.button,
-                  confirmationModalStyles.confirmButton,
-                ]}
-                onPress={onConfirm}
-              >
-                <Text style={confirmationModalStyles.confirmButtonText}>
-                  {confirmText}
-                </Text>
-              </Pressable>
+          <View
+            style={confirmationModalStyles.centeredView}
+            testID="confirmation-modal-container"
+          >
+            <View style={confirmationModalStyles.modalView}>
+              <Text style={confirmationModalStyles.title}>{title}</Text>
+              <Text style={confirmationModalStyles.message}>{message}</Text>
+              <View style={confirmationModalStyles.buttonContainer}>
+                <Pressable
+                  style={({ pressed }) => [
+                    confirmationModalStyles.button,
+                    confirmationModalStyles.cancelButton,
+                    pressed && { opacity: 0.7 },
+                  ]}
+                  onPress={handleCancel}
+                >
+                  <Text style={confirmationModalStyles.cancelButtonText}>
+                    {cancelText}
+                  </Text>
+                </Pressable>
+                <Pressable
+                  style={({ pressed }) => [
+                    confirmationModalStyles.button,
+                    confirmationModalStyles.confirmButton,
+                    pressed && { opacity: 0.7 },
+                  ]}
+                  onPress={handleConfirm}
+                >
+                  <Text style={confirmationModalStyles.confirmButtonText}>
+                    {confirmText}
+                  </Text>
+                </Pressable>
+              </View>
             </View>
           </View>
-        </View>
         )}
       </Modal>
     )

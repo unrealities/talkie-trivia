@@ -1,3 +1,5 @@
+import { Dimensions, PixelRatio, Platform } from "react-native"
+
 export const colors = {
   background: "#1A1A1A",
   primary: "#F77F00",
@@ -9,7 +11,6 @@ export const colors = {
   grey: "#555555",
   lightGrey: "#AAAAAA",
 }
-import { Dimensions, PixelRatio, Platform } from "react-native"
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
@@ -87,4 +88,27 @@ export const spacing = {
   medium: responsive.scale(16),
   large: responsive.scale(24),
   extraLarge: responsive.scale(32),
+}
+
+export const shadows = {
+  light: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
+  },
+  medium: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8,
+  },
 }

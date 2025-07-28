@@ -1,5 +1,11 @@
 import { StyleSheet, Dimensions } from "react-native"
-import { responsive, colors, spacing } from "../styles/global"
+import {
+  responsive,
+  colors,
+  spacing,
+  shadows,
+  typography,
+} from "../styles/global"
 
 const { width, height } = Dimensions.get("window")
 
@@ -12,35 +18,27 @@ export const movieStyles = StyleSheet.create({
     alignSelf: "center",
     marginBottom: spacing.extraLarge,
   },
+  scrollContentContainer: {
+    paddingBottom: spacing.extraLarge,
+    paddingTop: spacing.extraLarge,
+    alignItems: "center",
+    flexGrow: 1,
+  },
+  gameplayContainer: {
+    width: "100%",
+    alignItems: "center",
+  },
   disabledButton: {
     opacity: 0.6,
-  },
-  feedbackContainer: {
-    alignItems: "center",
-    backgroundColor: colors.quinary,
-    borderRadius: responsive.scale(8),
-    marginBottom: spacing.large,
-    marginTop: spacing.large,
-    padding: spacing.medium,
-    width: "100%",
-  },
-  feedbackText: {
-    color: colors.background,
-    fontFamily: "Arvo-Bold",
-    fontSize: responsive.responsiveFontSize(16),
-    textAlign: "center",
   },
   giveUpButton: {
     alignItems: "center",
     alignSelf: "center",
     backgroundColor: colors.quaternary,
-    borderColor: colors.quaternary,
     borderRadius: responsive.scale(10),
-    borderWidth: 2,
-    elevation: 0,
-    justifyContent: "center",
     padding: spacing.medium,
     width: "100%",
+    ...shadows.light,
   },
   giveUpButtonText: {
     color: colors.secondary,
@@ -49,13 +47,56 @@ export const movieStyles = StyleSheet.create({
     textAlign: "center",
   },
   pressedButton: {
+    transform: [{ translateY: 2 }],
     opacity: 0.8,
   },
-  scrollContentContainer: {
-    paddingBottom: spacing.extraLarge,
-    paddingTop: spacing.extraLarge,
+  gameOverContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     alignItems: "center",
-    flexGrow: 1,
+    paddingTop: spacing.large,
+    width: "100%",
+  },
+  gameOverPoster: {
+    width: "70%",
+    aspectRatio: 2 / 3,
+    borderRadius: responsive.scale(12),
+    ...shadows.medium,
+    marginBottom: spacing.medium,
+  },
+  gameOverTitle: {
+    ...typography.heading2,
+    color: colors.primary,
+    textAlign: "center",
+    paddingHorizontal: spacing.medium,
+    marginVertical: spacing.small,
+  },
+  gameOverSubText: {
+    ...typography.bodyText,
+    color: colors.lightGrey,
+    fontFamily: "Arvo-Italic",
+    textAlign: "center",
+    marginBottom: spacing.large,
+  },
+  detailsButton: {
+    backgroundColor: colors.primary,
+    paddingVertical: spacing.small,
+    paddingHorizontal: spacing.large,
+    borderRadius: responsive.scale(8),
+    ...shadows.light,
+  },
+  detailsButtonText: {
+    ...typography.bodyText,
+    fontFamily: "Arvo-Bold",
+    color: colors.secondary,
+  },
+  comeBackText: {
+    ...typography.caption,
+    color: colors.grey,
+    marginTop: spacing.large,
   },
 })
 

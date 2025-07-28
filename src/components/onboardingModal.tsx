@@ -59,7 +59,10 @@ const OnboardingModal: React.FC<OnboardingModalProps> = memo(
             </View>
 
             <Pressable
-              style={styles.button}
+              style={({ pressed }) => [
+                styles.button,
+                pressed && { opacity: 0.8 },
+              ]}
               onPress={handleDismiss}
               accessibilityLabel="Got it, let's play"
               accessibilityRole="button"

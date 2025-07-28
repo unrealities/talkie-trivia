@@ -1,6 +1,7 @@
-import React, { useCallback, memo, useState, useEffect } from "react"
-import { Pressable, Text, ListRenderItemInfo } from "react-native"
+import React, { useCallback, memo, useState } from "react"
+import { Pressable, Text, ListRenderItemInfo, View } from "react-native"
 import Animated, { useAnimatedStyle } from "react-native-reanimated"
+import { Image } from "expo-image"
 import { BasicMovie } from "../models/movie"
 import { colors } from "../styles/global"
 import { pickerStyles } from "../styles/pickerStyles"
@@ -24,6 +25,9 @@ const MovieItem = memo<MovieItemProps>(
       ? ` (${movie.release_date.toString().substring(0, 4)})`
       : ""
     const titleWithYear = `${movie.title}${releaseYear}`
+    const posterUri = movie.poster_path
+      ? `https://image.tmdb.org/t/p/w92${movie.poster_path}`
+      : null
 
     return (
       <Pressable
@@ -34,15 +38,21 @@ const MovieItem = memo<MovieItemProps>(
         onLongPress={() => onLongPress(movie)}
         delayLongPress={200}
         style={({ pressed }) => [
-          pickerStyles.pressableText,
-          pressed && { backgroundColor: colors.quinary },
+          pickerStyles.resultItem,
+          pressed && { backgroundColor: colors.grey },
         ]}
-        android_ripple={{ color: colors.quinary }}
+        android_ripple={{ color: colors.grey }}
         disabled={isDisabled}
       >
+        <Image
+          source={{ uri: posterUri }}
+          placeholder={require("../../assets/movie_default.png")}
+          style={pickerStyles.resultImage}
+          contentFit="cover"
+        />
         <Text
           style={pickerStyles.unselected}
-          numberOfLines={1}
+          numberOfLines={2}
           ellipsizeMode="tail"
         >
           {titleWithYear}
@@ -67,8 +77,6 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
     } = useGame()
 
     const [previewMovie, setPreviewMovie] = useState<BasicMovie | null>(null)
-    const [hintShownThisGame, setHintShownThisGame] = useState(false)
-    const [showPreviewHint, setShowPreviewHint] = useState(false)
 
     const {
       pickerState,
@@ -82,27 +90,6 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
       updatePlayerGame,
       onGuessMade,
     })
-
-    useEffect(() => {
-      setHintShownThisGame(false)
-    }, [playerGame.id])
-
-    useEffect(() => {
-      if (
-        pickerState.status === "results" &&
-        !hintShownThisGame &&
-        pickerState.results.length > 0
-      ) {
-        setShowPreviewHint(true)
-        setHintShownThisGame(true)
-
-        const timer = setTimeout(() => {
-          setShowPreviewHint(false)
-        }, 4000)
-
-        return () => clearTimeout(timer)
-      }
-    }, [pickerState.status, pickerState.results, hintShownThisGame])
 
     const animatedInputStyle = useAnimatedStyle(() => {
       return {
@@ -151,7 +138,6 @@ const PickerContainer: React.FC<PickerContainerProps> = memo(
           isInteractionsDisabled={isInteractionsDisabled}
           handleInputChange={handleInputChange}
           renderItem={renderItem}
-          showPreviewHint={showPreviewHint}
         />
         <PreviewModal
           movie={previewMovie}

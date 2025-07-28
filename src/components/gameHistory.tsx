@@ -21,6 +21,7 @@ import { GameHistoryEntry } from "../models/gameHistory"
 import { gameHistoryEntryConverter } from "../utils/firestore/converters/gameHistoryEntry"
 import { gameHistoryStyles as styles } from "../styles/gameHistoryStyles"
 import { colors } from "../styles/global"
+import { hapticsService } from "../utils/hapticsService"
 
 interface GameHistoryItemProps {
   item: GameHistoryEntry
@@ -36,6 +37,11 @@ const GameHistoryItem = memo(({ item, onPress }: GameHistoryItemProps) => {
     month: "long",
     day: "numeric",
   })
+
+  const handlePress = () => {
+    hapticsService.light()
+    onPress(item)
+  }
 
   const getResultText = () => {
     if (item.wasCorrect) {
@@ -53,7 +59,7 @@ const GameHistoryItem = memo(({ item, onPress }: GameHistoryItemProps) => {
 
   return (
     <Pressable
-      onPress={() => onPress(item)}
+      onPress={handlePress}
       style={({ pressed }) => [
         styles.itemContainer,
         pressed && { backgroundColor: colors.grey },

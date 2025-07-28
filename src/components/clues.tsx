@@ -52,10 +52,18 @@ const CluesContainer = memo(() => {
 
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [revealedClues, setRevealedClues] = useState<string[]>([])
+  // --- START OF FIX: State for typewriter effect ---
+  const [typewriterText, setTypewriterText] = useState("")
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  // --- END OF FIX ---
+
   const fadeAnim = useSharedValue(0)
   const slideAnim = useSharedValue(-10)
   const clueHighlightAnim = useSharedValue(0)
   const scrollViewRef = useRef<ScrollView>(null)
+
+  const oldCluesText = revealedClues.slice(0, -1).join(" ")
+  const spacer = oldCluesText && typewriterText ? " " : ""
 
   useEffect(() => {
     if (playerGame?.movie?.overview) {
@@ -64,6 +72,11 @@ const CluesContainer = memo(() => {
   }, [playerGame?.movie?.overview])
 
   useEffect(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = null
+    }
+
     if (isLoading) return
 
     const numCluesToReveal =
@@ -73,30 +86,41 @@ const CluesContainer = memo(() => {
 
     if (numCluesToReveal > revealedClues.length) {
       hapticsService.light()
-
       const newRevealedClues = clues.slice(0, numCluesToReveal)
+      const lastClue = newRevealedClues[newRevealedClues.length - 1] || ""
 
-      const startAnimations = () => {
-        fadeAnim.value = withTiming(1, {
-          duration: 500,
-          easing: Easing.inOut(Easing.ease),
-        })
-        slideAnim.value = withTiming(0, {
-          duration: 500,
-          easing: Easing.inOut(Easing.ease),
-        })
+      const startReanimatedAnimations = () => {
+        fadeAnim.value = withTiming(1, { duration: 500 })
+        slideAnim.value = withTiming(0, { duration: 500 })
         clueHighlightAnim.value = withSequence(
           withTiming(1, { duration: 400 }),
           withDelay(800, withTiming(0, { duration: 500 }))
         )
       }
+      runOnJS(startReanimatedAnimations)()
+
+      let charIndex = 0
+      setTypewriterText("")
+      intervalRef.current = setInterval(() => {
+        if (charIndex < lastClue.length) {
+          setTypewriterText((prev) => lastClue.substring(0, charIndex + 1))
+          charIndex++
+        } else {
+          if (intervalRef.current) clearInterval(intervalRef.current)
+        }
+      }, 50) // Adjust speed here
 
       setRevealedClues(newRevealedClues)
-      runOnJS(startAnimations)()
-
       scrollViewRef.current?.scrollToEnd({ animated: true })
     } else if (numCluesToReveal < revealedClues.length) {
       setRevealedClues(clues.slice(0, numCluesToReveal))
+      setTypewriterText(clues[clues.length - 1] || "")
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
     }
   }, [isLoading, correctAnswer, isInteractionsDisabled, guesses.length, clues])
 
@@ -105,20 +129,14 @@ const CluesContainer = memo(() => {
     transform: [{ translateY: slideAnim.value }],
   }))
 
-  const highlightStyle = useAnimatedStyle(() => {
-    const backgroundColor = interpolateColor(
+  const highlightStyle = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(
       clueHighlightAnim.value,
       [0, 1],
       ["transparent", colors.primary]
-    )
-    return {
-      backgroundColor,
-    }
-  })
+    ),
+  }))
 
-  const oldCluesText = revealedClues.slice(0, -1).join(" ")
-  const lastClueText =
-    revealedClues.length > 0 ? revealedClues[revealedClues.length - 1] : ""
   const isGameOver = correctAnswer || isInteractionsDisabled
 
   return (
@@ -142,23 +160,17 @@ const CluesContainer = memo(() => {
             contentContainerStyle={cluesStyles.scrollViewContent}
             showsVerticalScrollIndicator={false}
           >
-            <Animated.View style={animatedContainerStyle}>
-              <Text style={cluesStyles.textContainer}>
-                <Text style={cluesStyles.text}>{oldCluesText}</Text>
-                {oldCluesText && lastClueText ? (
-                  <Text style={cluesStyles.text}> </Text>
-                ) : null}
+            <Animated.View
+              style={[animatedContainerStyle, cluesStyles.cluesBox]}
+            >
+              <Text style={cluesStyles.text}>
+                {oldCluesText}
+                {spacer}
                 {isGameOver ? (
-                  <Text style={cluesStyles.text}>{lastClueText}</Text>
+                  <Text>{revealedClues[revealedClues.length - 1]}</Text>
                 ) : (
-                  <Animated.Text
-                    style={[
-                      cluesStyles.text,
-                      cluesStyles.mostRecentClue,
-                      highlightStyle,
-                    ]}
-                  >
-                    {lastClueText}
+                  <Animated.Text style={[highlightStyle]}>
+                    {typewriterText}
                   </Animated.Text>
                 )}
               </Text>
