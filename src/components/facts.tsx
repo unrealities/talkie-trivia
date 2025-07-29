@@ -3,16 +3,13 @@ import {
   Text,
   Pressable,
   View,
-  Alert,
   ActivityIndicator,
   ScrollView,
 } from "react-native"
-import * as Linking from "expo-linking"
 import { Image } from "expo-image"
 import { Actors } from "./actors"
 import { Movie } from "../models/movie"
 import { factsStyles } from "../styles/factsStyles"
-import { analyticsService } from "../utils/analyticsService"
 
 type ImageSource = { uri: string } | number
 
@@ -20,12 +17,13 @@ interface FactsProps {
   movie: Movie
   isLoading?: boolean
   error?: string
+  isScrollEnabled?: boolean
 }
 
 const defaultMovieImage = require("../../assets/movie_default.png")
 
 const Facts = memo(
-  ({ movie, isLoading = false, error }: FactsProps) => {
+  ({ movie, isLoading = false, error, isScrollEnabled = true }: FactsProps) => {
     if (isLoading) {
       return (
         <ActivityIndicator
@@ -54,33 +52,7 @@ const Facts = memo(
 
     const placeholderSource: ImageSource = defaultMovieImage
 
-    const handlePressIMDb = useCallback(() => {
-      if (!imdbURI) {
-        Alert.alert("No IMDb Link", "IMDb link is unavailable for this movie")
-        return
-      }
-
-      analyticsService.trackImdbLinkTapped(movie.title)
-
-      Linking.canOpenURL(imdbURI)
-        .then((supported) => {
-          if (supported) {
-            return Linking.openURL(imdbURI)
-          } else {
-            Alert.alert("Unsupported Link", "Unable to open IMDb page")
-          }
-        })
-        .catch((linkError) => {
-          Alert.alert(
-            "Link Error",
-            `Could not open the IMDb link. ${
-              linkError instanceof Error
-                ? linkError.message
-                : "An unexpected error occurred."
-            }`
-          )
-        })
-    }, [imdbURI, movie.title])
+    const handlePressIMDb = useCallback(() => {}, [imdbURI, movie.title])
 
     return (
       <View style={factsStyles.container}>
@@ -101,6 +73,7 @@ const Facts = memo(
         )}
 
         <ScrollView
+          scrollEnabled={isScrollEnabled}
           contentContainerStyle={factsStyles.scrollContainer}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}

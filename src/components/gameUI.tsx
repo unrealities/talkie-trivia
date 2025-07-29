@@ -1,27 +1,24 @@
 import React, { useState, useCallback, useEffect } from "react"
-import { View, Pressable, Text, ScrollView } from "react-native"
+import { View, Pressable, Text, ScrollView, Share, Alert } from "react-native"
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withDelay,
   withTiming,
 } from "react-native-reanimated"
-import { Image } from "expo-image"
-
 import CluesContainer from "./clues"
 import GuessesContainer from "./guesses"
-import MovieModal from "./modal"
 import PickerContainer from "./picker"
-import { movieStyles } from "../styles/movieStyles"
 import HintContainer from "./hint"
 import ConfettiCelebration from "./confettiCelebration"
 import ConfirmationModal from "./confirmationModal"
-import { useGame } from "../contexts/gameContext"
 import OnboardingModal from "./onboardingModal"
+import Facts from "./facts"
+import GuessFeedback from "./guessFeedback"
+import { useGame } from "../contexts/gameContext"
 import { hapticsService } from "../utils/hapticsService"
 import { analyticsService } from "../utils/analyticsService"
-import GuessFeedback from "./guessFeedback"
-import Facts from "./facts"
+import { generateShareMessage } from "../utils/shareUtils"
+import { movieStyles } from "../styles/movieStyles"
 
 type GuessResult = { movieId: number; correct: boolean } | null
 
@@ -30,12 +27,9 @@ const GameUI: React.FC = () => {
     loading: isDataLoading,
     playerGame,
     updatePlayerGame,
-    showModal,
     showConfetti,
-    animatedModalStyles,
     showOnboarding,
     handleConfettiStop,
-    setShowModal,
     setShowConfetti,
     handleDismissOnboarding,
   } = useGame()
@@ -50,23 +44,18 @@ const GameUI: React.FC = () => {
     playerGame.gaveUp ||
     playerGame.guesses.length >= playerGame.guessesMax
 
-  const gameplayOpacity = useSharedValue(isGameOver ? 0 : 1)
-  const gameOverOpacity = useSharedValue(isGameOver ? 1 : 0)
-
-  const animatedGameplayStyle = useAnimatedStyle(() => ({
-    opacity: gameplayOpacity.value,
-  }))
-  const animatedGameOverStyle = useAnimatedStyle(() => ({
-    opacity: gameOverOpacity.value,
-    pointerEvents: gameOverOpacity.value === 1 ? "auto" : "none",
-  }))
+  const gameOverAnimation = useSharedValue(isGameOver ? 1 : 0)
 
   useEffect(() => {
-    if (isGameOver) {
-      gameplayOpacity.value = withDelay(200, withTiming(0, { duration: 400 }))
-      gameOverOpacity.value = withDelay(400, withTiming(1, { duration: 500 }))
-    }
-  }, [isGameOver, gameplayOpacity, gameOverOpacity])
+    gameOverAnimation.value = withTiming(isGameOver ? 1 : 0, { duration: 400 })
+  }, [isGameOver, gameOverAnimation])
+
+  const animatedGameplayStyle = useAnimatedStyle(() => ({
+    opacity: 1 - gameOverAnimation.value,
+  }))
+  const animatedGameOverStyle = useAnimatedStyle(() => ({
+    opacity: gameOverAnimation.value,
+  }))
 
   const handleGuessMade = useCallback(
     (result: { movieId: number; correct: boolean }) => {
@@ -94,9 +83,7 @@ const GameUI: React.FC = () => {
     setShowGiveUpConfirmation(true)
   }, [])
 
-  const cancelGiveUp = useCallback(() => {
-    setShowGiveUpConfirmation(false)
-  }, [])
+  const cancelGiveUp = useCallback(() => setShowGiveUpConfirmation(false), [])
 
   const confirmGiveUp = useCallback(() => {
     setShowGiveUpConfirmation(false)
@@ -105,29 +92,79 @@ const GameUI: React.FC = () => {
         playerGame.guesses.length,
         Object.keys(playerGame.hintsUsed || {}).length
       )
-      const updatedPlayerGameGiveUp = { ...playerGame, gaveUp: true }
-      updatePlayerGame(updatedPlayerGameGiveUp)
+      updatePlayerGame({ ...playerGame, gaveUp: true })
     }
   }, [playerGame, updatePlayerGame])
 
-  const handleShowDetails = () => {
-    hapticsService.light()
-    setShowModal(true)
+  const handleShare = async () => {
+    if (!playerGame) return
+    hapticsService.medium()
+    try {
+      const outcome = playerGame.correctAnswer
+        ? "win"
+        : playerGame.gaveUp
+        ? "give_up"
+        : "lose"
+      analyticsService.trackShareResults(outcome)
+      const message = generateShareMessage(playerGame)
+      await Share.share(
+        { message, title: "Talkie Trivia Results" },
+        { dialogTitle: "Share your Talkie Trivia results!" }
+      )
+    } catch (error: any) {
+      Alert.alert("Share Error", error.message)
+    }
   }
 
-  const renderGameResult = () => {
-    let resultText = ""
-    if (playerGame.correctAnswer) {
-      resultText = `You got it in ${playerGame.guesses.length} guess${
-        playerGame.guesses.length > 1 ? "es" : ""
-      }!`
-    } else if (playerGame.gaveUp) {
-      resultText = "Sometimes you just know when to fold 'em."
-    } else {
-      resultText = "So close! Better luck next time."
-    }
-    return <Text style={movieStyles.gameOverSubText}>{resultText}</Text>
-  }
+  const GameplayContent = () => (
+    <Animated.View style={animatedGameplayStyle}>
+      <GuessFeedback message={guessFeedback} isCorrect={isCorrectGuess} />
+      <HintContainer provideGuessFeedback={setGuessFeedback} />
+      <PickerContainer onGuessMade={handleGuessMade} />
+      <GuessesContainer lastGuessResult={lastGuessResult} />
+      <Pressable
+        onPress={handleGiveUpPress}
+        style={({ pressed }) => [
+          movieStyles.giveUpButton,
+          isDataLoading && movieStyles.disabledButton,
+          pressed && movieStyles.pressedButton,
+        ]}
+        disabled={isDataLoading}
+      >
+        <Text style={movieStyles.giveUpButtonText}>Give Up?</Text>
+      </Pressable>
+    </Animated.View>
+  )
+
+  const GameOverContent = () => (
+    <Animated.View style={animatedGameOverStyle}>
+      <Text style={movieStyles.gameOverSubText}>
+        {playerGame.correctAnswer
+          ? `You got it in ${playerGame.guesses.length} guess${
+              playerGame.guesses.length > 1 ? "es" : ""
+            }!`
+          : playerGame.gaveUp
+          ? "Sometimes you just know when to fold 'em."
+          : "So close! Better luck next time."}
+      </Text>
+      <Facts movie={playerGame.movie} isScrollEnabled={false} />
+      <GuessesContainer lastGuessResult={lastGuessResult} />
+      <View style={movieStyles.gameOverButtonsContainer}>
+        <Pressable
+          onPress={handleShare}
+          style={({ pressed }) => [
+            movieStyles.shareButton,
+            pressed && movieStyles.pressedButton,
+          ]}
+        >
+          <Text style={movieStyles.detailsButtonText}>Share Your Result</Text>
+        </Pressable>
+      </View>
+      <Text style={movieStyles.comeBackText}>
+        Come back tomorrow for a new movie!
+      </Text>
+    </Animated.View>
+  )
 
   return (
     <ScrollView
@@ -137,71 +174,7 @@ const GameUI: React.FC = () => {
     >
       <View style={movieStyles.container}>
         <CluesContainer />
-
-        {/* --- Gameplay View --- */}
-        <Animated.View
-          style={[movieStyles.gameplayContainer, animatedGameplayStyle]}
-        >
-          <GuessFeedback message={guessFeedback} isCorrect={isCorrectGuess} />
-          <HintContainer provideGuessFeedback={setGuessFeedback} />
-          <PickerContainer onGuessMade={handleGuessMade} />
-          <Pressable
-            onPress={handleGiveUpPress}
-            style={({ pressed }) => [
-              movieStyles.giveUpButton,
-              isDataLoading && movieStyles.disabledButton,
-              pressed && movieStyles.pressedButton,
-            ]}
-            disabled={isDataLoading}
-            accessible={true}
-            accessibilityLabel="Give Up"
-            accessibilityHint="Gives up on the current movie."
-            accessibilityRole="button"
-          >
-            <Text style={movieStyles.giveUpButtonText}>Give Up?</Text>
-          </Pressable>
-        </Animated.View>
-
-        <GuessesContainer lastGuessResult={lastGuessResult} />
-
-        {/* --- Game Over View --- */}
-        {isGameOver && (
-          <Animated.View
-            style={[movieStyles.gameOverContainer, animatedGameOverStyle]}
-          >
-            <Image
-              source={{
-                uri: `https://image.tmdb.org/t/p/w500${playerGame.movie.poster_path}`,
-              }}
-              style={movieStyles.gameOverPoster}
-              contentFit="contain"
-            />
-            <Text style={movieStyles.gameOverTitle}>
-              {playerGame.movie.title}
-            </Text>
-            {renderGameResult()}
-            <Pressable
-              onPress={handleShowDetails}
-              style={({ pressed }) => [
-                movieStyles.detailsButton,
-                pressed && movieStyles.pressedButton,
-              ]}
-            >
-              <Text style={movieStyles.detailsButtonText}>
-                View Details & Share
-              </Text>
-            </Pressable>
-            <Text style={movieStyles.comeBackText}>
-              Come back tomorrow for a new movie!
-            </Text>
-          </Animated.View>
-        )}
-
-        <Animated.View style={[animatedModalStyles]}>
-          <MovieModal show={showModal} toggleModal={setShowModal}>
-            <Facts movie={playerGame.movie} />
-          </MovieModal>
-        </Animated.View>
+        {isGameOver ? <GameOverContent /> : <GameplayContent />}
 
         <OnboardingModal
           isVisible={showOnboarding}

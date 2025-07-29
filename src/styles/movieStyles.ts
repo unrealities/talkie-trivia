@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from "react-native"
+import { StyleSheet } from "react-native"
 import {
   responsive,
   colors,
@@ -6,8 +6,6 @@ import {
   shadows,
   typography,
 } from "../styles/global"
-
-const { width, height } = Dimensions.get("window")
 
 export const movieStyles = StyleSheet.create({
   container: {
@@ -23,10 +21,6 @@ export const movieStyles = StyleSheet.create({
     paddingTop: spacing.extraLarge,
     alignItems: "center",
     flexGrow: 1,
-  },
-  gameplayContainer: {
-    width: "100%",
-    alignItems: "center",
   },
   disabledButton: {
     opacity: 0.6,
@@ -50,53 +44,39 @@ export const movieStyles = StyleSheet.create({
     transform: [{ translateY: 2 }],
     opacity: 0.8,
   },
-  gameOverContainer: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    alignItems: "center",
-    paddingTop: spacing.large,
-    width: "100%",
-  },
-  gameOverPoster: {
-    width: "70%",
-    aspectRatio: 2 / 3,
-    borderRadius: responsive.scale(12),
-    ...shadows.medium,
-    marginBottom: spacing.medium,
-  },
-  gameOverTitle: {
-    ...typography.heading2,
-    color: colors.primary,
-    textAlign: "center",
-    paddingHorizontal: spacing.medium,
-    marginVertical: spacing.small,
-  },
   gameOverSubText: {
     ...typography.bodyText,
     color: colors.lightGrey,
     fontFamily: "Arvo-Italic",
     textAlign: "center",
-    marginBottom: spacing.large,
+    marginBottom: spacing.medium,
   },
-  detailsButton: {
-    backgroundColor: colors.primary,
+  gameOverButtonsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    paddingVertical: spacing.medium,
+  },
+  shareButton: {
+    backgroundColor: colors.quinary,
     paddingVertical: spacing.small,
     paddingHorizontal: spacing.large,
     borderRadius: responsive.scale(8),
     ...shadows.light,
+    width: "80%",
+    alignItems: "center",
   },
   detailsButtonText: {
     ...typography.bodyText,
     fontFamily: "Arvo-Bold",
-    color: colors.secondary,
+    color: colors.background,
   },
   comeBackText: {
     ...typography.caption,
     color: colors.grey,
-    marginTop: spacing.large,
+    textAlign: "center",
+    marginTop: spacing.small,
   },
 })
 

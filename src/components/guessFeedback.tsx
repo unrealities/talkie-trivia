@@ -36,7 +36,7 @@ const GuessFeedback: React.FC<GuessFeedbackProps> = memo(
     }, [message, animation])
 
     const animatedContainerStyle = useAnimatedStyle(() => {
-      const translateY = interpolate(animation.value, [0, 1], [20, 0])
+      const translateY = interpolate(animation.value, [0, 1], [-20, 0])
       return {
         opacity: animation.value,
         transform: [{ translateY }],
@@ -53,7 +53,7 @@ const GuessFeedback: React.FC<GuessFeedbackProps> = memo(
     ]
     const textStyle = [
       styles.text,
-      isCorrect ? { color: colors.background } : { color: colors.secondary },
+      { color: colors.background },
     ]
 
     return (

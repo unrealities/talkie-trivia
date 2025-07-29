@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native"
-import { colors, responsive, spacing, typography } from "./global"
+import { colors, responsive, spacing, typography, shadows } from "./global"
 
 export const guessFeedbackStyles = StyleSheet.create({
   container: {
@@ -9,8 +9,9 @@ export const guessFeedbackStyles = StyleSheet.create({
     marginVertical: spacing.small,
     alignItems: "center",
     justifyContent: "center",
-    width: "100%",
+    width: "90%",
     alignSelf: "center",
+    ...shadows.light,
   },
   correct: {
     backgroundColor: colors.quinary,
@@ -22,5 +23,6 @@ export const guessFeedbackStyles = StyleSheet.create({
     ...typography.bodyText,
     fontFamily: "Arvo-Bold",
     textAlign: "center",
+    color: colors.background,
   },
 })
