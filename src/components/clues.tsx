@@ -1,5 +1,12 @@
-import React, { useEffect, useRef, useState, useMemo, memo } from "react"
-import { Text, View, Easing, ScrollView } from "react-native"
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+  memo,
+  useCallback,
+} from "react"
+import { Text, View, Easing, ScrollView, Pressable } from "react-native"
 import Animated, {
   useSharedValue,
   withTiming,
@@ -52,10 +59,9 @@ const CluesContainer = memo(() => {
 
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [revealedClues, setRevealedClues] = useState<string[]>([])
-  // --- START OF FIX: State for typewriter effect ---
   const [typewriterText, setTypewriterText] = useState("")
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
-  // --- END OF FIX ---
+  const lastClueRef = useRef<string>("")
 
   const fadeAnim = useSharedValue(0)
   const slideAnim = useSharedValue(-10)
@@ -64,6 +70,15 @@ const CluesContainer = memo(() => {
 
   const oldCluesText = revealedClues.slice(0, -1).join(" ")
   const spacer = oldCluesText && typewriterText ? " " : ""
+
+  const handleSkipAnimation = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = null
+      setTypewriterText(lastClueRef.current)
+      hapticsService.light()
+    }
+  }, [])
 
   useEffect(() => {
     if (playerGame?.movie?.overview) {
@@ -88,6 +103,7 @@ const CluesContainer = memo(() => {
       hapticsService.light()
       const newRevealedClues = clues.slice(0, numCluesToReveal)
       const lastClue = newRevealedClues[newRevealedClues.length - 1] || ""
+      lastClueRef.current = lastClue
 
       const startReanimatedAnimations = () => {
         fadeAnim.value = withTiming(1, { duration: 500 })
@@ -106,9 +122,12 @@ const CluesContainer = memo(() => {
           setTypewriterText((prev) => lastClue.substring(0, charIndex + 1))
           charIndex++
         } else {
-          if (intervalRef.current) clearInterval(intervalRef.current)
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current)
+            intervalRef.current = null
+          }
         }
-      }, 50) // Adjust speed here
+      }, 50)
 
       setRevealedClues(newRevealedClues)
       scrollViewRef.current?.scrollToEnd({ animated: true })
@@ -160,21 +179,29 @@ const CluesContainer = memo(() => {
             contentContainerStyle={cluesStyles.scrollViewContent}
             showsVerticalScrollIndicator={false}
           >
-            <Animated.View
-              style={[animatedContainerStyle, cluesStyles.cluesBox]}
+            <Pressable
+              onPress={isGameOver ? undefined : handleSkipAnimation}
+              accessible={!isGameOver}
+              accessibilityLabel={
+                !isGameOver ? "Tap to reveal the full clue immediately" : ""
+              }
             >
-              <Text style={cluesStyles.text}>
-                {oldCluesText}
-                {spacer}
-                {isGameOver ? (
-                  <Text>{revealedClues[revealedClues.length - 1]}</Text>
-                ) : (
-                  <Animated.Text style={[highlightStyle]}>
-                    {typewriterText}
-                  </Animated.Text>
-                )}
-              </Text>
-            </Animated.View>
+              <Animated.View
+                style={[animatedContainerStyle, cluesStyles.cluesBox]}
+              >
+                <Text style={cluesStyles.text}>
+                  {oldCluesText}
+                  {spacer}
+                  {isGameOver ? (
+                    <Text>{revealedClues[revealedClues.length - 1]}</Text>
+                  ) : (
+                    <Animated.Text style={[highlightStyle]}>
+                      {typewriterText}
+                    </Animated.Text>
+                  )}
+                </Text>
+              </Animated.View>
+            </Pressable>
           </ScrollView>
           <CountContainer
             currentWordLength={

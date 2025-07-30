@@ -18,7 +18,7 @@ export const movieStyles = StyleSheet.create({
   },
   scrollContentContainer: {
     paddingBottom: spacing.extraLarge,
-    paddingTop: spacing.extraLarge,
+    paddingTop: spacing.large,
     alignItems: "center",
     flexGrow: 1,
   },
@@ -49,7 +49,43 @@ export const movieStyles = StyleSheet.create({
     color: colors.lightGrey,
     fontFamily: "Arvo-Italic",
     textAlign: "center",
+    marginBottom: spacing.small,
+  },
+  gameOverCard: {
+    backgroundColor: colors.grey,
+    borderRadius: responsive.scale(12),
+    padding: spacing.medium,
+    alignItems: "center",
+    width: "100%",
+    marginVertical: spacing.medium,
+    ...shadows.medium,
+  },
+  gameOverPoster: {
+    width: "60%",
+    aspectRatio: 2 / 3,
+    borderRadius: responsive.scale(8),
     marginBottom: spacing.medium,
+  },
+  gameOverTitle: {
+    ...typography.heading2,
+    color: colors.secondary,
+    textAlign: "center",
+    marginBottom: spacing.extraSmall,
+  },
+  gameOverDirector: {
+    ...typography.caption,
+    color: colors.tertiary,
+    fontFamily: "Arvo-Regular",
+    textAlign: "center",
+    marginBottom: spacing.medium,
+  },
+  gameOverStarring: {
+    ...typography.bodyText,
+    color: colors.primary,
+    fontFamily: "Arvo-Bold",
+    textAlign: "center",
+    marginTop: spacing.small,
+    marginBottom: spacing.extraSmall,
   },
   gameOverButtonsContainer: {
     flexDirection: "row",
@@ -58,7 +94,7 @@ export const movieStyles = StyleSheet.create({
     width: "100%",
     paddingVertical: spacing.medium,
   },
-  shareButton: {
+  gameOverButton: {
     backgroundColor: colors.quinary,
     paddingVertical: spacing.small,
     paddingHorizontal: spacing.large,
@@ -67,7 +103,7 @@ export const movieStyles = StyleSheet.create({
     width: "80%",
     alignItems: "center",
   },
-  detailsButtonText: {
+  gameOverButtonText: {
     ...typography.bodyText,
     fontFamily: "Arvo-Bold",
     color: colors.background,
