@@ -10,7 +10,7 @@ export const playerStatsStyles = StyleSheet.create({
     width: "100%",
   },
   header: {
-    color: colors.lightGrey,
+    color: colors.textSecondary,
     fontFamily: "Arvo-Bold",
     fontSize: responsive.responsiveFontSize(13),
     minWidth: responsive.scale(120),

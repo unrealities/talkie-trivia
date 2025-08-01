@@ -94,13 +94,14 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
                     </Text>
                   }
                 />
-                {pickerState.results.length > 0 && (
-                  <View style={pickerStyles.previewHintContainer}>
-                    <Text style={pickerStyles.previewHintText}>
-                      💡 Hold any result to preview
-                    </Text>
-                  </View>
-                )}
+                {pickerState.status === "results" &&
+                  pickerState.results.length > 0 && (
+                    <View style={pickerStyles.previewHintContainer}>
+                      <Text style={pickerStyles.previewHintText}>
+                        💡 Hold any result to preview
+                      </Text>
+                    </View>
+                  )}
               </>
             ) : null}
           </View>

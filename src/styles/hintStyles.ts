@@ -15,7 +15,7 @@ export const hintStyles = StyleSheet.create({
     overflow: "hidden",
   },
   hintLabel: {
-    color: colors.lightGrey,
+    color: colors.textSecondary,
     fontFamily: "Arvo-Bold",
     fontSize: responsive.responsiveFontSize(14),
     marginVertical: responsive.scale(4),
@@ -46,7 +46,7 @@ export const hintStyles = StyleSheet.create({
     marginVertical: responsive.scale(8),
     backgroundColor: "transparent",
     borderWidth: 1,
-    borderColor: colors.lightGrey,
+    borderColor: colors.textSecondary,
   },
   usedHintButton: {
     backgroundColor: "transparent",
@@ -63,7 +63,7 @@ export const hintStyles = StyleSheet.create({
     opacity: 0.5,
   },
   buttonTextSmall: {
-    color: colors.lightGrey,
+    color: colors.textSecondary,
     fontFamily: "Arvo-Regular",
     fontSize: responsive.responsiveFontSize(12),
     marginTop: responsive.scale(4),

@@ -60,7 +60,7 @@ class ErrorBoundary extends Component<Props, State> {
           <Text
             style={[
               appStyles.errorText,
-              { marginBottom: 30, color: colors.lightGrey },
+              { marginBottom: 30, color: colors.textSecondary },
             ]}
           >
             An unexpected error occurred. Please try reloading the app.

@@ -44,7 +44,7 @@ export const gameHistoryStyles = StyleSheet.create({
   dateText: {
     fontFamily: "Arvo-Regular",
     fontSize: responsive.responsiveFontSize(12),
-    color: colors.lightGrey,
+    color: colors.textSecondary,
     marginBottom: spacing.small,
   },
   resultText: {
@@ -65,7 +65,7 @@ export const gameHistoryStyles = StyleSheet.create({
   emptyText: {
     fontFamily: "Arvo-Italic",
     fontSize: responsive.responsiveFontSize(16),
-    color: colors.lightGrey,
+    color: colors.textSecondary,
     textAlign: "center",
   },
 })

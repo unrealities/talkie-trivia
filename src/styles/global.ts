@@ -1,28 +1,21 @@
 import { Dimensions, PixelRatio, Platform } from "react-native"
 
 export const colors = {
-  background: "#1A1A1A",
-  primary: "#F77F00",
-  secondary: "#F0F0F0",
-  tertiary: "#FCBF49",
-  quaternary: "#D62828",
+  background: "#121212",
+  backgroundLight: "#1E1E1E",
+  surface: "#2A2A2A",
+  border: "#404040",
+  primary: "#FFC107",
+  secondary: "#FFFFFF",
+  tertiary: "#E0A800",
+  success: "#4CAF50",
+  error: "#D32F2F",
+  warning: "#FFA000",
+  textPrimary: "#F5F5F5",
+  textSecondary: "#A0A0A0",
+  textDisabled: "#616161",
+
   quinary: "#29D7D7",
-  white: "#FFFFFF",
-  grey: "#555555",
-  lightGrey: "#AAAAAA",
-
-  backgroundLight: "#2C2C2C",
-  surface: "#3A3A3A",
-  border: "#555555",
-
-  textPrimary: "#F0F0F0",
-  textSecondary: "#AAAAAA",
-  textDisabled: "#555555",
-
-  accent: "#F77F00",
-  success: "#29D7D7",
-  error: "#D62828",
-  warning: "#FCBF49",
 }
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
@@ -58,29 +51,6 @@ const responsiveFontSize = (size: number) => {
   )
 }
 
-export const typography = {
-  heading1: {
-    fontFamily: "Arvo-Bold",
-    fontSize: responsiveFontSize(28),
-    lineHeight: responsiveFontSize(34),
-  },
-  heading2: {
-    fontFamily: "Arvo-Bold",
-    fontSize: responsiveFontSize(22),
-    lineHeight: responsiveFontSize(28),
-  },
-  bodyText: {
-    fontFamily: "Arvo-Regular",
-    fontSize: responsiveFontSize(16),
-    lineHeight: responsiveFontSize(20),
-  },
-  caption: {
-    fontFamily: "Arvo-Regular",
-    fontSize: responsiveFontSize(12),
-    lineHeight: responsiveFontSize(16),
-  },
-}
-
 export const responsive = {
   scale,
   responsiveFontSize,
@@ -92,6 +62,38 @@ export const responsive = {
   isSmallScreen,
   isMediumScreen,
   isLargeScreen,
+}
+
+export const typography = {
+  heading1: {
+    fontFamily: "Arvo-Bold",
+    fontSize: responsive.responsiveFontSize(28),
+    lineHeight: responsive.responsiveFontSize(34),
+    color: colors.textPrimary,
+  },
+  heading2: {
+    fontFamily: "Arvo-Bold",
+    fontSize: responsive.responsiveFontSize(22),
+    lineHeight: responsive.responsiveFontSize(28),
+    color: colors.textPrimary,
+  },
+  bodyText: {
+    fontFamily: "Arvo-Regular",
+    fontSize: responsive.responsiveFontSize(16),
+    lineHeight: responsive.responsiveFontSize(22),
+    color: colors.textSecondary,
+  },
+  button: {
+    fontFamily: "Arvo-Bold",
+    fontSize: responsive.responsiveFontSize(16),
+    color: colors.background,
+  },
+  caption: {
+    fontFamily: "Arvo-Regular",
+    fontSize: responsive.responsiveFontSize(12),
+    lineHeight: responsive.responsiveFontSize(16),
+    color: colors.textSecondary,
+  },
 }
 
 export const spacing = {

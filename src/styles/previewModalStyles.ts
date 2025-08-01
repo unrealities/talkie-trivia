@@ -10,17 +10,13 @@ export const previewModalStyles = StyleSheet.create({
   },
   modalView: {
     width: responsive.scale(280),
-    backgroundColor: colors.grey,
+    backgroundColor: colors.surface,
     borderRadius: responsive.scale(15),
     padding: spacing.medium,
     alignItems: "center",
-    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.4)",
     elevation: 5,
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
   },
@@ -39,14 +35,14 @@ export const previewModalStyles = StyleSheet.create({
   titleText: {
     fontFamily: "Arvo-Bold",
     fontSize: responsive.responsiveFontSize(18),
-    color: colors.secondary,
+    color: colors.textPrimary,
     textAlign: "center",
     marginBottom: spacing.small,
   },
   dateText: {
     fontFamily: "Arvo-Regular",
     fontSize: responsive.responsiveFontSize(14),
-    color: colors.lightGrey,
+    color: colors.textSecondary,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -64,14 +60,14 @@ export const previewModalStyles = StyleSheet.create({
     alignItems: "center",
   },
   submitButtonText: {
-    color: colors.secondary,
+    color: colors.background,
     fontFamily: "Arvo-Bold",
     fontSize: responsive.responsiveFontSize(14),
   },
   closeButton: {
     backgroundColor: "transparent",
     borderWidth: 2,
-    borderColor: colors.lightGrey,
+    borderColor: colors.border,
     paddingVertical: spacing.small,
     paddingHorizontal: spacing.medium,
     borderRadius: responsive.scale(8),
@@ -80,7 +76,7 @@ export const previewModalStyles = StyleSheet.create({
     alignItems: "center",
   },
   closeButtonText: {
-    color: colors.lightGrey,
+    color: colors.textPrimary,
     fontFamily: "Arvo-Bold",
     fontSize: responsive.responsiveFontSize(14),
   },

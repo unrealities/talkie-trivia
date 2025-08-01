@@ -46,7 +46,7 @@ export const movieStyles = StyleSheet.create({
   },
   gameOverSubText: {
     ...typography.bodyText,
-    color: colors.lightGrey,
+    color: colors.textSecondary,
     fontFamily: "Arvo-Italic",
     textAlign: "center",
     marginBottom: spacing.small,

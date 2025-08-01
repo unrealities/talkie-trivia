@@ -77,7 +77,7 @@ const WinChart = memo(({ wins }: WinChartProps) => {
             <VictoryLabel
               dy={15}
               style={{
-                fill: colors.lightGrey,
+                fill: colors.textSecondary,
                 fontFamily: "Arvo-Regular",
                 fontSize: responsive.responsiveFontSize(10),
               }}

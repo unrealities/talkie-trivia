@@ -68,7 +68,7 @@ const PreviewModal: React.FC<PreviewModalProps> = memo(
               <Pressable
                 style={({ pressed }) => [
                   styles.closeButton,
-                  pressed && { opacity: 0.7 },
+                  pressed && { backgroundColor: "rgba(255, 255, 255, 0.1)" },
                 ]}
                 onPress={handleClose}
               >

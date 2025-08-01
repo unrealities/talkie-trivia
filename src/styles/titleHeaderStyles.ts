@@ -3,9 +3,9 @@ import { colors, responsive } from "./global"
 
 export const titleHeaderStyles = StyleSheet.create({
   container: {
-    borderBottomColor: colors.lightGrey,
+    borderBottomColor: colors.textSecondary,
     borderBottomWidth: 1,
-    borderTopColor: colors.lightGrey,
+    borderTopColor: colors.textSecondary,
     borderTopWidth: 1,
     borderStyle: "solid",
     justifyContent: "center",
