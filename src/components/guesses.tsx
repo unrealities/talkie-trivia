@@ -1,14 +1,15 @@
 import React, { memo, useEffect } from "react"
 import { Text, View } from "react-native"
 import Animated, {
-  interpolateColor,
+  interpolate,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
-  withRepeat,
   withSequence,
   withTiming,
 } from "react-native-reanimated"
+import Icon from "react-native-vector-icons/FontAwesome"
+
 import { guessesStyles } from "../styles/guessesStyles"
 import { useSkeletonAnimation } from "../utils/hooks/useSkeletonAnimation"
 import { useGame } from "../contexts/gameContext"
@@ -19,7 +20,7 @@ type GuessResult = { movieId: number; correct: boolean } | null
 
 interface GuessRowProps {
   index: number
-  guessId: number | undefined
+  guessId: number
   movies: readonly BasicMovie[]
   isLastGuess: boolean
   lastGuessResult: GuessResult
@@ -27,84 +28,101 @@ interface GuessRowProps {
 
 const GuessRow = memo(
   ({ index, guessId, movies, isLastGuess, lastGuessResult }: GuessRowProps) => {
-    const opacity = useSharedValue(0)
-    const translateY = useSharedValue(20)
+    const rotate = useSharedValue(0)
     const shakeX = useSharedValue(0)
-    const backgroundColor = useSharedValue(colors.grey)
+    const backgroundColor = useSharedValue(colors.surface)
 
-    const getMovieTitle = (id: number | undefined) => {
-      if (id && id > 0) {
-        const movie = movies.find((m: BasicMovie) => m.id === id)
-        return movie?.title
+    const guessTitle =
+      movies.find((m: BasicMovie) => m.id === guessId)?.title || "Unknown Movie"
+    const isCorrect = lastGuessResult?.correct === true
+
+    const animatedTileStyle = useAnimatedStyle(() => {
+      const rotateY = interpolate(rotate.value, [0, 1], [180, 360])
+      return {
+        backgroundColor: backgroundColor.value,
+        transform: [
+          { perspective: 1000 },
+          { rotateY: `${rotateY}deg` },
+          { translateX: shakeX.value },
+        ],
       }
-      return "-"
-    }
-    const guessTitle = getMovieTitle(guessId)
+    })
 
-    const animatedContainerStyle = useAnimatedStyle(() => ({
-      opacity: opacity.value,
-      transform: [
-        { translateY: translateY.value },
-        { translateX: shakeX.value },
-      ],
-      backgroundColor: backgroundColor.value,
+    const animatedContentStyle = useAnimatedStyle(() => ({
+      opacity: rotate.value,
     }))
 
     useEffect(() => {
-      // Animate entry
-      opacity.value = withTiming(1, { duration: 300 })
-      translateY.value = withTiming(0, { duration: 300 })
+      rotate.value = withTiming(1, { duration: 600 })
 
       if (isLastGuess && lastGuessResult) {
-        if (lastGuessResult.correct) {
-          // Correct guess: flash green
+        if (isCorrect) {
           backgroundColor.value = withSequence(
-            withTiming(colors.quinary, { duration: 400 }),
-            withDelay(1000, withTiming(colors.grey, { duration: 500 }))
+            withDelay(600, withTiming(colors.success, { duration: 400 })),
+            withDelay(1000, withTiming(colors.surface, { duration: 500 }))
           )
         } else {
-          // Incorrect guess: shake
           shakeX.value = withSequence(
-            withTiming(-10, { duration: 70 }),
-            withRepeat(withTiming(10, { duration: 140 }), 3, true),
+            withDelay(700, withTiming(-10, { duration: 70 })),
+            withTiming(10, { duration: 140 }),
+            withTiming(-10, { duration: 140 }),
+            withTiming(10, { duration: 140 }),
             withTiming(0, { duration: 70 })
           )
-          // And flash red
           backgroundColor.value = withSequence(
-            withTiming(colors.quaternary, { duration: 200 }),
-            withDelay(800, withTiming(colors.grey, { duration: 500 }))
+            withDelay(600, withTiming(colors.error, { duration: 400 })),
+            withDelay(1000, withTiming(colors.surface, { duration: 500 }))
           )
         }
       }
-    }, [isLastGuess, lastGuessResult])
+    }, [isLastGuess, lastGuessResult, isCorrect])
 
     return (
-      <View style={guessesStyles.guessRow}>
+      <Animated.View style={[guessesStyles.guessTile, animatedTileStyle]}>
         <Animated.View
-          style={[guessesStyles.guessContainer, animatedContainerStyle]}
+          style={[
+            guessesStyles.container,
+            animatedContentStyle,
+            { flexDirection: "row", alignItems: "center" },
+          ]}
         >
           <Text style={guessesStyles.guessNumber}>{index + 1}</Text>
           <Text
             numberOfLines={1}
             ellipsizeMode="tail"
             style={[
-              guessesStyles.guess,
-              guessTitle.length > 35 && guessesStyles.guessSmall,
+              guessesStyles.guessText,
+              guessTitle.length > 35 && guessesStyles.guessTextSmall,
             ]}
           >
             {guessTitle}
           </Text>
+          <Icon
+            name={isCorrect ? "check-circle" : "times-circle"}
+            style={[
+              guessesStyles.guessIcon,
+              isCorrect
+                ? guessesStyles.guessIconCorrect
+                : guessesStyles.guessIconIncorrect,
+            ]}
+          />
         </Animated.View>
-      </View>
+      </Animated.View>
     )
   }
 )
 
-const SkeletonRow = memo(() => {
+const EmptyGuessTile = ({ index }: { index: number }) => (
+  <View style={guessesStyles.emptyGuessTile}>
+    <Text style={guessesStyles.guessNumber}>{index + 1}</Text>
+  </View>
+)
+
+const SkeletonRow = memo(({ index }: { index: number }) => {
   const animatedStyle = useSkeletonAnimation()
   return (
     <Animated.View style={[guessesStyles.skeletonRow, animatedStyle]}>
-      <Text style={guessesStyles.guessNumber}>-</Text>
+      <Text style={guessesStyles.guessNumber}>{index + 1}</Text>
       <View style={guessesStyles.skeletonTextContainer}>
         <View style={guessesStyles.skeletonText} />
       </View>
@@ -121,7 +139,7 @@ const GuessesContainer = memo(
       return (
         <View style={guessesStyles.container}>
           {Array.from({ length: guessesMax }).map((_, index) => (
-            <SkeletonRow key={index} />
+            <SkeletonRow key={index} index={index} />
           ))}
         </View>
       )
@@ -131,19 +149,15 @@ const GuessesContainer = memo(
       <View style={guessesStyles.container}>
         {Array.from({ length: guessesMax }).map((_, index) => {
           const guessId = guesses[index]
+
+          if (!guessId) {
+            return <EmptyGuessTile key={index} index={index} />
+          }
+
           const isLastGuess =
             !!lastGuessResult &&
             index === guesses.length - 1 &&
             lastGuessResult.movieId === guessId
-
-          if (!guessId) {
-            return (
-              <View key={index} style={guessesStyles.guessContainer}>
-                <Text style={guessesStyles.guessNumber}>{index + 1}</Text>
-                <Text style={guessesStyles.guess}>-</Text>
-              </View>
-            )
-          }
 
           return (
             <GuessRow

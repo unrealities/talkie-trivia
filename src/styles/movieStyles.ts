@@ -52,13 +52,14 @@ export const movieStyles = StyleSheet.create({
     marginBottom: spacing.small,
   },
   gameOverCard: {
-    backgroundColor: colors.grey,
+    backgroundColor: colors.surface,
     borderRadius: responsive.scale(12),
     padding: spacing.medium,
     alignItems: "center",
     width: "100%",
     marginVertical: spacing.medium,
     ...shadows.medium,
+    backfaceVisibility: "hidden",
   },
   gameOverPoster: {
     width: "60%",
@@ -108,11 +109,23 @@ export const movieStyles = StyleSheet.create({
     fontFamily: "Arvo-Bold",
     color: colors.background,
   },
+  countdownContainer: {
+    marginTop: spacing.large,
+    padding: spacing.small,
+    backgroundColor: colors.surface,
+    borderRadius: responsive.scale(8),
+  },
+  countdownText: {
+    ...typography.caption,
+    fontFamily: "Arvo-Bold",
+    color: colors.textSecondary,
+    fontSize: responsive.responsiveFontSize(14),
+  },
   comeBackText: {
     ...typography.caption,
     color: colors.grey,
     textAlign: "center",
-    marginTop: spacing.small,
+    marginTop: spacing.medium,
   },
 })
 

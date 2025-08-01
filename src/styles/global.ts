@@ -10,6 +10,19 @@ export const colors = {
   white: "#FFFFFF",
   grey: "#555555",
   lightGrey: "#AAAAAA",
+
+  backgroundLight: "#2C2C2C",
+  surface: "#3A3A3A",
+  border: "#555555",
+
+  textPrimary: "#F0F0F0",
+  textSecondary: "#AAAAAA",
+  textDisabled: "#555555",
+
+  accent: "#F77F00",
+  success: "#29D7D7",
+  error: "#D62828",
+  warning: "#FCBF49",
 }
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
@@ -24,9 +37,8 @@ const isLargeScreen = () => SCREEN_WIDTH >= 768
 const scale = (size: number) => {
   const scaleWidth = SCREEN_WIDTH / baseWidth
   const scaleHeight = SCREEN_HEIGHT / baseHeight
-  const scale = Math.min(scaleWidth, scaleHeight)
-
-  return PixelRatio.roundToNearestPixel(size * scale)
+  const scaleFactor = Math.min(scaleWidth, scaleHeight)
+  return PixelRatio.roundToNearestPixel(size * scaleFactor)
 }
 
 const responsiveFontSize = (size: number) => {
@@ -83,11 +95,11 @@ export const responsive = {
 }
 
 export const spacing = {
-  extraSmall: responsive.scale(4),
-  small: responsive.scale(8),
-  medium: responsive.scale(16),
-  large: responsive.scale(24),
-  extraLarge: responsive.scale(32),
+  extraSmall: scale(4),
+  small: scale(8),
+  medium: scale(16),
+  large: scale(24),
+  extraLarge: scale(32),
 }
 
 export const shadows = {

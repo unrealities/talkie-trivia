@@ -1,59 +1,72 @@
 import { StyleSheet } from "react-native"
-import { colors, responsive } from "./global"
+import { colors, responsive, spacing, shadows } from "./global"
 
 export const guessesStyles = StyleSheet.create({
   container: {
-    flex: 1,
-    minHeight: responsive.scale(150),
-    paddingBottom: responsive.scale(10),
-    paddingTop: responsive.scale(10),
     width: "100%",
+    paddingVertical: spacing.small,
   },
-  guessRow: {
-    overflow: "hidden",
-    borderRadius: responsive.scale(4),
-    marginTop: responsive.scale(4),
+  emptyGuessTile: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "transparent",
+    borderRadius: responsive.scale(8),
+    borderWidth: 2,
+    borderColor: colors.border,
+    borderStyle: "dashed",
+    paddingHorizontal: spacing.medium,
+    minHeight: responsive.scale(44),
+    marginBottom: spacing.small,
   },
-  guess: {
-    color: colors.secondary,
+  guessTile: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: colors.surface,
+    borderRadius: responsive.scale(8),
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.small,
+    minHeight: responsive.scale(44),
+    marginBottom: spacing.small,
+    ...shadows.light,
+  },
+  guessNumber: {
+    color: colors.textSecondary,
+    fontFamily: "Arvo-Bold",
+    fontSize: responsive.responsiveFontSize(14),
+    marginRight: spacing.medium,
+  },
+  guessText: {
     flex: 1,
+    color: colors.textPrimary,
     fontFamily: "Arvo-Regular",
     fontSize: responsive.responsiveFontSize(14),
     lineHeight: responsive.responsiveFontSize(18),
-    marginLeft: responsive.scale(8),
-    minHeight: responsive.scale(16),
-    textAlign: "left",
   },
-  guessContainer: {
-    alignItems: "center",
-    alignSelf: "stretch",
-    flexDirection: "row",
-    paddingHorizontal: responsive.scale(8),
-    paddingVertical: responsive.scale(8),
-    width: "100%",
-  },
-  guessNumber: {
-    color: colors.lightGrey,
-    fontFamily: "Arvo-Bold",
+  guessTextSmall: {
     fontSize: responsive.responsiveFontSize(12),
-    paddingRight: responsive.scale(8),
   },
-  guessSmall: {
-    fontSize: responsive.responsiveFontSize(13),
-    letterSpacing: -0.25,
+  guessIcon: {
+    marginLeft: spacing.small,
+    fontSize: responsive.responsiveFontSize(18),
+  },
+  guessIconCorrect: {
+    color: colors.success,
+  },
+  guessIconIncorrect: {
+    color: colors.error,
   },
   skeletonRow: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: colors.grey,
-    borderRadius: responsive.scale(4),
-    paddingHorizontal: responsive.scale(8),
-    paddingVertical: responsive.scale(8),
-    marginTop: responsive.scale(4),
-    width: "100%",
+    backgroundColor: colors.surface,
+    borderRadius: responsive.scale(8),
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.small,
+    minHeight: responsive.scale(44),
+    marginBottom: spacing.small,
   },
   skeletonTextContainer: {
-    backgroundColor: "#444",
+    backgroundColor: colors.border,
     flex: 1,
     borderRadius: responsive.scale(4),
     overflow: "hidden",

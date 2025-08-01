@@ -1,8 +1,16 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { View, Pressable, Text, Share, Alert } from "react-native"
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  Easing,
+  interpolate,
+} from "react-native-reanimated"
 import { Image } from "expo-image"
 import GuessesContainer from "./guesses"
 import Actors from "./actors"
+import CountdownTimer from "./countdownTimer"
 import { PlayerGame } from "../models/game"
 import { movieStyles } from "../styles/movieStyles"
 import { generateShareMessage } from "../utils/shareUtils"
@@ -18,6 +26,26 @@ const GameOverView: React.FC<GameOverViewProps> = ({
   playerGame,
   lastGuessResult,
 }) => {
+  // Animation value for the card flip
+  const flipAnimation = useSharedValue(0)
+
+  // Trigger the animation when the component mounts
+  useEffect(() => {
+    flipAnimation.value = withTiming(1, {
+      duration: 800,
+      easing: Easing.out(Easing.poly(4)),
+    })
+  }, [flipAnimation])
+
+  // Animated style for the card container
+  const animatedCardStyle = useAnimatedStyle(() => {
+    const rotateY = interpolate(flipAnimation.value, [0, 1], [-180, 0])
+    return {
+      transform: [{ perspective: 1000 }, { rotateY: `${rotateY}deg` }],
+      opacity: flipAnimation.value,
+    }
+  })
+
   const handleShare = async () => {
     hapticsService.medium()
     try {
@@ -51,7 +79,7 @@ const GameOverView: React.FC<GameOverViewProps> = ({
 
   return (
     <View style={{ width: "100%" }}>
-      <View style={movieStyles.gameOverCard}>
+      <Animated.View style={[movieStyles.gameOverCard, animatedCardStyle]}>
         <Text style={movieStyles.gameOverSubText}>{resultMessage}</Text>
         <Image
           source={{ uri: posterUri }}
@@ -71,7 +99,7 @@ const GameOverView: React.FC<GameOverViewProps> = ({
             <Actors actors={playerGame.movie.actors} maxDisplay={3} />
           </>
         )}
-      </View>
+      </Animated.View>
 
       <GuessesContainer lastGuessResult={lastGuessResult} />
 
@@ -86,6 +114,9 @@ const GameOverView: React.FC<GameOverViewProps> = ({
           <Text style={movieStyles.gameOverButtonText}>Share Your Result</Text>
         </Pressable>
       </View>
+
+      {/* Add the new Countdown Timer here */}
+      <CountdownTimer />
 
       <Text style={movieStyles.comeBackText}>
         Come back tomorrow for a new movie!

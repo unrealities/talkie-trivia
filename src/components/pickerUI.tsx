@@ -45,6 +45,9 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
       return ""
     }
 
+    const showResults =
+      pickerState.status === "results" || pickerState.status === "searching"
+
     return (
       <View style={pickerStyles.container}>
         <Animated.View style={animatedInputStyle}>
@@ -56,56 +59,52 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
               maxLength={100}
               onChangeText={handleInputChange}
               placeholder="Search for a movie title..."
-              placeholderTextColor={colors.tertiary}
+              placeholderTextColor={colors.textSecondary}
               style={[
                 pickerStyles.input,
                 isInteractionsDisabled && {
-                  backgroundColor: colors.grey,
+                  backgroundColor: colors.border,
                 },
               ]}
               value={getSearchText()}
               editable={!isInteractionsDisabled}
             />
-            {pickerState.status === "searching" && (
-              <ActivityIndicator
-                size="small"
-                color={colors.primary}
-                style={pickerStyles.activityIndicator}
-              />
-            )}
           </View>
         </Animated.View>
 
-        <View style={pickerStyles.resultsContainer}>
-          {pickerState.status === "searching" ? (
-            <ActivityIndicator size="large" color={colors.primary} />
-          ) : pickerState.status === "results" ? (
-            <>
-              <FlatList
-                data={pickerState.results}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.id.toString()}
-                style={pickerStyles.resultsShow}
-                keyboardShouldPersistTaps="handled"
-                initialNumToRender={10}
-                maxToRenderPerBatch={10}
-                windowSize={11}
-                ListEmptyComponent={
-                  <Text style={pickerStyles.noResultsText}>
-                    No movies found
-                  </Text>
-                }
-              />
-              {pickerState.results.length > 0 && (
-                <View style={pickerStyles.previewHintContainer}>
-                  <Text style={pickerStyles.previewHintText}>
-                    💡 Hold any result to preview
-                  </Text>
-                </View>
-              )}
-            </>
-          ) : null}
-        </View>
+        {/* The results container will now render as an overlay due to the styles */}
+        {showResults && (
+          <View style={pickerStyles.resultsContainer}>
+            {pickerState.status === "searching" ? (
+              <ActivityIndicator size="large" color={colors.primary} />
+            ) : pickerState.status === "results" ? (
+              <>
+                <FlatList
+                  data={pickerState.results}
+                  renderItem={renderItem}
+                  keyExtractor={(item) => item.id.toString()}
+                  style={pickerStyles.resultsShow}
+                  keyboardShouldPersistTaps="handled"
+                  initialNumToRender={10}
+                  maxToRenderPerBatch={10}
+                  windowSize={11}
+                  ListEmptyComponent={
+                    <Text style={pickerStyles.noResultsText}>
+                      No movies found for "{pickerState.query}"
+                    </Text>
+                  }
+                />
+                {pickerState.results.length > 0 && (
+                  <View style={pickerStyles.previewHintContainer}>
+                    <Text style={pickerStyles.previewHintText}>
+                      💡 Hold any result to preview
+                    </Text>
+                  </View>
+                )}
+              </>
+            ) : null}
+          </View>
+        )}
       </View>
     )
   }
