@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native"
-import { colors, responsive, spacing, shadows } from "./global"
+import { colors, responsive, spacing, shadows, typography } from "./global"
 
 export const pickerStyles = StyleSheet.create({
   activityIndicator: {
@@ -61,11 +61,15 @@ export const pickerStyles = StyleSheet.create({
     flex: 1,
   },
   resultItem: {
-    padding: spacing.small,
+    paddingVertical: spacing.small,
+    paddingHorizontal: spacing.medium,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+    overflow: "hidden",
+  },
+  resultItemContent: {
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: responsive.scale(4),
-    marginHorizontal: spacing.extraSmall,
   },
   resultImage: {
     width: responsive.scale(30),
@@ -79,6 +83,42 @@ export const pickerStyles = StyleSheet.create({
     fontFamily: "Arvo-Regular",
     fontSize: responsive.responsiveFontSize(14),
     flex: 1,
+  },
+  expandedPreview: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: spacing.medium,
+    padding: spacing.small,
+    backgroundColor: colors.surface,
+    borderRadius: responsive.scale(8),
+  },
+  expandedImage: {
+    width: responsive.scale(80),
+    height: responsive.scale(120),
+    borderRadius: responsive.scale(6),
+    marginRight: spacing.medium,
+  },
+  expandedInfo: {
+    flex: 1,
+    height: "100%",
+    justifyContent: "center",
+  },
+  expandedTitle: {
+    ...typography.bodyText,
+    color: colors.textPrimary,
+    fontFamily: "Arvo-Bold",
+    fontSize: responsive.responsiveFontSize(16),
+    marginBottom: spacing.extraSmall,
+  },
+  expandedYear: {
+    ...typography.caption,
+    color: colors.textSecondary,
+    marginBottom: spacing.small,
+  },
+  expandedHint: {
+    ...typography.caption,
+    color: colors.primary,
+    fontFamily: "Arvo-Italic",
   },
   previewHintContainer: {
     position: "absolute",

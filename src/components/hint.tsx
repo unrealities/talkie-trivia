@@ -16,57 +16,50 @@ const HintSkeleton = memo(() => {
   )
 })
 
-interface HintContainerProps {
-  provideGuessFeedback: (message: string | null) => void
-}
+const HintContainer: React.FC = memo(() => {
+  const {
+    loading: isDataLoading,
+    playerGame,
+    updatePlayerGame,
+    isInteractionsDisabled,
+    playerStats,
+    updatePlayerStats,
+  } = useGame()
 
-const HintContainer: React.FC<HintContainerProps> = memo(
-  ({ provideGuessFeedback }) => {
-    const {
-      loading: isDataLoading,
-      playerGame,
-      updatePlayerGame,
-      isInteractionsDisabled,
-      playerStats,
-      updatePlayerStats,
-    } = useGame()
+  const hintsAvailable = playerStats?.hintsAvailable ?? 0
 
-    const hintsAvailable = playerStats?.hintsAvailable ?? 0
+  const {
+    showHintOptions,
+    displayedHintText,
+    hintLabelText,
+    isToggleDisabled,
+    hintStatuses,
+    handleToggleHintOptions,
+    handleHintSelection,
+  } = useHintLogic({
+    playerGame,
+    isInteractionsDisabled,
+    playerStats,
+    updatePlayerGame,
+    updatePlayerStats,
+  })
 
-    const {
-      showHintOptions,
-      displayedHintText,
-      hintLabelText,
-      isToggleDisabled,
-      hintStatuses,
-      handleToggleHintOptions,
-      handleHintSelection,
-    } = useHintLogic({
-      playerGame,
-      isInteractionsDisabled,
-      playerStats,
-      updatePlayerGame,
-      updatePlayerStats,
-      provideGuessFeedback,
-    })
-
-    if (isDataLoading) {
-      return <HintSkeleton />
-    }
-
-    return (
-      <HintUI
-        showHintOptions={showHintOptions}
-        displayedHintText={displayedHintText}
-        hintLabelText={hintLabelText}
-        isToggleDisabled={isToggleDisabled}
-        hintsAvailable={hintsAvailable}
-        hintStatuses={hintStatuses}
-        handleToggleHintOptions={handleToggleHintOptions}
-        handleHintSelection={handleHintSelection}
-      />
-    )
+  if (isDataLoading) {
+    return <HintSkeleton />
   }
-)
+
+  return (
+    <HintUI
+      showHintOptions={showHintOptions}
+      displayedHintText={displayedHintText}
+      hintLabelText={hintLabelText}
+      isToggleDisabled={isToggleDisabled}
+      hintsAvailable={hintsAvailable}
+      hintStatuses={hintStatuses}
+      handleToggleHintOptions={handleToggleHintOptions}
+      handleHintSelection={handleHintSelection}
+    />
+  )
+})
 
 export default HintContainer

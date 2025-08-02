@@ -62,16 +62,17 @@ const GuessRow = memo(
             withDelay(1000, withTiming(colors.surface, { duration: 500 }))
           )
         } else {
+          // More pronounced "wobble" animation
           shakeX.value = withSequence(
-            withDelay(700, withTiming(-10, { duration: 70 })),
-            withTiming(10, { duration: 140 }),
-            withTiming(-10, { duration: 140 }),
-            withTiming(10, { duration: 140 }),
-            withTiming(0, { duration: 70 })
+            withDelay(700, withTiming(-15, { duration: 60 })),
+            withTiming(15, { duration: 120 }),
+            withTiming(-15, { duration: 120 }),
+            withTiming(0, { duration: 60 })
           )
+          // Quicker, more intense color flash for incorrect guess
           backgroundColor.value = withSequence(
-            withDelay(600, withTiming(colors.error, { duration: 400 })),
-            withDelay(1000, withTiming(colors.surface, { duration: 500 }))
+            withDelay(600, withTiming(colors.error, { duration: 150 })),
+            withTiming(colors.surface, { duration: 800 })
           )
         }
       }

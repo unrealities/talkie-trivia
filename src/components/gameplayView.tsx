@@ -1,9 +1,8 @@
-import React, { useState, useCallback, useEffect } from "react"
+import React, { useState, useCallback } from "react"
 import { View, Pressable, Text } from "react-native"
 import PickerContainer from "./picker"
 import HintContainer from "./hint"
 import ConfirmationModal from "./confirmationModal"
-import GuessFeedback from "./guessFeedback"
 import { useGame } from "../contexts/gameContext"
 import { hapticsService } from "../utils/hapticsService"
 import { analyticsService } from "../utils/analyticsService"
@@ -22,29 +21,19 @@ const GameplayView: React.FC<GameplayViewProps> = ({ onGuessMade }) => {
   } = useGame()
 
   const [showGiveUpConfirmation, setShowGiveUpConfirmation] = useState(false)
-  const [guessFeedback, setGuessFeedback] = useState<string | null>(null)
-  const [isCorrectGuess, setIsCorrectGuess] = useState<boolean | null>(null)
 
   const handleLocalGuessMade = useCallback(
     (result: { movieId: number; correct: boolean }) => {
       onGuessMade(result) // Pass the result up to the parent
-      setIsCorrectGuess(result.correct)
       if (result.correct) {
-        setGuessFeedback("Correct!")
         setShowConfetti(true)
         hapticsService.success()
       } else {
-        setGuessFeedback("Not quite! Try again.")
         hapticsService.error()
       }
     },
     [onGuessMade, setShowConfetti]
   )
-
-  useEffect(() => {
-    setGuessFeedback(null)
-    setIsCorrectGuess(null)
-  }, [playerGame.guesses.length])
 
   const handleGiveUpPress = useCallback(() => {
     hapticsService.warning()
@@ -66,8 +55,7 @@ const GameplayView: React.FC<GameplayViewProps> = ({ onGuessMade }) => {
 
   return (
     <>
-      <GuessFeedback message={guessFeedback} isCorrect={isCorrectGuess} />
-      <HintContainer provideGuessFeedback={setGuessFeedback} />
+      <HintContainer />
       <PickerContainer onGuessMade={handleLocalGuessMade} />
       <Pressable
         onPress={handleGiveUpPress}

@@ -1,5 +1,13 @@
-import React, { useCallback, memo, useState } from "react"
-import { Pressable, Text, ListRenderItemInfo, View } from "react-native"
+import React, { useCallback, memo, useState, useEffect, FC } from "react"
+import {
+  Pressable,
+  Text,
+  ListRenderItemInfo,
+  View,
+  LayoutAnimation,
+  Platform,
+  UIManager,
+} from "react-native"
 import Animated, { useAnimatedStyle } from "react-native-reanimated"
 import { Image } from "expo-image"
 import { BasicMovie } from "../models/movie"
@@ -10,17 +18,28 @@ import { PickerUI } from "./pickerUI"
 import PickerSkeleton from "./pickerSkeleton"
 import { useGame } from "../contexts/gameContext"
 import { hapticsService } from "../utils/hapticsService"
-import PreviewModal from "../components/previewModal"
+
+if (
+  Platform.OS === "android" &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
+  UIManager.setLayoutAnimationEnabledExperimental(true)
+}
 
 interface MovieItemProps {
   movie: BasicMovie
   isDisabled: boolean
+  isExpanded: boolean
   onSelect: (movie: BasicMovie) => void
   onLongPress: (movie: BasicMovie) => void
 }
 
 const MovieItem = memo<MovieItemProps>(
-  ({ movie, isDisabled, onSelect, onLongPress }) => {
+  ({ movie, isDisabled, isExpanded, onSelect, onLongPress }) => {
+    useEffect(() => {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+    }, [isExpanded])
+
     const releaseYear = movie.release_date
       ? ` (${movie.release_date.toString().substring(0, 4)})`
       : ""
@@ -28,35 +47,62 @@ const MovieItem = memo<MovieItemProps>(
     const posterUri = movie.poster_path
       ? `https://image.tmdb.org/t/p/w92${movie.poster_path}`
       : null
+    const fullPosterUri = movie.poster_path
+      ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+      : null
 
     return (
       <Pressable
         accessible
         accessibilityRole="button"
-        aria-label={`Select and guess movie: ${movie.title}`}
+        aria-label={`Select and guess movie: ${movie.title}. Long press to preview.`}
         onPress={() => onSelect(movie)}
         onLongPress={() => onLongPress(movie)}
         delayLongPress={200}
         style={({ pressed }) => [
           pickerStyles.resultItem,
-          pressed && { backgroundColor: colors.grey },
+          pressed && { backgroundColor: colors.surface },
         ]}
-        android_ripple={{ color: colors.grey }}
+        android_ripple={{ color: colors.surface }}
         disabled={isDisabled}
       >
-        <Image
-          source={{ uri: posterUri }}
-          placeholder={require("../../assets/movie_default.png")}
-          style={pickerStyles.resultImage}
-          contentFit="cover"
-        />
-        <Text
-          style={pickerStyles.unselected}
-          numberOfLines={2}
-          ellipsizeMode="tail"
-        >
-          {titleWithYear}
-        </Text>
+        <View style={pickerStyles.resultItemContent}>
+          <Image
+            source={{ uri: posterUri }}
+            placeholder={require("../../assets/movie_default.png")}
+            style={pickerStyles.resultImage}
+            contentFit="cover"
+          />
+          <Text
+            style={pickerStyles.unselected}
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
+            {titleWithYear}
+          </Text>
+        </View>
+
+        {isExpanded && (
+          <View style={pickerStyles.expandedPreview}>
+            <Image
+              source={{ uri: fullPosterUri }}
+              placeholder={require("../../assets/movie_default.png")}
+              style={pickerStyles.expandedImage}
+              contentFit="cover"
+            />
+            <View style={pickerStyles.expandedInfo}>
+              <Text style={pickerStyles.expandedTitle} numberOfLines={3}>
+                {movie.title}
+              </Text>
+              <Text style={pickerStyles.expandedYear}>
+                Release Year: {new Date(movie.release_date).getFullYear()}
+              </Text>
+              <Text style={pickerStyles.expandedHint}>
+                Tap this item to select.
+              </Text>
+            </View>
+          </View>
+        )}
       </Pressable>
     )
   }
@@ -66,88 +112,82 @@ interface PickerContainerProps {
   onGuessMade: (result: { movieId: number; correct: boolean }) => void
 }
 
-const PickerContainer: React.FC<PickerContainerProps> = memo(
-  ({ onGuessMade }) => {
-    const {
-      loading: isDataLoading,
-      movies,
-      playerGame,
-      isInteractionsDisabled,
-      updatePlayerGame,
-    } = useGame()
+const PickerContainer: FC<PickerContainerProps> = memo(({ onGuessMade }) => {
+  const {
+    loading: isDataLoading,
+    movies,
+    playerGame,
+    isInteractionsDisabled,
+    updatePlayerGame,
+  } = useGame()
 
-    const [previewMovie, setPreviewMovie] = useState<BasicMovie | null>(null)
+  const [expandedMovieId, setExpandedMovieId] = useState<number | null>(null)
 
-    const {
-      pickerState,
-      shakeAnimation,
-      handleInputChange,
-      handleMovieSelection,
-    } = usePickerLogic({
-      movies,
-      playerGame,
-      isInteractionsDisabled,
-      updatePlayerGame,
-      onGuessMade,
-    })
+  const {
+    pickerState,
+    shakeAnimation,
+    handleInputChange,
+    handleMovieSelection,
+  } = usePickerLogic({
+    movies,
+    playerGame,
+    isInteractionsDisabled,
+    updatePlayerGame,
+    onGuessMade,
+  })
 
-    const animatedInputStyle = useAnimatedStyle(() => {
-      return {
-        transform: [{ translateX: shakeAnimation.value }],
-      }
-    })
-
-    const handleLongPressMovie = useCallback((movie: BasicMovie) => {
-      hapticsService.light()
-      setPreviewMovie(movie)
-    }, [])
-
-    const handleClosePreview = useCallback(() => {
-      setPreviewMovie(null)
-    }, [])
-
-    const handlePreviewSubmit = useCallback(
-      (movie: BasicMovie) => {
-        handleMovieSelection(movie)
-        handleClosePreview()
-      },
-      [handleMovieSelection, handleClosePreview]
-    )
-
-    const renderItem = useCallback(
-      ({ item }: ListRenderItemInfo<BasicMovie>) => (
-        <MovieItem
-          movie={item}
-          isDisabled={isInteractionsDisabled}
-          onSelect={handleMovieSelection}
-          onLongPress={handleLongPressMovie}
-        />
-      ),
-      [isInteractionsDisabled, handleMovieSelection, handleLongPressMovie]
-    )
-
-    if (isDataLoading) {
-      return <PickerSkeleton />
+  const animatedInputStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: shakeAnimation.value }],
     }
+  })
 
-    return (
-      <>
-        <PickerUI
-          pickerState={pickerState}
-          animatedInputStyle={animatedInputStyle}
-          isInteractionsDisabled={isInteractionsDisabled}
-          handleInputChange={handleInputChange}
-          renderItem={renderItem}
-        />
-        <PreviewModal
-          movie={previewMovie}
-          isVisible={!!previewMovie}
-          onClose={handleClosePreview}
-          onSubmit={handlePreviewSubmit}
-        />
-      </>
-    )
+  const handleLongPressMovie = useCallback((movie: BasicMovie) => {
+    hapticsService.light()
+    setExpandedMovieId((prevId) => (prevId === movie.id ? null : movie.id))
+  }, [])
+
+  const handleSelectMovie = useCallback(
+    (movie: BasicMovie) => {
+      setExpandedMovieId(null) // Collapse on selection
+      handleMovieSelection(movie)
+    },
+    [handleMovieSelection]
+  )
+
+  const renderItem = useCallback(
+    ({ item }: ListRenderItemInfo<BasicMovie>) => (
+      <MovieItem
+        movie={item}
+        isDisabled={isInteractionsDisabled}
+        isExpanded={expandedMovieId === item.id}
+        onSelect={handleSelectMovie}
+        onLongPress={handleLongPressMovie}
+      />
+    ),
+    [
+      isInteractionsDisabled,
+      handleSelectMovie,
+      handleLongPressMovie,
+      expandedMovieId,
+    ]
+  )
+
+  if (isDataLoading) {
+    return <PickerSkeleton />
   }
-)
+
+  return (
+    <>
+      <PickerUI
+        pickerState={pickerState}
+        animatedInputStyle={animatedInputStyle}
+        isInteractionsDisabled={isInteractionsDisabled}
+        handleInputChange={handleInputChange}
+        renderItem={renderItem}
+      />
+    </>
+  )
+})
 
 export default PickerContainer

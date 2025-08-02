@@ -3,7 +3,7 @@ import { LayoutAnimation, Platform, UIManager } from "react-native"
 import { PlayerGame } from "../../models/game"
 import PlayerStats from "../../models/playerStats"
 import { analyticsService } from "../analyticsService"
-import { hapticsService } from "../hapticsService" 
+import { hapticsService } from "../hapticsService"
 
 if (
   Platform.OS === "android" &&
@@ -21,7 +21,6 @@ interface UseHintLogicProps {
   playerStats: PlayerStats
   updatePlayerGame: (updatedPlayerGame: PlayerGame) => void
   updatePlayerStats: (updatedPlayerStats: PlayerStats) => void
-  provideGuessFeedback: (message: string | null) => void
 }
 
 /**
@@ -35,7 +34,6 @@ export function useHintLogic({
   playerStats,
   updatePlayerGame,
   updatePlayerStats,
-  provideGuessFeedback,
 }: UseHintLogicProps) {
   const [showHintOptions, setShowHintOptions] = useState(false)
   const [displayedHintText, setDisplayedHintText] = useState<string | null>(
@@ -153,7 +151,6 @@ export function useHintLogic({
       hintsAvailable <= 0 &&
       !Object.keys(playerGame.hintsUsed || {}).length
     ) {
-      provideGuessFeedback("You are out of hints for today!")
       return
     }
 
@@ -163,12 +160,7 @@ export function useHintLogic({
     }
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setShowHintOptions((prevShow) => !prevShow)
-  }, [
-    showHintOptions,
-    hintsAvailable,
-    playerGame.hintsUsed,
-    provideGuessFeedback,
-  ])
+  }, [showHintOptions, hintsAvailable, playerGame.hintsUsed])
 
   const hintLabelText = useMemo(() => {
     if (isInteractionsDisabled) return "Game Over"
