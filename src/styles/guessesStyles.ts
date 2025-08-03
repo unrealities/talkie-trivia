@@ -1,5 +1,14 @@
-import { StyleSheet } from "react-native"
+import { StyleSheet, ViewStyle } from "react-native"
 import { colors, responsive, spacing, shadows } from "./global"
+
+const baseRow: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  borderRadius: responsive.scale(8),
+  paddingHorizontal: spacing.medium,
+  minHeight: responsive.scale(44),
+  marginBottom: spacing.small,
+}
 
 export const guessesStyles = StyleSheet.create({
   container: {
@@ -7,26 +16,16 @@ export const guessesStyles = StyleSheet.create({
     paddingVertical: spacing.small,
   },
   emptyGuessTile: {
-    flexDirection: "row",
-    alignItems: "center",
+    ...baseRow,
     backgroundColor: "transparent",
-    borderRadius: responsive.scale(8),
     borderWidth: 2,
     borderColor: colors.border,
     borderStyle: "dashed",
-    paddingHorizontal: spacing.medium,
-    minHeight: responsive.scale(44),
-    marginBottom: spacing.small,
   },
   guessTile: {
-    flexDirection: "row",
-    alignItems: "center",
+    ...baseRow,
     backgroundColor: colors.surface,
-    borderRadius: responsive.scale(8),
-    paddingHorizontal: spacing.medium,
     paddingVertical: spacing.small,
-    minHeight: responsive.scale(44),
-    marginBottom: spacing.small,
     ...shadows.light,
   },
   guessNumber: {
@@ -47,23 +46,12 @@ export const guessesStyles = StyleSheet.create({
   },
   guessIcon: {
     marginLeft: spacing.small,
-    fontSize: responsive.responsiveFontSize(18),
-  },
-  guessIconCorrect: {
-    color: colors.success,
-  },
-  guessIconIncorrect: {
-    color: colors.error,
+    fontSize: responsive.responsiveFontSize(22),
   },
   skeletonRow: {
-    flexDirection: "row",
-    alignItems: "center",
+    ...baseRow,
     backgroundColor: colors.surface,
-    borderRadius: responsive.scale(8),
-    paddingHorizontal: spacing.medium,
     paddingVertical: spacing.small,
-    minHeight: responsive.scale(44),
-    marginBottom: spacing.small,
   },
   skeletonTextContainer: {
     backgroundColor: colors.border,

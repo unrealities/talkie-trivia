@@ -68,7 +68,7 @@
     "resize-observer-polyfill": "^1.5.1",
     "victory-native": "^41.17.4",
     "vm": "^0.1.0",
-    "undefined": "react-native-vector-icons/FontAwesome"
+    "undefined": "@expo/vector-icons/Ionicons"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.26.0",
