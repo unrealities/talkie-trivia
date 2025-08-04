@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from "react"
+import React, { memo, useEffect, useMemo } from "react"
 import { Modal, Pressable, Text, View, Share, Alert } from "react-native"
 import Animated, {
   useSharedValue,
@@ -6,11 +6,12 @@ import Animated, {
   withTiming,
   Easing,
 } from "react-native-reanimated"
-import { modalStyles } from "../styles/modalStyles"
+import { getModalStyles } from "../styles/modalStyles"
 import { PlayerGame } from "../models/game"
 import { generateShareMessage } from "../utils/shareUtils"
 import { analyticsService } from "../utils/analyticsService"
 import { hapticsService } from "../utils/hapticsService"
+import { useTheme } from "../contexts/themeContext"
 
 interface MovieModalProps {
   playerGame?: PlayerGame | null
@@ -21,6 +22,8 @@ interface MovieModalProps {
 
 const MovieModal: React.FC<MovieModalProps> = memo(
   ({ playerGame, show, toggleModal, children }) => {
+    const { colors } = useTheme()
+    const modalStyles = useMemo(() => getModalStyles(colors), [colors])
     const animatedValue = useSharedValue(0)
 
     const animatedModalContentStyle = useAnimatedStyle(() => {

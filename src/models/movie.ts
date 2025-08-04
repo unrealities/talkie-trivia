@@ -10,7 +10,7 @@ export interface BasicMovie {
   id: number
   release_date: string
   title: string
-  poster_path: string // Added poster path for the preview modal
+  poster_path: string
 }
 
 export interface Director {
@@ -25,7 +25,7 @@ export interface Genre {
   name: string
 }
 
-export class Movie {
+export interface Movie {
   actors: Actor[]
   director: Director
   genres: Genre[]

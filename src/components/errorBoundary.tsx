@@ -1,8 +1,6 @@
 import React, { Component, ErrorInfo, ReactNode } from "react"
-import { View, Text, Button, Alert } from "react-native"
+import { View, Text, Button, Alert, StyleSheet } from "react-native"
 import * as Updates from "expo-updates"
-import { appStyles } from "../styles/appStyles"
-import { colors } from "../styles/global"
 import { analyticsService } from "../utils/analyticsService"
 
 interface Props {
@@ -48,38 +46,20 @@ class ErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return (
-        <View style={[appStyles.errorContainer, { justifyContent: "center" }]}>
-          <Text
-            style={[
-              appStyles.errorText,
-              { marginBottom: 20, fontSize: 20, fontFamily: "Arvo-Bold" },
-            ]}
-          >
-            Oops! Something went wrong.
-          </Text>
-          <Text
-            style={[
-              appStyles.errorText,
-              { marginBottom: 30, color: colors.textSecondary },
-            ]}
-          >
+        <View style={styles.errorContainer}>
+          <Text style={styles.titleText}>Oops! Something went wrong.</Text>
+          <Text style={styles.messageText}>
             An unexpected error occurred. Please try reloading the app.
           </Text>
-          {/* Always show the reload button, rely on try/catch */}
           <Button
             title="Reload App"
             onPress={this.handleReload}
-            color={colors.primary}
+            color="#FFC107" // Hardcoded primary color
             testID="reload-button"
           />
-          <Text
-            style={[
-              appStyles.errorText,
-              { marginTop: 30, fontSize: 12, color: colors.grey },
-            ]}
-          >
-            {__DEV__ && this.state.error?.message}
-          </Text>
+          {__DEV__ && (
+            <Text style={styles.errorDetails}>{this.state.error?.message}</Text>
+          )}
         </View>
       )
     }
@@ -87,5 +67,33 @@ class ErrorBoundary extends Component<Props, State> {
     return this.props.children
   }
 }
+
+const styles = StyleSheet.create({
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#121212", // Hardcoded dark background
+    padding: 20,
+  },
+  titleText: {
+    fontSize: 20,
+    fontFamily: "Arvo-Bold",
+    color: "#FFFFFF",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  messageText: {
+    fontSize: 16,
+    color: "#A0A0A0",
+    textAlign: "center",
+    marginBottom: 30,
+  },
+  errorDetails: {
+    marginTop: 30,
+    fontSize: 12,
+    color: "#A0A0A0",
+  },
+})
 
 export default ErrorBoundary

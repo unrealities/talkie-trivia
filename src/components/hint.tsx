@@ -1,13 +1,16 @@
-import React, { memo } from "react"
+import React, { memo, useMemo } from "react"
 import { View } from "react-native"
 import Animated from "react-native-reanimated"
 import { useHintLogic } from "../utils/hooks/useHintLogic"
 import HintUI from "./hintUI"
-import { hintStyles } from "../styles/hintStyles"
+import { getHintStyles } from "../styles/hintStyles"
 import { useSkeletonAnimation } from "../utils/hooks/useSkeletonAnimation"
 import { useGame } from "../contexts/gameContext"
+import { useTheme } from "../contexts/themeContext"
 
 const HintSkeleton = memo(() => {
+  const { colors } = useTheme()
+  const hintStyles = useMemo(() => getHintStyles(colors), [colors])
   const animatedStyle = useSkeletonAnimation()
   return (
     <View style={hintStyles.container}>

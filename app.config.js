@@ -10,11 +10,16 @@ module.exports = ({ config }) => ({
     version: process.env.MY_CUSTOM_PROJECT_VERSION || "1.0.0",
     orientation: "portrait",
     icon: "./assets/icon.png",
-    userInterfaceStyle: "light",
+    userInterfaceStyle: "automatic",
     splash: {
       image: "./assets/splash.png",
       resizeMode: "contain",
-      backgroundColor: "#ffffff"
+      backgroundColor: "#ffffff",
+      dark: {
+        image: "./assets/splash.png",
+        resizeMode: "contain",
+        backgroundColor: "#121212",
+      },
     },
     updates: {
       fallbackToCacheTimeout: 0
@@ -29,7 +34,8 @@ module.exports = ({ config }) => ({
     ios: {
       bundleIdentifier: "com.unrealities.talkietrivia",
       googleServicesFile: "./GoogleService-Info.plist",
-      supportsTablet: true
+      supportsTablet: true,
+      userInterfaceStyle: "automatic"
     },
     android: {
       googleServicesFile: "./google-services.json",
@@ -37,7 +43,8 @@ module.exports = ({ config }) => ({
         foregroundImage: "./assets/adaptive-icon.png",
         backgroundColor: "#FFFFFF"
       },
-      package: "com.unrealities.talkietrivia"
+      package: "com.unrealities.talkietrivia",
+      userInterfaceStyle: "automatic"
     },
     web: {
       favicon: "./assets/favicon.png"

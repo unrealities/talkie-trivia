@@ -1,4 +1,4 @@
-import React, { memo } from "react"
+import React, { memo, useMemo } from "react"
 import {
   ActivityIndicator,
   FlatList,
@@ -11,8 +11,8 @@ import {
 } from "react-native"
 import Animated from "react-native-reanimated"
 import { BasicMovie } from "../models/movie"
-import { colors } from "../styles/global"
-import { pickerStyles } from "../styles/pickerStyles"
+import { getPickerStyles } from "../styles/pickerStyles"
+import { useTheme } from "../contexts/themeContext"
 
 type PickerState =
   | { status: "idle" }
@@ -35,6 +35,9 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
     handleInputChange,
     renderItem,
   }) => {
+    const { colors } = useTheme()
+    const pickerStyles = useMemo(() => getPickerStyles(colors), [colors])
+
     const getSearchText = () => {
       if (
         pickerState.status === "searching" ||

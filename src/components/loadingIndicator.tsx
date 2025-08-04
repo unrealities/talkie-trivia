@@ -1,7 +1,8 @@
-import React, { memo } from "react"
-import { View, Text, StyleSheet } from "react-native"
-import { appStyles } from "../styles/appStyles"
+import React, { memo, useMemo } from "react"
+import { View, Text } from "react-native"
+import { getAppStyles } from "../styles/appStyles"
 import CustomLoadingIndicator from "./customLoadingIndicator"
+import { useTheme } from "../contexts/themeContext"
 
 interface LoadingIndicatorProps {
   message?: string
@@ -9,13 +10,16 @@ interface LoadingIndicatorProps {
 
 const LoadingIndicator: React.FC<LoadingIndicatorProps> = memo(
   ({ message }) => {
+    const { colors } = useTheme()
+    const styles = useMemo(() => getAppStyles(colors), [colors])
+
     return (
       <View
-        style={appStyles.loadingContainer}
+        style={styles.loadingContainer}
         testID="loading-indicator-container"
       >
         <CustomLoadingIndicator />
-        {message && <Text style={appStyles.messageText}>{message}</Text>}
+        {message && <Text style={styles.messageText}>{message}</Text>}
       </View>
     )
   }

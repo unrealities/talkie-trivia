@@ -1,7 +1,8 @@
-import React, { memo } from "react"
+import React, { memo, useMemo } from "react"
 import { Modal, Pressable, Text, View } from "react-native"
-import { confirmationModalStyles } from "../styles/confirmationModalStyles"
+import { getConfirmationModalStyles } from "../styles/confirmationModalStyles"
 import { hapticsService } from "../utils/hapticsService"
+import { useTheme } from "../contexts/themeContext"
 
 interface ConfirmationModalProps {
   isVisible: boolean
@@ -23,6 +24,9 @@ const ConfirmationModal = memo(
     onConfirm,
     onCancel,
   }: ConfirmationModalProps) => {
+    const { colors } = useTheme()
+    const styles = useMemo(() => getConfirmationModalStyles(colors), [colors])
+
     const handleConfirm = () => {
       hapticsService.heavy()
       onConfirm()
@@ -41,36 +45,32 @@ const ConfirmationModal = memo(
       >
         {isVisible && (
           <View
-            style={confirmationModalStyles.centeredView}
+            style={styles.centeredView}
             testID="confirmation-modal-container"
           >
-            <View style={confirmationModalStyles.modalView}>
-              <Text style={confirmationModalStyles.title}>{title}</Text>
-              <Text style={confirmationModalStyles.message}>{message}</Text>
-              <View style={confirmationModalStyles.buttonContainer}>
+            <View style={styles.modalView}>
+              <Text style={styles.title}>{title}</Text>
+              <Text style={styles.message}>{message}</Text>
+              <View style={styles.buttonContainer}>
                 <Pressable
                   style={({ pressed }) => [
-                    confirmationModalStyles.button,
-                    confirmationModalStyles.cancelButton,
+                    styles.button,
+                    styles.cancelButton,
                     pressed && { opacity: 0.7 },
                   ]}
                   onPress={handleCancel}
                 >
-                  <Text style={confirmationModalStyles.cancelButtonText}>
-                    {cancelText}
-                  </Text>
+                  <Text style={styles.cancelButtonText}>{cancelText}</Text>
                 </Pressable>
                 <Pressable
                   style={({ pressed }) => [
-                    confirmationModalStyles.button,
-                    confirmationModalStyles.confirmButton,
+                    styles.button,
+                    styles.confirmButton,
                     pressed && { opacity: 0.7 },
                   ]}
                   onPress={handleConfirm}
                 >
-                  <Text style={confirmationModalStyles.confirmButtonText}>
-                    {confirmText}
-                  </Text>
+                  <Text style={styles.confirmButtonText}>{confirmText}</Text>
                 </Pressable>
               </View>
             </View>

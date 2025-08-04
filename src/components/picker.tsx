@@ -1,4 +1,11 @@
-import React, { useCallback, memo, useState, useEffect, FC } from "react"
+import React, {
+  useCallback,
+  memo,
+  useState,
+  useEffect,
+  FC,
+  useMemo,
+} from "react"
 import {
   Pressable,
   Text,
@@ -11,13 +18,13 @@ import {
 import Animated, { useAnimatedStyle } from "react-native-reanimated"
 import { Image } from "expo-image"
 import { BasicMovie } from "../models/movie"
-import { colors } from "../styles/global"
-import { pickerStyles } from "../styles/pickerStyles"
+import { getPickerStyles } from "../styles/pickerStyles"
 import { usePickerLogic } from "../utils/hooks/usePickerLogic"
 import { PickerUI } from "./pickerUI"
 import PickerSkeleton from "./pickerSkeleton"
 import { useGame } from "../contexts/gameContext"
 import { hapticsService } from "../utils/hapticsService"
+import { useTheme } from "../contexts/themeContext"
 
 if (
   Platform.OS === "android" &&
@@ -36,6 +43,9 @@ interface MovieItemProps {
 
 const MovieItem = memo<MovieItemProps>(
   ({ movie, isDisabled, isExpanded, onSelect, onLongPress }) => {
+    const { colors } = useTheme()
+    const pickerStyles = useMemo(() => getPickerStyles(colors), [colors])
+
     useEffect(() => {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     }, [isExpanded])

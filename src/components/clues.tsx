@@ -16,10 +16,10 @@ import Animated, {
   withDelay,
   interpolateColor,
 } from "react-native-reanimated"
-import { cluesStyles } from "../styles/cluesStyles"
-import { colors } from "../styles/global"
+import { getCluesStyles } from "../styles/cluesStyles"
 import { useGame } from "../contexts/gameContext"
 import { hapticsService } from "../utils/hapticsService"
+import { useTheme } from "../contexts/themeContext"
 
 const splitSummary = (summary: string, splits: number = 5): string[] => {
   if (!summary) return Array(splits).fill("")
@@ -39,17 +39,23 @@ interface CountContainerProps {
 }
 
 const CountContainer = memo<CountContainerProps>(
-  ({ currentWordLength, guessNumber, totalWordLength, correctGuess }) => (
-    <View style={cluesStyles.countContainer}>
-      <Text style={cluesStyles.wordCountText}>
-        {correctGuess ? totalWordLength : currentWordLength}/{totalWordLength}
-      </Text>
-    </View>
-  )
+  ({ currentWordLength, guessNumber, totalWordLength, correctGuess }) => {
+    const { colors } = useTheme()
+    const cluesStyles = useMemo(() => getCluesStyles(colors), [colors])
+    return (
+      <View style={cluesStyles.countContainer}>
+        <Text style={cluesStyles.wordCountText}>
+          {correctGuess ? totalWordLength : currentWordLength}/{totalWordLength}
+        </Text>
+      </View>
+    )
+  }
 )
 
 const CluesContainer = memo(() => {
   const { playerGame, isInteractionsDisabled } = useGame()
+  const { colors } = useTheme()
+  const cluesStyles = useMemo(() => getCluesStyles(colors), [colors])
   const { correctAnswer, guesses } = playerGame
 
   const clues = useMemo(

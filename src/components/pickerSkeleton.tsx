@@ -1,11 +1,13 @@
-import React from "react"
+import React, { useMemo } from "react"
 import { View } from "react-native"
 import Animated from "react-native-reanimated"
-import { pickerStyles } from "../styles/pickerStyles"
-import { colors } from "../styles/global"
+import { getPickerStyles } from "../styles/pickerStyles"
 import { useSkeletonAnimation } from "../utils/hooks/useSkeletonAnimation"
+import { useTheme } from "../contexts/themeContext"
 
 const PickerSkeleton = () => {
+  const { colors } = useTheme()
+  const pickerStyles = useMemo(() => getPickerStyles(colors), [colors])
   const animatedStyle = useSkeletonAnimation()
 
   return (
@@ -14,7 +16,10 @@ const PickerSkeleton = () => {
         <View
           style={[
             pickerStyles.input,
-            { backgroundColor: colors.grey, borderColor: colors.grey },
+            {
+              backgroundColor: colors.surface,
+              borderColor: colors.border,
+            },
           ]}
         />
       </View>

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react"
+import React, { useState, useCallback, useMemo } from "react"
 import { View, Pressable, Text } from "react-native"
 import PickerContainer from "./picker"
 import HintContainer from "./hint"
@@ -6,7 +6,8 @@ import ConfirmationModal from "./confirmationModal"
 import { useGame } from "../contexts/gameContext"
 import { hapticsService } from "../utils/hapticsService"
 import { analyticsService } from "../utils/analyticsService"
-import { movieStyles } from "../styles/movieStyles"
+import { getMovieStyles } from "../styles/movieStyles"
+import { useTheme } from "../contexts/themeContext"
 
 interface GameplayViewProps {
   onGuessMade: (result: { movieId: number; correct: boolean }) => void
@@ -19,6 +20,8 @@ const GameplayView: React.FC<GameplayViewProps> = ({ onGuessMade }) => {
     updatePlayerGame,
     setShowConfetti,
   } = useGame()
+  const { colors } = useTheme()
+  const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
 
   const [showGiveUpConfirmation, setShowGiveUpConfirmation] = useState(false)
 

@@ -1,29 +1,35 @@
-import React, { memo } from "react"
+import React, { memo, useMemo } from "react"
 import { Text, View } from "react-native"
-import { networkStyles } from "../styles/networkStyles"
+import { getNetworkStyles } from "../styles/networkStyles"
+import { useTheme } from "../contexts/themeContext"
 
 interface NetworkContainerProps {
   isConnected: boolean
 }
 
 const NetworkContainer = memo(
-  ({ isConnected }: NetworkContainerProps) => (
-    <View
-      style={
-        isConnected
-          ? networkStyles.containerConnected
-          : networkStyles.containerNotConnected
-      }
-    >
-      <Text
+  ({ isConnected }: NetworkContainerProps) => {
+    const { colors } = useTheme()
+    const networkStyles = useMemo(() => getNetworkStyles(colors), [colors])
+
+    return (
+      <View
         style={
-          isConnected ? networkStyles.connected : networkStyles.notConnected
+          isConnected
+            ? networkStyles.containerConnected
+            : networkStyles.containerNotConnected
         }
       >
-        Network is {isConnected ? "connected" : "not connected"}
-      </Text>
-    </View>
-  ),
+        <Text
+          style={
+            isConnected ? networkStyles.connected : networkStyles.notConnected
+          }
+        >
+          Network is {isConnected ? "connected" : "not connected"}
+        </Text>
+      </View>
+    )
+  },
   (prevProps, nextProps) => prevProps.isConnected === nextProps.isConnected
 )
 

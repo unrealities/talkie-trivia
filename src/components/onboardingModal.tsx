@@ -1,7 +1,8 @@
-import React, { memo } from "react"
+import React, { memo, useMemo } from "react"
 import { Modal, Pressable, Text, View } from "react-native"
-import { onboardingModalStyles as styles } from "../styles/onboardingModalStyles"
+import { getOnboardingModalStyles } from "../styles/onboardingModalStyles"
 import { hapticsService } from "../utils/hapticsService"
+import { useTheme } from "../contexts/themeContext"
 
 interface OnboardingModalProps {
   isVisible: boolean
@@ -33,6 +34,9 @@ const tutorialSteps = [
 
 const OnboardingModal: React.FC<OnboardingModalProps> = memo(
   ({ isVisible, onDismiss }) => {
+    const { colors } = useTheme()
+    const styles = useMemo(() => getOnboardingModalStyles(colors), [colors])
+
     const handleDismiss = () => {
       hapticsService.medium()
       onDismiss()

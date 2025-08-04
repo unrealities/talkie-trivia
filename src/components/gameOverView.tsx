@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useMemo } from "react"
 import { View, Pressable, Text, Share, Alert } from "react-native"
 import Animated, {
   useSharedValue,
@@ -12,10 +12,11 @@ import GuessesContainer from "./guesses"
 import Actors from "./actors"
 import CountdownTimer from "./countdownTimer"
 import { PlayerGame } from "../models/game"
-import { movieStyles } from "../styles/movieStyles"
+import { getMovieStyles } from "../styles/movieStyles"
 import { generateShareMessage } from "../utils/shareUtils"
 import { hapticsService } from "../utils/hapticsService"
 import { analyticsService } from "../utils/analyticsService"
+import { useTheme } from "../contexts/themeContext"
 
 interface GameOverViewProps {
   playerGame: PlayerGame
@@ -26,6 +27,8 @@ const GameOverView: React.FC<GameOverViewProps> = ({
   playerGame,
   lastGuessResult,
 }) => {
+  const { colors } = useTheme()
+  const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
   // Animation value for the card flip
   const flipAnimation = useSharedValue(0)
 

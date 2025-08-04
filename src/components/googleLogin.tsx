@@ -1,13 +1,19 @@
-import React, { memo } from "react"
+import React, { memo, useMemo } from "react"
 import { Pressable, Text, View, ActivityIndicator } from "react-native"
-import { googleLoginStyles } from "../styles/googleLoginStyles"
+import { getGoogleLoginStyles } from "../styles/googleLoginStyles"
 import { useAuth } from "../contexts/authContext"
 import ErrorMessage from "./errorMessage"
 import { hapticsService } from "../utils/hapticsService"
+import { useTheme } from "../contexts/themeContext"
 
 const GoogleLogin: React.FC = memo(() => {
   const { player, user, handleSignIn, handleSignOut, isSigningIn, error } =
     useAuth()
+  const { colors } = useTheme()
+  const googleLoginStyles = useMemo(
+    () => getGoogleLoginStyles(colors),
+    [colors]
+  )
 
   const isSignedIn = !!user && !user.isAnonymous
   const displayName = user?.displayName || player?.name || ""

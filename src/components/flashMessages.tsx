@@ -1,23 +1,25 @@
-import React, { useEffect } from "react"
-import { Text, View, StyleSheet } from "react-native"
+import React, { useEffect, useMemo } from "react"
+import { Text, View } from "react-native"
 import Animated, {
   useSharedValue,
   withTiming,
   Easing,
-  runOnJS,
   useAnimatedStyle,
 } from "react-native-reanimated"
-import { colors, responsive } from "../styles/global"
+import { useTheme } from "../contexts/themeContext"
+import { getFlashMessageStyles } from "../styles/flashMessageStyles"
 
 interface flashMessageProps {
   message: string | null
   duration?: number
 }
 
-const flashMessages: React.FC<flashMessageProps> = ({
+const FlashMessages: React.FC<flashMessageProps> = ({
   message,
   duration = 3000,
 }) => {
+  const { colors } = useTheme()
+  const styles = useMemo(() => getFlashMessageStyles(colors), [colors])
   const opacity = useSharedValue(0)
 
   const showMessage = () => {
@@ -59,29 +61,4 @@ const flashMessages: React.FC<flashMessageProps> = ({
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    position: "absolute",
-    top: responsive.scale(4),
-    left: 0,
-    right: 0,
-    zIndex: 1000,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  messageBox: {
-    backgroundColor: colors.quinary,
-    borderRadius: responsive.scale(8),
-    paddingVertical: responsive.scale(10),
-    paddingHorizontal: responsive.scale(20),
-    marginHorizontal: responsive.scale(20),
-  },
-  messageText: {
-    color: colors.background,
-    fontSize: responsive.responsiveFontSize(16),
-    fontFamily: "Arvo-Bold",
-    textAlign: "center",
-  },
-})
-
-export default flashMessages
+export default FlashMessages

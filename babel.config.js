@@ -3,7 +3,6 @@ module.exports = function (api) {
     return {
         presets: ["babel-preset-expo", "@babel/preset-typescript"],
         plugins: [
-            "@babel/plugin-transform-modules-commonjs",
             [
                 "@babel/plugin-transform-runtime",
                 {

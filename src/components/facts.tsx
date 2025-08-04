@@ -1,4 +1,4 @@
-import React, { useCallback, memo } from "react"
+import React, { useCallback, memo, useMemo } from "react"
 import {
   Text,
   Pressable,
@@ -9,7 +9,8 @@ import {
 import { Image } from "expo-image"
 import { Actors } from "./actors"
 import { Movie } from "../models/movie"
-import { factsStyles } from "../styles/factsStyles"
+import { getFactsStyles } from "../styles/factsStyles"
+import { useTheme } from "../contexts/themeContext"
 
 type ImageSource = { uri: string } | number
 
@@ -24,12 +25,15 @@ const defaultMovieImage = require("../../assets/movie_default.png")
 
 const Facts = memo(
   ({ movie, isLoading = false, error, isScrollEnabled = true }: FactsProps) => {
+    const { colors } = useTheme()
+    const factsStyles = useMemo(() => getFactsStyles(colors), [colors])
+
     if (isLoading) {
       return (
         <ActivityIndicator
           testID="activity-indicator"
           size="large"
-          color="#0000ff"
+          color={colors.primary}
         />
       )
     }

@@ -1,22 +1,5 @@
 import { Dimensions, PixelRatio, Platform } from "react-native"
-
-export const colors = {
-  background: "#121212",
-  backgroundLight: "#1E1E1E",
-  surface: "#2A2A2A",
-  border: "#404040",
-  primary: "#FFC107",
-  secondary: "#FFFFFF",
-  tertiary: "#E0A800",
-  success: "#4CAF50",
-  error: "#D32F2F",
-  warning: "#FFA000",
-  textPrimary: "#F5F5F5",
-  textSecondary: "#A0A0A0",
-  textDisabled: "#616161",
-
-  quinary: "#29D7D7",
-}
+import { lightColors } from "./themes"
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
@@ -64,7 +47,7 @@ export const responsive = {
   isLargeScreen,
 }
 
-export const typography = {
+export const getTypography = (colors: typeof lightColors) => ({
   heading1: {
     fontFamily: "Arvo-Bold",
     fontSize: responsive.responsiveFontSize(28),
@@ -94,7 +77,7 @@ export const typography = {
     lineHeight: responsive.responsiveFontSize(16),
     color: colors.textSecondary,
   },
-}
+})
 
 export const spacing = {
   extraSmall: scale(4),

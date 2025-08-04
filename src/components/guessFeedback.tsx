@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from "react"
+import React, { memo, useEffect, useMemo } from "react"
 import { Text } from "react-native"
 import Animated, {
   Easing,
@@ -9,8 +9,8 @@ import Animated, {
   withSequence,
   withTiming,
 } from "react-native-reanimated"
-import { guessFeedbackStyles as styles } from "../styles/guessFeedbackStyles"
-import { colors } from "../styles/global"
+import { getGuessFeedbackStyles } from "../styles/guessFeedbackStyles"
+import { useTheme } from "../contexts/themeContext"
 
 interface GuessFeedbackProps {
   message: string | null
@@ -19,6 +19,8 @@ interface GuessFeedbackProps {
 
 const GuessFeedback: React.FC<GuessFeedbackProps> = memo(
   ({ message, isCorrect }) => {
+    const { colors } = useTheme()
+    const styles = useMemo(() => getGuessFeedbackStyles(colors), [colors])
     const animation = useSharedValue(0)
 
     useEffect(() => {
@@ -51,10 +53,7 @@ const GuessFeedback: React.FC<GuessFeedbackProps> = memo(
       styles.container,
       isCorrect ? styles.correct : styles.incorrect,
     ]
-    const textStyle = [
-      styles.text,
-      { color: colors.background },
-    ]
+    const textStyle = [styles.text, { color: colors.background }]
 
     return (
       <Animated.View style={[containerStyle, animatedContainerStyle]}>

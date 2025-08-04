@@ -1,20 +1,21 @@
-import React, { memo, useEffect } from "react"
+import React, { memo, useEffect, useMemo } from "react"
 import { View, Pressable, Text, StyleProp, ViewStyle } from "react-native"
-import Icon from "react-native-vector-icons/FontAwesome"
+import Ionicons from "@expo/vector-icons/Ionicons"
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated"
-import { hintStyles } from "../styles/hintStyles"
-import { responsive, colors } from "../styles/global"
+import { getHintStyles } from "../styles/hintStyles"
+import { responsive } from "../styles/global"
+import { useTheme } from "../contexts/themeContext"
 
 type HintType = "decade" | "director" | "actor" | "genre"
 type HintStatus = "available" | "used" | "disabled"
 
 interface HintButtonProps {
   hintType: HintType
-  iconName: keyof typeof Icon.glyphMap
+  iconName: keyof typeof Ionicons.glyphMap
   label: string
   onPress: (type: HintType) => void
   status: HintStatus
@@ -29,6 +30,9 @@ const HintButton: React.FC<HintButtonProps> = ({
   status,
   accessibilityHintCount,
 }) => {
+  const { colors } = useTheme()
+  const hintStyles = useMemo(() => getHintStyles(colors), [colors])
+
   const buttonStyle: StyleProp<ViewStyle> = [hintStyles.hintButton]
   if (status === "disabled") {
     buttonStyle.push(hintStyles.disabled)
@@ -58,21 +62,21 @@ const HintButton: React.FC<HintButtonProps> = ({
       accessibilityState={{ disabled: status === "disabled" }}
       accessibilityLabel={getAccessibilityLabel()}
     >
-      <Icon
+      <Ionicons
         name={iconName}
         size={responsive.scale(20)}
         color={
           status === "disabled"
-            ? colors.grey
+            ? colors.textDisabled
             : status === "used"
             ? colors.tertiary
-            : colors.secondary
+            : colors.textSecondary
         }
       />
       <Text
         style={[
           hintStyles.buttonTextSmall,
-          status === "disabled" && { color: colors.grey },
+          status === "disabled" && { color: colors.textDisabled },
           status === "used" && { color: colors.tertiary },
         ]}
       >
@@ -107,6 +111,8 @@ const HintUI: React.FC<HintUIProps> = memo(
     handleToggleHintOptions,
     handleHintSelection,
   }) => {
+    const { colors } = useTheme()
+    const hintStyles = useMemo(() => getHintStyles(colors), [colors])
     const animatedHeight = useSharedValue(0)
 
     const animatedContainerStyle = useAnimatedStyle(() => {
@@ -141,7 +147,7 @@ const HintUI: React.FC<HintUIProps> = memo(
           <Text
             style={[
               hintStyles.hintLabel,
-              isToggleDisabled && { color: colors.grey },
+              isToggleDisabled && { color: colors.textDisabled },
             ]}
           >
             {hintLabelText}
@@ -154,7 +160,7 @@ const HintUI: React.FC<HintUIProps> = memo(
           <View style={hintStyles.hintButtonArea}>
             <HintButton
               hintType="decade"
-              iconName="calendar"
+              iconName="calendar-outline"
               label="Decade"
               onPress={handleHintSelection}
               status={hintStatuses.decade}
@@ -162,7 +168,7 @@ const HintUI: React.FC<HintUIProps> = memo(
             />
             <HintButton
               hintType="director"
-              iconName="video-camera"
+              iconName="film-outline"
               label="Director"
               onPress={handleHintSelection}
               status={hintStatuses.director}
@@ -170,7 +176,7 @@ const HintUI: React.FC<HintUIProps> = memo(
             />
             <HintButton
               hintType="actor"
-              iconName="user"
+              iconName="person-outline"
               label="Actor"
               onPress={handleHintSelection}
               status={hintStatuses.actor}
@@ -178,7 +184,7 @@ const HintUI: React.FC<HintUIProps> = memo(
             />
             <HintButton
               hintType="genre"
-              iconName="folder-open"
+              iconName="folder-open-outline"
               label="Genre"
               onPress={handleHintSelection}
               status={hintStatuses.genre}

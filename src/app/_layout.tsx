@@ -1,22 +1,19 @@
-import React, { useState, useCallback } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import { Slot } from "expo-router"
 import { View } from "react-native"
 import ErrorBoundary from "../components/errorBoundary"
 import { NetworkProvider, useNetwork } from "../contexts/networkContext"
 import { AuthProvider } from "../contexts/authContext"
 import { GameProvider } from "../contexts/gameContext"
+import { ThemeProvider, useTheme } from "../contexts/themeContext"
 import LoadingIndicator from "../components/loadingIndicator"
 import ErrorMessage from "../components/errorMessage"
-import { appStyles } from "../styles/appStyles"
+import { getAppStyles } from "../styles/appStyles"
 
-const AppProviders = ({ children }: { children: React.ReactNode }) => (
-  <AuthProvider>
-    <GameProvider>{children}</GameProvider>
-  </AuthProvider>
-)
-
-const AppInitializer = () => {
+function RootLayoutNav() {
   const { isNetworkConnected } = useNetwork()
+  const { colors } = useTheme()
+  const styles = useMemo(() => getAppStyles(colors), [colors])
   const [retryKey, setRetryKey] = useState(0)
 
   const handleRetry = useCallback(() => {
@@ -29,7 +26,7 @@ const AppInitializer = () => {
 
   if (!isNetworkConnected) {
     return (
-      <View style={appStyles.container}>
+      <View style={styles.container}>
         <ErrorMessage
           message="No Network Connection. Please check your internet and try again."
           onRetry={handleRetry}
@@ -38,15 +35,21 @@ const AppInitializer = () => {
     )
   }
 
-  return <AppProviders key={retryKey}>{<Slot />}</AppProviders>
+  return <Slot key={retryKey} />
 }
 
 export default function RootLayout() {
   return (
     <ErrorBoundary>
-      <NetworkProvider>
-        <AppInitializer />
-      </NetworkProvider>
+      <ThemeProvider>
+        <NetworkProvider>
+          <AuthProvider>
+            <GameProvider>
+              <RootLayoutNav />
+            </GameProvider>
+          </AuthProvider>
+        </NetworkProvider>
+      </ThemeProvider>
     </ErrorBoundary>
   )
 }

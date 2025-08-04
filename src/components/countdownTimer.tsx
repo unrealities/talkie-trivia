@@ -1,8 +1,12 @@
-import React, { useState, useEffect, useCallback, memo } from "react"
+import React, { useState, useEffect, useCallback, memo, useMemo } from "react"
 import { View, Text } from "react-native"
-import { movieStyles } from "../styles/movieStyles"
+import { getMovieStyles } from "../styles/movieStyles"
+import { useTheme } from "../contexts/themeContext"
 
 const CountdownTimer: React.FC = () => {
+  const { colors } = useTheme()
+  const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
+
   const calculateTimeLeft = useCallback(() => {
     const now = new Date()
     const tomorrow = new Date(now)

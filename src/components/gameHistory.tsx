@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo, useCallback } from "react"
+import React, { useState, useEffect, memo, useCallback, useMemo } from "react"
 import {
   View,
   Text,
@@ -19,9 +19,9 @@ import { Image } from "expo-image"
 import { useAuth } from "../contexts/authContext"
 import { GameHistoryEntry } from "../models/gameHistory"
 import { gameHistoryEntryConverter } from "../utils/firestore/converters/gameHistoryEntry"
-import { gameHistoryStyles as styles } from "../styles/gameHistoryStyles"
-import { colors } from "../styles/global"
+import { getGameHistoryStyles } from "../styles/gameHistoryStyles"
 import { hapticsService } from "../utils/hapticsService"
+import { useTheme } from "../contexts/themeContext"
 
 interface GameHistoryItemProps {
   item: GameHistoryEntry
@@ -29,6 +29,8 @@ interface GameHistoryItemProps {
 }
 
 const GameHistoryItem = memo(({ item, onPress }: GameHistoryItemProps) => {
+  const { colors } = useTheme()
+  const styles = useMemo(() => getGameHistoryStyles(colors), [colors])
   const posterUri = `https://image.tmdb.org/t/p/w185${item.posterPath}`
   const date = new Date(item.dateId)
   const formattedDate = date.toLocaleDateString("en-US", {
@@ -62,7 +64,7 @@ const GameHistoryItem = memo(({ item, onPress }: GameHistoryItemProps) => {
       onPress={handlePress}
       style={({ pressed }) => [
         styles.itemContainer,
-        pressed && { backgroundColor: colors.grey },
+        pressed && { backgroundColor: colors.surface },
       ]}
     >
       <Image source={{ uri: posterUri }} style={styles.posterImage} />
@@ -83,6 +85,8 @@ interface GameHistoryProps {
 
 const GameHistory = ({ onHistoryItemPress }: GameHistoryProps) => {
   const { player } = useAuth()
+  const { colors } = useTheme()
+  const styles = useMemo(() => getGameHistoryStyles(colors), [colors])
   const [history, setHistory] = useState<GameHistoryEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

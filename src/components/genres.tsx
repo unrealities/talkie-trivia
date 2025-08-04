@@ -1,7 +1,8 @@
-import React, { memo } from "react"
+import React, { memo, useMemo } from "react"
 import { Text, View } from "react-native"
 import { Genre } from "../models/movie"
-import { genresStyles } from "../styles/genresStyles"
+import { getGenresStyles } from "../styles/genresStyles"
+import { useTheme } from "../contexts/themeContext"
 
 interface GenreProps {
   genre: Genre
@@ -12,16 +13,26 @@ interface GenresProps {
   maxGenres?: number
 }
 
-const GenreContainer = memo(({ genre }: GenreProps) => (
-  <View style={genresStyles.genreContainer}>
-    <Text style={genresStyles.genreText} numberOfLines={1} ellipsizeMode="tail">
-      {genre.name}
-    </Text>
-  </View>
-))
+const GenreContainer = memo(({ genre }: GenreProps) => {
+  const { colors } = useTheme()
+  const genresStyles = useMemo(() => getGenresStyles(colors), [colors])
+  return (
+    <View style={genresStyles.genreContainer}>
+      <Text
+        style={genresStyles.genreText}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+      >
+        {genre.name}
+      </Text>
+    </View>
+  )
+})
 
 const Genres = memo(
   ({ genres, maxGenres = 5 }: GenresProps) => {
+    const { colors } = useTheme()
+    const genresStyles = useMemo(() => getGenresStyles(colors), [colors])
     const displayedGenres = genres.slice(0, maxGenres)
 
     return (

@@ -1,18 +1,18 @@
-import React, { useEffect } from "react"
-import { View, StyleSheet } from "react-native";
+import React, { useEffect, useMemo } from "react"
+import { View, StyleSheet } from "react-native"
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withRepeat,
   withTiming,
   Easing,
-} from "react-native-reanimated";
-import { Svg, Circle } from "react-native-svg";
-
-
-import { colors, responsive } from "../styles/global"
+} from "react-native-reanimated"
+import { Svg, Circle } from "react-native-svg"
+import { responsive } from "../styles/global"
+import { useTheme } from "../contexts/themeContext"
 
 const CustomLoadingIndicator = () => {
+  const { colors } = useTheme()
   const progress = useSharedValue(0)
   const size = responsive.scale(50)
   const strokeWidth = responsive.scale(4)
@@ -26,13 +26,30 @@ const CustomLoadingIndicator = () => {
       -1,
       false
     )
-  }, [])
+  }, [progress])
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ rotate: `${progress.value * 360}deg` }],
     }
   })
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        container: {
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: colors.background,
+        },
+        rotateContainer: {
+          alignItems: "center",
+          justifyContent: "center",
+        },
+      }),
+    [colors]
+  )
 
   return (
     <View style={styles.container} testID="activity-indicator">
@@ -66,17 +83,4 @@ const CustomLoadingIndicator = () => {
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: colors.background,
-  },
-  rotateContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-})
-
-export default CustomLoadingIndicator;
+export default CustomLoadingIndicator

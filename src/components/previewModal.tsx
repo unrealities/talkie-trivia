@@ -1,9 +1,10 @@
-import React, { memo } from "react"
+import React, { memo, useMemo } from "react"
 import { Modal, View, Text, Pressable } from "react-native"
 import { Image } from "expo-image"
 import { BasicMovie } from "../models/movie"
-import { previewModalStyles as styles } from "../styles/previewModalStyles"
+import { getPreviewModalStyles } from "../styles/previewModalStyles"
 import { hapticsService } from "../utils/hapticsService"
+import { useTheme } from "../contexts/themeContext"
 
 interface PreviewModalProps {
   movie: BasicMovie | null
@@ -16,6 +17,9 @@ const defaultMovieImage = require("../../assets/movie_default.png")
 
 const PreviewModal: React.FC<PreviewModalProps> = memo(
   ({ movie, isVisible, onClose, onSubmit }) => {
+    const { colors } = useTheme()
+    const styles = useMemo(() => getPreviewModalStyles(colors), [colors])
+
     if (!movie) {
       return null
     }

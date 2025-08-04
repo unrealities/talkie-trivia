@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from "react"
+import React, { memo, useCallback, useMemo } from "react"
 import {
   Text,
   Pressable,
@@ -8,14 +8,15 @@ import {
   ViewStyle,
 } from "react-native"
 import * as Linking from "expo-linking"
-import { actorsStyles } from "../styles/actorsStyles"
+import { getActorsStyles } from "../styles/actorsStyles"
 import { Actor } from "../models/movie"
 import { Image } from "expo-image"
 import { analyticsService } from "../utils/analyticsService"
+import { useTheme } from "../contexts/themeContext"
 
 type ImageSource = { uri: string } | number
 
-interface ActorProps {
+interface ActorContainerProps {
   actor: Actor
   imdbId?: string
   style?: StyleProp<ViewStyle>
@@ -31,7 +32,9 @@ interface ActorsProps {
 const defaultActorImage = require("../../assets/actor_default.png")
 
 const ActorContainer = memo(
-  ({ actor, imdbId, style, onActorPress }: ActorProps) => {
+  ({ actor, imdbId, style, onActorPress }: ActorContainerProps) => {
+    const { colors } = useTheme()
+    const actorsStyles = useMemo(() => getActorsStyles(colors), [colors])
     const imageURI = "https://image.tmdb.org/t/p/w185"
     const imdbURI = imdbId ? `https://www.imdb.com/name/${imdbId}` : null
 
@@ -126,6 +129,9 @@ export const Actors = memo(
     containerStyle,
     onActorPress,
   }: ActorsProps & { onActorPress?: (actor: Actor) => void }) => {
+    const { colors } = useTheme()
+    const actorsStyles = useMemo(() => getActorsStyles(colors), [colors])
+
     if (!actors || actors.length === 0) {
       return null
     }

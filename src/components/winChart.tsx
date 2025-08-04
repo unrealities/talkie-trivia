@@ -1,4 +1,4 @@
-import React, { memo } from "react"
+import React, { memo, useMemo } from "react"
 import { View, Text } from "react-native"
 import {
   VictoryBar,
@@ -6,14 +6,17 @@ import {
   VictoryAxis,
   VictoryLabel,
 } from "victory-native"
-import { colors, responsive } from "../styles/global"
-import { winChartStyles } from "../styles/winChartStyles"
+import { responsive } from "../styles/global"
+import { getWinChartStyles } from "../styles/winChartStyles"
+import { useTheme } from "../contexts/themeContext"
 
 export interface WinChartProps {
   wins: number[] // e.g., [10, 20, 30, 15, 5]
 }
 
 const WinChart = memo(({ wins }: WinChartProps) => {
+  const { colors } = useTheme()
+  const winChartStyles = useMemo(() => getWinChartStyles(colors), [colors])
   const totalWins = wins.reduce((a, b) => a + b, 0)
 
   // Show a message if the user hasn't won any games yet
@@ -65,24 +68,34 @@ const WinChart = memo(({ wins }: WinChartProps) => {
               borderRadius: responsive.scale(4),
             },
             labels: {
-              fill: colors.secondary,
+              fill: colors.textSecondary,
               fontFamily: "Arvo-Bold",
               fontSize: responsive.responsiveFontSize(12),
             },
           }}
           labelComponent={<VictoryLabel dy={-10} />}
           labels={({ datum }) => (datum.y > 0 ? datum.y : "")}
-          labels={({ datum }) => `${datum.x}`}
-          labelComponent={
-            <VictoryLabel
-              dy={15}
-              style={{
-                fill: colors.textSecondary,
-                fontFamily: "Arvo-Regular",
-                fontSize: responsive.responsiveFontSize(10),
-              }}
-            />
-          }
+        />
+        <VictoryAxis
+          dependentAxis
+          style={{
+            axis: { stroke: "transparent" },
+            tickLabels: {
+              fill: "transparent",
+            },
+            grid: { stroke: colors.border, strokeDasharray: "4, 8" },
+          }}
+        />
+        <VictoryAxis
+          style={{
+            axis: { stroke: colors.border },
+            tickLabels: {
+              fill: colors.textSecondary,
+              fontFamily: "Arvo-Regular",
+              fontSize: responsive.responsiveFontSize(10),
+            },
+            grid: { stroke: "transparent" },
+          }}
         />
       </VictoryChart>
     </View>

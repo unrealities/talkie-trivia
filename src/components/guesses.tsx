@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from "react"
+import React, { memo, useEffect, useMemo } from "react"
 import { Text, View } from "react-native"
 import Animated, {
   interpolate,
@@ -10,11 +10,11 @@ import Animated, {
 } from "react-native-reanimated"
 import Ionicons from "@expo/vector-icons/Ionicons"
 
-import { guessesStyles } from "../styles/guessesStyles"
+import { getGuessesStyles } from "../styles/guessesStyles"
 import { useSkeletonAnimation } from "../utils/hooks/useSkeletonAnimation"
 import { useGame } from "../contexts/gameContext"
 import { BasicMovie } from "../models/movie"
-import { colors } from "../styles/global"
+import { useTheme } from "../contexts/themeContext"
 
 type GuessResult = { movieId: number; correct: boolean } | null
 
@@ -28,6 +28,9 @@ interface GuessRowProps {
 
 const GuessRow = memo(
   ({ index, guessId, movies, isLastGuess, lastGuessResult }: GuessRowProps) => {
+    const { colors } = useTheme()
+    const guessesStyles = useMemo(() => getGuessesStyles(colors), [colors])
+
     const rotate = useSharedValue(0)
     const shakeX = useSharedValue(0)
     const backgroundColor = useSharedValue(colors.surface)
@@ -74,7 +77,15 @@ const GuessRow = memo(
           )
         }
       }
-    }, [isLastGuess, lastGuessResult, isCorrect])
+    }, [
+      isLastGuess,
+      lastGuessResult,
+      isCorrect,
+      colors,
+      backgroundColor,
+      rotate,
+      shakeX,
+    ])
 
     return (
       <Animated.View style={[guessesStyles.guessTile, animatedTileStyle]}>
@@ -109,13 +120,19 @@ const GuessRow = memo(
   }
 )
 
-const EmptyGuessTile = ({ index }: { index: number }) => (
-  <View style={guessesStyles.emptyGuessTile}>
-    <Text style={guessesStyles.guessNumber}>{index + 1}</Text>
-  </View>
-)
+const EmptyGuessTile = ({ index }: { index: number }) => {
+  const { colors } = useTheme()
+  const guessesStyles = useMemo(() => getGuessesStyles(colors), [colors])
+  return (
+    <View style={guessesStyles.emptyGuessTile}>
+      <Text style={guessesStyles.guessNumber}>{index + 1}</Text>
+    </View>
+  )
+}
 
 const SkeletonRow = memo(({ index }: { index: number }) => {
+  const { colors } = useTheme()
+  const guessesStyles = useMemo(() => getGuessesStyles(colors), [colors])
   const animatedStyle = useSkeletonAnimation()
   return (
     <Animated.View style={[guessesStyles.skeletonRow, animatedStyle]}>
@@ -130,6 +147,8 @@ const SkeletonRow = memo(({ index }: { index: number }) => {
 const GuessesContainer = memo(
   ({ lastGuessResult }: { lastGuessResult: GuessResult }) => {
     const { loading: isDataLoading, playerGame, movies } = useGame()
+    const { colors } = useTheme()
+    const guessesStyles = useMemo(() => getGuessesStyles(colors), [colors])
     const { guesses, guessesMax } = playerGame
 
     if (isDataLoading) {

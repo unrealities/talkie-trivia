@@ -1,10 +1,11 @@
-import React, { memo } from "react"
+import React, { memo, useMemo } from "react"
 import { Text, View } from "react-native"
 
 import Player from "../models/player"
 import PlayerStats from "../models/playerStats"
 import WinChart from "./winChart"
-import { playerStatsStyles } from "../styles/playerStatsStyles"
+import { getPlayerStatsStyles } from "../styles/playerStatsStyles"
+import { useTheme } from "../contexts/themeContext"
 
 export interface PlayerStatsContainerProps {
   player: Player
@@ -13,6 +14,11 @@ export interface PlayerStatsContainerProps {
 
 const PlayerStatsContainer = memo(
   (props: PlayerStatsContainerProps) => {
+    const { colors } = useTheme()
+    const playerStatsStyles = useMemo(
+      () => getPlayerStatsStyles(colors),
+      [colors]
+    )
     if (!props || !props.player || !props.playerStats) {
       return null
     }

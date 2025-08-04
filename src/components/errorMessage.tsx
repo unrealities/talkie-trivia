@@ -1,6 +1,7 @@
-import React, { memo } from "react"
+import React, { memo, useMemo } from "react"
 import { Text, View, Button } from "react-native"
-import { appStyles } from "../styles/appStyles"
+import { getAppStyles } from "../styles/appStyles"
+import { useTheme } from "../contexts/themeContext"
 
 interface ErrorMessageProps {
   message: string
@@ -9,9 +10,12 @@ interface ErrorMessageProps {
 
 const ErrorMessage: React.FC<ErrorMessageProps> = memo(
   ({ message, onRetry }) => {
+    const { colors } = useTheme()
+    const styles = useMemo(() => getAppStyles(colors), [colors])
+
     return (
-      <View style={appStyles.errorContainer}>
-        <Text style={appStyles.errorText}>{message}</Text>
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>{message}</Text>
         {onRetry && <Button testID="retry" title="Retry" onPress={onRetry} />}
       </View>
     )

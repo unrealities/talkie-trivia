@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react"
+import React, { useState, useCallback, useEffect, useMemo } from "react"
 import { View, ScrollView } from "react-native"
 import Animated, {
   useAnimatedStyle,
@@ -12,7 +12,8 @@ import OnboardingModal from "./onboardingModal"
 import GameplayView from "./gameplayView"
 import GameOverView from "./gameOverView"
 import { useGame } from "../contexts/gameContext"
-import { movieStyles } from "../styles/movieStyles"
+import { getMovieStyles } from "../styles/movieStyles"
+import { useTheme } from "../contexts/themeContext"
 
 type GuessResult = { movieId: number; correct: boolean } | null
 
@@ -24,6 +25,8 @@ const GameUI: React.FC = () => {
     handleConfettiStop,
     handleDismissOnboarding,
   } = useGame()
+  const { colors } = useTheme()
+  const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
 
   const [lastGuessResult, setLastGuessResult] = useState<GuessResult>(null)
 
