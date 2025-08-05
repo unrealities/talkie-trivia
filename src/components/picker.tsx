@@ -153,13 +153,13 @@ const PickerContainer: FC<PickerContainerProps> = memo(({ onGuessMade }) => {
   })
 
   const handleLongPressMovie = useCallback((movie: BasicMovie) => {
-    hapticsService.light()
+    hapticsService.medium()
     setExpandedMovieId((prevId) => (prevId === movie.id ? null : movie.id))
   }, [])
 
   const handleSelectMovie = useCallback(
     (movie: BasicMovie) => {
-      setExpandedMovieId(null) // Collapse on selection
+      setExpandedMovieId(null)
       handleMovieSelection(movie)
     },
     [handleMovieSelection]

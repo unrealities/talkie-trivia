@@ -11,11 +11,17 @@ import ConfettiCelebration from "./confettiCelebration"
 import OnboardingModal from "./onboardingModal"
 import GameplayView from "./gameplayView"
 import GameOverView from "./gameOverView"
+import FlashMessages from "./flashMessages"
 import { useGame } from "../contexts/gameContext"
 import { getMovieStyles } from "../styles/movieStyles"
 import { useTheme } from "../contexts/themeContext"
 
 type GuessResult = { movieId: number; correct: boolean } | null
+type GuessCallbackResult = {
+  movieId: number
+  correct: boolean
+  feedback?: string | null
+}
 
 const GameUI: React.FC = () => {
   const {
@@ -29,6 +35,7 @@ const GameUI: React.FC = () => {
   const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
 
   const [lastGuessResult, setLastGuessResult] = useState<GuessResult>(null)
+  const [flashMessage, setFlashMessage] = useState<string | null>(null)
 
   const isGameOver =
     playerGame.correctAnswer ||
@@ -50,8 +57,11 @@ const GameUI: React.FC = () => {
     transform: [{ scale: 0.95 + gameOverAnimation.value * 0.05 }],
   }))
 
-  const handleGuessMade = useCallback((result: GuessResult) => {
-    setLastGuessResult(result)
+  const handleGuessMade = useCallback((result: GuessCallbackResult) => {
+    setLastGuessResult({ movieId: result.movieId, correct: result.correct })
+    if (result.feedback) {
+      setFlashMessage(result.feedback)
+    }
   }, [])
 
   return (
@@ -61,6 +71,7 @@ const GameUI: React.FC = () => {
       showsVerticalScrollIndicator={false}
     >
       <View style={movieStyles.container}>
+        <FlashMessages message={flashMessage} />
         <CluesContainer />
         {isGameOver ? (
           <Animated.View style={[{ width: "100%" }, animatedGameOverStyle]}>

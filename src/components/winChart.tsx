@@ -10,7 +10,7 @@ import { responsive } from "../styles/global"
 import { getWinChartStyles } from "../styles/winChartStyles"
 import { useTheme } from "../contexts/themeContext"
 
-export interface WinChartProps {
+  export interface WinChartProps {
   wins: number[] // e.g., [10, 20, 30, 15, 5]
 }
 

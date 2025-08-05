@@ -1,5 +1,6 @@
 export interface Actor {
   id: number
+  imdb_id: string
   order: number
   name: string
   popularity: number
@@ -30,7 +31,7 @@ export interface Movie {
   director: Director
   genres: Genre[]
   id: number
-  imdb_id: number
+  imdb_id: string
   overview: string
   poster_path: string
   popularity: number

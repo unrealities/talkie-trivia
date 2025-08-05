@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useMemo } from "react"
 import { LayoutAnimation, Platform, UIManager } from "react-native"
-import { PlayerGame } from "../../models/game"
+import { PlayerGame, HintType } from "../../models/game"
 import PlayerStats from "../../models/playerStats"
 import { analyticsService } from "../analyticsService"
 import { hapticsService } from "../hapticsService"
@@ -12,7 +12,6 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true)
 }
 
-type HintType = "decade" | "director" | "actor" | "genre"
 type HintStatus = "available" | "used" | "disabled"
 
 interface UseHintLogicProps {
@@ -23,11 +22,6 @@ interface UseHintLogicProps {
   updatePlayerStats: (updatedPlayerStats: PlayerStats) => void
 }
 
-/**
- * Manages the state and logic for the hint system.
- * Note: Hints are intended to be replenished on a daily basis,
- * which is handled by server-side logic or when a new playerGame is generated.
- */
 export function useHintLogic({
   playerGame,
   isInteractionsDisabled,
@@ -43,33 +37,21 @@ export function useHintLogic({
   const hintsAvailable = playerStats?.hintsAvailable ?? 0
   const hintTypes: HintType[] = ["decade", "director", "actor", "genre"]
 
-  const hintUsedThisTurn = useMemo(
-    () => playerGame.hintsUsed?.[playerGame.guesses.length] !== undefined,
-    [playerGame.hintsUsed, playerGame.guesses.length]
-  )
-
   const hintStatuses = useMemo(() => {
     const statuses: Record<HintType, HintStatus> = {} as any
-    const usedHintTypes = new Set(Object.values(playerGame.hintsUsed || {}))
+    const usedHints = playerGame.hintsUsed || {}
 
     for (const type of hintTypes) {
-      if (usedHintTypes.has(type)) {
+      if (usedHints[type]) {
         statuses[type] = "used"
+      } else if (isInteractionsDisabled || hintsAvailable <= 0) {
+        statuses[type] = "disabled"
       } else {
-        if (isInteractionsDisabled || hintsAvailable <= 0 || hintUsedThisTurn) {
-          statuses[type] = "disabled"
-        } else {
-          statuses[type] = "available"
-        }
+        statuses[type] = "available"
       }
     }
     return statuses
-  }, [
-    playerGame.hintsUsed,
-    isInteractionsDisabled,
-    hintsAvailable,
-    hintUsedThisTurn,
-  ])
+  }, [playerGame.hintsUsed, isInteractionsDisabled, hintsAvailable])
 
   const getHintText = useCallback(
     (hintType: HintType): string => {
@@ -100,9 +82,9 @@ export function useHintLogic({
       const status = hintStatuses[hintType]
       setShowHintOptions(false)
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+      setDisplayedHintText(getHintText(hintType))
 
       if (status === "used") {
-        setDisplayedHintText(getHintText(hintType))
         return
       }
 
@@ -116,7 +98,7 @@ export function useHintLogic({
           ...playerGame,
           hintsUsed: {
             ...(playerGame.hintsUsed || {}),
-            [playerGame.guesses.length]: hintType,
+            [hintType]: true,
           },
         })
 
@@ -126,7 +108,6 @@ export function useHintLogic({
           hintsUsedCount: (playerStats.hintsUsedCount || 0) + 1,
         }
         updatePlayerStats(newPlayerStats)
-        setDisplayedHintText(getHintText(hintType))
       }
     },
     [
@@ -149,7 +130,7 @@ export function useHintLogic({
 
     if (
       hintsAvailable <= 0 &&
-      !Object.keys(playerGame.hintsUsed || {}).length
+      !Object.values(playerGame.hintsUsed || {}).some(Boolean)
     ) {
       return
     }
@@ -164,24 +145,19 @@ export function useHintLogic({
 
   const hintLabelText = useMemo(() => {
     if (isInteractionsDisabled) return "Game Over"
-    if (hintsAvailable <= 0 && !Object.keys(playerGame.hintsUsed || {}).length)
+    if (
+      hintsAvailable <= 0 &&
+      !Object.values(playerGame.hintsUsed || {}).some(Boolean)
+    )
       return "Out of hints!"
-    if (hintUsedThisTurn) return `Make a guess to use another hint`
     return `Need a Hint? (${hintsAvailable} available)`
-  }, [
-    hintsAvailable,
-    hintUsedThisTurn,
-    isInteractionsDisabled,
-    playerGame.hintsUsed,
-  ])
-
-  const isToggleDisabled = isInteractionsDisabled
+  }, [hintsAvailable, isInteractionsDisabled, playerGame.hintsUsed])
 
   return {
     showHintOptions,
     displayedHintText,
     hintLabelText,
-    isToggleDisabled,
+    isToggleDisabled: isInteractionsDisabled,
     hintStatuses,
     handleToggleHintOptions,
     handleHintSelection,

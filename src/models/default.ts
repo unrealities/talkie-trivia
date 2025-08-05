@@ -7,7 +7,7 @@ export const defaultMovie: Movie = {
   director: { id: 0, name: "", popularity: 0, profile_path: "" },
   genres: [],
   id: 0,
-  imdb_id: 0,
+  imdb_id: "",
   overview: "",
   poster_path: "",
   popularity: 0,

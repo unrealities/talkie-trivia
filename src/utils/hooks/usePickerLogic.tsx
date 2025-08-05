@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from "react"
 import { LayoutAnimation, Platform, UIManager } from "react-native"
 import { search } from "fast-fuzzy"
-import { BasicMovie } from "../../models/movie"
+import { BasicMovie, Movie } from "../../models/movie"
 import { PlayerGame } from "../../models/game"
 import {
   useSharedValue,
@@ -11,6 +11,7 @@ import {
 } from "react-native-reanimated"
 import { analyticsService } from "../analyticsService"
 import { hapticsService } from "../hapticsService"
+import { generateImplicitHint } from "../guessFeedbackUtils"
 
 if (
   Platform.OS === "android" &&
@@ -20,17 +21,21 @@ if (
 }
 
 interface UsePickerLogicProps {
-  movies: readonly BasicMovie[]
+  movies: readonly Movie[]
   playerGame: PlayerGame
   isInteractionsDisabled: boolean
   updatePlayerGame: (updatedPlayerGame: PlayerGame) => void
-  onGuessMade: (result: { movieId: number; correct: boolean }) => void
+  onGuessMade: (result: {
+    movieId: number
+    correct: boolean
+    feedback?: string | null
+  }) => void
 }
 
 type PickerState =
   | { status: "idle" }
   | { status: "searching"; query: string }
-  | { status: "results"; query: string; results: readonly BasicMovie[] }
+  | { status: "results"; query: readonly BasicMovie[] }
 
 export function usePickerLogic({
   movies,
@@ -62,7 +67,7 @@ export function usePickerLogic({
         threshold: 0.8,
       })
 
-      return results
+      return results as BasicMovie[]
     },
     [movies]
   )
@@ -90,7 +95,6 @@ export function usePickerLogic({
 
       setPickerState({
         status: "results",
-        query: pickerState.query,
         results: filtered,
       })
     }, 300)
@@ -106,6 +110,8 @@ export function usePickerLogic({
 
       const newGuesses = [...(playerGame.guesses || []), selectedMovie.id]
       const isCorrectAnswer = playerGame.movie.id === selectedMovie.id
+      let feedback: string | null = null
+      let revealedHints = {}
 
       analyticsService.trackGuessMade(
         newGuesses.length,
@@ -116,20 +122,37 @@ export function usePickerLogic({
 
       if (!isCorrectAnswer) {
         triggerShake()
+        const guessedFullMovie = movies.find((m) => m.id === selectedMovie.id)
+        if (guessedFullMovie) {
+          const result = generateImplicitHint(
+            guessedFullMovie,
+            playerGame.movie
+          )
+          feedback = result.feedback
+          revealedHints = result.revealedHints
+        }
       }
 
-      onGuessMade({ movieId: selectedMovie.id, correct: isCorrectAnswer })
+      onGuessMade({
+        movieId: selectedMovie.id,
+        correct: isCorrectAnswer,
+        feedback,
+      })
 
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
 
-      const updatedPlayerGame = {
+      const updatedPlayerGame: PlayerGame = {
         ...playerGame,
         guesses: newGuesses,
         correctAnswer: isCorrectAnswer,
+        hintsUsed: {
+          ...playerGame.hintsUsed,
+          ...revealedHints,
+        },
       }
       updatePlayerGame(updatedPlayerGame)
     },
-    [isInteractionsDisabled, playerGame, updatePlayerGame, onGuessMade]
+    [isInteractionsDisabled, playerGame, movies, updatePlayerGame, onGuessMade]
   )
 
   return {

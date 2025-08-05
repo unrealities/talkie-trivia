@@ -1,5 +1,7 @@
 import { Movie } from "./movie"
 
+export type HintType = "decade" | "director" | "actor" | "genre"
+
 export interface PlayerGame {
   id: string // Unique ID for this player-game session, e.g., "player1-2025-07-16"
   playerID: string
@@ -10,8 +12,6 @@ export interface PlayerGame {
   gaveUp: boolean
   startDate: Date
   endDate: Date
-  hintsUsed?: {
-    [guessNumber: number]: "decade" | "director" | "actor" | "genre"
-  }
+  hintsUsed?: Partial<Record<HintType, boolean>>
   statsProcessed?: boolean
 }
