@@ -28,6 +28,8 @@ export const getGuessesStyles = (colors: any) => {
       backgroundColor: colors.surface,
       paddingVertical: spacing.small,
       ...shadows.light,
+      position: "relative",
+      overflow: "hidden",
     },
     guessNumber: {
       color: colors.textSecondary,
@@ -63,6 +65,20 @@ export const getGuessesStyles = (colors: any) => {
     skeletonText: {
       height: responsive.scale(16),
       width: "100%",
+    },
+    feedbackOverlay: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: colors.tertiary,
+      justifyContent: "center",
+      alignItems: "center",
+      padding: spacing.small,
+      zIndex: 1,
+    },
+    feedbackText: {
+      color: colors.background,
+      fontFamily: "Arvo-Bold",
+      fontSize: responsive.responsiveFontSize(14),
+      textAlign: "center",
     },
   })
 }

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo } from "react"
+import { useState, useCallback, useEffect, useMemo, useRef } from "react"
 import { LayoutAnimation, Platform, UIManager } from "react-native"
 import { PlayerGame, HintType } from "../../models/game"
 import PlayerStats from "../../models/playerStats"
@@ -33,6 +33,8 @@ export function useHintLogic({
   const [displayedHintText, setDisplayedHintText] = useState<string | null>(
     null
   )
+  const [highlightedHint, setHighlightedHint] = useState<HintType | null>(null)
+  const prevHintsUsedRef = useRef<Partial<Record<HintType, boolean>>>()
 
   const hintsAvailable = playerStats?.hintsAvailable ?? 0
   const hintTypes: HintType[] = ["decade", "director", "actor", "genre"]
@@ -52,6 +54,26 @@ export function useHintLogic({
     }
     return statuses
   }, [playerGame.hintsUsed, isInteractionsDisabled, hintsAvailable])
+
+  useEffect(() => {
+    const currentHints = playerGame.hintsUsed || {}
+    const previousHints = prevHintsUsedRef.current || {}
+
+    const newHint = (Object.keys(currentHints) as HintType[]).find(
+      (key) => currentHints[key] && !previousHints[key]
+    )
+
+    if (newHint) {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+      setShowHintOptions(true)
+      setHighlightedHint(newHint)
+
+      const timer = setTimeout(() => setHighlightedHint(null), 2500)
+      return () => clearTimeout(timer)
+    }
+
+    prevHintsUsedRef.current = currentHints
+  }, [playerGame.hintsUsed])
 
   const getHintText = useCallback(
     (hintType: HintType): string => {
@@ -145,13 +167,24 @@ export function useHintLogic({
 
   const hintLabelText = useMemo(() => {
     if (isInteractionsDisabled) return "Game Over"
+
+    const guessesRemaining = playerGame.guessesMax - playerGame.guesses.length
+    const effectiveHints = Math.min(hintsAvailable, guessesRemaining)
+
     if (
-      hintsAvailable <= 0 &&
+      effectiveHints <= 0 &&
       !Object.values(playerGame.hintsUsed || {}).some(Boolean)
-    )
+    ) {
       return "Out of hints!"
-    return `Need a Hint? (${hintsAvailable} available)`
-  }, [hintsAvailable, isInteractionsDisabled, playerGame.hintsUsed])
+    }
+    return `Need a Hint? (${effectiveHints} available)`
+  }, [
+    hintsAvailable,
+    isInteractionsDisabled,
+    playerGame.hintsUsed,
+    playerGame.guesses.length,
+    playerGame.guessesMax,
+  ])
 
   return {
     showHintOptions,
@@ -159,6 +192,7 @@ export function useHintLogic({
     hintLabelText,
     isToggleDisabled: isInteractionsDisabled,
     hintStatuses,
+    highlightedHint,
     handleToggleHintOptions,
     handleHintSelection,
   }

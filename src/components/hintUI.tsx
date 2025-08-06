@@ -5,12 +5,14 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
+  withRepeat,
+  withSequence,
 } from "react-native-reanimated"
 import { getHintStyles } from "../styles/hintStyles"
 import { responsive } from "../styles/global"
 import { useTheme } from "../contexts/themeContext"
+import { HintType } from "../models/game"
 
-type HintType = "decade" | "director" | "actor" | "genre"
 type HintStatus = "available" | "used" | "disabled"
 
 interface HintButtonProps {
@@ -20,6 +22,7 @@ interface HintButtonProps {
   onPress: (type: HintType) => void
   status: HintStatus
   accessibilityHintCount: number
+  isHighlighted: boolean
 }
 
 const HintButton: React.FC<HintButtonProps> = ({
@@ -29,15 +32,44 @@ const HintButton: React.FC<HintButtonProps> = ({
   onPress,
   status,
   accessibilityHintCount,
+  isHighlighted,
 }) => {
   const { colors } = useTheme()
   const hintStyles = useMemo(() => getHintStyles(colors), [colors])
+  const highlightAnimation = useSharedValue(0)
+
+  useEffect(() => {
+    if (isHighlighted) {
+      highlightAnimation.value = withRepeat(
+        withSequence(
+          withTiming(1, { duration: 500 }),
+          withTiming(0, { duration: 800 })
+        ),
+        -1,
+        true
+      )
+    } else {
+      highlightAnimation.value = withTiming(0)
+    }
+  }, [isHighlighted, highlightAnimation])
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: 1 + highlightAnimation.value * 0.05 }],
+      borderColor: isHighlighted
+        ? colors.primary
+        : hintStyles.hintButton.borderColor,
+    }
+  })
 
   const buttonStyle: StyleProp<ViewStyle> = [hintStyles.hintButton]
   if (status === "disabled") {
     buttonStyle.push(hintStyles.disabled)
   } else if (status === "used") {
     buttonStyle.push(hintStyles.usedHintButton)
+  }
+  if (isHighlighted) {
+    buttonStyle.push(hintStyles.highlightedHintButton)
   }
 
   const getAccessibilityLabel = () => {
@@ -53,36 +85,41 @@ const HintButton: React.FC<HintButtonProps> = ({
   }
 
   return (
-    <Pressable
-      style={buttonStyle}
-      onPress={() => onPress(hintType)}
-      disabled={status === "disabled"}
-      accessible
-      accessibilityRole="button"
-      accessibilityState={{ disabled: status === "disabled" }}
-      accessibilityLabel={getAccessibilityLabel()}
-    >
-      <Ionicons
-        name={iconName}
-        size={responsive.scale(20)}
-        color={
-          status === "disabled"
-            ? colors.textDisabled
-            : status === "used"
-            ? colors.tertiary
-            : colors.textSecondary
-        }
-      />
-      <Text
-        style={[
-          hintStyles.buttonTextSmall,
-          status === "disabled" && { color: colors.textDisabled },
-          status === "used" && { color: colors.tertiary },
-        ]}
+    <Animated.View style={animatedStyle}>
+      <Pressable
+        style={buttonStyle}
+        onPress={() => onPress(hintType)}
+        disabled={status === "disabled"}
+        accessible
+        accessibilityRole="button"
+        accessibilityState={{ disabled: status === "disabled" }}
+        accessibilityLabel={getAccessibilityLabel()}
       >
-        {label}
-      </Text>
-    </Pressable>
+        <Ionicons
+          name={iconName}
+          size={responsive.scale(20)}
+          color={
+            isHighlighted
+              ? colors.primary
+              : status === "disabled"
+              ? colors.textDisabled
+              : status === "used"
+              ? colors.tertiary
+              : colors.textSecondary
+          }
+        />
+        <Text
+          style={[
+            hintStyles.buttonTextSmall,
+            status === "disabled" && { color: colors.textDisabled },
+            status === "used" && { color: colors.tertiary },
+            isHighlighted && { color: colors.primary },
+          ]}
+        >
+          {label}
+        </Text>
+      </Pressable>
+    </Animated.View>
   )
 }
 
@@ -93,7 +130,7 @@ interface HintUIProps {
   isToggleDisabled: boolean
   hintsAvailable: number
   hintStatuses: Record<HintType, HintStatus>
-
+  highlightedHint: HintType | null
   handleToggleHintOptions: () => void
   handleHintSelection: (type: HintType) => void
 }
@@ -108,6 +145,7 @@ const HintUI: React.FC<HintUIProps> = memo(
     isToggleDisabled,
     hintsAvailable,
     hintStatuses,
+    highlightedHint,
     handleToggleHintOptions,
     handleHintSelection,
   }) => {
@@ -165,6 +203,7 @@ const HintUI: React.FC<HintUIProps> = memo(
               onPress={handleHintSelection}
               status={hintStatuses.decade}
               accessibilityHintCount={hintsAvailable}
+              isHighlighted={highlightedHint === "decade"}
             />
             <HintButton
               hintType="director"
@@ -173,6 +212,7 @@ const HintUI: React.FC<HintUIProps> = memo(
               onPress={handleHintSelection}
               status={hintStatuses.director}
               accessibilityHintCount={hintsAvailable}
+              isHighlighted={highlightedHint === "director"}
             />
             <HintButton
               hintType="actor"
@@ -181,6 +221,7 @@ const HintUI: React.FC<HintUIProps> = memo(
               onPress={handleHintSelection}
               status={hintStatuses.actor}
               accessibilityHintCount={hintsAvailable}
+              isHighlighted={highlightedHint === "actor"}
             />
             <HintButton
               hintType="genre"
@@ -189,12 +230,15 @@ const HintUI: React.FC<HintUIProps> = memo(
               onPress={handleHintSelection}
               status={hintStatuses.genre}
               accessibilityHintCount={hintsAvailable}
+              isHighlighted={highlightedHint === "genre"}
             />
           </View>
         </Animated.View>
 
         {displayedHintText && (
-          <Text style={hintStyles.hintText}>{displayedHintText}</Text>
+          <View style={hintStyles.displayedHintContainer}>
+            <Text style={hintStyles.hintText}>{displayedHintText}</Text>
+          </View>
         )}
       </View>
     )

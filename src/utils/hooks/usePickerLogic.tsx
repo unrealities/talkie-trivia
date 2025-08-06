@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react"
 import { LayoutAnimation, Platform, UIManager } from "react-native"
 import { search } from "fast-fuzzy"
 import { BasicMovie, Movie } from "../../models/movie"
-import { PlayerGame } from "../../models/game"
+import { PlayerGame, HintType } from "../../models/game"
 import {
   useSharedValue,
   withSequence,
@@ -29,13 +29,14 @@ interface UsePickerLogicProps {
     movieId: number
     correct: boolean
     feedback?: string | null
+    revealedHintType?: HintType | null
   }) => void
 }
 
 type PickerState =
   | { status: "idle" }
   | { status: "searching"; query: string }
-  | { status: "results"; query: readonly BasicMovie[] }
+  | { status: "results"; query: string; results: readonly BasicMovie[] }
 
 export function usePickerLogic({
   movies,
@@ -62,7 +63,7 @@ export function usePickerLogic({
       const trimmedTerm = searchTerm.trim()
       if (trimmedTerm.length < 2) return []
 
-      const results = search(trimmedTerm, movies, {
+      const results = search(trimmedTerm, [...movies], {
         keySelector: (movie) => movie.title,
         threshold: 0.8,
       })
@@ -95,6 +96,7 @@ export function usePickerLogic({
 
       setPickerState({
         status: "results",
+        query: pickerState.query,
         results: filtered,
       })
     }, 300)
@@ -111,7 +113,8 @@ export function usePickerLogic({
       const newGuesses = [...(playerGame.guesses || []), selectedMovie.id]
       const isCorrectAnswer = playerGame.movie.id === selectedMovie.id
       let feedback: string | null = null
-      let revealedHints = {}
+      let revealedHints: Partial<Record<HintType, boolean>> = {}
+      let revealedHintType: HintType | null = null
 
       analyticsService.trackGuessMade(
         newGuesses.length,
@@ -126,10 +129,15 @@ export function usePickerLogic({
         if (guessedFullMovie) {
           const result = generateImplicitHint(
             guessedFullMovie,
-            playerGame.movie
+            playerGame.movie,
+            playerGame.hintsUsed
           )
           feedback = result.feedback
           revealedHints = result.revealedHints
+          const revealedKeys = Object.keys(result.revealedHints) as HintType[]
+          if (revealedKeys.length > 0) {
+            revealedHintType = revealedKeys[0]
+          }
         }
       }
 
@@ -137,6 +145,7 @@ export function usePickerLogic({
         movieId: selectedMovie.id,
         correct: isCorrectAnswer,
         feedback,
+        revealedHintType,
       })
 
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)

@@ -8,56 +8,72 @@ interface ImplicitHintResult {
 
 /**
  * Compares a guessed movie with the correct movie to generate implicit hints.
- * It prioritizes the most impactful hint to display to the user, but returns all revealed hint types.
+ * It prioritizes revealing a NEW, unrevealed hint to the user.
  */
 export function generateImplicitHint(
   guessedMovie: Movie,
-  correctMovie: Movie
+  correctMovie: Movie,
+  usedHints: Partial<Record<HintType, boolean>> = {}
 ): ImplicitHintResult {
   const result: ImplicitHintResult = {
     feedback: null,
     revealedHints: {},
   }
 
-  // 1. Check for Same Director
-  if (guessedMovie.director?.id === correctMovie.director?.id) {
-    const feedback = `You guessed another movie by the same director! (Hint Revealed)`
-    if (!result.feedback) result.feedback = feedback
-    result.revealedHints.director = true
+  const hintChecks: {
+    type: HintType
+    condition: boolean
+    message: string
+  }[] = [
+    {
+      type: "director",
+      condition: guessedMovie.director?.id === correctMovie.director?.id,
+      message: `You guessed another movie by the same director! (Hint Revealed)`,
+    },
+    {
+      type: "actor",
+      condition: !!correctMovie.actors
+        .slice(0, 5)
+        .find((actor) =>
+          new Set(guessedMovie.actors.slice(0, 5).map((a) => a.id)).has(
+            actor.id
+          )
+        ),
+      message: `A lead actor from your guess is also in this movie! (Hint Revealed)`,
+    },
+    {
+      type: "decade",
+      condition:
+        Math.floor(new Date(correctMovie.release_date).getFullYear() / 10) ===
+        Math.floor(new Date(guessedMovie.release_date).getFullYear() / 10),
+      message: `You're in the right decade! (Hint Revealed)`,
+    },
+    {
+      type: "genre",
+      condition: !!correctMovie.genres.find((genre) =>
+        new Set(guessedMovie.genres.map((g) => g.id)).has(genre.id)
+      ),
+      message: `This movie shares a genre with your guess! (Hint Revealed)`,
+    },
+  ]
+
+  // Find the first matching hint that has NOT already been revealed.
+  for (const check of hintChecks) {
+    if (check.condition && !usedHints[check.type]) {
+      result.feedback = check.message
+      result.revealedHints[check.type] = true
+      // Once we find a new hint to reveal, we stop.
+      return result
+    }
   }
 
-  // 2. Check for Shared Actor (top 5 for relevance)
-  const guessedActorIds = new Set(
-    guessedMovie.actors.slice(0, 5).map((a) => a.id)
-  )
-  const commonActor = correctMovie.actors
-    .slice(0, 5)
-    .find((actor) => guessedActorIds.has(actor.id))
-
-  if (commonActor) {
-    const feedback = `${commonActor.name} is also in this movie! (Hint Revealed)`
-    if (!result.feedback) result.feedback = feedback
-    result.revealedHints.actor = true
-  }
-
-  // 3. Check for Same Decade
-  const correctYear = new Date(correctMovie.release_date).getFullYear()
-  const guessedYear = new Date(guessedMovie.release_date).getFullYear()
-  if (Math.floor(correctYear / 10) === Math.floor(guessedYear / 10)) {
-    const feedback = `You're in the right decade! (Hint Revealed)`
-    if (!result.feedback) result.feedback = feedback
-    result.revealedHints.decade = true
-  }
-
-  // 4. Check for Shared Genre
-  const guessedGenreIds = new Set(guessedMovie.genres.map((g) => g.id))
-  const commonGenre = correctMovie.genres.find((genre) =>
-    guessedGenreIds.has(genre.id)
-  )
-  if (commonGenre) {
-    const feedback = `This movie shares the genre: ${commonGenre.name}. (Hint Revealed)`
-    if (!result.feedback) result.feedback = feedback
-    result.revealedHints.genre = true
+  // If no new hints were found, check if we can give recurring feedback for an already-revealed hint.
+  for (const check of hintChecks) {
+    if (check.condition && usedHints[check.type]) {
+      result.feedback = `You're on the right track with the ${check.type}!`
+      // Don't set revealedHints here, as it's not new.
+      return result
+    }
   }
 
   return result

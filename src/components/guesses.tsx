@@ -7,6 +7,7 @@ import Animated, {
   withDelay,
   withSequence,
   withTiming,
+  Easing,
 } from "react-native-reanimated"
 import Ionicons from "@expo/vector-icons/Ionicons"
 
@@ -15,8 +16,14 @@ import { useSkeletonAnimation } from "../utils/hooks/useSkeletonAnimation"
 import { useGame } from "../contexts/gameContext"
 import { BasicMovie } from "../models/movie"
 import { useTheme } from "../contexts/themeContext"
+import { HintType } from "../models/game"
 
-type GuessResult = { movieId: number; correct: boolean } | null
+type GuessResult = {
+  movieId: number
+  correct: boolean
+  feedback?: string | null
+  revealedHintType?: HintType | null
+} | null
 
 interface GuessRowProps {
   index: number
@@ -34,10 +41,13 @@ const GuessRow = memo(
     const rotate = useSharedValue(0)
     const shakeX = useSharedValue(0)
     const backgroundColor = useSharedValue(colors.surface)
+    const feedbackAnim = useSharedValue(0)
 
     const guessTitle =
       movies.find((m: BasicMovie) => m.id === guessId)?.title || "Unknown Movie"
     const isCorrect = lastGuessResult?.correct === true
+    const feedbackMessage =
+      isLastGuess && !isCorrect ? lastGuessResult?.feedback : null
 
     const animatedTileStyle = useAnimatedStyle(() => {
       const rotateY = interpolate(rotate.value, [0, 1], [180, 360])
@@ -55,6 +65,15 @@ const GuessRow = memo(
       opacity: rotate.value,
     }))
 
+    const animatedFeedbackStyle = useAnimatedStyle(() => ({
+      opacity: feedbackAnim.value,
+      transform: [
+        {
+          scale: interpolate(feedbackAnim.value, [0, 1], [0.8, 1]),
+        },
+      ],
+    }))
+
     useEffect(() => {
       rotate.value = withTiming(1, { duration: 600 })
 
@@ -65,14 +84,26 @@ const GuessRow = memo(
             withDelay(1000, withTiming(colors.surface, { duration: 500 }))
           )
         } else {
+          feedbackAnim.value = withSequence(
+            withDelay(700, withTiming(1, { duration: 300 })),
+            withDelay(
+              1800,
+              withTiming(0, { duration: 300, easing: Easing.ease })
+            )
+          )
+
           shakeX.value = withSequence(
-            withDelay(700, withTiming(-15, { duration: 60 })),
+            withDelay(
+              2800,
+              withTiming(-15, { duration: 60 })
+            ),
             withTiming(15, { duration: 120 }),
             withTiming(-15, { duration: 120 }),
             withTiming(0, { duration: 60 })
           )
+
           backgroundColor.value = withSequence(
-            withDelay(600, withTiming(colors.error, { duration: 150 })),
+            withDelay(2700, withTiming(colors.error, { duration: 150 })),
             withTiming(colors.surface, { duration: 800 })
           )
         }
@@ -85,10 +116,18 @@ const GuessRow = memo(
       backgroundColor,
       rotate,
       shakeX,
+      feedbackAnim,
     ])
 
     return (
       <Animated.View style={[guessesStyles.guessTile, animatedTileStyle]}>
+        {feedbackMessage && (
+          <Animated.View
+            style={[guessesStyles.feedbackOverlay, animatedFeedbackStyle]}
+          >
+            <Text style={guessesStyles.feedbackText}>{feedbackMessage}</Text>
+          </Animated.View>
+        )}
         <Animated.View
           style={[
             guessesStyles.container,
