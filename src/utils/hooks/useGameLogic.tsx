@@ -1,17 +1,11 @@
-import { useState, useEffect, useCallback, useMemo } from "react"
-import {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-} from "react-native-reanimated"
-// END CORRECTION
+import { useState, useEffect, useCallback, useMemo, useReducer } from "react"
+import { useAnimatedStyle, withTiming } from "react-native-reanimated"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { getFirestore } from "firebase/firestore"
 import { Movie, BasicMovie } from "../../models/movie"
 import popularMoviesData from "../../../data/popularMovies.json"
 import basicMoviesData from "../../../data/basicMovies.json"
 import { useAuth } from "../../contexts/authContext"
-import { PlayerGame } from "../../models/game"
 import PlayerStats from "../../models/playerStats"
 import {
   defaultPlayerGame,
@@ -25,6 +19,7 @@ import {
 import { batchUpdatePlayerData } from "../../utils/firebaseService"
 import { analyticsService } from "../../utils/analyticsService"
 import { GameHistoryEntry } from "../../models/gameHistory"
+import { gameReducer } from "../../state/gameReducer"
 
 const ONBOARDING_STORAGE_KEY = "hasSeenOnboarding"
 
@@ -34,7 +29,8 @@ export function useGameLogic() {
   const [basicMovies, setBasicMovies] = useState<readonly BasicMovie[]>([])
   const [assetsLoading, setAssetsLoading] = useState(true)
   const [assetsError, setAssetsError] = useState<string | null>(null)
-  const [playerGame, setPlayerGame] = useState<PlayerGame>(defaultPlayerGame)
+  const [playerGame, dispatch] = useReducer(gameReducer, defaultPlayerGame)
+
   const [playerStats, setPlayerStats] =
     useState<PlayerStats>(defaultPlayerStats)
   const [gameDataLoading, setGameDataLoading] = useState(true)
@@ -139,6 +135,9 @@ export function useGameLogic() {
           fetchOrCreatePlayerStats(db, player.id),
         ])
 
+        dispatch({ type: "INITIALIZE_GAME", payload: game })
+
+        setPlayerStats(stats)
         if (
           !game.correctAnswer &&
           !game.gaveUp &&
@@ -146,9 +145,6 @@ export function useGameLogic() {
         ) {
           analyticsService.trackGameStart(game.movie.id, game.movie.title)
         }
-
-        setPlayerGame(game)
-        setPlayerStats(stats)
         if (__DEV__)
           console.log(
             "useGameLogic: Player game data initialized successfully."
@@ -162,10 +158,6 @@ export function useGameLogic() {
     }
     initializeData()
   }, [player, movieForToday, authLoading, assetsLoading])
-
-  const updatePlayerGame = useCallback((newPlayerGame: PlayerGame) => {
-    setPlayerGame(newPlayerGame)
-  }, [])
 
   const updatePlayerStats = useCallback((newPlayerStats: PlayerStats) => {
     setPlayerStats(newPlayerStats)
@@ -227,8 +219,8 @@ export function useGameLogic() {
             playerGame.guessesMax
           )
 
-          const finalPlayerGame = { ...playerGame, statsProcessed: true }
-          setPlayerGame(finalPlayerGame)
+          dispatch({ type: "SET_STATS_PROCESSED" })
+
           setPlayerStats(updatedStats)
 
           await saveGameData(historyEntry)
@@ -240,7 +232,14 @@ export function useGameLogic() {
     }
 
     processGameState()
-  }, [playerGame.correctAnswer, playerGame.gaveUp, playerGame.guesses.length])
+  }, [
+    playerGame.correctAnswer,
+    playerGame.gaveUp,
+    playerGame.guesses.length,
+    playerGame.statsProcessed,
+    playerStats,
+    saveGameData,
+  ])
 
   useEffect(() => {
     const checkOnboardingStatus = async () => {
@@ -284,8 +283,8 @@ export function useGameLogic() {
     setShowModal,
     setShowConfetti,
     handleDismissOnboarding,
-    updatePlayerGame,
     updatePlayerStats,
     player,
+    dispatch,
   }
 }

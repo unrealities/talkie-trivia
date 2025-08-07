@@ -1,9 +1,9 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from "react"
 import { LayoutAnimation, Platform, UIManager } from "react-native"
-import { PlayerGame, HintType } from "../../models/game"
-import PlayerStats from "../../models/playerStats"
+import { HintType } from "../../models/game"
 import { analyticsService } from "../analyticsService"
 import { hapticsService } from "../hapticsService"
+import { useGame } from "../../contexts/gameContext"
 
 if (
   Platform.OS === "android" &&
@@ -14,21 +14,15 @@ if (
 
 type HintStatus = "available" | "used" | "disabled"
 
-interface UseHintLogicProps {
-  playerGame: PlayerGame
-  isInteractionsDisabled: boolean
-  playerStats: PlayerStats
-  updatePlayerGame: (updatedPlayerGame: PlayerGame) => void
-  updatePlayerStats: (updatedPlayerStats: PlayerStats) => void
-}
+export function useHintLogic() {
+  const {
+    playerGame,
+    isInteractionsDisabled,
+    playerStats,
+    updatePlayerStats,
+    dispatch,
+  } = useGame()
 
-export function useHintLogic({
-  playerGame,
-  isInteractionsDisabled,
-  playerStats,
-  updatePlayerGame,
-  updatePlayerStats,
-}: UseHintLogicProps) {
   const [showHintOptions, setShowHintOptions] = useState(false)
   const [displayedHintText, setDisplayedHintText] = useState<string | null>(
     null
@@ -116,20 +110,14 @@ export function useHintLogic({
           playerGame.guesses.length,
           hintsAvailable - 1
         )
-        updatePlayerGame({
-          ...playerGame,
-          hintsUsed: {
-            ...(playerGame.hintsUsed || {}),
-            [hintType]: true,
-          },
-        })
 
-        const newPlayerStats: PlayerStats = {
+        dispatch({ type: "USE_HINT", payload: hintType })
+
+        updatePlayerStats({
           ...playerStats,
           hintsAvailable: Math.max(0, hintsAvailable - 1),
           hintsUsedCount: (playerStats.hintsUsedCount || 0) + 1,
-        }
-        updatePlayerStats(newPlayerStats)
+        })
       }
     },
     [
@@ -138,8 +126,8 @@ export function useHintLogic({
       playerStats,
       hintsAvailable,
       getHintText,
-      updatePlayerGame,
       updatePlayerStats,
+      dispatch,
     ]
   )
 

@@ -17,8 +17,8 @@ const GameplayView: React.FC<GameplayViewProps> = ({ onGuessMade }) => {
   const {
     loading: isDataLoading,
     playerGame,
-    updatePlayerGame,
     setShowConfetti,
+    dispatch,
   } = useGame()
   const { colors } = useTheme()
   const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
@@ -27,7 +27,7 @@ const GameplayView: React.FC<GameplayViewProps> = ({ onGuessMade }) => {
 
   const handleLocalGuessMade = useCallback(
     (result: { movieId: number; correct: boolean }) => {
-      onGuessMade(result) // Pass the result up to the parent
+      onGuessMade(result)
       if (result.correct) {
         setShowConfetti(true)
         hapticsService.success()
@@ -52,9 +52,10 @@ const GameplayView: React.FC<GameplayViewProps> = ({ onGuessMade }) => {
         playerGame.guesses.length,
         Object.keys(playerGame.hintsUsed || {}).length
       )
-      updatePlayerGame({ ...playerGame, gaveUp: true })
+
+      dispatch({ type: "GIVE_UP" })
     }
-  }, [playerGame, updatePlayerGame])
+  }, [playerGame, dispatch])
 
   return (
     <>

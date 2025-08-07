@@ -4,12 +4,14 @@ import React, {
   ReactNode,
   StyleProp,
   ViewStyle,
+  Dispatch,
 } from "react"
 import { useGameLogic } from "../utils/hooks/useGameLogic"
 import { Movie, BasicMovie } from "../models/movie"
 import { PlayerGame } from "../models/game"
 import PlayerStats from "../models/playerStats"
 import Player from "../models/player"
+import { GameAction } from "../state/gameReducer"
 
 interface GameContextState {
   playerGame: PlayerGame
@@ -27,9 +29,9 @@ interface GameContextState {
   setShowModal: (show: boolean) => void
   setShowConfetti: (show: boolean) => void
   handleDismissOnboarding: () => void
-  updatePlayerGame: (game: PlayerGame) => void
   updatePlayerStats: (stats: PlayerStats) => void
   player: Player | null
+  dispatch: Dispatch<GameAction>
 }
 
 const GameContext = createContext<GameContextState | undefined>(undefined)
