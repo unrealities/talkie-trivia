@@ -21,14 +21,14 @@ type GuessResult = {
   movieId: number
   correct: boolean
   feedback?: string | null
-  revealedHintType?: HintType | null
+  hintType?: HintType | null
 } | null
 
 type GuessCallbackResult = {
   movieId: number
   correct: boolean
   feedback?: string | null
-  revealedHintType?: HintType | null
+  hintType?: HintType | null
 }
 
 const GameUI: React.FC = () => {

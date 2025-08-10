@@ -4,6 +4,7 @@ import { PlayerGame, HintType } from "../models/game"
 interface ImplicitHintResult {
   feedback: string | null
   revealedHints: Partial<Record<HintType, boolean>>
+  hintType: HintType | null
 }
 
 /**
@@ -18,6 +19,7 @@ export function generateImplicitHint(
   const result: ImplicitHintResult = {
     feedback: null,
     revealedHints: {},
+    hintType: null,
   }
 
   const hintChecks: {
@@ -62,6 +64,7 @@ export function generateImplicitHint(
     if (check.condition && !usedHints[check.type]) {
       result.feedback = check.message
       result.revealedHints[check.type] = true
+      result.hintType = check.type
       // Once we find a new hint to reveal, we stop.
       return result
     }

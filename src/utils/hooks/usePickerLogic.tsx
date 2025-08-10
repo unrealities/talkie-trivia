@@ -26,7 +26,7 @@ interface UsePickerLogicProps {
     movieId: number
     correct: boolean
     feedback?: string | null
-    revealedHintType?: HintType | null
+    hintType?: HintType | null
   }) => void
 }
 
@@ -104,7 +104,7 @@ export function usePickerLogic({ onGuessMade }: UsePickerLogicProps) {
 
       const isCorrectAnswer = playerGame.movie.id === selectedMovie.id
       let feedback: string | null = null
-      let revealedHintType: HintType | null = null
+      let hintType: HintType | null = null
 
       analyticsService.trackGuessMade(
         playerGame.guesses.length + 1,
@@ -123,10 +123,7 @@ export function usePickerLogic({ onGuessMade }: UsePickerLogicProps) {
             playerGame.hintsUsed
           )
           feedback = result.feedback
-          const revealedKeys = Object.keys(result.revealedHints) as HintType[]
-          if (revealedKeys.length > 0) {
-            revealedHintType = revealedKeys[0]
-          }
+          hintType = result.hintType
         }
       }
 
@@ -134,7 +131,7 @@ export function usePickerLogic({ onGuessMade }: UsePickerLogicProps) {
         movieId: selectedMovie.id,
         correct: isCorrectAnswer,
         feedback,
-        revealedHintType,
+        hintType,
       })
 
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)

@@ -22,7 +22,7 @@ type GuessResult = {
   movieId: number
   correct: boolean
   feedback?: string | null
-  revealedHintType?: HintType | null
+  hintType?: HintType | null
 } | null
 
 interface GuessRowProps {
@@ -31,10 +31,18 @@ interface GuessRowProps {
   movies: readonly BasicMovie[]
   isLastGuess: boolean
   lastGuessResult: GuessResult
+  implicitHintType: HintType | null
 }
 
 const GuessRow = memo(
-  ({ index, guessId, movies, isLastGuess, lastGuessResult }: GuessRowProps) => {
+  ({
+    index,
+    guessId,
+    movies,
+    isLastGuess,
+    lastGuessResult,
+    implicitHintType,
+  }: GuessRowProps) => {
     const { colors } = useTheme()
     const guessesStyles = useMemo(() => getGuessesStyles(colors), [colors])
 
@@ -93,10 +101,7 @@ const GuessRow = memo(
           )
 
           shakeX.value = withSequence(
-            withDelay(
-              2800,
-              withTiming(-15, { duration: 60 })
-            ),
+            withDelay(2800, withTiming(-15, { duration: 60 })),
             withTiming(15, { duration: 120 }),
             withTiming(-15, { duration: 120 }),
             withTiming(0, { duration: 60 })
@@ -118,6 +123,18 @@ const GuessRow = memo(
       shakeX,
       feedbackAnim,
     ])
+
+    const getIconNameForHint = (
+      hint: HintType
+    ): keyof typeof Ionicons.glyphMap => {
+      const iconMap: Record<HintType, keyof typeof Ionicons.glyphMap> = {
+        decade: "calendar-outline",
+        director: "film-outline",
+        actor: "person-outline",
+        genre: "folder-open-outline",
+      }
+      return iconMap[hint]
+    }
 
     return (
       <Animated.View style={[guessesStyles.guessTile, animatedTileStyle]}>
@@ -146,6 +163,13 @@ const GuessRow = memo(
           >
             {guessTitle}
           </Text>
+          {implicitHintType && (
+            <Ionicons
+              name={getIconNameForHint(implicitHintType)}
+              style={guessesStyles.guessHintIcon}
+              color={colors.primary}
+            />
+          )}
           <View>
             <Ionicons
               name={isCorrect ? "checkmark-circle" : "close-circle"}
@@ -214,6 +238,10 @@ const GuessesContainer = memo(
             index === guesses.length - 1 &&
             lastGuessResult.movieId === guessId
 
+          const implicitHintType = isLastGuess
+            ? lastGuessResult?.hintType ?? null
+            : null
+
           return (
             <GuessRow
               key={`${guessId}-${index}`}
@@ -222,6 +250,7 @@ const GuessesContainer = memo(
               movies={movies}
               isLastGuess={isLastGuess}
               lastGuessResult={lastGuessResult}
+              implicitHintType={implicitHintType}
             />
           )
         })}

@@ -51,6 +51,11 @@ export const getGuessesStyles = (colors: any) => {
       marginLeft: spacing.small,
       fontSize: responsive.responsiveFontSize(22),
     },
+    guessHintIcon: {
+      marginHorizontal: spacing.small,
+      fontSize: responsive.responsiveFontSize(18),
+      opacity: 0.8,
+    },
     skeletonRow: {
       ...baseRow,
       backgroundColor: colors.surface,
