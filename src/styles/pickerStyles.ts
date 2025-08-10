@@ -34,11 +34,22 @@ export const getPickerStyles = (colors: any) => {
       paddingHorizontal: spacing.medium,
       paddingVertical: responsive.scale(12),
       textAlign: "left",
+      paddingRight: responsive.scale(40),
     },
     inputContainer: {
       flexDirection: "row",
       position: "relative",
       width: "100%",
+    },
+    clearButton: {
+      position: "absolute",
+      right: responsive.scale(10),
+      top: 0,
+      bottom: 0,
+      justifyContent: "center",
+      alignItems: "center",
+      padding: spacing.small,
+      zIndex: 2,
     },
     noResultsText: {
       color: colors.textSecondary,
@@ -138,16 +149,23 @@ export const getPickerStyles = (colors: any) => {
       fontSize: responsive.responsiveFontSize(11),
       color: colors.background,
     },
-    button: {
+    submitButton: {
       backgroundColor: colors.primary,
-      borderRadius: responsive.scale(8),
+      borderRadius: responsive.scale(10),
       padding: spacing.medium,
       width: "100%",
       ...shadows.light,
       marginTop: spacing.medium,
     },
+    submitButtonText: {
+      ...typography.button,
+      color: colors.background,
+      fontFamily: "Arvo-Bold",
+      textAlign: "center",
+    },
     disabledButton: {
       backgroundColor: colors.surface,
+      opacity: 0.6,
     },
   })
 }

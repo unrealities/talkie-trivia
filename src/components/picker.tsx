@@ -123,26 +123,18 @@ interface PickerContainerProps {
 }
 
 const PickerContainer: FC<PickerContainerProps> = memo(({ onGuessMade }) => {
-  const {
-    loading: isDataLoading,
-    movies,
-    playerGame,
-    isInteractionsDisabled,
-    updatePlayerGame,
-  } = useGame()
-
+  const { loading: isDataLoading, isInteractionsDisabled } = useGame()
   const [expandedMovieId, setExpandedMovieId] = useState<number | null>(null)
 
   const {
     pickerState,
     shakeAnimation,
+    stagedGuess,
     handleInputChange,
-    handleMovieSelection,
+    handleStageGuess,
+    handleConfirmGuess,
+    handleClearStagedGuess,
   } = usePickerLogic({
-    movies,
-    playerGame,
-    isInteractionsDisabled,
-    updatePlayerGame,
     onGuessMade,
   })
 
@@ -160,9 +152,9 @@ const PickerContainer: FC<PickerContainerProps> = memo(({ onGuessMade }) => {
   const handleSelectMovie = useCallback(
     (movie: BasicMovie) => {
       setExpandedMovieId(null)
-      handleMovieSelection(movie)
+      handleStageGuess(movie)
     },
-    [handleMovieSelection]
+    [handleStageGuess]
   )
 
   const renderItem = useCallback(
@@ -188,15 +180,16 @@ const PickerContainer: FC<PickerContainerProps> = memo(({ onGuessMade }) => {
   }
 
   return (
-    <>
-      <PickerUI
-        pickerState={pickerState}
-        animatedInputStyle={animatedInputStyle}
-        isInteractionsDisabled={isInteractionsDisabled}
-        handleInputChange={handleInputChange}
-        renderItem={renderItem}
-      />
-    </>
+    <PickerUI
+      pickerState={pickerState}
+      animatedInputStyle={animatedInputStyle}
+      isInteractionsDisabled={isInteractionsDisabled}
+      stagedGuess={stagedGuess}
+      handleInputChange={handleInputChange}
+      onConfirmGuess={handleConfirmGuess}
+      onClearStagedGuess={handleClearStagedGuess}
+      renderItem={renderItem}
+    />
   )
 })
 

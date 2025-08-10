@@ -8,10 +8,13 @@ import {
   ListRenderItem,
   StyleProp,
   ViewStyle,
+  Pressable,
 } from "react-native"
 import Animated from "react-native-reanimated"
+import Ionicons from "@expo/vector-icons/Ionicons"
 import { BasicMovie } from "../models/movie"
 import { getPickerStyles } from "../styles/pickerStyles"
+import { responsive } from "../styles/global"
 import { useTheme } from "../contexts/themeContext"
 
 type PickerState =
@@ -23,7 +26,10 @@ interface PickerUIProps {
   pickerState: PickerState
   animatedInputStyle: StyleProp<ViewStyle>
   isInteractionsDisabled: boolean
+  stagedGuess: BasicMovie | null
   handleInputChange: (text: string) => void
+  onConfirmGuess: () => void
+  onClearStagedGuess: () => void
   renderItem: ListRenderItem<BasicMovie>
 }
 
@@ -32,7 +38,10 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
     pickerState,
     animatedInputStyle,
     isInteractionsDisabled,
+    stagedGuess,
     handleInputChange,
+    onConfirmGuess,
+    onClearStagedGuess,
     renderItem,
   }) => {
     const { colors } = useTheme()
@@ -49,7 +58,15 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
     }
 
     const showResults =
-      pickerState.status === "results" || pickerState.status === "searching"
+      (pickerState.status === "results" ||
+        pickerState.status === "searching") &&
+      !stagedGuess
+
+    const inputValue = stagedGuess
+      ? `${stagedGuess.title} (${new Date(
+          stagedGuess.release_date
+        ).getFullYear()})`
+      : getSearchText()
 
     return (
       <View style={pickerStyles.container}>
@@ -65,15 +82,42 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
               placeholderTextColor={colors.textSecondary}
               style={[
                 pickerStyles.input,
-                isInteractionsDisabled && {
+                (isInteractionsDisabled || !!stagedGuess) && {
                   backgroundColor: colors.border,
                 },
               ]}
-              value={getSearchText()}
-              editable={!isInteractionsDisabled}
+              value={inputValue}
+              editable={!isInteractionsDisabled && !stagedGuess}
             />
+            {stagedGuess && (
+              <Pressable
+                onPress={onClearStagedGuess}
+                style={pickerStyles.clearButton}
+                accessibilityLabel="Clear selected movie"
+              >
+                <Ionicons
+                  name="close-circle"
+                  size={responsive.scale(22)}
+                  color={colors.textSecondary}
+                />
+              </Pressable>
+            )}
           </View>
         </Animated.View>
+
+        {stagedGuess && (
+          <Pressable
+            onPress={onConfirmGuess}
+            disabled={isInteractionsDisabled}
+            style={({ pressed }) => [
+              pickerStyles.submitButton,
+              isInteractionsDisabled && pickerStyles.disabledButton,
+              pressed && { opacity: 0.8 },
+            ]}
+          >
+            <Text style={pickerStyles.submitButtonText}>Submit Guess</Text>
+          </Pressable>
+        )}
 
         {/* The results container will now render as an overlay due to the styles */}
         {showResults && (
