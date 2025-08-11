@@ -27,6 +27,26 @@ export const fetchMovieById = async (
   }
 }
 
+export const fetchPlayerGameById = async (
+  gameId: string
+): Promise<PlayerGame | null> => {
+  if (!gameId) return null
+  try {
+    const gameDocRef = doc(db, "playerGames", gameId).withConverter(
+      playerGameConverter
+    )
+    const gameSnap = await getDoc(gameDocRef)
+    if (gameSnap.exists()) {
+      return gameSnap.data()
+    }
+    console.warn(`PlayerGame with ID ${gameId} not found.`)
+    return null
+  } catch (error) {
+    console.error(`Error fetching PlayerGame with ID ${gameId}:`, error)
+    throw error
+  }
+}
+
 export const batchUpdatePlayerData = async (
   playerStats: PlayerStats,
   playerGame: PlayerGame,

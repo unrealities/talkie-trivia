@@ -16,7 +16,7 @@ import { useSkeletonAnimation } from "../utils/hooks/useSkeletonAnimation"
 import { useGame } from "../contexts/gameContext"
 import { BasicMovie } from "../models/movie"
 import { useTheme } from "../contexts/themeContext"
-import { HintType } from "../models/game"
+import { HintType, PlayerGame } from "../models/game"
 
 type GuessResult = {
   movieId: number
@@ -24,6 +24,12 @@ type GuessResult = {
   feedback?: string | null
   hintType?: HintType | null
 } | null
+
+interface GuessesContainerProps {
+  lastGuessResult: GuessResult
+  gameForDisplay?: PlayerGame
+  allMoviesForDisplay?: readonly BasicMovie[]
+}
 
 interface GuessRowProps {
   index: number
@@ -208,8 +214,21 @@ const SkeletonRow = memo(({ index }: { index: number }) => {
 })
 
 const GuessesContainer = memo(
-  ({ lastGuessResult }: { lastGuessResult: GuessResult }) => {
-    const { loading: isDataLoading, playerGame, movies } = useGame()
+  ({
+    lastGuessResult,
+    gameForDisplay,
+    allMoviesForDisplay,
+  }: GuessesContainerProps) => {
+    const {
+      loading: contextLoading,
+      playerGame: contextPlayerGame,
+      movies: contextMovies,
+    } = useGame()
+
+    const isDataLoading = gameForDisplay ? false : contextLoading
+    const playerGame = gameForDisplay || contextPlayerGame
+    const movies = allMoviesForDisplay || contextMovies
+
     const { colors } = useTheme()
     const guessesStyles = useMemo(() => getGuessesStyles(colors), [colors])
     const { guesses, guessesMax } = playerGame

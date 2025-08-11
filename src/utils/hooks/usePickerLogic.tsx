@@ -86,6 +86,9 @@ export function usePickerLogic({ onGuessMade }: UsePickerLogicProps) {
       const filtered = filterMovies(pickerState.query)
       if (filtered.length > 0) {
         hapticsService.light()
+      } else if (pickerState.query.length > 2) {
+        triggerShake()
+        hapticsService.warning()
       }
 
       setPickerState({

@@ -10,7 +10,7 @@ import { responsive } from "../styles/global"
 import { getWinChartStyles } from "../styles/winChartStyles"
 import { useTheme } from "../contexts/themeContext"
 
-  export interface WinChartProps {
+export interface WinChartProps {
   wins: number[] // e.g., [10, 20, 30, 15, 5]
 }
 
@@ -18,6 +18,26 @@ const WinChart = memo(({ wins }: WinChartProps) => {
   const { colors } = useTheme()
   const winChartStyles = useMemo(() => getWinChartStyles(colors), [colors])
   const totalWins = wins.reduce((a, b) => a + b, 0)
+
+  const accessibilityLabel = useMemo(() => {
+    if (totalWins === 0) {
+      return "Win distribution chart is empty. No wins recorded yet."
+    }
+
+    const descriptions = wins
+      .map((count, index) => {
+        if (count > 0) {
+          const guessText = index === 0 ? "guess" : "guesses"
+          const winText = count === 1 ? "win" : "wins"
+          return `${count} ${winText} with ${index + 1} ${guessText}`
+        }
+        return ""
+      })
+      .filter(Boolean)
+      .join(". ")
+
+    return `Bar chart showing win distribution. ${descriptions}.`
+  }, [wins, totalWins])
 
   // Show a message if the user hasn't won any games yet
   if (totalWins === 0) {
@@ -38,7 +58,7 @@ const WinChart = memo(({ wins }: WinChartProps) => {
   return (
     <View
       style={winChartStyles.container}
-      accessibilityLabel="Bar chart showing win distribution by number of guesses."
+      accessibilityLabel={accessibilityLabel}
     >
       <VictoryChart
         domainPadding={{ x: responsive.scale(25) }}
