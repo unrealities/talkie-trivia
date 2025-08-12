@@ -1,6 +1,7 @@
 import { Movie } from "../models/movie"
 import { PlayerGame } from "../models/game"
 import PlayerStats from "../models/playerStats"
+import { GAME_DEFAULTS } from "../config/constants"
 
 export const defaultMovie: Movie = {
   actors: [],
@@ -22,7 +23,7 @@ export const defaultPlayerGame: PlayerGame = {
   id: "",
   playerID: "",
   movie: defaultMovie,
-  guessesMax: 5,
+  guessesMax: GAME_DEFAULTS.MAX_GUESSES,
   guesses: [],
   correctAnswer: false,
   gaveUp: false,
@@ -37,8 +38,8 @@ export const defaultPlayerStats: PlayerStats = {
   currentStreak: 0,
   games: 0,
   maxStreak: 0,
-  wins: [0, 0, 0, 0, 0],
-  hintsAvailable: 3,
+  wins: Array(GAME_DEFAULTS.MAX_GUESSES).fill(0),
+  hintsAvailable: GAME_DEFAULTS.INITIAL_HINTS,
   hintsUsedCount: 0,
 }
 

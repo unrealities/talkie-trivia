@@ -17,6 +17,7 @@ import { generateShareMessage } from "../utils/shareUtils"
 import { hapticsService } from "../utils/hapticsService"
 import { analyticsService } from "../utils/analyticsService"
 import { useTheme } from "../contexts/themeContext"
+import { API_CONFIG } from "../config/constants"
 
 interface GameOverViewProps {
   playerGame: PlayerGame
@@ -29,10 +30,8 @@ const GameOverView: React.FC<GameOverViewProps> = ({
 }) => {
   const { colors } = useTheme()
   const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
-  // Animation value for the card flip
   const flipAnimation = useSharedValue(0)
 
-  // Trigger the animation when the component mounts
   useEffect(() => {
     flipAnimation.value = withTiming(1, {
       duration: 800,
@@ -40,7 +39,6 @@ const GameOverView: React.FC<GameOverViewProps> = ({
     })
   }, [flipAnimation])
 
-  // Animated style for the card container
   const animatedCardStyle = useAnimatedStyle(() => {
     const rotateY = interpolate(flipAnimation.value, [0, 1], [-180, 0])
     return {
@@ -69,7 +67,7 @@ const GameOverView: React.FC<GameOverViewProps> = ({
   }
 
   const posterUri = playerGame.movie.poster_path
-    ? `https://image.tmdb.org/t/p/w500${playerGame.movie.poster_path}`
+    ? `${API_CONFIG.TMDB_IMAGE_BASE_URL_W500}${playerGame.movie.poster_path}`
     : undefined
 
   const resultMessage = playerGame.correctAnswer

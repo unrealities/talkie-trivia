@@ -1,39 +1,48 @@
+// firestore.rules
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
   
     // Movies data is publically readable, but write access is locked down.
+    // FIRESTORE_COLLECTIONS.MOVIES
     match /movies/{movieId} {
       allow read: if true;
       allow write: if false; // Only allow writes from admin/backend scripts
     }
     
     // Daily games are readable, but not writable by clients.
+    // FIRESTORE_COLLECTIONS.DAILY_GAMES
     match /dailyGames/{dateId} {
-      allow read: if true;
+      allow read: if request.auth != null; // Only authenticated users can read
       allow write: if false; // Only allow writes from a trusted server/function
     }
 
-    // Players can only read their own data.
+    // Player documents. A user can only access their own.
+    // FIRESTORE_COLLECTIONS.PLAYERS
     match /players/{userId} {
-      allow read, write: if request.auth.uid == userId;
+      allow get, update, delete: if request.auth.uid == userId;
+      allow create: if request.auth.uid == userId && request.resource.id == userId;
 
+      // Sub-collection for a player's game history.
+      // FIRESTORE_COLLECTIONS.GAME_HISTORY
       match /gameHistory/{dateId} {
         allow read, write: if request.auth.uid == userId;
       }
     }
     
-    // Users can only read and write their own stats.
+    // Player statistics. A user can only access their own.
+    // FIRESTORE_COLLECTIONS.PLAYER_STATS
     match /playerStats/{userId} {
-      allow read: if request.auth.uid == userId;
-      // Allow creation and updates only by the authenticated user.
-      allow write: if request.auth.uid == userId;
+      allow get: if request.auth.uid == userId;
+      // Allow creation/updates only by the authenticated user for their own document.
+      allow write: if request.auth.uid == userId && request.resource.id == userId;
     }
     
-    // Users can only read and write their own game documents.
+    // A player's game state for a specific day.
+    // FIRESTORE_COLLECTIONS.PLAYER_GAMES
     match /playerGames/{gameId} {
-      // The gameId should be in the format `userId-date`
+      // The gameId must be in the format `userId-date`
       allow read, write: if request.auth.uid == gameId.split('-')[0];
     }
   }

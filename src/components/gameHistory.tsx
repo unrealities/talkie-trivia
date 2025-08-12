@@ -22,6 +22,7 @@ import { gameHistoryEntryConverter } from "../utils/firestore/converters/gameHis
 import { getGameHistoryStyles } from "../styles/gameHistoryStyles"
 import { hapticsService } from "../utils/hapticsService"
 import { useTheme } from "../contexts/themeContext"
+import { API_CONFIG, FIRESTORE_COLLECTIONS } from "../config/constants"
 
 interface GameHistoryItemProps {
   item: GameHistoryEntry
@@ -31,7 +32,7 @@ interface GameHistoryItemProps {
 const GameHistoryItem = memo(({ item, onPress }: GameHistoryItemProps) => {
   const { colors } = useTheme()
   const styles = useMemo(() => getGameHistoryStyles(colors), [colors])
-  const posterUri = `https://image.tmdb.org/t/p/w185${item.posterPath}`
+  const posterUri = `${API_CONFIG.TMDB_IMAGE_BASE_URL_W185}${item.posterPath}`
   const date = new Date(item.dateId)
   const formattedDate = date.toLocaleDateString("en-US", {
     weekday: "long",
@@ -99,7 +100,7 @@ const GameHistory = ({ onHistoryItemPress }: GameHistoryProps) => {
         const db = getFirestore()
         const historyRef = collection(
           db,
-          `players/${player.id}/gameHistory`
+          `${FIRESTORE_COLLECTIONS.PLAYERS}/${player.id}/${FIRESTORE_COLLECTIONS.GAME_HISTORY}`
         ).withConverter(gameHistoryEntryConverter)
 
         const q = query(historyRef, orderBy("dateId", "desc"), limit(20))
@@ -144,7 +145,7 @@ const GameHistory = ({ onHistoryItemPress }: GameHistoryProps) => {
       <FlatList
         data={history}
         renderItem={renderItem}
-        keyExtractor={(item) => item.dateId}
+        keyExtractor={(item) => `${item.dateId}-${item.movieId}`}
         contentContainerStyle={styles.listContainer}
         ListEmptyComponent={() => (
           <View style={styles.emptyContainer}>

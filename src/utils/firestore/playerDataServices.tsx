@@ -14,13 +14,18 @@ import PlayerStats from "../../models/playerStats"
 import { PlayerGame } from "../../models/game"
 import { Movie } from "../../models/movie"
 import { defaultPlayerGame, defaultPlayerStats } from "../../models/default"
+import { FIRESTORE_COLLECTIONS } from "../../config/constants"
 
 export const fetchOrCreatePlayer = async (
   db: Firestore,
   playerId: string,
   playerName: string
 ): Promise<Player> => {
-  const playerRef = doc(db, "players", playerId).withConverter(playerConverter)
+  const playerRef = doc(
+    db,
+    FIRESTORE_COLLECTIONS.PLAYERS,
+    playerId
+  ).withConverter(playerConverter)
   const playerSnap = await getDoc(playerRef)
   if (playerSnap.exists()) {
     return playerSnap.data()
@@ -49,7 +54,7 @@ export const fetchOrCreatePlayerGame = async (
 
   const playerGameRef = doc(
     db,
-    "playerGames",
+    FIRESTORE_COLLECTIONS.PLAYER_GAMES,
     `${playerId}-${dateId}`
   ).withConverter(playerGameConverter)
   const gameSnap = await getDoc(playerGameRef)
@@ -87,9 +92,11 @@ export const fetchOrCreatePlayerStats = async (
   db: Firestore,
   playerId: string
 ): Promise<PlayerStats> => {
-  const statsRef = doc(db, "playerStats", playerId).withConverter(
-    playerStatsConverter
-  )
+  const statsRef = doc(
+    db,
+    FIRESTORE_COLLECTIONS.PLAYER_STATS,
+    playerId
+  ).withConverter(playerStatsConverter)
   const statsSnap = await getDoc(statsRef)
   if (statsSnap.exists()) {
     return statsSnap.data()

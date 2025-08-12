@@ -6,7 +6,7 @@ import React, {
   memo,
   useCallback,
 } from "react"
-import { Text, View, Easing, ScrollView, Pressable } from "react-native"
+import { Text, View, ScrollView, Pressable } from "react-native"
 import Animated, {
   useSharedValue,
   withTiming,
@@ -15,11 +15,15 @@ import Animated, {
   withSequence,
   withDelay,
   interpolateColor,
+  useAnimatedReaction,
+  cancelAnimation,
+  Easing,
 } from "react-native-reanimated"
 import { getCluesStyles } from "../styles/cluesStyles"
 import { useGame } from "../contexts/gameContext"
 import { hapticsService } from "../utils/hapticsService"
 import { useTheme } from "../contexts/themeContext"
+import { ANIMATION_CONSTANTS } from "../config/constants"
 
 const splitSummary = (summary: string, splits: number = 5): string[] => {
   if (!summary) return Array(splits).fill("")
@@ -66,25 +70,22 @@ const CluesContainer = memo(() => {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [revealedClues, setRevealedClues] = useState<string[]>([])
   const [typewriterText, setTypewriterText] = useState("")
-  const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const lastClueRef = useRef<string>("")
 
   const fadeAnim = useSharedValue(0)
   const slideAnim = useSharedValue(-10)
   const clueHighlightAnim = useSharedValue(0)
+  const typewriterProgress = useSharedValue(0)
   const scrollViewRef = useRef<ScrollView>(null)
 
   const oldCluesText = revealedClues.slice(0, -1).join(" ")
   const spacer = oldCluesText && typewriterText ? " " : ""
 
   const handleSkipAnimation = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current)
-      intervalRef.current = null
-      setTypewriterText(lastClueRef.current)
-      hapticsService.light()
-    }
-  }, [])
+    cancelAnimation(typewriterProgress)
+    setTypewriterText(lastClueRef.current)
+    hapticsService.light()
+  }, [typewriterProgress])
 
   useEffect(() => {
     if (playerGame?.movie?.overview) {
@@ -92,12 +93,21 @@ const CluesContainer = memo(() => {
     }
   }, [playerGame?.movie?.overview])
 
-  useEffect(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current)
-      intervalRef.current = null
-    }
+  useAnimatedReaction(
+    () => {
+      return Math.floor(typewriterProgress.value)
+    },
+    (currentValue, previousValue) => {
+      if (currentValue !== previousValue) {
+        runOnJS(setTypewriterText)(
+          lastClueRef.current.substring(0, currentValue)
+        )
+      }
+    },
+    [typewriterProgress]
+  )
 
+  useEffect(() => {
     if (isLoading) return
 
     const numCluesToReveal =
@@ -118,22 +128,19 @@ const CluesContainer = memo(() => {
           withTiming(1, { duration: 400 }),
           withDelay(800, withTiming(0, { duration: 500 }))
         )
-      }
-      runOnJS(startReanimatedAnimations)()
 
-      let charIndex = 0
-      setTypewriterText("")
-      intervalRef.current = setInterval(() => {
-        if (charIndex < lastClue.length) {
-          setTypewriterText((prev) => lastClue.substring(0, charIndex + 1))
-          charIndex++
-        } else {
-          if (intervalRef.current) {
-            clearInterval(intervalRef.current)
-            intervalRef.current = null
-          }
-        }
-      }, 50)
+        typewriterProgress.value = 0
+        setTypewriterText("")
+
+        const animationDuration =
+          lastClue.length * ANIMATION_CONSTANTS.TYPEWRITER_CHAR_DURATION
+
+        typewriterProgress.value = withTiming(lastClue.length, {
+          duration: animationDuration,
+          easing: Easing.linear,
+        })
+      }
+      startReanimatedAnimations()
 
       setRevealedClues(newRevealedClues)
       scrollViewRef.current?.scrollToEnd({ animated: true })
@@ -143,9 +150,7 @@ const CluesContainer = memo(() => {
     }
 
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current)
-      }
+      cancelAnimation(typewriterProgress)
     }
   }, [isLoading, correctAnswer, isInteractionsDisabled, guesses.length, clues])
 

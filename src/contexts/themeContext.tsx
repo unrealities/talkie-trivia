@@ -8,10 +8,11 @@ import React, {
 import {
   useColorScheme as useRNColorScheme,
   Appearance,
-  ColorSchemeName,
+  Platform,
 } from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { lightColors, darkColors } from "../styles/themes"
+import { ASYNC_STORAGE_KEYS } from "../config/constants"
 
 export type Theme = "light" | "dark" | "system"
 export type AppColorScheme = "light" | "dark"
@@ -23,7 +24,7 @@ interface ThemeContextType {
   colorScheme: AppColorScheme
 }
 
-const THEME_STORAGE_KEY = "theme_preference"
+const THEME_STORAGE_KEY = ASYNC_STORAGE_KEYS.THEME_PREFERENCE
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(
   undefined
@@ -56,11 +57,13 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     try {
       await AsyncStorage.setItem(THEME_STORAGE_KEY, newTheme)
       setThemeState(newTheme)
-      // Directly set the OS-level appearance
-      if (newTheme === "system") {
-        Appearance.setColorScheme(null)
-      } else {
-        Appearance.setColorScheme(newTheme)
+
+      if (Platform.OS !== "web") {
+        if (newTheme === "system") {
+          Appearance.setColorScheme(null)
+        } else {
+          Appearance.setColorScheme(newTheme)
+        }
       }
     } catch (e) {
       console.error("Failed to save theme to storage", e)

@@ -5,7 +5,7 @@ import {
   VictoryChart,
   VictoryAxis,
   VictoryLabel,
-} from "victory-native"
+} from "./victory-charts"
 import { responsive } from "../styles/global"
 import { getWinChartStyles } from "../styles/winChartStyles"
 import { useTheme } from "../contexts/themeContext"

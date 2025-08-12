@@ -66,9 +66,10 @@
     "react-native-vector-icons": "^10.3.0",
     "react-native-web": "~0.19.13",
     "resize-observer-polyfill": "^1.5.1",
+    "undefined": "@expo/vector-icons/Ionicons",
+    "victory": "^37.3.6",
     "victory-native": "^41.17.4",
-    "vm": "^0.1.0",
-    "undefined": "@expo/vector-icons/Ionicons"
+    "vm": "^0.1.0"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.26.0",

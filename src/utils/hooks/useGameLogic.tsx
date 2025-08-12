@@ -20,8 +20,9 @@ import { batchUpdatePlayerData } from "../../utils/firebaseService"
 import { analyticsService } from "../../utils/analyticsService"
 import { GameHistoryEntry } from "../../models/gameHistory"
 import { gameReducer } from "../../state/gameReducer"
+import { ASYNC_STORAGE_KEYS } from "../../config/constants"
 
-const ONBOARDING_STORAGE_KEY = "hasSeenOnboarding"
+const ONBOARDING_STORAGE_KEY = ASYNC_STORAGE_KEYS.ONBOARDING_STATUS
 
 export function useGameLogic() {
   const { player, loading: authLoading } = useAuth()
@@ -189,7 +190,7 @@ export function useGameLogic() {
               updatedStats.currentStreak,
               updatedStats.maxStreak || 0
             )
-            const winsArray = [...(updatedStats.wins || [0, 0, 0, 0, 0])]
+            const winsArray = [...(updatedStats.wins || [])]
             const guessCount = playerGame.guesses.length
             if (guessCount > 0 && guessCount <= winsArray.length) {
               winsArray[guessCount - 1] = (winsArray[guessCount - 1] || 0) + 1

@@ -25,6 +25,7 @@ import PickerSkeleton from "./pickerSkeleton"
 import { useGame } from "../contexts/gameContext"
 import { hapticsService } from "../utils/hapticsService"
 import { useTheme } from "../contexts/themeContext"
+import { API_CONFIG } from "../config/constants"
 
 if (
   Platform.OS === "android" &&
@@ -55,10 +56,10 @@ const MovieItem = memo<MovieItemProps>(
       : ""
     const titleWithYear = `${movie.title}${releaseYear}`
     const posterUri = movie.poster_path
-      ? `https://image.tmdb.org/t/p/w92${movie.poster_path}`
+      ? `${API_CONFIG.TMDB_IMAGE_BASE_URL_W92}${movie.poster_path}`
       : null
     const fullPosterUri = movie.poster_path
-      ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+      ? `${API_CONFIG.TMDB_IMAGE_BASE_URL_W500}${movie.poster_path}`
       : null
 
     return (

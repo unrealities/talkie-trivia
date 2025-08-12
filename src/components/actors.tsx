@@ -13,6 +13,7 @@ import { Actor } from "../models/movie"
 import { Image } from "expo-image"
 import { analyticsService } from "../utils/analyticsService"
 import { useTheme } from "../contexts/themeContext"
+import { API_CONFIG } from "../config/constants"
 
 type ImageSource = { uri: string } | number
 
@@ -35,8 +36,8 @@ const ActorContainer = memo(
   ({ actor, imdbId, style, onActorPress }: ActorContainerProps) => {
     const { colors } = useTheme()
     const actorsStyles = useMemo(() => getActorsStyles(colors), [colors])
-    const imageURI = "https://image.tmdb.org/t/p/w185"
-    const imdbURI = imdbId ? `https://www.imdb.com/name/${imdbId}` : null
+    const imageURI = API_CONFIG.TMDB_IMAGE_BASE_URL_W185
+    const imdbURI = imdbId ? `${API_CONFIG.IMDB_BASE_URL_NAME}${imdbId}` : null
 
     const handlePress = useCallback(() => {
       if (onActorPress) {
@@ -97,7 +98,7 @@ const ActorContainer = memo(
           <Image
             source={actorImageSource}
             style={actorsStyles.actorImage}
-            resizeMode="cover"
+            contentFit="cover"
             placeholder={placeholderSource}
           />
           <View style={actorsStyles.actorTextContainer}>
