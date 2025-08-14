@@ -16,13 +16,13 @@ import { useSkeletonAnimation } from "../utils/hooks/useSkeletonAnimation"
 import { useGame } from "../contexts/gameContext"
 import { BasicMovie } from "../models/movie"
 import { useTheme } from "../contexts/themeContext"
-import { HintType, PlayerGame } from "../models/game"
+import { HintInfo, HintType, PlayerGame } from "../models/game"
 
 type GuessResult = {
   movieId: number
   correct: boolean
   feedback?: string | null
-  hintType?: HintType | null
+  hintInfo?: HintInfo | null
 } | null
 
 interface GuessesContainerProps {
@@ -37,18 +37,10 @@ interface GuessRowProps {
   movies: readonly BasicMovie[]
   isLastGuess: boolean
   lastGuessResult: GuessResult
-  implicitHintType: HintType | null
 }
 
 const GuessRow = memo(
-  ({
-    index,
-    guessId,
-    movies,
-    isLastGuess,
-    lastGuessResult,
-    implicitHintType,
-  }: GuessRowProps) => {
+  ({ index, guessId, movies, isLastGuess, lastGuessResult }: GuessRowProps) => {
     const { colors } = useTheme()
     const guessesStyles = useMemo(() => getGuessesStyles(colors), [colors])
 
@@ -62,6 +54,7 @@ const GuessRow = memo(
     const isCorrect = lastGuessResult?.correct === true
     const feedbackMessage =
       isLastGuess && !isCorrect ? lastGuessResult?.feedback : null
+    const hintInfo = isLastGuess ? lastGuessResult?.hintInfo : null
 
     const animatedTileStyle = useAnimatedStyle(() => {
       const rotateY = interpolate(rotate.value, [0, 1], [180, 360])
@@ -164,17 +157,23 @@ const GuessRow = memo(
             ellipsizeMode="tail"
             style={[
               guessesStyles.guessText,
-              guessTitle.length > 35 && guessesStyles.guessTextSmall,
+              (guessTitle.length > 35 || !!hintInfo) &&
+                guessesStyles.guessTextSmall,
             ]}
           >
             {guessTitle}
           </Text>
-          {implicitHintType && (
-            <Ionicons
-              name={getIconNameForHint(implicitHintType)}
-              style={guessesStyles.guessHintIcon}
-              color={colors.primary}
-            />
+          {hintInfo && (
+            <View style={guessesStyles.guessHintContainer}>
+              <Ionicons
+                name={getIconNameForHint(hintInfo.type)}
+                style={guessesStyles.guessHintIcon}
+                color={colors.primary}
+              />
+              <Text style={guessesStyles.guessHintText} numberOfLines={1}>
+                {hintInfo.value}
+              </Text>
+            </View>
           )}
           <View>
             <Ionicons
@@ -257,10 +256,6 @@ const GuessesContainer = memo(
             index === guesses.length - 1 &&
             lastGuessResult.movieId === guessId
 
-          const implicitHintType = isLastGuess
-            ? lastGuessResult?.hintType ?? null
-            : null
-
           return (
             <GuessRow
               key={`${guessId}-${index}`}
@@ -269,7 +264,6 @@ const GuessesContainer = memo(
               movies={movies}
               isLastGuess={isLastGuess}
               lastGuessResult={lastGuessResult}
-              implicitHintType={implicitHintType}
             />
           )
         })}

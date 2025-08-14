@@ -1,10 +1,26 @@
 import { Movie } from "../models/movie"
-import { PlayerGame, HintType } from "../models/game"
+import { HintType } from "../models/game"
 
 interface ImplicitHintResult {
   feedback: string | null
   revealedHints: Partial<Record<HintType, boolean>>
   hintType: HintType | null
+  hintValue: string | null
+}
+
+const getHintValue = (type: HintType, movie: Movie): string => {
+  switch (type) {
+    case "decade":
+      return movie.release_date ? `${movie.release_date.substring(0, 3)}0s` : ""
+    case "director":
+      return movie.director?.name || ""
+    case "actor":
+      return movie.actors?.[0]?.name || ""
+    case "genre":
+      return movie.genres?.[0]?.name || ""
+    default:
+      return ""
+  }
 }
 
 /**
@@ -20,6 +36,7 @@ export function generateImplicitHint(
     feedback: null,
     revealedHints: {},
     hintType: null,
+    hintValue: null,
   }
 
   const hintChecks: {
@@ -65,7 +82,7 @@ export function generateImplicitHint(
       result.feedback = check.message
       result.revealedHints[check.type] = true
       result.hintType = check.type
-      // Once we find a new hint to reveal, we stop.
+      result.hintValue = getHintValue(check.type, correctMovie)
       return result
     }
   }
@@ -74,7 +91,8 @@ export function generateImplicitHint(
   for (const check of hintChecks) {
     if (check.condition && usedHints[check.type]) {
       result.feedback = `You're on the right track with the ${check.type}!`
-      // Don't set revealedHints here, as it's not new.
+      result.hintType = check.type
+      result.hintValue = getHintValue(check.type, correctMovie)
       return result
     }
   }

@@ -21,6 +21,7 @@ export function useHintLogic() {
     playerStats,
     updatePlayerStats,
     dispatch,
+    difficulty,
   } = useGame()
 
   const [showHintOptions, setShowHintOptions] = useState(false)
@@ -40,18 +41,29 @@ export function useHintLogic() {
     for (const type of hintTypes) {
       if (usedHints[type]) {
         statuses[type] = "used"
-      } else if (isInteractionsDisabled || hintsAvailable <= 0) {
+      } else if (
+        difficulty === "medium" ||
+        difficulty === "hard" ||
+        difficulty === "very hard" ||
+        isInteractionsDisabled ||
+        hintsAvailable <= 0
+      ) {
         statuses[type] = "disabled"
       } else {
         statuses[type] = "available"
       }
     }
     return statuses
-  }, [playerGame.hintsUsed, isInteractionsDisabled, hintsAvailable])
+  }, [playerGame.hintsUsed, isInteractionsDisabled, hintsAvailable, difficulty])
 
   useEffect(() => {
     const currentHints = playerGame.hintsUsed || {}
     const previousHints = prevHintsUsedRef.current || {}
+
+    if (difficulty !== "easy" && difficulty !== "medium") {
+      prevHintsUsedRef.current = currentHints
+      return
+    }
 
     const newHint = (Object.keys(currentHints) as HintType[]).find(
       (key) => currentHints[key] && !previousHints[key]
@@ -67,7 +79,7 @@ export function useHintLogic() {
     }
 
     prevHintsUsedRef.current = currentHints
-  }, [playerGame.hintsUsed])
+  }, [playerGame.hintsUsed, difficulty])
 
   const getHintText = useCallback(
     (hintType: HintType): string => {
@@ -93,6 +105,8 @@ export function useHintLogic() {
 
   const handleHintSelection = useCallback(
     (hintType: HintType) => {
+      if (difficulty !== "easy") return
+
       hapticsService.medium()
 
       const status = hintStatuses[hintType]
@@ -128,14 +142,19 @@ export function useHintLogic() {
       getHintText,
       updatePlayerStats,
       dispatch,
+      difficulty,
     ]
   )
 
   useEffect(() => {
-    setDisplayedHintText(null)
-  }, [playerGame.guesses.length])
+    if (difficulty !== "easy") {
+      setDisplayedHintText(null)
+    }
+  }, [playerGame.guesses.length, difficulty])
 
   const handleToggleHintOptions = useCallback(() => {
+    if (difficulty !== "easy") return
+
     hapticsService.light()
 
     if (
@@ -151,36 +170,50 @@ export function useHintLogic() {
     }
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setShowHintOptions((prevShow) => !prevShow)
-  }, [showHintOptions, hintsAvailable, playerGame.hintsUsed])
+  }, [showHintOptions, hintsAvailable, playerGame.hintsUsed, difficulty])
 
   const hintLabelText = useMemo(() => {
     if (isInteractionsDisabled) return "Game Over"
 
-    const guessesRemaining = playerGame.guessesMax - playerGame.guesses.length
-    const effectiveHints = Math.min(hintsAvailable, guessesRemaining)
-
-    if (
-      effectiveHints <= 0 &&
-      !Object.values(playerGame.hintsUsed || {}).some(Boolean)
-    ) {
-      return "Out of hints!"
+    switch (difficulty) {
+      case "easy": {
+        const guessesRemaining =
+          playerGame.guessesMax - playerGame.guesses.length
+        const effectiveHints = Math.min(hintsAvailable, guessesRemaining)
+        if (
+          effectiveHints <= 0 &&
+          !Object.values(playerGame.hintsUsed || {}).some(Boolean)
+        ) {
+          return "Out of hints!"
+        }
+        return `Need a Hint? (${effectiveHints} available)`
+      }
+      case "medium":
+        return "Hints are revealed by good guesses!"
+      default:
+        return ""
     }
-    return `Need a Hint? (${effectiveHints} available)`
   }, [
     hintsAvailable,
     isInteractionsDisabled,
     playerGame.hintsUsed,
     playerGame.guesses.length,
     playerGame.guessesMax,
+    difficulty,
   ])
 
   return {
     showHintOptions,
     displayedHintText,
     hintLabelText,
-    isToggleDisabled: isInteractionsDisabled,
+    isToggleDisabled:
+      isInteractionsDisabled ||
+      difficulty === "medium" ||
+      difficulty === "hard" ||
+      difficulty === "very hard",
     hintStatuses,
     highlightedHint,
+    getHintText,
     handleToggleHintOptions,
     handleHintSelection,
   }

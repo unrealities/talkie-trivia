@@ -55,7 +55,7 @@ const CountContainer = memo<CountContainerProps>(
 )
 
 const CluesContainer = memo(() => {
-  const { playerGame, isInteractionsDisabled } = useGame()
+  const { playerGame, isInteractionsDisabled, difficulty } = useGame()
   const { colors } = useTheme()
   const cluesStyles = useMemo(() => getCluesStyles(colors), [colors])
   const { correctAnswer, guesses } = playerGame
@@ -104,10 +104,14 @@ const CluesContainer = memo(() => {
   useEffect(() => {
     if (isLoading) return
 
-    const numCluesToReveal =
-      correctAnswer || isInteractionsDisabled
-        ? clues.length
-        : Math.min(guesses.length + 1, clues.length)
+    let numCluesToReveal
+    if (correctAnswer || isInteractionsDisabled) {
+      numCluesToReveal = clues.length
+    } else if (difficulty === "very hard") {
+      numCluesToReveal = guesses.length < 2 ? 1 : 2
+    } else {
+      numCluesToReveal = Math.min(guesses.length + 1, clues.length)
+    }
 
     if (numCluesToReveal > revealedClues.length) {
       hapticsService.light()
@@ -124,7 +128,6 @@ const CluesContainer = memo(() => {
 
       highlightProgress.value = withSequence(
         withTiming(1, { duration: 400 }),
-
         withDelay(typewriterDuration + 200, withTiming(0, { duration: 500 }))
       )
 
@@ -150,7 +153,14 @@ const CluesContainer = memo(() => {
       cancelAnimation(typewriterProgress)
       cancelAnimation(highlightProgress)
     }
-  }, [isLoading, correctAnswer, isInteractionsDisabled, guesses.length, clues])
+  }, [
+    isLoading,
+    correctAnswer,
+    isInteractionsDisabled,
+    guesses.length,
+    clues,
+    difficulty,
+  ])
 
   const animatedHighlightStyle = useAnimatedStyle(() => {
     const backgroundColor = interpolateColor(

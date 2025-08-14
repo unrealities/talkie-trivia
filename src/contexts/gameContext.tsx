@@ -8,7 +8,7 @@ import React, {
 } from "react"
 import { useGameLogic } from "../utils/hooks/useGameLogic"
 import { Movie, BasicMovie } from "../models/movie"
-import { PlayerGame } from "../models/game"
+import { PlayerGame, Difficulty } from "../models/game"
 import PlayerStats from "../models/playerStats"
 import Player from "../models/player"
 import { GameAction } from "../state/gameReducer"
@@ -25,6 +25,8 @@ interface GameContextState {
   isInteractionsDisabled: boolean
   animatedModalStyles: StyleProp<ViewStyle>
   showOnboarding: boolean
+  difficulty: Difficulty
+  setDifficulty: (difficulty: Difficulty) => void
   handleConfettiStop: () => void
   setShowModal: (show: boolean) => void
   setShowConfetti: (show: boolean) => void

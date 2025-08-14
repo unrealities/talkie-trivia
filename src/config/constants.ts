@@ -18,6 +18,7 @@ export const FIRESTORE_COLLECTIONS = {
 export const ASYNC_STORAGE_KEYS = {
   ONBOARDING_STATUS: "hasSeenOnboarding",
   THEME_PREFERENCE: "theme_preference",
+  DIFFICULTY_SETTING: "difficulty_setting",
 }
 
 export const GAME_DEFAULTS = {

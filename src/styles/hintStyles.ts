@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native"
-import { responsive } from "./global"
+import { responsive, spacing } from "./global"
 
 export const getHintStyles = (colors: any) =>
   StyleSheet.create({
@@ -18,6 +18,15 @@ export const getHintStyles = (colors: any) =>
     hintLabel: {
       color: colors.textSecondary,
       fontFamily: "Arvo-Bold",
+      fontSize: responsive.responsiveFontSize(14),
+      marginVertical: responsive.scale(4),
+      textAlign: "center",
+      width: "100%",
+      paddingVertical: responsive.scale(4),
+    },
+    hintLabelDisabled: {
+      color: colors.textDisabled,
+      fontFamily: "Arvo-Italic",
       fontSize: responsive.responsiveFontSize(14),
       marginVertical: responsive.scale(4),
       textAlign: "center",
@@ -93,5 +102,29 @@ export const getHintStyles = (colors: any) =>
       fontFamily: "Arvo-Bold",
       fontSize: responsive.responsiveFontSize(16),
       textAlign: "center",
+    },
+    veryEasyContainer: {
+      width: "90%",
+      backgroundColor: colors.surface,
+      borderRadius: responsive.scale(8),
+      padding: spacing.medium,
+      marginVertical: spacing.small,
+    },
+    veryEasyTitle: {
+      fontFamily: "Arvo-Bold",
+      fontSize: responsive.responsiveFontSize(16),
+      color: colors.primary,
+      textAlign: "center",
+      marginBottom: spacing.small,
+    },
+    veryEasyText: {
+      fontFamily: "Arvo-Regular",
+      fontSize: responsive.responsiveFontSize(14),
+      color: colors.textSecondary,
+      lineHeight: responsive.responsiveFontSize(20),
+    },
+    veryEasyHintLabel: {
+      fontFamily: "Arvo-Bold",
+      color: colors.textPrimary,
     },
   })

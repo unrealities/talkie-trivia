@@ -21,8 +21,10 @@ import { analyticsService } from "../../utils/analyticsService"
 import { GameHistoryEntry } from "../../models/gameHistory"
 import { gameReducer } from "../../state/gameReducer"
 import { ASYNC_STORAGE_KEYS } from "../../config/constants"
+import { Difficulty } from "../../models/game"
 
 const ONBOARDING_STORAGE_KEY = ASYNC_STORAGE_KEYS.ONBOARDING_STATUS
+const DIFFICULTY_STORAGE_KEY = ASYNC_STORAGE_KEYS.DIFFICULTY_SETTING
 
 export function useGameLogic() {
   const { player, loading: authLoading } = useAuth()
@@ -39,6 +41,8 @@ export function useGameLogic() {
   const [showModal, setShowModal] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
   const [showOnboarding, setShowOnboarding] = useState(false)
+  const [difficulty, setDifficultyState] = useState<Difficulty>("medium")
+
   const loading = assetsLoading || authLoading || gameDataLoading
   const error = assetsError || gameDataError
 
@@ -46,11 +50,37 @@ export function useGameLogic() {
     opacity: withTiming(showModal ? 1 : 0, { duration: 300 }),
   }))
 
+  const guessesMax = difficulty === "very hard" ? 3 : 5
   const isInteractionsDisabled =
     loading ||
     playerGame.correctAnswer ||
     playerGame.gaveUp ||
-    playerGame.guesses.length >= playerGame.guessesMax
+    playerGame.guesses.length >= guessesMax
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const storedDifficulty = (await AsyncStorage.getItem(
+          DIFFICULTY_STORAGE_KEY
+        )) as Difficulty | null
+        if (storedDifficulty) {
+          setDifficultyState(storedDifficulty)
+        }
+      } catch (e) {
+        console.error("Failed to load difficulty setting from storage", e)
+      }
+    }
+    loadSettings()
+  }, [])
+
+  const setDifficulty = useCallback(async (newDifficulty: Difficulty) => {
+    try {
+      await AsyncStorage.setItem(DIFFICULTY_STORAGE_KEY, newDifficulty)
+      setDifficultyState(newDifficulty)
+    } catch (e) {
+      console.error("Failed to save difficulty setting", e)
+    }
+  }, [])
 
   useEffect(() => {
     try {
@@ -102,7 +132,7 @@ export function useGameLogic() {
       try {
         await batchUpdatePlayerData(
           playerStats,
-          playerGame,
+          { ...playerGame, guessesMax },
           player.id,
           historyEntry
         )
@@ -112,7 +142,7 @@ export function useGameLogic() {
         setGameDataError(`Failed to save progress: ${e.message}`)
       }
     },
-    [player, playerGame, playerStats]
+    [player, playerGame, playerStats, guessesMax]
   )
 
   useEffect(() => {
@@ -131,10 +161,21 @@ export function useGameLogic() {
         const today = new Date()
         const dateId = generateDateId(today)
 
-        const [game, stats] = await Promise.all([
+        let [game, stats] = await Promise.all([
           fetchOrCreatePlayerGame(db, player.id, dateId, today, movieForToday),
           fetchOrCreatePlayerStats(db, player.id),
         ])
+
+        game.guessesMax = guessesMax
+
+        if (difficulty === "very easy") {
+          game.hintsUsed = {
+            actor: true,
+            decade: true,
+            director: true,
+            genre: true,
+          }
+        }
 
         dispatch({ type: "INITIALIZE_GAME", payload: game })
 
@@ -158,7 +199,14 @@ export function useGameLogic() {
       }
     }
     initializeData()
-  }, [player, movieForToday, authLoading, assetsLoading])
+  }, [
+    player,
+    movieForToday,
+    authLoading,
+    assetsLoading,
+    difficulty,
+    guessesMax,
+  ])
 
   const updatePlayerStats = useCallback((newPlayerStats: PlayerStats) => {
     setPlayerStats(newPlayerStats)
@@ -240,6 +288,7 @@ export function useGameLogic() {
     playerGame.statsProcessed,
     playerStats,
     saveGameData,
+    playerGame.guessesMax,
   ])
 
   useEffect(() => {
@@ -269,7 +318,7 @@ export function useGameLogic() {
   }, [])
 
   return {
-    playerGame,
+    playerGame: { ...playerGame, guessesMax },
     playerStats,
     loading,
     error,
@@ -280,6 +329,8 @@ export function useGameLogic() {
     isInteractionsDisabled,
     animatedModalStyles,
     showOnboarding,
+    difficulty,
+    setDifficulty,
     handleConfettiStop,
     setShowModal,
     setShowConfetti,

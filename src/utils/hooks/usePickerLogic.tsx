@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react"
 import { LayoutAnimation, Platform, UIManager } from "react-native"
 import { search } from "fast-fuzzy"
 import { BasicMovie, Movie } from "../../models/movie"
-import { HintType } from "../../models/game"
+import { HintInfo } from "../../models/game"
 import {
   useSharedValue,
   withSequence,
@@ -26,7 +26,7 @@ interface UsePickerLogicProps {
     movieId: number
     correct: boolean
     feedback?: string | null
-    hintType?: HintType | null
+    hintInfo?: HintInfo | null
   }) => void
 }
 
@@ -36,7 +36,8 @@ type PickerState =
   | { status: "results"; query: string; results: readonly BasicMovie[] }
 
 export function usePickerLogic({ onGuessMade }: UsePickerLogicProps) {
-  const { movies, playerGame, isInteractionsDisabled, dispatch } = useGame()
+  const { movies, playerGame, isInteractionsDisabled, dispatch, difficulty } =
+    useGame()
   const [pickerState, setPickerState] = useState<PickerState>({
     status: "idle",
   })
@@ -120,7 +121,7 @@ export function usePickerLogic({ onGuessMade }: UsePickerLogicProps) {
 
     const isCorrectAnswer = playerGame.movie.id === stagedGuess.id
     let feedback: string | null = null
-    let hintType: HintType | null = null
+    let hintInfo: HintInfo | null = null
 
     analyticsService.trackGuessMade(
       playerGame.guesses.length + 1,
@@ -129,7 +130,10 @@ export function usePickerLogic({ onGuessMade }: UsePickerLogicProps) {
       stagedGuess.title
     )
 
-    if (!isCorrectAnswer) {
+    if (
+      !isCorrectAnswer &&
+      (difficulty === "easy" || difficulty === "medium")
+    ) {
       triggerShake()
       const guessedFullMovie = movies.find((m) => m.id === stagedGuess.id)
       if (guessedFullMovie) {
@@ -139,15 +143,19 @@ export function usePickerLogic({ onGuessMade }: UsePickerLogicProps) {
           playerGame.hintsUsed
         )
         feedback = result.feedback
-        hintType = result.hintType
+        if (result.hintType && result.hintValue) {
+          hintInfo = { type: result.hintType, value: result.hintValue }
+        }
       }
+    } else if (!isCorrectAnswer) {
+      triggerShake()
     }
 
     onGuessMade({
       movieId: stagedGuess.id,
       correct: isCorrectAnswer,
       feedback,
-      hintType,
+      hintInfo,
     })
 
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
@@ -169,6 +177,7 @@ export function usePickerLogic({ onGuessMade }: UsePickerLogicProps) {
     onGuessMade,
     dispatch,
     stagedGuess,
+    difficulty,
   ])
 
   return {

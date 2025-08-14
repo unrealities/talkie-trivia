@@ -35,6 +35,9 @@ const MovieModal = lazy(() => import("../../components/modal"))
 const Facts = lazy(() => import("../../components/facts"))
 const ThemeSelector = lazy(() => import("../../components/themeSelector"))
 const GuessesContainer = lazy(() => import("../../components/guesses"))
+const DifficultySelector = lazy(
+  () => import("../../components/difficultySelector")
+)
 
 const ProfileScreen: React.FC<{}> = () => {
   const { player } = useAuth()
@@ -145,6 +148,7 @@ const ProfileScreen: React.FC<{}> = () => {
         <Suspense fallback={<LoadingIndicator />}>
           <GoogleLogin />
           <ThemeSelector />
+          <DifficultySelector />
           {loading && <LoadingIndicator />}
           {error && <ErrorMessage message={error} />}
           {!loading && !error && player && playerStats && (

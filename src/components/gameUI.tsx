@@ -14,21 +14,21 @@ import GameOverView from "./gameOverView"
 import { useGame } from "../contexts/gameContext"
 import { getMovieStyles } from "../styles/movieStyles"
 import { useTheme } from "../contexts/themeContext"
-import { HintType } from "../models/game"
+import { HintInfo } from "../models/game"
 import { hapticsService } from "../utils/hapticsService"
 
 type GuessResult = {
   movieId: number
   correct: boolean
   feedback?: string | null
-  hintType?: HintType | null
+  hintInfo?: HintInfo | null
 } | null
 
 type GuessCallbackResult = {
   movieId: number
   correct: boolean
   feedback?: string | null
-  hintType?: HintType | null
+  hintInfo?: HintInfo | null
 }
 
 const GameUI: React.FC = () => {
