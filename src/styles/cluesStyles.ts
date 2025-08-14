@@ -15,18 +15,16 @@ export const getCluesStyles = (colors: any) =>
     countContainer: {
       alignSelf: "flex-end",
       marginBottom: responsive.scale(12),
-      marginRight: spacing.extraLarge,
+      marginRight: spacing.large,
       marginTop: spacing.small,
     },
-    mostRecentClue: {},
     scrollView: {
       flexGrow: 1,
-      marginBottom: spacing.large,
       width: "100%",
       alignSelf: "stretch",
     },
     scrollViewContent: {
-      paddingVertical: spacing.large,
+      paddingBottom: spacing.large,
     },
     skeletonContainer: {
       paddingHorizontal: spacing.small,
@@ -42,22 +40,26 @@ export const getCluesStyles = (colors: any) =>
       width: "70%",
     },
     cluesBox: {
-      paddingHorizontal: spacing.large,
+      paddingHorizontal: spacing.medium,
+      paddingVertical: spacing.large,
       width: "100%",
     },
+    clueChunk: {
+      paddingVertical: responsive.scale(8),
+      paddingHorizontal: responsive.scale(12),
+      borderRadius: responsive.scale(8),
+      marginBottom: spacing.small,
+      backgroundColor: "transparent",
+    },
     text: {
-      color: colors.textPrimary,
       fontFamily: "Arvo-Regular",
       fontSize: responsive.responsiveFontSize(14),
       lineHeight: responsive.responsiveFontSize(20),
-      width: "100%",
-      padding: 0,
     },
-    textContainer: {},
     wordCountText: {
       color: colors.primary,
       fontFamily: "Arvo-Regular",
-      fontSize: responsive.responsiveFontSize(10),
+      fontSize: responsive.responsiveFontSize(11),
       textAlign: "right",
     },
   })

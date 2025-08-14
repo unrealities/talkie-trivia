@@ -27,29 +27,27 @@ import { ANIMATION_CONSTANTS } from "../config/constants"
 
 const splitSummary = (summary: string, splits: number = 5): string[] => {
   if (!summary) return Array(splits).fill("")
-  const words = summary.trim().split(" ")
+  const words = summary.trim().split(/\s+/)
   if (words.length === 0) return Array(splits).fill("")
   const avgLength = Math.max(1, Math.ceil(words.length / splits))
   return Array.from({ length: splits }, (_, i) =>
     words.slice(i * avgLength, (i + 1) * avgLength).join(" ")
-  )
+  ).filter((chunk) => chunk.length > 0)
 }
 
 interface CountContainerProps {
   currentWordLength: number
-  guessNumber: number
   totalWordLength: number
-  correctGuess: boolean
 }
 
 const CountContainer = memo<CountContainerProps>(
-  ({ currentWordLength, guessNumber, totalWordLength, correctGuess }) => {
+  ({ currentWordLength, totalWordLength }) => {
     const { colors } = useTheme()
     const cluesStyles = useMemo(() => getCluesStyles(colors), [colors])
     return (
       <View style={cluesStyles.countContainer}>
         <Text style={cluesStyles.wordCountText}>
-          {correctGuess ? totalWordLength : currentWordLength}/{totalWordLength}
+          {currentWordLength}/{totalWordLength} words revealed
         </Text>
       </View>
     )
@@ -72,9 +70,7 @@ const CluesContainer = memo(() => {
   const [typewriterText, setTypewriterText] = useState("")
   const lastClueRef = useRef<string>("")
 
-  const fadeAnim = useSharedValue(0)
-  const slideAnim = useSharedValue(-10)
-  const clueHighlightAnim = useSharedValue(0)
+  const highlightProgress = useSharedValue(0)
   const typewriterProgress = useSharedValue(0)
   const scrollViewRef = useRef<ScrollView>(null)
 
@@ -94,9 +90,7 @@ const CluesContainer = memo(() => {
   }, [playerGame?.movie?.overview])
 
   useAnimatedReaction(
-    () => {
-      return Math.floor(typewriterProgress.value)
-    },
+    () => Math.floor(typewriterProgress.value),
     (currentValue, previousValue) => {
       if (currentValue !== previousValue) {
         runOnJS(setTypewriterText)(
@@ -121,29 +115,32 @@ const CluesContainer = memo(() => {
       const lastClue = newRevealedClues[newRevealedClues.length - 1] || ""
       lastClueRef.current = lastClue
 
-      const startReanimatedAnimations = () => {
-        fadeAnim.value = withTiming(1, { duration: 500 })
-        slideAnim.value = withTiming(0, { duration: 500 })
-        clueHighlightAnim.value = withSequence(
-          withTiming(1, { duration: 400 }),
-          withDelay(800, withTiming(0, { duration: 500 }))
-        )
+      highlightProgress.value = 0
+      typewriterProgress.value = 0
+      setTypewriterText("")
 
-        typewriterProgress.value = 0
-        setTypewriterText("")
+      const typewriterDuration =
+        lastClue.length * ANIMATION_CONSTANTS.TYPEWRITER_CHAR_DURATION
 
-        const animationDuration =
-          lastClue.length * ANIMATION_CONSTANTS.TYPEWRITER_CHAR_DURATION
+      highlightProgress.value = withSequence(
+        withTiming(1, { duration: 400 }),
 
-        typewriterProgress.value = withTiming(lastClue.length, {
-          duration: animationDuration,
+        withDelay(typewriterDuration + 200, withTiming(0, { duration: 500 }))
+      )
+
+      typewriterProgress.value = withDelay(
+        200,
+        withTiming(lastClue.length, {
+          duration: typewriterDuration,
           easing: Easing.linear,
         })
-      }
-      startReanimatedAnimations()
+      )
 
       setRevealedClues(newRevealedClues)
-      scrollViewRef.current?.scrollToEnd({ animated: true })
+      setTimeout(
+        () => scrollViewRef.current?.scrollToEnd({ animated: true }),
+        100
+      )
     } else if (numCluesToReveal < revealedClues.length) {
       setRevealedClues(clues.slice(0, numCluesToReveal))
       setTypewriterText(clues[clues.length - 1] || "")
@@ -151,21 +148,23 @@ const CluesContainer = memo(() => {
 
     return () => {
       cancelAnimation(typewriterProgress)
+      cancelAnimation(highlightProgress)
     }
   }, [isLoading, correctAnswer, isInteractionsDisabled, guesses.length, clues])
 
-  const animatedContainerStyle = useAnimatedStyle(() => ({
-    opacity: fadeAnim.value,
-    transform: [{ translateY: slideAnim.value }],
-  }))
-
-  const highlightStyle = useAnimatedStyle(() => ({
-    backgroundColor: interpolateColor(
-      clueHighlightAnim.value,
+  const animatedHighlightStyle = useAnimatedStyle(() => {
+    const backgroundColor = interpolateColor(
+      highlightProgress.value,
       [0, 1],
       ["transparent", colors.primary]
-    ),
-  }))
+    )
+    const color = interpolateColor(
+      highlightProgress.value,
+      [0, 1],
+      [colors.textPrimary, colors.background]
+    )
+    return { backgroundColor, color }
+  })
 
   const isGameOver = correctAnswer || isInteractionsDisabled
 
@@ -175,9 +174,6 @@ const CluesContainer = memo(() => {
         <View style={cluesStyles.skeletonContainer}>
           <View style={cluesStyles.skeletonLine} />
           <View style={cluesStyles.skeletonLine} />
-          <View
-            style={[cluesStyles.skeletonLine, cluesStyles.skeletonLineShort]}
-          />
           <View
             style={[cluesStyles.skeletonLine, cluesStyles.skeletonLineShort]}
           />
@@ -197,34 +193,26 @@ const CluesContainer = memo(() => {
                 !isGameOver ? "Tap to reveal the full clue immediately" : ""
               }
             >
-              <Animated.View
-                style={[animatedContainerStyle, cluesStyles.cluesBox]}
-              >
+              <View style={cluesStyles.cluesBox}>
                 <Text style={cluesStyles.text}>
                   {oldCluesText}
-                  {spacer}
+                  {oldCluesText ? " " : ""}
                   {isGameOver ? (
-                    <Text>{revealedClues[revealedClues.length - 1]}</Text>
+                    <Text>{lastClueRef.current}</Text>
                   ) : (
-                    <Animated.Text style={[highlightStyle]}>
+                    <Animated.Text style={animatedHighlightStyle}>
                       {typewriterText}
                     </Animated.Text>
                   )}
                 </Text>
-              </Animated.View>
+              </View>
             </Pressable>
           </ScrollView>
           <CountContainer
             currentWordLength={
               revealedClues.join(" ").split(" ").filter(Boolean).length
             }
-            guessNumber={guesses.length}
-            totalWordLength={
-              playerGame?.movie?.overview
-                ? playerGame.movie.overview.split(" ").length
-                : 0
-            }
-            correctGuess={correctAnswer}
+            totalWordLength={clues.join(" ").split(" ").filter(Boolean).length}
           />
         </>
       )}
