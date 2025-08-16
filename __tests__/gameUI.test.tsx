@@ -5,7 +5,7 @@ import {
   fireEvent,
   waitFor,
 } from "@testing-library/react-native"
-import GameUI from "../src/components/gameUI"
+import GameUI from "../src/components/gameplayContainer"
 import { BasicMovie } from "../src/models/movie"
 import { PlayerGame, Game } from "../src/models/game"
 import Player from "../src/models/player"

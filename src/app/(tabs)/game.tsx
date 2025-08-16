@@ -1,18 +1,35 @@
 import React, { lazy, Suspense, useMemo } from "react"
-import { View } from "react-native"
+import { ScrollView } from "react-native"
 import { LinearGradient } from "expo-linear-gradient"
 import LoadingIndicator from "../../components/loadingIndicator"
 import ErrorMessage from "../../components/errorMessage"
-import { getAppStyles } from "../../styles/appStyles"
+import { getMovieStyles } from "../../styles/movieStyles"
 import { useGame } from "../../contexts/gameContext"
 import { useTheme } from "../../contexts/themeContext"
 
-const GameUI = lazy(() => import("../../components/gameUI"))
+const GameplayContainer = lazy(
+  () => import("../../components/gameplayContainer")
+)
+const ConfettiCelebration = lazy(
+  () => import("../../components/confettiCelebration")
+)
+const OnboardingModal = lazy(() => import("../../components/onboardingModal"))
 
 const GameScreen = () => {
-  const { loading, error } = useGame()
+  const {
+    loading,
+    error,
+    showConfetti,
+    handleConfettiStop,
+    showOnboarding,
+    handleDismissOnboarding,
+  } = useGame()
   const { colors } = useTheme()
-  const styles = useMemo(() => getAppStyles(colors), [colors])
+  const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
+
+  if (loading) {
+    return <LoadingIndicator />
+  }
 
   if (error) {
     return <ErrorMessage message={error} />
@@ -23,11 +40,26 @@ const GameScreen = () => {
       colors={[colors.background, colors.backgroundLight]}
       style={{ flex: 1 }}
     >
-      <View style={styles.container}>
+      <ScrollView
+        contentContainerStyle={movieStyles.scrollContentContainer}
+        style={{ flex: 1 }}
+        showsVerticalScrollIndicator={false}
+      >
         <Suspense fallback={<LoadingIndicator />}>
-          {loading ? <LoadingIndicator /> : <GameUI />}
+          <GameplayContainer />
         </Suspense>
-      </View>
+      </ScrollView>
+
+      <Suspense fallback={null}>
+        <OnboardingModal
+          isVisible={showOnboarding}
+          onDismiss={handleDismissOnboarding}
+        />
+        <ConfettiCelebration
+          startConfetti={showConfetti}
+          onConfettiStop={handleConfettiStop}
+        />
+      </Suspense>
     </LinearGradient>
   )
 }

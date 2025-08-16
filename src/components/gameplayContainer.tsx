@@ -1,16 +1,14 @@
 import React, { useState, useCallback, useEffect, useMemo } from "react"
-import { View, ScrollView } from "react-native"
+import { View } from "react-native"
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated"
 import CluesContainer from "./clues"
-import GuessesContainer from "./guesses"
-import ConfettiCelebration from "./confettiCelebration"
-import OnboardingModal from "./onboardingModal"
 import GameplayView from "./gameplayView"
 import GameOverView from "./gameOverView"
+import GuessesContainer from "./guesses"
 import { useGame } from "../contexts/gameContext"
 import { getMovieStyles } from "../styles/movieStyles"
 import { useTheme } from "../contexts/themeContext"
@@ -31,15 +29,8 @@ type GuessCallbackResult = {
   hintInfo?: HintInfo | null
 }
 
-const GameUI: React.FC = () => {
-  const {
-    playerGame,
-    showConfetti,
-    showOnboarding,
-    handleConfettiStop,
-    setShowConfetti,
-    handleDismissOnboarding,
-  } = useGame()
+const GameplayContainer: React.FC = () => {
+  const { playerGame, setShowConfetti } = useGame()
   const { colors } = useTheme()
   const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
 
@@ -79,38 +70,23 @@ const GameUI: React.FC = () => {
   )
 
   return (
-    <ScrollView
-      contentContainerStyle={movieStyles.scrollContentContainer}
-      style={{ flex: 1 }}
-      showsVerticalScrollIndicator={false}
-    >
-      <View style={movieStyles.container}>
-        <CluesContainer />
-        {isGameOver ? (
-          <Animated.View style={[{ width: "100%" }, animatedGameOverStyle]}>
-            <GameOverView
-              playerGame={playerGame}
-              lastGuessResult={lastGuessResult}
-            />
-          </Animated.View>
-        ) : (
-          <Animated.View style={[{ width: "100%" }, animatedGameplayStyle]}>
-            <GameplayView onGuessMade={handleGuessMade} />
-            <GuessesContainer lastGuessResult={lastGuessResult} />
-          </Animated.View>
-        )}
-
-        <OnboardingModal
-          isVisible={showOnboarding}
-          onDismiss={handleDismissOnboarding}
-        />
-        <ConfettiCelebration
-          startConfetti={showConfetti}
-          onConfettiStop={handleConfettiStop}
-        />
-      </View>
-    </ScrollView>
+    <View style={movieStyles.container}>
+      <CluesContainer />
+      {isGameOver ? (
+        <Animated.View style={[{ width: "100%" }, animatedGameOverStyle]}>
+          <GameOverView
+            playerGame={playerGame}
+            lastGuessResult={lastGuessResult}
+          />
+        </Animated.View>
+      ) : (
+        <Animated.View style={[{ width: "100%" }, animatedGameplayStyle]}>
+          <GameplayView onGuessMade={handleGuessMade} />
+          <GuessesContainer lastGuessResult={lastGuessResult} />
+        </Animated.View>
+      )}
+    </View>
   )
 }
 
-export default GameUI
+export default GameplayContainer
