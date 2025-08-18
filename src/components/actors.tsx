@@ -1,17 +1,8 @@
 import React, { memo, useCallback, useMemo } from "react"
-import {
-  Text,
-  Pressable,
-  View,
-  Alert,
-  StyleProp,
-  ViewStyle,
-} from "react-native"
-import * as Linking from "expo-linking"
+import { Text, Pressable, View, StyleProp, ViewStyle } from "react-native"
 import { getActorsStyles } from "../styles/actorsStyles"
 import { Actor } from "../models/movie"
 import { Image } from "expo-image"
-import { analyticsService } from "../utils/analyticsService"
 import { useTheme } from "../contexts/themeContext"
 import { API_CONFIG } from "../config/constants"
 
@@ -19,50 +10,28 @@ type ImageSource = { uri: string } | number
 
 interface ActorContainerProps {
   actor: Actor
-  imdbId?: string
   style?: StyleProp<ViewStyle>
-  onActorPress?: (actor: Actor) => void
+  onPress: (actor: Actor) => void
 }
 
 interface ActorsProps {
   actors: Actor[]
   maxDisplay?: number
   containerStyle?: StyleProp<ViewStyle>
+  onActorPress: (actor: Actor) => void
 }
 
 const defaultActorImage = require("../../assets/actor_default.png")
 
 const ActorContainer = memo(
-  ({ actor, imdbId, style, onActorPress }: ActorContainerProps) => {
+  ({ actor, style, onPress }: ActorContainerProps) => {
     const { colors } = useTheme()
     const actorsStyles = useMemo(() => getActorsStyles(colors), [colors])
     const imageURI = API_CONFIG.TMDB_IMAGE_BASE_URL_W185
-    const imdbURI = imdbId ? `${API_CONFIG.IMDB_BASE_URL_NAME}${imdbId}` : null
 
-    const handlePress = useCallback(() => {
-      if (onActorPress) {
-        onActorPress(actor)
-        return
-      }
-
-      analyticsService.trackActorLinkTapped(actor.name)
-
-      if (imdbURI) {
-        Linking.canOpenURL(imdbURI)
-          .then((supported) => {
-            if (supported) {
-              Linking.openURL(imdbURI)
-            } else {
-              Alert.alert("Unable to open IMDb link")
-            }
-          })
-          .catch(() => {
-            Alert.alert("Error opening link")
-          })
-      } else {
-        Alert.alert("IMDb link unavailable", "No link found for this actor.")
-      }
-    }, [actor, imdbURI, onActorPress])
+    const handlePress = () => {
+      onPress(actor)
+    }
 
     const actorImageSource: ImageSource = actor.profile_path
       ? { uri: `${imageURI}${actor.profile_path}` }
@@ -120,16 +89,11 @@ const ActorContainer = memo(
   },
   (prevProps, nextProps) =>
     prevProps.actor.id === nextProps.actor.id &&
-    prevProps.onActorPress === nextProps.onActorPress
+    prevProps.onPress === nextProps.onPress
 )
 
 export const Actors = memo(
-  ({
-    actors,
-    maxDisplay = 3,
-    containerStyle,
-    onActorPress,
-  }: ActorsProps & { onActorPress?: (actor: Actor) => void }) => {
+  ({ actors, maxDisplay = 3, containerStyle, onActorPress }: ActorsProps) => {
     const { colors } = useTheme()
     const actorsStyles = useMemo(() => getActorsStyles(colors), [colors])
 
@@ -143,8 +107,7 @@ export const Actors = memo(
           <ActorContainer
             key={`${actor.id}-${actor.name}`}
             actor={actor}
-            imdbId={actor.imdb_id}
-            onActorPress={onActorPress}
+            onPress={onActorPress}
           />
         ))}
       </View>

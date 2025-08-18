@@ -5,12 +5,16 @@ import {
   View,
   ActivityIndicator,
   ScrollView,
+  Alert,
 } from "react-native"
 import { Image } from "expo-image"
+import * as Linking from "expo-linking"
 import { Actors } from "./actors"
-import { Movie } from "../models/movie"
+import { Actor, Movie } from "../models/movie"
 import { getFactsStyles } from "../styles/factsStyles"
 import { useTheme } from "../contexts/themeContext"
+import { analyticsService } from "../utils/analyticsService"
+import { API_CONFIG } from "../config/constants"
 
 type ImageSource = { uri: string } | number
 
@@ -46,9 +50,29 @@ const Facts = memo(
       )
     }
 
-    const imdbURI = movie.imdb_id
-      ? `https://www.imdb.com/title/${movie.imdb_id}`
-      : null
+    const handleActorPress = useCallback((actor: Actor) => {
+      const imdbURI = actor.imdb_id
+        ? `${API_CONFIG.IMDB_BASE_URL_NAME}${actor.imdb_id}`
+        : null
+
+      analyticsService.trackActorLinkTapped(actor.name)
+
+      if (imdbURI) {
+        Linking.canOpenURL(imdbURI)
+          .then((supported) => {
+            if (supported) {
+              Linking.openURL(imdbURI)
+            } else {
+              Alert.alert("Unable to open IMDb link")
+            }
+          })
+          .catch(() => {
+            Alert.alert("Error opening link")
+          })
+      } else {
+        Alert.alert("IMDb link unavailable", "No link found for this actor.")
+      }
+    }, [])
 
     const imageSource: ImageSource = movie.poster_path
       ? { uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}` }
@@ -56,7 +80,7 @@ const Facts = memo(
 
     const placeholderSource: ImageSource = defaultMovieImage
 
-    const handlePressIMDb = useCallback(() => {}, [imdbURI, movie.title])
+    const handlePressIMDb = useCallback(() => {}, [movie.imdb_id, movie.title])
 
     return (
       <View style={factsStyles.container}>
@@ -101,7 +125,7 @@ const Facts = memo(
           )}
 
           {movie.actors && movie.actors.length > 0 && (
-            <Actors actors={movie.actors} />
+            <Actors actors={movie.actors} onActorPress={handleActorPress} />
           )}
         </ScrollView>
       </View>
