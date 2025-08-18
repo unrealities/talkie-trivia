@@ -3,7 +3,8 @@ import { LayoutAnimation, Platform, UIManager } from "react-native"
 import { HintType } from "../../models/game"
 import { analyticsService } from "../analyticsService"
 import { hapticsService } from "../hapticsService"
-import { useGame } from "../../contexts/gameContext"
+import { useGameState } from "../../contexts/gameStateContext"
+import { useGameSettingsContext } from "../../contexts/gameSettingsContext"
 
 if (
   Platform.OS === "android" &&
@@ -21,9 +22,8 @@ export function useHintLogic() {
     playerStats,
     updatePlayerStats,
     dispatch,
-    difficulty,
-  } = useGame()
-
+  } = useGameState()
+  const { difficulty } = useGameSettingsContext()
   const [showHintOptions, setShowHintOptions] = useState(false)
   const [displayedHintText, setDisplayedHintText] = useState<string | null>(
     null

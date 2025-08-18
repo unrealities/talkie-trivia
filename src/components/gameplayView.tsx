@@ -3,11 +3,11 @@ import { View, Pressable, Text } from "react-native"
 import PickerContainer from "./picker"
 import HintContainer from "./hint"
 import ConfirmationModal from "./confirmationModal"
-import { useGame } from "../contexts/gameContext"
 import { hapticsService } from "../utils/hapticsService"
 import { analyticsService } from "../utils/analyticsService"
 import { getMovieStyles } from "../styles/movieStyles"
 import { useTheme } from "../contexts/themeContext"
+import { useGameState } from "../contexts/gameStateContext"
 
 interface GameplayViewProps {
   onGuessMade: (result: { movieId: number; correct: boolean }) => void
@@ -19,7 +19,7 @@ const GameplayView: React.FC<GameplayViewProps> = ({ onGuessMade }) => {
     playerGame,
     setShowConfetti,
     dispatch,
-  } = useGame()
+  } = useGameState()
   const { colors } = useTheme()
   const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
 

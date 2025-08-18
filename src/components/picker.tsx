@@ -22,7 +22,7 @@ import { getPickerStyles } from "../styles/pickerStyles"
 import { usePickerLogic } from "../utils/hooks/usePickerLogic"
 import { PickerUI } from "./pickerUI"
 import PickerSkeleton from "./pickerSkeleton"
-import { useGame } from "../contexts/gameContext"
+import { useGameState } from "../contexts/gameStateContext"
 import { hapticsService } from "../utils/hapticsService"
 import { useTheme } from "../contexts/themeContext"
 import { API_CONFIG } from "../config/constants"
@@ -124,7 +124,7 @@ interface PickerContainerProps {
 }
 
 const PickerContainer: FC<PickerContainerProps> = memo(({ onGuessMade }) => {
-  const { loading: isDataLoading, isInteractionsDisabled } = useGame()
+  const { loading: isDataLoading, isInteractionsDisabled } = useGameState()
   const [expandedMovieId, setExpandedMovieId] = useState<number | null>(null)
 
   const {

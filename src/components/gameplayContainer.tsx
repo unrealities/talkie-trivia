@@ -9,11 +9,11 @@ import CluesContainer from "./clues"
 import GameplayView from "./gameplayView"
 import GameOverView from "./gameOverView"
 import GuessesContainer from "./guesses"
-import { useGame } from "../contexts/gameContext"
 import { getMovieStyles } from "../styles/movieStyles"
 import { useTheme } from "../contexts/themeContext"
 import { HintInfo } from "../models/game"
 import { hapticsService } from "../utils/hapticsService"
+import { useGameState } from "../contexts/gameStateContext"
 
 type GuessResult = {
   movieId: number
@@ -30,7 +30,7 @@ type GuessCallbackResult = {
 }
 
 const GameplayContainer: React.FC = () => {
-  const { playerGame, setShowConfetti } = useGame()
+  const { playerGame, setShowConfetti } = useGameState()
   const { colors } = useTheme()
   const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
 

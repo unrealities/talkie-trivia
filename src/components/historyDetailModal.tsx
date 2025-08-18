@@ -10,7 +10,7 @@ import { GameHistoryEntry } from "../models/gameHistory"
 import { Movie } from "../models/movie"
 import { PlayerGame } from "../models/game"
 import { useAuth } from "../contexts/authContext"
-import { useGame } from "../contexts/gameContext"
+import { useGameState } from "../contexts/gameStateContext"
 import { fetchMovieById, fetchPlayerGameById } from "../utils/firebaseService"
 import { useTheme } from "../contexts/themeContext"
 import { responsive, spacing } from "../styles/global"
@@ -30,7 +30,7 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
   onClose,
 }) => {
   const { player } = useAuth()
-  const { basicMovies } = useGame()
+  const { basicMovies } = useGameState()
   const { colors } = useTheme()
 
   const [movie, setMovie] = useState<Movie | null>(null)

@@ -4,7 +4,8 @@ import { View } from "react-native"
 import ErrorBoundary from "../components/errorBoundary"
 import { NetworkProvider, useNetwork } from "../contexts/networkContext"
 import { AuthProvider } from "../contexts/authContext"
-import { GameProvider } from "../contexts/gameContext"
+import { GameSettingsProvider } from "../contexts/gameSettingsContext"
+import { GameStateProvider } from "../contexts/gameStateContext"
 import { ThemeProvider, useTheme } from "../contexts/themeContext"
 import LoadingIndicator from "../components/loadingIndicator"
 import ErrorMessage from "../components/errorMessage"
@@ -44,9 +45,11 @@ export default function RootLayout() {
       <ThemeProvider>
         <NetworkProvider>
           <AuthProvider>
-            <GameProvider>
-              <RootLayoutNav />
-            </GameProvider>
+            <GameSettingsProvider>
+              <GameStateProvider>
+                <RootLayoutNav />
+              </GameStateProvider>
+            </GameSettingsProvider>
           </AuthProvider>
         </NetworkProvider>
       </ThemeProvider>

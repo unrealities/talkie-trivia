@@ -4,7 +4,8 @@ import { LinearGradient } from "expo-linear-gradient"
 import LoadingIndicator from "../../components/loadingIndicator"
 import ErrorMessage from "../../components/errorMessage"
 import { getMovieStyles } from "../../styles/movieStyles"
-import { useGame } from "../../contexts/gameContext"
+import { useGameState } from "../../contexts/gameStateContext"
+import { useGameSettingsContext } from "../../contexts/gameSettingsContext"
 import { useTheme } from "../../contexts/themeContext"
 
 const GameplayContainer = lazy(
@@ -16,14 +17,8 @@ const ConfettiCelebration = lazy(
 const OnboardingModal = lazy(() => import("../../components/onboardingModal"))
 
 const GameScreen = () => {
-  const {
-    loading,
-    error,
-    showConfetti,
-    handleConfettiStop,
-    showOnboarding,
-    handleDismissOnboarding,
-  } = useGame()
+  const { loading, error, showConfetti, handleConfettiStop } = useGameState()
+  const { showOnboarding, handleDismissOnboarding } = useGameSettingsContext()
   const { colors } = useTheme()
   const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
 

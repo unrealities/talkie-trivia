@@ -12,7 +12,8 @@ import {
 import { analyticsService } from "../analyticsService"
 import { hapticsService } from "../hapticsService"
 import { generateImplicitHint } from "../guessFeedbackUtils"
-import { useGame } from "../../contexts/gameContext"
+import { useGameState } from "../../contexts/gameStateContext"
+import { useGameSettingsContext } from "../../contexts/gameSettingsContext"
 
 if (
   Platform.OS === "android" &&
@@ -36,8 +37,9 @@ type PickerState =
   | { status: "results"; query: string; results: readonly BasicMovie[] }
 
 export function usePickerLogic({ onGuessMade }: UsePickerLogicProps) {
-  const { movies, playerGame, isInteractionsDisabled, dispatch, difficulty } =
-    useGame()
+  const { movies, playerGame, isInteractionsDisabled, dispatch } =
+    useGameState()
+  const { difficulty } = useGameSettingsContext()
   const [pickerState, setPickerState] = useState<PickerState>({
     status: "idle",
   })

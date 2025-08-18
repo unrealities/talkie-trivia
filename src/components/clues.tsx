@@ -24,6 +24,8 @@ import { useGame } from "../contexts/gameContext"
 import { hapticsService } from "../utils/hapticsService"
 import { useTheme } from "../contexts/themeContext"
 import { ANIMATION_CONSTANTS } from "../config/constants"
+import { useGameState } from "../contexts/gameStateContext"
+import { useGameSettingsContext } from "../contexts/gameSettingsContext"
 
 const splitSummary = (summary: string, splits: number = 5): string[] => {
   if (!summary) return Array(splits).fill("")
@@ -55,7 +57,8 @@ const CountContainer = memo<CountContainerProps>(
 )
 
 const CluesContainer = memo(() => {
-  const { playerGame, isInteractionsDisabled, difficulty } = useGame()
+  const { playerGame, isInteractionsDisabled } = useGameState()
+  const { difficulty } = useGameSettingsContext()
   const { colors } = useTheme()
   const cluesStyles = useMemo(() => getCluesStyles(colors), [colors])
   const { correctAnswer, guesses } = playerGame

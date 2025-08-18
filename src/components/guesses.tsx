@@ -13,10 +13,10 @@ import Ionicons from "@expo/vector-icons/Ionicons"
 
 import { getGuessesStyles } from "../styles/guessesStyles"
 import { useSkeletonAnimation } from "../utils/hooks/useSkeletonAnimation"
-import { useGame } from "../contexts/gameContext"
 import { BasicMovie } from "../models/movie"
 import { useTheme } from "../contexts/themeContext"
 import { HintInfo, HintType, PlayerGame } from "../models/game"
+import { useGameState } from "../contexts/gameStateContext"
 
 type GuessResult = {
   movieId: number
@@ -222,7 +222,7 @@ const GuessesContainer = memo(
       loading: contextLoading,
       playerGame: contextPlayerGame,
       movies: contextMovies,
-    } = useGame()
+    } = useGameState()
 
     const isDataLoading = gameForDisplay ? false : contextLoading
     const playerGame = gameForDisplay || contextPlayerGame

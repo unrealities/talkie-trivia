@@ -1,13 +1,13 @@
 import React, { useCallback, useMemo } from "react"
 import { View, Text, Pressable } from "react-native"
-import { useGame } from "../contexts/gameContext"
 import { Difficulty } from "../models/game"
 import { getDifficultySelectorStyles } from "../styles/difficultySelectorStyles"
 import { hapticsService } from "../utils/hapticsService"
 import { useTheme } from "../contexts/themeContext"
+import { useGameSettingsContext } from "../contexts/gameSettingsContext"
 
 const DifficultySelector = () => {
-  const { difficulty, setDifficulty } = useGame()
+  const { difficulty, setDifficulty } = useGameSettingsContext()
   const { colors } = useTheme()
   const styles = useMemo(() => getDifficultySelectorStyles(colors), [colors])
 

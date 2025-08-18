@@ -4,7 +4,7 @@ import LoadingIndicator from "../../components/loadingIndicator"
 import ErrorMessage from "../../components/errorMessage"
 import { getAppStyles } from "../../styles/appStyles"
 import { useAuth } from "../../contexts/authContext"
-import { useGame } from "../../contexts/gameContext"
+import { useGameState } from "../../contexts/gameStateContext"
 import { GameHistoryEntry } from "../../models/gameHistory"
 import { useTheme } from "../../contexts/themeContext"
 
@@ -21,7 +21,7 @@ const HistoryDetailModal = lazy(
 
 const ProfileScreen: React.FC<{}> = () => {
   const { player } = useAuth()
-  const { playerStats, loading, error } = useGame()
+  const { playerStats, loading, error } = useGameState()
   const { colors } = useTheme()
   const appStyles = useMemo(() => getAppStyles(colors), [colors])
 
