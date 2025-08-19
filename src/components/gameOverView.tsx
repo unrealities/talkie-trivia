@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from "react"
-import { View, Pressable, Text, Share, Alert } from "react-native"
+import { View, Pressable, Text, Share, Alert, ScrollView } from "react-native"
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -7,17 +7,15 @@ import Animated, {
   Easing,
   interpolate,
 } from "react-native-reanimated"
-import { Image } from "expo-image"
 import GuessesContainer from "./guesses"
-import Actors from "./actors"
 import CountdownTimer from "./countdownTimer"
+import Facts from "./facts"
 import { PlayerGame } from "../models/game"
 import { getMovieStyles } from "../styles/movieStyles"
 import { generateShareMessage } from "../utils/shareUtils"
 import { hapticsService } from "../utils/hapticsService"
 import { analyticsService } from "../utils/analyticsService"
 import { useTheme } from "../contexts/themeContext"
-import { API_CONFIG } from "../config/constants"
 
 interface GameOverViewProps {
   playerGame: PlayerGame
@@ -66,40 +64,34 @@ const GameOverView: React.FC<GameOverViewProps> = ({
     }
   }
 
-  const posterUri = playerGame.movie.poster_path
-    ? `${API_CONFIG.TMDB_IMAGE_BASE_URL_W500}${playerGame.movie.poster_path}`
-    : undefined
-
+  const resultTitle = playerGame.correctAnswer ? "You Got It!" : "So Close!"
   const resultMessage = playerGame.correctAnswer
-    ? `You got it in ${playerGame.guesses.length} guess${
+    ? `You guessed it in ${playerGame.guesses.length} guess${
         playerGame.guesses.length > 1 ? "es" : ""
       }!`
     : playerGame.gaveUp
     ? "Sometimes you just know when to fold 'em."
-    : "So close! Better luck next time."
+    : "Better luck next time."
 
   return (
     <View style={{ width: "100%" }}>
       <Animated.View style={[movieStyles.gameOverCard, animatedCardStyle]}>
-        <Text style={movieStyles.gameOverSubText}>{resultMessage}</Text>
-        <Image
-          source={{ uri: posterUri }}
-          style={movieStyles.gameOverPoster}
-          placeholder={require("../../assets/movie_default.png")}
-          contentFit="cover"
-        />
-        <Text style={movieStyles.gameOverTitle}>{playerGame.movie.title}</Text>
-        {playerGame.movie.director?.name && (
-          <Text style={movieStyles.gameOverDirector}>
-            Directed by {playerGame.movie.director.name}
-          </Text>
-        )}
-        {playerGame.movie.actors && playerGame.movie.actors.length > 0 && (
-          <>
-            <Text style={movieStyles.gameOverStarring}>Starring</Text>
-            <Actors actors={playerGame.movie.actors} maxDisplay={3} />
-          </>
-        )}
+        <ScrollView
+          style={movieStyles.gameOverScrollView}
+          contentContainerStyle={movieStyles.gameOverContentContainer}
+        >
+          <Text style={movieStyles.gameOverResultTitle}>{resultTitle}</Text>
+          <Text style={movieStyles.gameOverSubText}>{resultMessage}</Text>
+
+          <Facts movie={playerGame.movie} isScrollEnabled={false} />
+
+          <View style={movieStyles.fullOverviewContainer}>
+            <Text style={movieStyles.fullOverviewTitle}>The Full Plot</Text>
+            <Text style={movieStyles.fullOverviewText}>
+              {playerGame.movie.overview}
+            </Text>
+          </View>
+        </ScrollView>
       </Animated.View>
 
       <GuessesContainer lastGuessResult={lastGuessResult} />
@@ -116,7 +108,6 @@ const GameOverView: React.FC<GameOverViewProps> = ({
         </Pressable>
       </View>
 
-      {/* Add the new Countdown Timer here */}
       <CountdownTimer />
 
       <Text style={movieStyles.comeBackText}>
