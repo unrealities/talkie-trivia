@@ -5,18 +5,75 @@ import {
   View,
   ActivityIndicator,
   ScrollView,
-  Alert,
 } from "react-native"
 import { Image } from "expo-image"
-import * as Linking from "expo-linking"
 import { Actors } from "./actors"
-import { Actor, Movie } from "../models/movie"
+import { Actor, Director, Movie } from "../models/movie"
 import { getFactsStyles } from "../styles/factsStyles"
 import { useTheme } from "../contexts/themeContext"
 import { analyticsService } from "../utils/analyticsService"
-import { API_CONFIG } from "../config/constants"
+import { useIMDbLink } from "../utils/hooks/useIMDbLink"
 
 type ImageSource = { uri: string } | number
+const defaultMovieImage = require("../../assets/movie_default.png")
+
+const MovieHeader = memo(
+  ({
+    title,
+    tagline,
+    onPress,
+  }: {
+    title: string
+    tagline: string
+    onPress: () => void
+  }) => {
+    const { colors } = useTheme()
+    const factsStyles = useMemo(() => getFactsStyles(colors), [colors])
+    return (
+      <>
+        <Pressable
+          onPress={onPress}
+          style={({ pressed }) => [
+            { opacity: pressed ? 0.6 : 1 },
+            factsStyles.pressable,
+          ]}
+          accessible={true}
+          accessibilityLabel={`IMDb page for ${title}`}
+          role="link"
+        >
+          <Text style={factsStyles.header}>{title}</Text>
+        </Pressable>
+        {tagline && <Text style={factsStyles.subHeaderSmall}>{tagline}</Text>}
+      </>
+    )
+  }
+)
+
+const MoviePoster = memo(({ posterPath }: { posterPath: string }) => {
+  const factsStyles = useMemo(() => getFactsStyles(useTheme().colors), [])
+  const imageSource: ImageSource = posterPath
+    ? { uri: `https://image.tmdb.org/t/p/w500${posterPath}` }
+    : defaultMovieImage
+
+  return (
+    <Image
+      source={imageSource}
+      style={factsStyles.posterImage}
+      placeholder={defaultMovieImage}
+      contentFit="cover"
+    />
+  )
+})
+
+const DirectorInfo = memo(({ director }: { director?: Director }) => {
+  const { colors } = useTheme()
+  const factsStyles = useMemo(() => getFactsStyles(colors), [colors])
+  if (!director?.name) return null
+
+  return (
+    <Text style={factsStyles.subHeaderSmall}>Directed by {director.name}</Text>
+  )
+})
 
 interface FactsProps {
   movie: Movie
@@ -25,12 +82,24 @@ interface FactsProps {
   isScrollEnabled?: boolean
 }
 
-const defaultMovieImage = require("../../assets/movie_default.png")
-
 const Facts = memo(
   ({ movie, isLoading = false, error, isScrollEnabled = true }: FactsProps) => {
     const { colors } = useTheme()
     const factsStyles = useMemo(() => getFactsStyles(colors), [colors])
+    const { openLink } = useIMDbLink()
+
+    const handleMoviePress = useCallback(() => {
+      analyticsService.trackImdbLinkTapped(movie.title)
+      openLink(movie.imdb_id, "title")
+    }, [openLink, movie.imdb_id, movie.title])
+
+    const handleActorPress = useCallback(
+      (actor: Actor) => {
+        analyticsService.trackActorLinkTapped(actor.name)
+        openLink(actor.imdb_id, "name")
+      },
+      [openLink]
+    )
 
     if (isLoading) {
       return (
@@ -50,80 +119,21 @@ const Facts = memo(
       )
     }
 
-    const handleActorPress = useCallback((actor: Actor) => {
-      const imdbURI = actor.imdb_id
-        ? `${API_CONFIG.IMDB_BASE_URL_NAME}${actor.imdb_id}`
-        : null
-
-      analyticsService.trackActorLinkTapped(actor.name)
-
-      if (imdbURI) {
-        Linking.canOpenURL(imdbURI)
-          .then((supported) => {
-            if (supported) {
-              Linking.openURL(imdbURI)
-            } else {
-              Alert.alert("Unable to open IMDb link")
-            }
-          })
-          .catch(() => {
-            Alert.alert("Error opening link")
-          })
-      } else {
-        Alert.alert("IMDb link unavailable", "No link found for this actor.")
-      }
-    }, [])
-
-    const imageSource: ImageSource = movie.poster_path
-      ? { uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}` }
-      : defaultMovieImage
-
-    const placeholderSource: ImageSource = defaultMovieImage
-
-    const handlePressIMDb = useCallback(() => {}, [movie.imdb_id, movie.title])
-
     return (
       <View style={factsStyles.container}>
-        {movie.title && (
-          <Pressable
-            onPress={handlePressIMDb}
-            style={({ pressed }) => [
-              { opacity: pressed ? 0.6 : 1 },
-              factsStyles.pressable,
-            ]}
-            accessible={true}
-            accessibilityLabel={`IMDb page for ${movie.title}`}
-            role="button"
-            accessibilityHint="Double tap to open movie's IMDb page"
-          >
-            <Text style={factsStyles.header}>{movie.title}</Text>
-          </Pressable>
-        )}
-
+        <MovieHeader
+          title={movie.title}
+          tagline={movie.tagline}
+          onPress={handleMoviePress}
+        />
         <ScrollView
           scrollEnabled={isScrollEnabled}
           contentContainerStyle={factsStyles.scrollContainer}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          {movie.tagline && (
-            <Text style={factsStyles.subHeaderSmall}>{movie.tagline}</Text>
-          )}
-
-          <Image
-            source={imageSource}
-            style={factsStyles.posterImage}
-            placeholder={placeholderSource}
-            onError={(e) => console.log("Image load error", e)}
-            contentFit="cover"
-          />
-
-          {movie.director?.name && (
-            <Text style={factsStyles.subHeaderSmall}>
-              Directed by {movie.director.name || "Unknown"}
-            </Text>
-          )}
-
+          <MoviePoster posterPath={movie.poster_path} />
+          <DirectorInfo director={movie.director} />
           {movie.actors && movie.actors.length > 0 && (
             <Actors actors={movie.actors} onActorPress={handleActorPress} />
           )}
