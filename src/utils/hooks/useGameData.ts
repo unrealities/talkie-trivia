@@ -1,104 +1,52 @@
-import { useState, useEffect, useMemo } from "react"
-import { getFirestore } from "firebase/firestore"
+import { useState, useEffect } from "react"
 import { Movie, BasicMovie } from "../../models/movie"
 import Player from "../../models/player"
-import { PlayerGame } from "../../models/game"
+import { PlayerGame, Difficulty } from "../../models/game"
 import PlayerStats from "../../models/playerStats"
-import {
-  fetchOrCreatePlayerGame,
-  fetchOrCreatePlayerStats,
-} from "../firestore/playerDataServices"
-import {
-  defaultPlayerGame,
-  defaultPlayerStats,
-  generateDateId,
-} from "../../models/default"
-import popularMoviesData from "../../../data/popularMovies.json"
-import basicMoviesData from "../../../data/basicMovies.json"
-import { Difficulty } from "../../models/game"
+import { defaultPlayerGame, defaultPlayerStats } from "../../models/default"
+import { gameService } from "../../services/gameService"
 
 export function useGameData(player: Player | null, difficulty: Difficulty) {
   const [movies, setMovies] = useState<readonly Movie[]>([])
   const [basicMovies, setBasicMovies] = useState<readonly BasicMovie[]>([])
-  const [assetsLoading, setAssetsLoading] = useState(true)
-  const [assetsError, setAssetsError] = useState<string | null>(null)
-
   const [initialPlayerGame, setInitialPlayerGame] =
     useState<PlayerGame>(defaultPlayerGame)
   const [initialPlayerStats, setInitialPlayerStats] =
     useState<PlayerStats>(defaultPlayerStats)
-  const [gameDataLoading, setGameDataLoading] = useState(true)
-  const [gameDataError, setGameDataError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  // Load static JSON assets
   useEffect(() => {
-    try {
-      setMovies(popularMoviesData as Movie[])
-      setBasicMovies(basicMoviesData as BasicMovie[])
-    } catch (e: any) {
-      setAssetsError(e.message)
-    } finally {
-      setAssetsLoading(false)
+    if (!player) {
+      return
     }
-  }, [])
 
-  const movieForToday = useMemo(() => {
-    if (movies.length === 0) return null
-    const today = new Date()
-    const start = new Date(today.getFullYear(), 0, 0)
-    const diff = (today as any) - (start as any)
-    const oneDay = 1000 * 60 * 60 * 24
-    const dayOfYear = Math.floor(diff / oneDay)
-    return movies[dayOfYear % movies.length]
-  }, [movies])
-
-  // Fetch dynamic player data from Firestore
-  useEffect(() => {
-    if (assetsLoading || !player || !movieForToday) return
-
-    const initializePlayerData = async () => {
-      setGameDataLoading(true)
-      setGameDataError(null)
+    const initializeGame = async () => {
+      setLoading(true)
+      setError(null)
       try {
-        const db = getFirestore()
-        const today = new Date()
-        const dateId = generateDateId(today)
-        const guessesMax = difficulty === "very hard" ? 3 : 5
-
-        let [game, stats] = await Promise.all([
-          fetchOrCreatePlayerGame(db, player.id, dateId, today, movieForToday),
-          fetchOrCreatePlayerStats(db, player.id),
-        ])
-
-        game.guessesMax = guessesMax
-
-        if (difficulty === "very easy") {
-          game.hintsUsed = {
-            actor: true,
-            decade: true,
-            director: true,
-            genre: true,
-          }
-        }
-
-        setInitialPlayerGame(game)
-        setInitialPlayerStats(stats)
+        const data = await gameService.getInitialGameData(player, difficulty)
+        setMovies(data.allMovies)
+        setBasicMovies(data.basicMovies)
+        setInitialPlayerGame(data.initialPlayerGame)
+        setInitialPlayerStats(data.initialPlayerStats)
       } catch (e: any) {
-        setGameDataError(`Failed to load game data: ${e.message}`)
+        console.error("useGameData: Failed to initialize game data:", e)
+        setError(`Failed to load game data: ${e.message}`)
       } finally {
-        setGameDataLoading(false)
+        setLoading(false)
       }
     }
 
-    initializePlayerData()
-  }, [player, movieForToday, assetsLoading, difficulty])
+    initializeGame()
+  }, [player, difficulty])
 
   return {
     movies,
     basicMovies,
     initialPlayerGame,
     initialPlayerStats,
-    loading: assetsLoading || gameDataLoading,
-    error: assetsError || gameDataError,
+    loading,
+    error,
   }
 }

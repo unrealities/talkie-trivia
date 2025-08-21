@@ -12,11 +12,10 @@ import {
   User,
   signInAnonymously,
 } from "firebase/auth"
-import { getFirestore, doc } from "firebase/firestore"
-import { fetchOrCreatePlayer } from "../utils/firestore/playerDataServices"
 import Player from "../models/player"
 import { useGoogleAuth } from "../utils/hooks/useGoogleAuth"
 import { analyticsService } from "../utils/analyticsService"
+import { gameService } from "../services/gameService"
 
 interface AuthState {
   player: Player | null
@@ -59,19 +58,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
         try {
           if (firebaseUser) {
-            if (__DEV__) {
-              console.log("AuthContext: User is signed in:", firebaseUser.uid)
-            }
             setUser(firebaseUser)
-            const db = getFirestore()
-            const fetchedPlayer = await fetchOrCreatePlayer(
-              db,
+            const fetchedPlayer = await gameService.ensurePlayerExists(
               firebaseUser.uid,
               firebaseUser.displayName || "Guest"
             )
             setPlayer(fetchedPlayer)
 
-            // Identify user for analytics
             if (firebaseUser.isAnonymous) {
               analyticsService.trackAnonymousSignIn(firebaseUser.uid)
             } else {
@@ -81,13 +74,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
               })
             }
           } else {
-            if (__DEV__) {
-              console.log(
-                "AuthContext: No user signed in, attempting anonymous sign-in."
-              )
-            }
             await signInAnonymously(auth)
-            // The onAuthStateChanged listener will re-trigger with the new anonymous user
           }
         } catch (e: any) {
           console.error(

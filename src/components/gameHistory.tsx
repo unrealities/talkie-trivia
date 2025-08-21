@@ -6,23 +6,15 @@ import {
   ActivityIndicator,
   Pressable,
 } from "react-native"
-import {
-  getFirestore,
-  collection,
-  query,
-  orderBy,
-  limit,
-  getDocs,
-} from "firebase/firestore"
 import { Image } from "expo-image"
 
 import { useAuth } from "../contexts/authContext"
 import { GameHistoryEntry } from "../models/gameHistory"
-import { gameHistoryEntryConverter } from "../utils/firestore/converters/gameHistoryEntry"
 import { getGameHistoryStyles } from "../styles/gameHistoryStyles"
 import { hapticsService } from "../utils/hapticsService"
 import { useTheme } from "../contexts/themeContext"
-import { API_CONFIG, FIRESTORE_COLLECTIONS } from "../config/constants"
+import { API_CONFIG } from "../config/constants"
+import { gameService } from "../services/gameService"
 
 interface GameHistoryItemProps {
   item: GameHistoryEntry
@@ -97,17 +89,7 @@ const GameHistory = ({ onHistoryItemPress }: GameHistoryProps) => {
       if (!player) return
 
       try {
-        const db = getFirestore()
-        const historyRef = collection(
-          db,
-          `${FIRESTORE_COLLECTIONS.PLAYERS}/${player.id}/${FIRESTORE_COLLECTIONS.GAME_HISTORY}`
-        ).withConverter(gameHistoryEntryConverter)
-
-        const q = query(historyRef, orderBy("dateId", "desc"), limit(20))
-
-        const querySnapshot = await getDocs(q)
-        const fetchedHistory = querySnapshot.docs.map((doc) => doc.data())
-
+        const fetchedHistory = await gameService.fetchGameHistory(player.id)
         setHistory(fetchedHistory)
       } catch (err: any) {
         console.error("Failed to fetch game history:", err)

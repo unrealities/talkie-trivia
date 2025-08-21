@@ -4,9 +4,9 @@ import { PlayerGame } from "../../models/game"
 import PlayerStats from "../../models/playerStats"
 import { GameHistoryEntry } from "../../models/gameHistory"
 import { gameReducer } from "../../state/gameReducer"
-import { batchUpdatePlayerData } from "../firebaseService"
 import { analyticsService } from "../analyticsService"
 import { generateDateId } from "../../models/default"
+import { gameService } from "../../services/gameService"
 
 export function useGameManager(
   initialPlayerGame: PlayerGame,
@@ -33,10 +33,9 @@ export function useGameManager(
     async (historyEntry: GameHistoryEntry | null = null) => {
       if (!player) return
       try {
-        await batchUpdatePlayerData(
-          playerStats,
+        await gameService.savePlayerProgress(
           playerGame,
-          player.id,
+          playerStats,
           historyEntry
         )
       } catch (e: any) {
@@ -56,14 +55,12 @@ export function useGameManager(
         playerGame.guesses.length >= playerGame.guessesMax
 
       if (!isGameOver) {
-        // Save progress on every valid guess for non-game-over states
         if (playerGame.guesses.length > 0) {
           await saveGameData(null)
         }
         return
       }
 
-      // Process game-over state only once
       if (playerGame.statsProcessed) return
 
       let historyEntry: GameHistoryEntry | null = null

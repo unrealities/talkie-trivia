@@ -11,7 +11,7 @@ import { Movie } from "../models/movie"
 import { PlayerGame } from "../models/game"
 import { useAuth } from "../contexts/authContext"
 import { useGameState } from "../contexts/gameStateContext"
-import { fetchMovieById, fetchPlayerGameById } from "../utils/firebaseService"
+import { gameService } from "../services/gameService"
 import { useTheme } from "../contexts/themeContext"
 import { responsive, spacing } from "../styles/global"
 import LoadingIndicator from "./loadingIndicator"
@@ -51,8 +51,8 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
       try {
         const playerGameId = `${player.id}-${historyItem.dateId}`
         const [fetchedMovie, fetchedPlayerGame] = await Promise.all([
-          fetchMovieById(historyItem.movieId),
-          fetchPlayerGameById(playerGameId),
+          gameService.fetchMovieById(historyItem.movieId),
+          gameService.fetchPlayerGameById(playerGameId),
         ])
 
         if (fetchedMovie && fetchedPlayerGame) {
