@@ -8,12 +8,23 @@ export const getFactsStyles = (colors: any) =>
       flex: 1,
       width: "100%",
     },
+    headerContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      flexWrap: "wrap",
+    },
     header: {
       fontFamily: "Arvo-Bold",
       fontSize: responsive.responsiveFontSize(24),
       paddingBottom: responsive.scale(15),
       textAlign: "center",
       color: colors.textPrimary,
+      textDecorationLine: "underline",
+    },
+    imdbIcon: {
+      marginLeft: responsive.scale(10),
+      paddingBottom: responsive.scale(12),
     },
     subHeaderSmall: {
       fontFamily: "Arvo-Italic",

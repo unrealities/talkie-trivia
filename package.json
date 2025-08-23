@@ -69,7 +69,10 @@
     "undefined": "@expo/vector-icons/Ionicons",
     "victory": "^37.3.6",
     "victory-native": "^41.17.4",
-    "vm": "^0.1.0"
+    "vm": "^0.1.0",
+    "react-native-view-shot": "~4.0.3",
+    "expo-blur": "~14.0.3",
+    "expo-file-system": "~18.0.12"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.26.0",

@@ -124,11 +124,20 @@ export const getMovieStyles = (colors: any) => {
       color: colors.textSecondary,
       fontSize: responsive.responsiveFontSize(14),
     },
-    comeBackText: {
-      ...typography.caption,
-      color: colors.textDisabled,
-      textAlign: "center",
+    personalizedMessageContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      paddingHorizontal: spacing.medium,
+      paddingVertical: spacing.small,
       marginTop: spacing.medium,
+    },
+    personalizedMessageText: {
+      ...typography.caption,
+      color: colors.tertiary,
+      fontFamily: "Arvo-Bold",
+      marginLeft: spacing.small,
+      textAlign: "center",
     },
   })
 }

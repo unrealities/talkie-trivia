@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo } from "react"
-import { View, Pressable, Text, Share, Alert, ScrollView } from "react-native"
+import React, { useEffect, useMemo, useRef } from "react"
+import { View, Pressable, Text, ScrollView, StyleSheet } from "react-native"
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -7,14 +7,16 @@ import Animated, {
   Easing,
   interpolate,
 } from "react-native-reanimated"
+import ViewShot from "react-native-view-shot"
 import GuessesContainer from "./guesses"
 import CountdownTimer from "./countdownTimer"
 import Facts from "./facts"
+import WhereToWatch from "./whereToWatch"
+import PersonalizedStatsMessage from "./personalizedStatsMessage"
+import ShareCard from "./shareCard"
 import { PlayerGame } from "../models/game"
 import { getMovieStyles } from "../styles/movieStyles"
-import { generateShareMessage } from "../utils/shareUtils"
-import { hapticsService } from "../utils/hapticsService"
-import { analyticsService } from "../utils/analyticsService"
+import { shareGameResultAsImage } from "../utils/shareUtils"
 import { useTheme } from "../contexts/themeContext"
 
 interface GameOverViewProps {
@@ -29,6 +31,7 @@ const GameOverView: React.FC<GameOverViewProps> = ({
   const { colors } = useTheme()
   const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
   const flipAnimation = useSharedValue(0)
+  const viewShotRef = useRef<ViewShot>(null)
 
   useEffect(() => {
     flipAnimation.value = withTiming(1, {
@@ -45,23 +48,8 @@ const GameOverView: React.FC<GameOverViewProps> = ({
     }
   })
 
-  const handleShare = async () => {
-    hapticsService.medium()
-    try {
-      const outcome = playerGame.correctAnswer
-        ? "win"
-        : playerGame.gaveUp
-        ? "give_up"
-        : "lose"
-      analyticsService.trackShareResults(outcome)
-      const message = generateShareMessage(playerGame)
-      await Share.share(
-        { message, title: "Talkie Trivia Results" },
-        { dialogTitle: "Share your Talkie Trivia results!" }
-      )
-    } catch (error: any) {
-      Alert.alert("Share Error", error.message)
-    }
+  const handleShare = () => {
+    shareGameResultAsImage(viewShotRef, playerGame)
   }
 
   const resultTitle = playerGame.correctAnswer ? "You Got It!" : "So Close!"
@@ -75,6 +63,19 @@ const GameOverView: React.FC<GameOverViewProps> = ({
 
   return (
     <View style={{ width: "100%" }}>
+      <View style={styles.offscreenContainer}>
+        <ViewShot
+          ref={viewShotRef}
+          options={{
+            fileName: "talkie-trivia-result",
+            format: "jpg",
+            quality: 0.9,
+          }}
+        >
+          <ShareCard playerGame={playerGame} />
+        </ViewShot>
+      </View>
+
       <Animated.View style={[movieStyles.gameOverCard, animatedCardStyle]}>
         <ScrollView
           style={movieStyles.gameOverScrollView}
@@ -84,6 +85,7 @@ const GameOverView: React.FC<GameOverViewProps> = ({
           <Text style={movieStyles.gameOverSubText}>{resultMessage}</Text>
 
           <Facts movie={playerGame.movie} isScrollEnabled={false} />
+          <WhereToWatch />
 
           <View style={movieStyles.fullOverviewContainer}>
             <Text style={movieStyles.fullOverviewTitle}>The Full Plot</Text>
@@ -108,13 +110,17 @@ const GameOverView: React.FC<GameOverViewProps> = ({
         </Pressable>
       </View>
 
+      <PersonalizedStatsMessage />
       <CountdownTimer />
-
-      <Text style={movieStyles.comeBackText}>
-        Come back tomorrow for a new movie!
-      </Text>
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  offscreenContainer: {
+    position: "absolute",
+    left: -9999,
+  },
+})
 
 export default GameOverView
