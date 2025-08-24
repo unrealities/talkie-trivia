@@ -71,7 +71,6 @@ const GameplayContainer: React.FC = () => {
 
   return (
     <View style={movieStyles.container}>
-      <CluesContainer />
       {isGameOver ? (
         <Animated.View style={[{ width: "100%" }, animatedGameOverStyle]}>
           <GameOverView
@@ -81,6 +80,7 @@ const GameplayContainer: React.FC = () => {
         </Animated.View>
       ) : (
         <Animated.View style={[{ width: "100%" }, animatedGameplayStyle]}>
+          <CluesContainer />
           <GameplayView onGuessMade={handleGuessMade} />
           <GuessesContainer lastGuessResult={lastGuessResult} />
         </Animated.View>

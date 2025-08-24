@@ -55,6 +55,7 @@ export const getCluesStyles = (colors: any) =>
       fontFamily: "Arvo-Regular",
       fontSize: responsive.responsiveFontSize(14),
       lineHeight: responsive.responsiveFontSize(20),
+      color: colors.textPrimary,
     },
     wordCountText: {
       color: colors.primary,
