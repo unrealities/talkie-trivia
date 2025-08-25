@@ -85,7 +85,8 @@ const GameOverView: React.FC<GameOverViewProps> = ({
           <Text style={movieStyles.gameOverSubText}>{resultMessage}</Text>
 
           <Facts movie={playerGame.movie} isScrollEnabled={false} />
-          <WhereToWatch />
+          
+          {/* TODO: Implement where to watch functionality <WhereToWatch /> */}
 
           <View style={movieStyles.fullOverviewContainer}>
             <Text style={movieStyles.fullOverviewTitle}>The Full Plot</Text>
