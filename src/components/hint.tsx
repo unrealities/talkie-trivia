@@ -22,7 +22,6 @@ const HintSkeleton = memo(() => {
 })
 
 const VeryEasyHints = memo(() => {
-  const { playerGame } = useGameState()
   const { getHintText } = useHintLogic()
   const { colors } = useTheme()
   const styles = useMemo(() => getHintStyles(colors), [colors])
@@ -33,12 +32,12 @@ const VeryEasyHints = memo(() => {
     <View style={styles.veryEasyContainer}>
       <Text style={styles.veryEasyTitle}>All Hints Revealed</Text>
       {hintTypes.map((type) => (
-        <Text key={type} style={styles.veryEasyText}>
+        <View key={type} style={styles.veryEasyRow}>
           <Text style={styles.veryEasyHintLabel}>
-            {type.charAt(0).toUpperCase() + type.slice(1)}:{" "}
+            {type.charAt(0).toUpperCase() + type.slice(1)}
           </Text>
-          {getHintText(type)}
-        </Text>
+          <Text style={styles.veryEasyHintValue}>{getHintText(type)}</Text>
+        </View>
       ))}
     </View>
   )

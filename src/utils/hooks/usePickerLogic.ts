@@ -43,7 +43,6 @@ export function usePickerLogic({ onGuessMade }: UsePickerLogicProps) {
   const [pickerState, setPickerState] = useState<PickerState>({
     status: "idle",
   })
-  const [stagedGuess, setStagedGuess] = useState<BasicMovie | null>(null)
   const shakeAnimation = useSharedValue(0)
 
   const triggerShake = () => {
@@ -72,7 +71,6 @@ export function usePickerLogic({ onGuessMade }: UsePickerLogicProps) {
   const handleInputChange = useCallback(
     (text: string) => {
       if (isInteractionsDisabled) return
-      setStagedGuess(null)
       if (text === "") {
         setPickerState({ status: "idle" })
       } else {
@@ -104,91 +102,77 @@ export function usePickerLogic({ onGuessMade }: UsePickerLogicProps) {
     return () => clearTimeout(handler)
   }, [pickerState, filterMovies])
 
-  const handleStageGuess = useCallback(
+  const handleMovieSelection = useCallback(
     (selectedMovie: BasicMovie) => {
-      if (isInteractionsDisabled) return
-      setStagedGuess(selectedMovie)
-      setPickerState({ status: "idle" })
-    },
-    [isInteractionsDisabled]
-  )
+      if (isInteractionsDisabled || !playerGame.movie?.id) return
 
-  const handleClearStagedGuess = useCallback(() => {
-    setStagedGuess(null)
-    hapticsService.light()
-  }, [])
+      const isCorrectAnswer = playerGame.movie.id === selectedMovie.id
+      let feedback: string | null = null
+      let hintInfo: HintInfo | null = null
 
-  const handleConfirmGuess = useCallback(() => {
-    if (isInteractionsDisabled || !playerGame.movie?.id || !stagedGuess) return
+      analyticsService.trackGuessMade(
+        playerGame.guesses.length + 1,
+        isCorrectAnswer,
+        selectedMovie.id,
+        selectedMovie.title
+      )
 
-    const isCorrectAnswer = playerGame.movie.id === stagedGuess.id
-    let feedback: string | null = null
-    let hintInfo: HintInfo | null = null
-
-    analyticsService.trackGuessMade(
-      playerGame.guesses.length + 1,
-      isCorrectAnswer,
-      stagedGuess.id,
-      stagedGuess.title
-    )
-
-    if (
-      !isCorrectAnswer &&
-      (difficulty === "easy" || difficulty === "medium")
-    ) {
-      triggerShake()
-      const guessedFullMovie = movies.find((m) => m.id === stagedGuess.id)
-      if (guessedFullMovie) {
-        const result = generateImplicitHint(
-          guessedFullMovie,
-          playerGame.movie,
-          playerGame.hintsUsed
-        )
-        feedback = result.feedback
-        if (result.hintType && result.hintValue) {
-          hintInfo = { type: result.hintType, value: result.hintValue }
+      if (
+        !isCorrectAnswer &&
+        (difficulty === "easy" || difficulty === "medium")
+      ) {
+        triggerShake()
+        const guessedFullMovie = movies.find((m) => m.id === selectedMovie.id)
+        if (guessedFullMovie) {
+          const result = generateImplicitHint(
+            guessedFullMovie,
+            playerGame.movie,
+            playerGame.hintsUsed
+          )
+          feedback = result.feedback
+          if (result.hintType && result.hintValue) {
+            hintInfo = { type: result.hintType, value: result.hintValue }
+          }
         }
+      } else if (!isCorrectAnswer) {
+        triggerShake()
       }
-    } else if (!isCorrectAnswer) {
-      triggerShake()
-    }
 
-    onGuessMade({
-      movieId: stagedGuess.id,
-      correct: isCorrectAnswer,
-      feedback,
-      hintInfo,
-    })
+      onGuessMade({
+        movieId: selectedMovie.id,
+        correct: isCorrectAnswer,
+        feedback,
+        hintInfo,
+      })
 
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
 
-    dispatch({
-      type: "MAKE_GUESS",
-      payload: {
-        selectedMovie: stagedGuess,
-        correctMovie: playerGame.movie,
-        allMovies: movies,
-      },
-    })
+      dispatch({
+        type: "MAKE_GUESS",
+        payload: {
+          selectedMovie: selectedMovie,
+          correctMovie: playerGame.movie,
+          allMovies: movies,
+        },
+      })
 
-    setStagedGuess(null)
-  }, [
-    isInteractionsDisabled,
-    playerGame,
-    movies,
-    onGuessMade,
-    dispatch,
-    stagedGuess,
-    difficulty,
-  ])
+      handleInputChange("")
+    },
+    [
+      isInteractionsDisabled,
+      playerGame,
+      movies,
+      onGuessMade,
+      dispatch,
+      difficulty,
+      handleInputChange,
+    ]
+  )
 
   return {
     pickerState,
     shakeAnimation,
-    stagedGuess,
     handleInputChange,
-    handleStageGuess,
-    handleConfirmGuess,
-    handleClearStagedGuess,
+    handleMovieSelection,
   }
 }

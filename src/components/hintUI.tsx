@@ -237,7 +237,13 @@ const HintUI: React.FC<HintUIProps> = memo(
 
         {displayedHintText && (
           <View style={hintStyles.displayedHintContainer}>
-            <Text style={hintStyles.hintText}>{displayedHintText}</Text>
+            <View style={hintStyles.displayedHintContent}>
+              <Ionicons
+                name="bulb-outline"
+                style={hintStyles.displayedHintIcon}
+              />
+              <Text style={hintStyles.hintText}>{displayedHintText}</Text>
+            </View>
           </View>
         )}
       </View>

@@ -15,7 +15,7 @@ import {
   Platform,
   UIManager,
 } from "react-native"
-import Animated, { useAnimatedStyle } from "react-native-reanimated"
+import { useAnimatedStyle } from "react-native-reanimated"
 import { Image } from "expo-image"
 import { BasicMovie } from "../models/movie"
 import { getPickerStyles } from "../styles/pickerStyles"
@@ -130,11 +130,8 @@ const PickerContainer: FC<PickerContainerProps> = memo(({ onGuessMade }) => {
   const {
     pickerState,
     shakeAnimation,
-    stagedGuess,
     handleInputChange,
-    handleStageGuess,
-    handleConfirmGuess,
-    handleClearStagedGuess,
+    handleMovieSelection,
   } = usePickerLogic({
     onGuessMade,
   })
@@ -153,9 +150,9 @@ const PickerContainer: FC<PickerContainerProps> = memo(({ onGuessMade }) => {
   const handleSelectMovie = useCallback(
     (movie: BasicMovie) => {
       setExpandedMovieId(null)
-      handleStageGuess(movie)
+      handleMovieSelection(movie)
     },
-    [handleStageGuess]
+    [handleMovieSelection]
   )
 
   const renderItem = useCallback(
@@ -185,10 +182,7 @@ const PickerContainer: FC<PickerContainerProps> = memo(({ onGuessMade }) => {
       pickerState={pickerState}
       animatedInputStyle={animatedInputStyle}
       isInteractionsDisabled={isInteractionsDisabled}
-      stagedGuess={stagedGuess}
       handleInputChange={handleInputChange}
-      onConfirmGuess={handleConfirmGuess}
-      onClearStagedGuess={handleClearStagedGuess}
       renderItem={renderItem}
     />
   )

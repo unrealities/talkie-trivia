@@ -149,20 +149,6 @@ export const getPickerStyles = (colors: any) => {
       fontSize: responsive.responsiveFontSize(11),
       color: colors.background,
     },
-    submitButton: {
-      backgroundColor: colors.primary,
-      borderRadius: responsive.scale(10),
-      padding: spacing.medium,
-      width: "100%",
-      ...shadows.light,
-      marginTop: spacing.medium,
-    },
-    submitButtonText: {
-      ...typography.button,
-      color: colors.background,
-      fontFamily: "Arvo-Bold",
-      textAlign: "center",
-    },
     disabledButton: {
       backgroundColor: colors.surface,
       opacity: 0.6,

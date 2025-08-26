@@ -30,12 +30,21 @@ export const getGuessesStyles = (colors: any) => {
       ...shadows.light,
       position: "relative",
       overflow: "hidden",
+      justifyContent: "flex-start",
     },
     guessNumber: {
       color: colors.textSecondary,
       fontFamily: "Arvo-Bold",
       fontSize: responsive.responsiveFontSize(14),
+      marginRight: spacing.small,
+    },
+    guessIcon: {
       marginRight: spacing.medium,
+      fontSize: responsive.responsiveFontSize(22),
+    },
+    guessTextContainer: {
+      flex: 1,
+      justifyContent: "center",
     },
     guessText: {
       flexShrink: 1,
@@ -47,20 +56,14 @@ export const getGuessesStyles = (colors: any) => {
     guessTextSmall: {
       fontSize: responsive.responsiveFontSize(12),
     },
-    guessIcon: {
-      marginLeft: spacing.small,
-      fontSize: responsive.responsiveFontSize(22),
-    },
     guessHintContainer: {
       flexDirection: "row",
       alignItems: "center",
-      marginHorizontal: spacing.small,
-      flexGrow: 1,
-      justifyContent: "flex-end",
+      marginTop: spacing.extraSmall,
     },
     guessHintIcon: {
       marginRight: spacing.extraSmall,
-      fontSize: responsive.responsiveFontSize(16),
+      fontSize: responsive.responsiveFontSize(14),
       opacity: 0.8,
     },
     guessHintText: {

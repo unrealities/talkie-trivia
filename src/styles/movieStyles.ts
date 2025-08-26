@@ -54,7 +54,7 @@ export const getMovieStyles = (colors: any) => {
       maxHeight: responsive.screenHeight * 0.5,
     },
     gameOverContentContainer: {
-      padding: spacing.medium,
+      padding: spacing.large,
       alignItems: "center",
     },
     gameOverResultTitle: {
@@ -68,11 +68,11 @@ export const getMovieStyles = (colors: any) => {
       color: colors.textSecondary,
       fontFamily: "Arvo-Italic",
       textAlign: "center",
-      marginBottom: spacing.medium,
+      marginBottom: spacing.large,
     },
     fullOverviewContainer: {
       width: "100%",
-      marginTop: spacing.large,
+      marginTop: spacing.extraLarge,
       padding: spacing.medium,
       backgroundColor: colors.background,
       borderRadius: responsive.scale(8),

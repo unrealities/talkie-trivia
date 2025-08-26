@@ -152,35 +152,35 @@ const GuessRow = memo(
           ]}
         >
           <Text style={guessesStyles.guessNumber}>{index + 1}</Text>
-          <Text
-            numberOfLines={1}
-            ellipsizeMode="tail"
-            style={[
-              guessesStyles.guessText,
-              (guessTitle.length > 35 || !!hintInfo) &&
-                guessesStyles.guessTextSmall,
-            ]}
-          >
-            {guessTitle}
-          </Text>
-          {hintInfo && (
-            <View style={guessesStyles.guessHintContainer}>
-              <Ionicons
-                name={getIconNameForHint(hintInfo.type)}
-                style={guessesStyles.guessHintIcon}
-                color={colors.primary}
-              />
-              <Text style={guessesStyles.guessHintText} numberOfLines={1}>
-                {hintInfo.value}
-              </Text>
-            </View>
-          )}
-          <View>
-            <Ionicons
-              name={isCorrect ? "checkmark-circle" : "close-circle"}
-              style={guessesStyles.guessIcon}
-              color={isCorrect ? colors.success : colors.error}
-            />
+          <Ionicons
+            name={isCorrect ? "checkmark-circle" : "close-circle"}
+            style={guessesStyles.guessIcon}
+            color={isCorrect ? colors.success : colors.error}
+          />
+          <View style={guessesStyles.guessTextContainer}>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={[
+                guessesStyles.guessText,
+                (guessTitle.length > 35 || !!hintInfo) &&
+                  guessesStyles.guessTextSmall,
+              ]}
+            >
+              {guessTitle}
+            </Text>
+            {hintInfo && (
+              <View style={guessesStyles.guessHintContainer}>
+                <Ionicons
+                  name={getIconNameForHint(hintInfo.type)}
+                  style={guessesStyles.guessHintIcon}
+                  color={colors.primary}
+                />
+                <Text style={guessesStyles.guessHintText} numberOfLines={1}>
+                  {hintInfo.value}
+                </Text>
+              </View>
+            )}
           </View>
         </Animated.View>
       </Animated.View>
