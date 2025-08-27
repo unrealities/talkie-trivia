@@ -20,7 +20,6 @@ import Animated, {
   Easing,
 } from "react-native-reanimated"
 import { getCluesStyles } from "../styles/cluesStyles"
-import { useGame } from "../contexts/gameContext"
 import { hapticsService } from "../utils/hapticsService"
 import { useTheme } from "../contexts/themeContext"
 import { ANIMATION_CONSTANTS } from "../config/constants"
