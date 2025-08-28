@@ -10,6 +10,7 @@ export const playerStatsConverter = {
       wins: playerStats.wins,
       hintsAvailable: playerStats.hintsAvailable,
       hintsUsedCount: playerStats.hintsUsedCount,
+      lastStreakMessageDate: playerStats.lastStreakMessageDate || null,
     }
     return ps
   },
@@ -23,6 +24,7 @@ export const playerStatsConverter = {
       wins: data.wins,
       hintsAvailable: data.hintsAvailable || 3,
       hintsUsedCount: data.hintsUsedCount || 0,
+      lastStreakMessageDate: data.lastStreakMessageDate || null,
     }
     return ps
   },

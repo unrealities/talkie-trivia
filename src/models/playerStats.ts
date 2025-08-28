@@ -6,6 +6,7 @@ export default class PlayerStats {
   wins: number[]
   hintsAvailable: number
   hintsUsedCount: number
+  lastStreakMessageDate?: string // YYYY-MM-DD format
 
   constructor(
     id: string,
@@ -14,7 +15,8 @@ export default class PlayerStats {
     maxStreak: number,
     wins: number[],
     hintsAvailable: number,
-    hintsUsedCount: number
+    hintsUsedCount: number,
+    lastStreakMessageDate?: string
   ) {
     this.id = id
     this.currentStreak = currentStreak
@@ -23,5 +25,6 @@ export default class PlayerStats {
     this.wins = wins
     this.hintsAvailable = hintsAvailable
     this.hintsUsedCount = hintsUsedCount
+    this.lastStreakMessageDate = lastStreakMessageDate
   }
 }

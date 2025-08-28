@@ -15,9 +15,11 @@ const ConfettiCelebration = lazy(
   () => import("../../components/confettiCelebration")
 )
 const OnboardingModal = lazy(() => import("../../components/onboardingModal"))
+const FlashMessages = lazy(() => import("../../components/flashMessages"))
 
 const GameScreen = () => {
-  const { loading, error, showConfetti, handleConfettiStop } = useGameState()
+  const { loading, error, showConfetti, handleConfettiStop, flashMessage } =
+    useGameState()
   const { showOnboarding, handleDismissOnboarding } = useGameSettingsContext()
   const { colors } = useTheme()
   const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
@@ -45,7 +47,9 @@ const GameScreen = () => {
         </Suspense>
       </ScrollView>
 
+      {/* Overlays */}
       <Suspense fallback={null}>
+        <FlashMessages message={flashMessage} />
         <OnboardingModal
           isVisible={showOnboarding}
           onDismiss={handleDismissOnboarding}

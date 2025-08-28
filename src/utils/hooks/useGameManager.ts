@@ -20,14 +20,32 @@ export function useGameManager(
   const [showModal, setShowModal] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
   const [persistenceError, setPersistenceError] = useState<string | null>(null)
+  const [flashMessage, setFlashMessage] = useState<string | null>(null)
 
   useEffect(() => {
     dispatch({ type: "INITIALIZE_GAME", payload: initialPlayerGame })
   }, [initialPlayerGame])
 
   useEffect(() => {
-    setPlayerStats(initialPlayerStats)
-  }, [initialPlayerStats])
+    if (initialPlayerStats && initialPlayerStats.id) {
+      const todayId = generateDateId(new Date())
+      const { currentStreak, lastStreakMessageDate } = initialPlayerStats
+
+      if (currentStreak > 0 && lastStreakMessageDate !== todayId) {
+        const newStats = {
+          ...initialPlayerStats,
+          lastStreakMessageDate: todayId,
+        }
+        setPlayerStats(newStats)
+        setFlashMessage(
+          `Welcome back! You're on a ${currentStreak}-day streak! 🔥`
+        )
+        gameService.savePlayerProgress(playerGame, newStats, null)
+      } else {
+        setPlayerStats(initialPlayerStats)
+      }
+    }
+  }, [initialPlayerStats, playerGame])
 
   const saveGameData = useCallback(
     async (historyEntry: GameHistoryEntry | null = null) => {
@@ -126,5 +144,6 @@ export function useGameManager(
     setShowConfetti,
     handleConfettiStop,
     persistenceError,
+    flashMessage,
   }
 }

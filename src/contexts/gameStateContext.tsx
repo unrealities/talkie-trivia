@@ -23,6 +23,7 @@ interface GameState {
   handleConfettiStop: () => void
   dispatch: React.Dispatch<GameAction>
   updatePlayerStats: (stats: PlayerStats) => void
+  flashMessage: string | null
 }
 
 const GameStateContext = createContext<GameState | undefined>(undefined)
@@ -53,6 +54,7 @@ export const GameStateProvider: React.FC<{ children: ReactNode }> = ({
     setShowConfetti,
     handleConfettiStop,
     persistenceError,
+    flashMessage,
   } = useGameManager(initialPlayerGame, initialPlayerStats, player)
 
   const loading = authLoading || dataLoading
@@ -82,6 +84,7 @@ export const GameStateProvider: React.FC<{ children: ReactNode }> = ({
     handleConfettiStop,
     dispatch,
     updatePlayerStats,
+    flashMessage,
   }
 
   return (
