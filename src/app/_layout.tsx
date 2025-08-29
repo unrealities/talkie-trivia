@@ -1,21 +1,31 @@
-import React, { useCallback, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Slot } from "expo-router"
 import { View } from "react-native"
 import ErrorBoundary from "../components/errorBoundary"
 import { NetworkProvider, useNetwork } from "../contexts/networkContext"
-import { AuthProvider } from "../contexts/authContext"
-import { GameSettingsProvider } from "../contexts/gameSettingsContext"
-import { GameStateProvider } from "../contexts/gameStateContext"
+import { AuthProvider, useAuth } from "../contexts/authContext"
 import { ThemeProvider, useTheme } from "../contexts/themeContext"
 import LoadingIndicator from "../components/loadingIndicator"
 import ErrorMessage from "../components/errorMessage"
 import { getAppStyles } from "../styles/appStyles"
+import { useGameStore } from "../state/gameStore"
 
 function RootLayoutNav() {
   const { isNetworkConnected } = useNetwork()
   const { colors } = useTheme()
   const styles = useMemo(() => getAppStyles(colors), [colors])
   const [retryKey, setRetryKey] = useState(0)
+
+  const { player } = useAuth()
+  const initializeGame = useGameStore((state) => state.initializeGame)
+  const loading = useGameStore((state) => state.loading)
+  const error = useGameStore((state) => state.error)
+
+  useEffect(() => {
+    if (player && isNetworkConnected) {
+      initializeGame(player)
+    }
+  }, [player, isNetworkConnected, retryKey, initializeGame])
 
   const handleRetry = useCallback(() => {
     setRetryKey((prevKey) => prevKey + 1)
@@ -36,6 +46,18 @@ function RootLayoutNav() {
     )
   }
 
+  if (loading) {
+    return <LoadingIndicator />
+  }
+
+  if (error) {
+    return (
+      <View style={styles.container}>
+        <ErrorMessage message={error} onRetry={handleRetry} />
+      </View>
+    )
+  }
+
   return <Slot key={retryKey} />
 }
 
@@ -45,11 +67,7 @@ export default function RootLayout() {
       <ThemeProvider>
         <NetworkProvider>
           <AuthProvider>
-            <GameSettingsProvider>
-              <GameStateProvider>
-                <RootLayoutNav />
-              </GameStateProvider>
-            </GameSettingsProvider>
+            <RootLayoutNav />
           </AuthProvider>
         </NetworkProvider>
       </ThemeProvider>

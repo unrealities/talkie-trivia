@@ -1,12 +1,11 @@
-import React, { lazy, useState, useCallback, Suspense, useMemo } from "react"
-import { View, ScrollView } from "react-native"
+import React, { lazy, Suspense, useState, useCallback, useMemo } from "react"
+import { ScrollView } from "react-native"
 import LoadingIndicator from "../../components/loadingIndicator"
-import ErrorMessage from "../../components/errorMessage"
 import { getAppStyles } from "../../styles/appStyles"
 import { useAuth } from "../../contexts/authContext"
-import { useGameState } from "../../contexts/gameStateContext"
 import { GameHistoryEntry } from "../../models/gameHistory"
 import { useTheme } from "../../contexts/themeContext"
+import { useGameStore } from "../../state/gameStore"
 
 const GoogleLogin = lazy(() => import("../../components/googleLogin"))
 const PlayerStatsContainer = lazy(() => import("../../components/playerStats"))
@@ -21,7 +20,9 @@ const HistoryDetailModal = lazy(
 
 const ProfileScreen: React.FC<{}> = () => {
   const { player } = useAuth()
-  const { playerStats, loading, error } = useGameState()
+  const playerStats = useGameStore((state) => state.playerStats)
+  const loading = useGameStore((state) => state.loading)
+
   const { colors } = useTheme()
   const appStyles = useMemo(() => getAppStyles(colors), [colors])
 
@@ -44,8 +45,7 @@ const ProfileScreen: React.FC<{}> = () => {
           <ThemeSelector />
           <DifficultySelector />
           {loading && <LoadingIndicator />}
-          {error && <ErrorMessage message={error} />}
-          {!loading && !error && player && playerStats && (
+          {!loading && player && playerStats && (
             <>
               <PlayerStatsContainer player={player} playerStats={playerStats} />
               <GameHistory onHistoryItemPress={handleHistoryItemPress} />

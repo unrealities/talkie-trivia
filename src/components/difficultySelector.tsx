@@ -4,10 +4,14 @@ import { Difficulty } from "../models/game"
 import { getDifficultySelectorStyles } from "../styles/difficultySelectorStyles"
 import { hapticsService } from "../utils/hapticsService"
 import { useTheme } from "../contexts/themeContext"
-import { useGameSettingsContext } from "../contexts/gameSettingsContext"
+import { useGameStore } from "../state/gameStore"
+import { useAuth } from "../contexts/authContext"
 
 const DifficultySelector = () => {
-  const { difficulty, setDifficulty } = useGameSettingsContext()
+  const { player } = useAuth()
+  const difficulty = useGameStore((state) => state.difficulty)
+  const setDifficulty = useGameStore((state) => state.setDifficulty)
+
   const { colors } = useTheme()
   const styles = useMemo(() => getDifficultySelectorStyles(colors), [colors])
 
@@ -33,10 +37,12 @@ const DifficultySelector = () => {
 
   const handleSelect = useCallback(
     (newDifficulty: Difficulty) => {
-      hapticsService.medium()
-      setDifficulty(newDifficulty)
+      if (player) {
+        hapticsService.medium()
+        setDifficulty(newDifficulty, player)
+      }
     },
-    [setDifficulty]
+    [setDifficulty, player]
   )
 
   return (

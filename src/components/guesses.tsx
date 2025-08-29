@@ -16,7 +16,7 @@ import { useSkeletonAnimation } from "../utils/hooks/useSkeletonAnimation"
 import { BasicMovie } from "../models/movie"
 import { useTheme } from "../contexts/themeContext"
 import { HintInfo, HintType, PlayerGame } from "../models/game"
-import { useGameState } from "../contexts/gameStateContext"
+import { useGameStore } from "../state/gameStore"
 
 type GuessResult = {
   movieId: number
@@ -218,19 +218,19 @@ const GuessesContainer = memo(
     gameForDisplay,
     allMoviesForDisplay,
   }: GuessesContainerProps) => {
-    const {
-      loading: contextLoading,
-      playerGame: contextPlayerGame,
-      movies: contextMovies,
-    } = useGameState()
+    const { loading, playerGame, basicMovies } = useGameStore((state) => ({
+      loading: state.loading,
+      playerGame: state.playerGame,
+      basicMovies: state.basicMovies,
+    }))
 
-    const isDataLoading = gameForDisplay ? false : contextLoading
-    const playerGame = gameForDisplay || contextPlayerGame
-    const movies = allMoviesForDisplay || contextMovies
+    const isDataLoading = gameForDisplay ? false : loading
+    const currentGame = gameForDisplay || playerGame
+    const movies = allMoviesForDisplay || basicMovies
 
     const { colors } = useTheme()
     const guessesStyles = useMemo(() => getGuessesStyles(colors), [colors])
-    const { guesses, guessesMax } = playerGame
+    const { guesses, guessesMax } = currentGame
 
     if (isDataLoading) {
       return (

@@ -23,8 +23,7 @@ import { getCluesStyles } from "../styles/cluesStyles"
 import { hapticsService } from "../utils/hapticsService"
 import { useTheme } from "../contexts/themeContext"
 import { ANIMATION_CONSTANTS } from "../config/constants"
-import { useGameState } from "../contexts/gameStateContext"
-import { useGameSettingsContext } from "../contexts/gameSettingsContext"
+import { useGameStore } from "../state/gameStore"
 
 const splitSummary = (summary: string, splits: number = 5): string[] => {
   if (!summary) return Array(splits).fill("")
@@ -56,8 +55,14 @@ const CountContainer = memo<CountContainerProps>(
 )
 
 const CluesContainer = memo(() => {
-  const { playerGame, isInteractionsDisabled } = useGameState()
-  const { difficulty } = useGameSettingsContext()
+  const { playerGame, isInteractionsDisabled, difficulty, loading } =
+    useGameStore((state) => ({
+      playerGame: state.playerGame,
+      isInteractionsDisabled: state.isInteractionsDisabled,
+      difficulty: state.difficulty,
+      loading: state.loading,
+    }))
+
   const { colors } = useTheme()
   const cluesStyles = useMemo(() => getCluesStyles(colors), [colors])
   const { correctAnswer, guesses } = playerGame
@@ -67,7 +72,6 @@ const CluesContainer = memo(() => {
     [playerGame?.movie?.overview]
   )
 
-  const [isLoading, setIsLoading] = useState<boolean>(true)
   const [revealedClues, setRevealedClues] = useState<string[]>([])
   const [typewriterText, setTypewriterText] = useState("")
   const lastClueRef = useRef<string>("")
@@ -85,12 +89,6 @@ const CluesContainer = memo(() => {
     hapticsService.light()
   }, [typewriterProgress])
 
-  useEffect(() => {
-    if (playerGame?.movie?.overview) {
-      setIsLoading(false)
-    }
-  }, [playerGame?.movie?.overview])
-
   useAnimatedReaction(
     () => Math.floor(typewriterProgress.value),
     (currentValue, previousValue) => {
@@ -104,7 +102,7 @@ const CluesContainer = memo(() => {
   )
 
   useEffect(() => {
-    if (isLoading) return
+    if (loading) return
 
     let numCluesToReveal
     if (correctAnswer || isInteractionsDisabled) {
@@ -156,7 +154,7 @@ const CluesContainer = memo(() => {
       cancelAnimation(highlightProgress)
     }
   }, [
-    isLoading,
+    loading,
     correctAnswer,
     isInteractionsDisabled,
     guesses.length,
@@ -182,7 +180,7 @@ const CluesContainer = memo(() => {
 
   return (
     <View style={cluesStyles.container}>
-      {isLoading ? (
+      {loading ? (
         <View style={cluesStyles.skeletonContainer}>
           <View style={cluesStyles.skeletonLine} />
           <View style={cluesStyles.skeletonLine} />

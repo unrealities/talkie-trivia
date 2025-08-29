@@ -1,17 +1,21 @@
 import React, { useState, useEffect, useMemo } from "react"
-import { View, Text, StyleSheet } from "react-native"
+import { View, Text } from "react-native"
 import { FontAwesome } from "@expo/vector-icons"
 import { useAuth } from "../contexts/authContext"
-import { useGameState } from "../contexts/gameStateContext"
 import { gameService } from "../services/gameService"
 import { GameHistoryEntry } from "../models/gameHistory"
 import { getMovieStyles } from "../styles/movieStyles"
 import { useTheme } from "../contexts/themeContext"
 import { responsive } from "../styles/global"
+import { useGameStore } from "../state/gameStore"
 
 const PersonalizedStatsMessage: React.FC = () => {
   const { player } = useAuth()
-  const { playerStats, playerGame } = useGameState()
+  const { playerStats, playerGame } = useGameStore((state) => ({
+    playerStats: state.playerStats,
+    playerGame: state.playerGame,
+  }))
+
   const [history, setHistory] = useState<GameHistoryEntry[]>([])
   const [loading, setLoading] = useState(true)
   const { colors } = useTheme()

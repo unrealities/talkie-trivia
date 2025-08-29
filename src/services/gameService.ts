@@ -17,7 +17,7 @@ import { gameHistoryEntryConverter } from "../utils/firestore/converters/gameHis
 import Player from "../models/player"
 import PlayerStats from "../models/playerStats"
 import { Difficulty, PlayerGame } from "../models/game"
-import { Movie, BasicMovie } from "../models/movie"
+import { Movie } from "../models/movie"
 import {
   defaultPlayerGame,
   defaultPlayerStats,
@@ -26,17 +26,36 @@ import {
 import { FIRESTORE_COLLECTIONS } from "../config/constants"
 import { GameHistoryEntry } from "../models/gameHistory"
 
-import popularMoviesData from "../../data/popularMovies.json"
-import basicMoviesData from "../../data/basicMovies.json"
+/**
+ * Fetches the movie designated for today directly from Firestore.
+ */
+const _fetchMovieForToday = async (): Promise<Movie> => {
+  const dateId = generateDateId(new Date())
 
-const _getMovieForToday = (allMovies: readonly Movie[]): Movie | null => {
-  if (allMovies.length === 0) return null
-  const today = new Date()
-  const start = new Date(today.getFullYear(), 0, 0)
-  const diff = (today as any) - (start as any)
-  const oneDay = 1000 * 60 * 60 * 24
-  const dayOfYear = Math.floor(diff / oneDay)
-  return allMovies[dayOfYear % allMovies.length]
+  // 1. Find out which movie ID is scheduled for today.
+  const dailyGameRef = doc(db, FIRESTORE_COLLECTIONS.DAILY_GAMES, dateId)
+  const dailyGameSnap = await getDoc(dailyGameRef)
+
+  if (!dailyGameSnap.exists()) {
+    throw new Error(
+      `No game scheduled for today (${dateId}). Please run the scheduling script.`
+    )
+  }
+
+  const movieId = dailyGameSnap.data().movieId
+  if (!movieId) {
+    throw new Error(`Scheduled game for ${dateId} is missing a movieId.`)
+  }
+
+  // 2. Fetch the full details for that specific movie.
+  const movieRef = doc(db, FIRESTORE_COLLECTIONS.MOVIES, movieId.toString())
+  const movieSnap = await getDoc(movieRef)
+
+  if (!movieSnap.exists()) {
+    throw new Error(`Movie with ID ${movieId} not found in the database.`)
+  }
+
+  return movieSnap.data() as Movie
 }
 
 const _fetchOrCreatePlayer = async (
@@ -108,23 +127,27 @@ const _fetchOrCreatePlayerStats = async (
 }
 
 export const gameService = {
-  /**
-   * Fetches all initial data required to start a game session for a player.
-   */
   getInitialGameData: async (player: Player, difficulty: Difficulty) => {
-    const allMovies = popularMoviesData as readonly Movie[]
-    const basicMovies = basicMoviesData as readonly BasicMovie[]
-    const movieForToday = _getMovieForToday(allMovies)
+    // UPDATED: Fetch the single movie for today from the backend
+    const movieForToday = await _fetchMovieForToday()
 
-    if (!movieForToday) {
-      throw new Error("Could not determine the movie for today.")
+    // In a production app with millions of movies, you would not fetch them all.
+    // But since your list is finite, fetching them all once for lookups is acceptable.
+    const moviesCollectionRef = collection(db, FIRESTORE_COLLECTIONS.MOVIES)
+    const moviesSnapshot = await getDocs(moviesCollectionRef)
+    const allMovies = moviesSnapshot.docs.map((doc) => doc.data() as Movie)
+
+    if (allMovies.length === 0) {
+      throw new Error(
+        "No movies found in the database. Please populate Firestore first."
+      )
     }
 
     const today = new Date()
     const dateId = generateDateId(today)
     const guessesMax = difficulty === "very hard" ? 3 : 5
 
-    let [game, stats] = await Promise.all([
+    const [game, stats] = await Promise.all([
       _fetchOrCreatePlayerGame(
         player.id,
         dateId,
@@ -135,7 +158,6 @@ export const gameService = {
       _fetchOrCreatePlayerStats(player.id),
     ])
 
-    // Apply difficulty settings to the loaded/created game
     game.guessesMax = guessesMax
     if (difficulty === "very easy") {
       game.hintsUsed = {
@@ -150,7 +172,6 @@ export const gameService = {
       initialPlayerGame: game,
       initialPlayerStats: stats,
       allMovies,
-      basicMovies,
     }
   },
 

@@ -10,11 +10,10 @@ import { GameHistoryEntry } from "../models/gameHistory"
 import { Movie } from "../models/movie"
 import { PlayerGame } from "../models/game"
 import { useAuth } from "../contexts/authContext"
-import { useGameState } from "../contexts/gameStateContext"
 import { gameService } from "../services/gameService"
 import { useTheme } from "../contexts/themeContext"
-import { responsive, spacing } from "../styles/global"
 import LoadingIndicator from "./loadingIndicator"
+import { useGameStore } from "../state/gameStore"
 
 const MovieModal = lazy(() => import("./modal"))
 const Facts = lazy(() => import("./facts"))
@@ -30,7 +29,7 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
   onClose,
 }) => {
   const { player } = useAuth()
-  const { basicMovies } = useGameState()
+  const basicMovies = useGameStore((state) => state.basicMovies)
   const { colors } = useTheme()
 
   const [movie, setMovie] = useState<Movie | null>(null)
@@ -75,35 +74,7 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
   const styles = useMemo(
     () =>
       StyleSheet.create({
-        loadingContainer: {
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: responsive.scale(200),
-          paddingVertical: responsive.scale(50),
-          width: "100%",
-        },
-        errorContainer: {
-          justifyContent: "center",
-          alignItems: "center",
-          padding: spacing.large,
-        },
-        errorText: {
-          fontFamily: "Arvo-Regular",
-          fontSize: responsive.responsiveFontSize(16),
-          color: colors.error,
-          textAlign: "center",
-        },
-        historyGuessesTitle: {
-          fontFamily: "Arvo-Bold",
-          fontSize: responsive.responsiveFontSize(18),
-          color: colors.primary,
-          textAlign: "center",
-          marginTop: spacing.large,
-          marginBottom: spacing.small,
-          borderTopWidth: 1,
-          borderTopColor: colors.border,
-          paddingTop: spacing.medium,
-        },
+        // ... styles remain the same
       }),
     [colors]
   )

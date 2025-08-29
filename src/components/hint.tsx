@@ -5,8 +5,7 @@ import { useHintLogic } from "../utils/hooks/useHintLogic"
 import HintUI from "./hintUI"
 import { getHintStyles } from "../styles/hintStyles"
 import { useSkeletonAnimation } from "../utils/hooks/useSkeletonAnimation"
-import { useGameState } from "../contexts/gameStateContext"
-import { useGameSettingsContext } from "../contexts/gameSettingsContext"
+import { useGameStore } from "../state/gameStore"
 import { useTheme } from "../contexts/themeContext"
 import { HintType } from "../models/game"
 
@@ -45,12 +44,19 @@ const VeryEasyHints = memo(() => {
 
 const HintContainer: React.FC = memo(() => {
   const {
-    loading: isDataLoading,
+    loading,
     playerGame,
     isInteractionsDisabled,
     playerStats,
-  } = useGameState()
-  const { difficulty } = useGameSettingsContext()
+    difficulty,
+  } = useGameStore((state) => ({
+    loading: state.loading,
+    playerGame: state.playerGame,
+    isInteractionsDisabled: state.isInteractionsDisabled,
+    playerStats: state.playerStats,
+    difficulty: state.difficulty,
+  }))
+
   const {
     showHintOptions,
     displayedHintText,
@@ -62,7 +68,7 @@ const HintContainer: React.FC = memo(() => {
     handleHintSelection,
   } = useHintLogic()
 
-  if (isDataLoading) {
+  if (loading) {
     return <HintSkeleton />
   }
 

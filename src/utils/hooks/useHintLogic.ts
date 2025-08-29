@@ -1,10 +1,9 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from "react"
 import { LayoutAnimation, Platform, UIManager } from "react-native"
 import { HintType } from "../../models/game"
-import { analyticsService } from "../analyticsService"
+import { useGameStore } from "../../state/gameStore"
 import { hapticsService } from "../hapticsService"
-import { useGameState } from "../../contexts/gameStateContext"
-import { useGameSettingsContext } from "../../contexts/gameSettingsContext"
+import { analyticsService } from "../analyticsService"
 
 if (
   Platform.OS === "android" &&
@@ -20,10 +19,16 @@ export function useHintLogic() {
     playerGame,
     isInteractionsDisabled,
     playerStats,
-    updatePlayerStats,
-    dispatch,
-  } = useGameState()
-  const { difficulty } = useGameSettingsContext()
+    difficulty,
+    useHint,
+  } = useGameStore((state) => ({
+    playerGame: state.playerGame,
+    isInteractionsDisabled: state.isInteractionsDisabled,
+    playerStats: state.playerStats,
+    difficulty: state.difficulty,
+    useHint: state.useHint,
+  }))
+
   const [showHintOptions, setShowHintOptions] = useState(false)
   const [displayedHintText, setDisplayedHintText] = useState<string | null>(
     null
@@ -114,36 +119,11 @@ export function useHintLogic() {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
       setDisplayedHintText(getHintText(hintType))
 
-      if (status === "used") {
-        return
-      }
-
       if (status === "available") {
-        analyticsService.trackHintUsed(
-          hintType,
-          playerGame.guesses.length,
-          hintsAvailable - 1
-        )
-
-        dispatch({ type: "USE_HINT", payload: hintType })
-
-        updatePlayerStats({
-          ...playerStats,
-          hintsAvailable: Math.max(0, hintsAvailable - 1),
-          hintsUsedCount: (playerStats.hintsUsedCount || 0) + 1,
-        })
+        useHint(hintType)
       }
     },
-    [
-      hintStatuses,
-      playerGame,
-      playerStats,
-      hintsAvailable,
-      getHintText,
-      updatePlayerStats,
-      dispatch,
-      difficulty,
-    ]
+    [hintStatuses, difficulty, getHintText, useHint]
   )
 
   useEffect(() => {
@@ -213,7 +193,6 @@ export function useHintLogic() {
       difficulty === "very hard",
     hintStatuses,
     highlightedHint,
-    getHintText,
     handleToggleHintOptions,
     handleHintSelection,
   }

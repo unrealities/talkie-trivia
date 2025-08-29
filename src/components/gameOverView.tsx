@@ -8,16 +8,15 @@ import Animated, {
   interpolate,
 } from "react-native-reanimated"
 import ViewShot from "react-native-view-shot"
-import GuessesContainer from "./guesses"
 import CountdownTimer from "./countdownTimer"
 import Facts from "./facts"
-import WhereToWatch from "./whereToWatch"
 import PersonalizedStatsMessage from "./personalizedStatsMessage"
 import ShareCard from "./shareCard"
 import { PlayerGame } from "../models/game"
 import { getMovieStyles } from "../styles/movieStyles"
 import { shareGameResultAsImage } from "../utils/shareUtils"
 import { useTheme } from "../contexts/themeContext"
+import GuessesContainer from "./guesses"
 
 interface GameOverViewProps {
   playerGame: PlayerGame
@@ -85,8 +84,6 @@ const GameOverView: React.FC<GameOverViewProps> = ({
           <Text style={movieStyles.gameOverSubText}>{resultMessage}</Text>
 
           <Facts movie={playerGame.movie} isScrollEnabled={false} />
-          
-          {/* TODO: Implement where to watch functionality <WhereToWatch /> */}
 
           <View style={movieStyles.fullOverviewContainer}>
             <Text style={movieStyles.fullOverviewTitle}>The Full Plot</Text>

@@ -2,11 +2,9 @@ import React, { lazy, Suspense, useMemo } from "react"
 import { ScrollView } from "react-native"
 import { LinearGradient } from "expo-linear-gradient"
 import LoadingIndicator from "../../components/loadingIndicator"
-import ErrorMessage from "../../components/errorMessage"
 import { getMovieStyles } from "../../styles/movieStyles"
-import { useGameState } from "../../contexts/gameStateContext"
-import { useGameSettingsContext } from "../../contexts/gameSettingsContext"
 import { useTheme } from "../../contexts/themeContext"
+import { useGameStore } from "../../state/gameStore"
 
 const GameplayContainer = lazy(
   () => import("../../components/gameplayContainer")
@@ -18,19 +16,14 @@ const OnboardingModal = lazy(() => import("../../components/onboardingModal"))
 const FlashMessages = lazy(() => import("../../components/flashMessages"))
 
 const GameScreen = () => {
-  const { loading, error, showConfetti, handleConfettiStop, flashMessage } =
-    useGameState()
-  const { showOnboarding, handleDismissOnboarding } = useGameSettingsContext()
+  const showConfetti = useGameStore((state) => state.showConfetti)
+  const handleConfettiStop = useGameStore((state) => state.handleConfettiStop)
+  const showOnboarding = useGameStore((state) => state.showOnboarding)
+  const dismissOnboarding = useGameStore((state) => state.dismissOnboarding)
+  const flashMessage = useGameStore((state) => state.flashMessage)
+
   const { colors } = useTheme()
   const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
-
-  if (loading) {
-    return <LoadingIndicator />
-  }
-
-  if (error) {
-    return <ErrorMessage message={error} />
-  }
 
   return (
     <LinearGradient
@@ -52,7 +45,7 @@ const GameScreen = () => {
         <FlashMessages message={flashMessage} />
         <OnboardingModal
           isVisible={showOnboarding}
-          onDismiss={handleDismissOnboarding}
+          onDismiss={dismissOnboarding}
         />
         <ConfettiCelebration
           startConfetti={showConfetti}
