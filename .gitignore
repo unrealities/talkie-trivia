@@ -17,6 +17,7 @@ web-build/
 .env
 data/credits.json
 utils/secrets.json
+utils/serviceAccountKey.json
 eas.json
 
 # third-party
