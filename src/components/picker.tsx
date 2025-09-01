@@ -32,6 +32,7 @@ import { hapticsService } from "../utils/hapticsService"
 import { useTheme } from "../contexts/themeContext"
 import { API_CONFIG } from "../config/constants"
 import { useGameStore } from "../state/gameStore"
+import TutorialTooltip from "./tutorialTooltip"
 
 if (
   Platform.OS === "android" &&
@@ -131,13 +132,23 @@ const MovieItem = memo<MovieItemProps>(
 )
 
 const PickerContainer: FC = memo(() => {
-  const { isInteractionsDisabled, basicMovies, makeGuess, loading } =
-    useGameStore((state) => ({
-      isInteractionsDisabled: state.isInteractionsDisabled,
-      basicMovies: state.basicMovies,
-      makeGuess: state.makeGuess,
-      loading: state.loading,
-    }))
+  const {
+    isInteractionsDisabled,
+    basicMovies,
+    makeGuess,
+    loading,
+    tutorialState,
+    dismissGuessInputTip,
+    dismissResultsTip,
+  } = useGameStore((state) => ({
+    isInteractionsDisabled: state.isInteractionsDisabled,
+    basicMovies: state.basicMovies,
+    makeGuess: state.makeGuess,
+    loading: state.loading,
+    tutorialState: state.tutorialState,
+    dismissGuessInputTip: state.dismissGuessInputTip,
+    dismissResultsTip: state.dismissResultsTip,
+  }))
 
   const [expandedMovieId, setExpandedMovieId] = useState<number | null>(null)
   const [pickerState, setPickerState] = useState<PickerState>({
@@ -228,18 +239,37 @@ const PickerContainer: FC = memo(() => {
     ]
   )
 
+  const showResultsTip =
+    pickerState.status === "results" &&
+    pickerState.results.length > 0 &&
+    tutorialState.showResultsTip
+
   if (loading) {
     return <PickerSkeleton />
   }
 
   return (
-    <PickerUI
-      pickerState={pickerState}
-      animatedInputStyle={animatedInputStyle}
-      isInteractionsDisabled={isInteractionsDisabled}
-      handleInputChange={handleInputChange}
-      renderItem={renderItem}
-    />
+    <View>
+      <PickerUI
+        pickerState={pickerState}
+        animatedInputStyle={animatedInputStyle}
+        isInteractionsDisabled={isInteractionsDisabled}
+        handleInputChange={handleInputChange}
+        renderItem={renderItem}
+      />
+      <TutorialTooltip
+        isVisible={tutorialState.showGuessInputTip}
+        text="Type here to search for the movie title you think it is."
+        onDismiss={dismissGuessInputTip}
+        style={{ top: -75 }}
+      />
+      <TutorialTooltip
+        isVisible={showResultsTip}
+        text="Pro Tip: Long-press any result to see a preview before you guess!"
+        onDismiss={dismissResultsTip}
+        style={{ top: 60 }}
+      />
+    </View>
   )
 })
 

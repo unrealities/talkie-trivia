@@ -31,7 +31,10 @@ export interface GameState {
 
   // Settings
   difficulty: Difficulty
-  showOnboarding: boolean
+  tutorialState: {
+    showGuessInputTip: boolean
+    showResultsTip: boolean
+  }
 
   // UI State
   showModal: boolean
@@ -47,7 +50,8 @@ export interface GameState {
   // Actions
   initializeGame: (player: Player) => Promise<void>
   setDifficulty: (newDifficulty: Difficulty, player: Player) => void
-  dismissOnboarding: () => void
+  dismissGuessInputTip: () => void
+  dismissResultsTip: () => void
   makeGuess: (selectedMovie: BasicMovie) => void
   useHint: (hintType: HintType) => void
   giveUp: () => void
@@ -65,7 +69,10 @@ export const useGameStore = create<GameState>((set, get) => ({
   error: null,
   isInteractionsDisabled: true,
   difficulty: "medium",
-  showOnboarding: false,
+  tutorialState: {
+    showGuessInputTip: false,
+    showResultsTip: false,
+  },
   showModal: false,
   showConfetti: false,
   flashMessage: null,
@@ -78,13 +85,28 @@ export const useGameStore = create<GameState>((set, get) => ({
         ((await AsyncStorage.getItem(
           ASYNC_STORAGE_KEYS.DIFFICULTY_SETTING
         )) as Difficulty) || "medium"
-      const hasSeenOnboarding = await AsyncStorage.getItem(
-        ASYNC_STORAGE_KEYS.ONBOARDING_STATUS
+
+      const hasSeenGuessInputTip = await AsyncStorage.getItem(
+        ASYNC_STORAGE_KEYS.TUTORIAL_GUESS_INPUT_SEEN
+      )
+      const hasSeenResultsTip = await AsyncStorage.getItem(
+        ASYNC_STORAGE_KEYS.TUTORIAL_RESULTS_SEEN
       )
 
-      if (hasSeenOnboarding === null) {
-        set({ showOnboarding: true })
+      if (hasSeenGuessInputTip === null) {
+        set(
+          produce((state: GameState) => {
+            state.tutorialState.showGuessInputTip = true
+          })
+        )
         analyticsService.trackOnboardingStarted()
+      }
+      if (hasSeenResultsTip === null) {
+        set(
+          produce((state: GameState) => {
+            state.tutorialState.showResultsTip = true
+          })
+        )
       }
 
       const { initialPlayerGame, initialPlayerStats, allMovies } =
@@ -119,9 +141,22 @@ export const useGameStore = create<GameState>((set, get) => ({
     get().initializeGame(player)
   },
 
-  dismissOnboarding: () => {
-    set({ showOnboarding: false })
-    AsyncStorage.setItem(ASYNC_STORAGE_KEYS.ONBOARDING_STATUS, "true")
+  dismissGuessInputTip: () => {
+    set(
+      produce((state: GameState) => {
+        state.tutorialState.showGuessInputTip = false
+      })
+    )
+    AsyncStorage.setItem(ASYNC_STORAGE_KEYS.TUTORIAL_GUESS_INPUT_SEEN, "true")
+  },
+
+  dismissResultsTip: () => {
+    set(
+      produce((state: GameState) => {
+        state.tutorialState.showResultsTip = false
+      })
+    )
+    AsyncStorage.setItem(ASYNC_STORAGE_KEYS.TUTORIAL_RESULTS_SEEN, "true")
     analyticsService.trackOnboardingCompleted()
   },
 
