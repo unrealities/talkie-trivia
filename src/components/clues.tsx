@@ -55,13 +55,16 @@ const CountContainer = memo<CountContainerProps>(
 )
 
 const CluesContainer = memo(() => {
-  const { playerGame, isInteractionsDisabled, difficulty, loading } =
-    useGameStore((state) => ({
-      playerGame: state.playerGame,
-      isInteractionsDisabled: state.isInteractionsDisabled,
-      difficulty: state.difficulty,
-      loading: state.loading,
-    }))
+  // --- THIS IS THE FIX ---
+  // We are selecting each piece of state individually.
+  // This is the most efficient way and avoids the warning.
+  const playerGame = useGameStore((state) => state.playerGame)
+  const isInteractionsDisabled = useGameStore(
+    (state) => state.isInteractionsDisabled
+  )
+  const difficulty = useGameStore((state) => state.difficulty)
+  const loading = useGameStore((state) => state.loading)
+  // --- END OF FIX ---
 
   const { colors } = useTheme()
   const cluesStyles = useMemo(() => getCluesStyles(colors), [colors])

@@ -9,10 +9,11 @@ import { useTheme } from "../contexts/themeContext"
 import { useGameStore } from "../state/gameStore"
 
 const GameplayView: React.FC = () => {
-  const { giveUp, isInteractionsDisabled } = useGameStore((state) => ({
-    giveUp: state.giveUp,
-    isInteractionsDisabled: state.isInteractionsDisabled,
-  }))
+  const giveUp = useGameStore((state) => state.giveUp)
+  const isInteractionsDisabled = useGameStore(
+    (state) => state.isInteractionsDisabled
+  )
+
   const { colors } = useTheme()
   const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
 

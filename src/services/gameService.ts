@@ -1,13 +1,13 @@
 import {
   doc,
   getDoc,
-  getDocs,
   setDoc,
   writeBatch,
   collection,
   query,
   orderBy,
   limit,
+  getDocs,
 } from "firebase/firestore"
 import { db } from "./firebaseClient"
 import { playerConverter } from "../utils/firestore/converters/player"
@@ -25,37 +25,31 @@ import {
 } from "../models/default"
 import { FIRESTORE_COLLECTIONS } from "../config/constants"
 import { GameHistoryEntry } from "../models/gameHistory"
+import popularMoviesData from "../../data/popularMovies.json"
 
 /**
- * Fetches the movie designated for today directly from Firestore.
+ * Selects the movie for today from a local data file.
+ * The selection is deterministic based on the day of the year.
  */
-const _fetchMovieForToday = async (): Promise<Movie> => {
-  const dateId = generateDateId(new Date())
+const _getMovieForToday = (): Movie => {
+  const allMovies = popularMoviesData as Movie[]
 
-  // 1. Find out which movie ID is scheduled for today.
-  const dailyGameRef = doc(db, FIRESTORE_COLLECTIONS.DAILY_GAMES, dateId)
-  const dailyGameSnap = await getDoc(dailyGameRef)
-
-  if (!dailyGameSnap.exists()) {
+  if (!allMovies || allMovies.length === 0) {
     throw new Error(
-      `No game scheduled for today (${dateId}). Please run the scheduling script.`
+      "Local movie data (popularMovies.json) is missing or empty. Please run the data pipeline script."
     )
   }
 
-  const movieId = dailyGameSnap.data().movieId
-  if (!movieId) {
-    throw new Error(`Scheduled game for ${dateId} is missing a movieId.`)
-  }
+  const today = new Date()
+  const startOfYear = new Date(today.getFullYear(), 0, 0)
+  const diff = today.getTime() - startOfYear.getTime()
+  const oneDay = 1000 * 60 * 60 * 24
+  const dayOfYear = Math.floor(diff / oneDay)
 
-  // 2. Fetch the full details for that specific movie.
-  const movieRef = doc(db, FIRESTORE_COLLECTIONS.MOVIES, movieId.toString())
-  const movieSnap = await getDoc(movieRef)
+  const movieIndex = dayOfYear % allMovies.length
+  const selectedMovie = allMovies[movieIndex]
 
-  if (!movieSnap.exists()) {
-    throw new Error(`Movie with ID ${movieId} not found in the database.`)
-  }
-
-  return movieSnap.data() as Movie
+  return selectedMovie
 }
 
 const _fetchOrCreatePlayer = async (
@@ -128,18 +122,15 @@ const _fetchOrCreatePlayerStats = async (
 
 export const gameService = {
   getInitialGameData: async (player: Player, difficulty: Difficulty) => {
-    // UPDATED: Fetch the single movie for today from the backend
-    const movieForToday = await _fetchMovieForToday()
+    // Select the movie for today from local data
+    const movieForToday = _getMovieForToday()
 
-    // In a production app with millions of movies, you would not fetch them all.
-    // But since your list is finite, fetching them all once for lookups is acceptable.
-    const moviesCollectionRef = collection(db, FIRESTORE_COLLECTIONS.MOVIES)
-    const moviesSnapshot = await getDocs(moviesCollectionRef)
-    const allMovies = moviesSnapshot.docs.map((doc) => doc.data() as Movie)
+    // Use the imported local movie data instead of fetching from Firestore
+    const allMovies = popularMoviesData as Movie[]
 
     if (allMovies.length === 0) {
       throw new Error(
-        "No movies found in the database. Please populate Firestore first."
+        "No movies found in local data. Please populate Firestore first."
       )
     }
 

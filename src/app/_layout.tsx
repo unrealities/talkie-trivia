@@ -25,7 +25,7 @@ function RootLayoutNav() {
     if (player && isNetworkConnected) {
       initializeGame(player)
     }
-  }, [player, isNetworkConnected, retryKey, initializeGame])
+  }, [player, isNetworkConnected, retryKey])
 
   const handleRetry = useCallback(() => {
     setRetryKey((prevKey) => prevKey + 1)
