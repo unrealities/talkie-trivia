@@ -15,19 +15,13 @@ if (
 type HintStatus = "available" | "used" | "disabled"
 
 export function useHintLogic() {
-  const {
-    playerGame,
-    isInteractionsDisabled,
-    playerStats,
-    difficulty,
-    useHint,
-  } = useGameStore((state) => ({
-    playerGame: state.playerGame,
-    isInteractionsDisabled: state.isInteractionsDisabled,
-    playerStats: state.playerStats,
-    difficulty: state.difficulty,
-    useHint: state.useHint,
-  }))
+  const playerGame = useGameStore((state) => state.playerGame)
+  const isInteractionsDisabled = useGameStore(
+    (state) => state.isInteractionsDisabled
+  )
+  const playerStats = useGameStore((state) => state.playerStats)
+  const difficulty = useGameStore((state) => state.difficulty)
+  const useHint = useGameStore((state) => state.useHint)
 
   const [showHintOptions, setShowHintOptions] = useState(false)
   const [displayedHintText, setDisplayedHintText] = useState<string | null>(
@@ -193,6 +187,7 @@ export function useHintLogic() {
       difficulty === "very hard",
     hintStatuses,
     highlightedHint,
+    getHintText,
     handleToggleHintOptions,
     handleHintSelection,
   }

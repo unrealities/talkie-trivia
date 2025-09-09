@@ -218,11 +218,9 @@ const GuessesContainer = memo(
     gameForDisplay,
     allMoviesForDisplay,
   }: GuessesContainerProps) => {
-    const { loading, playerGame, basicMovies } = useGameStore((state) => ({
-      loading: state.loading,
-      playerGame: state.playerGame,
-      basicMovies: state.basicMovies,
-    }))
+    const loading = useGameStore((state) => state.loading)
+    const playerGame = useGameStore((state) => state.playerGame)
+    const basicMovies = useGameStore((state) => state.basicMovies)
 
     const isDataLoading = gameForDisplay ? false : loading
     const currentGame = gameForDisplay || playerGame

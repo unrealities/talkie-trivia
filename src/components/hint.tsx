@@ -43,19 +43,13 @@ const VeryEasyHints = memo(() => {
 })
 
 const HintContainer: React.FC = memo(() => {
-  const {
-    loading,
-    playerGame,
-    isInteractionsDisabled,
-    playerStats,
-    difficulty,
-  } = useGameStore((state) => ({
-    loading: state.loading,
-    playerGame: state.playerGame,
-    isInteractionsDisabled: state.isInteractionsDisabled,
-    playerStats: state.playerStats,
-    difficulty: state.difficulty,
-  }))
+  const loading = useGameStore((state) => state.loading)
+  const playerGame = useGameStore((state) => state.playerGame)
+  const isInteractionsDisabled = useGameStore(
+    (state) => state.isInteractionsDisabled
+  )
+  const playerStats = useGameStore((state) => state.playerStats)
+  const difficulty = useGameStore((state) => state.difficulty)
 
   const {
     showHintOptions,

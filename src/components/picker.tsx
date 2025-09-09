@@ -132,23 +132,18 @@ const MovieItem = memo<MovieItemProps>(
 )
 
 const PickerContainer: FC = memo(() => {
-  const {
-    isInteractionsDisabled,
-    basicMovies,
-    makeGuess,
-    loading,
-    tutorialState,
-    dismissGuessInputTip,
-    dismissResultsTip,
-  } = useGameStore((state) => ({
-    isInteractionsDisabled: state.isInteractionsDisabled,
-    basicMovies: state.basicMovies,
-    makeGuess: state.makeGuess,
-    loading: state.loading,
-    tutorialState: state.tutorialState,
-    dismissGuessInputTip: state.dismissGuessInputTip,
-    dismissResultsTip: state.dismissResultsTip,
-  }))
+  const isInteractionsDisabled = useGameStore(
+    (state) => state.isInteractionsDisabled
+  )
+  const basicMovies = useGameStore((state) => state.basicMovies)
+  const makeGuess = useGameStore((state) => state.makeGuess)
+  const loading = useGameStore((state) => state.loading)
+  const tutorialState = useGameStore((state) => state.tutorialState)
+  const dismissGuessInputTip = useGameStore(
+    (state) => state.dismissGuessInputTip
+  )
+  const dismissResultsTip = useGameStore((state) => state.dismissResultsTip)
+  // --- END OF FIX ---
 
   const [expandedMovieId, setExpandedMovieId] = useState<number | null>(null)
   const [pickerState, setPickerState] = useState<PickerState>({
