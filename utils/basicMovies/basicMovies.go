@@ -11,8 +11,10 @@ import (
 )
 
 type BasicMovie struct {
-	ID    int    `json:"id"`
-	Title string `json:"title"`
+	ID          int    `json:"id"`
+	Title       string `json:"title"`
+	ReleaseDate string `json:"release_date"`
+	PosterPath  string `json:"poster_path"`
 }
 
 type DetailedMovie struct {
@@ -87,8 +89,10 @@ func main() {
 			}
 
 			m := BasicMovie{
-				ID:    id,
-				Title: title,
+				ID:          id,
+				Title:       title,
+				ReleaseDate: movie.ReleaseDate,
+				PosterPath:  movie.PosterPath,
 			}
 			basicMovies = append(basicMovies, m)
 		}

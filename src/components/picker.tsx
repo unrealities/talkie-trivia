@@ -244,7 +244,7 @@ const PickerContainer: FC = memo(() => {
   }
 
   return (
-    <View>
+    <View style={{ width: "100%", zIndex: 10 }}>
       <PickerUI
         pickerState={pickerState}
         animatedInputStyle={animatedInputStyle}

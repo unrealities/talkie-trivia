@@ -13,7 +13,6 @@ export const getPickerStyles = (colors: any) => {
       width: "100%",
       marginTop: spacing.medium,
       marginBottom: spacing.medium,
-      zIndex: 10,
     },
     errorText: {
       color: colors.error,
@@ -69,6 +68,7 @@ export const getPickerStyles = (colors: any) => {
       borderWidth: 1,
       borderRadius: responsive.scale(8),
       ...shadows.medium,
+      zIndex: 10,
     },
     resultsShow: {
       flex: 1,
