@@ -123,6 +123,12 @@ export const getPickerStyles = (colors: any) => {
       fontSize: responsive.responsiveFontSize(16),
       marginBottom: spacing.extraSmall,
     },
+    expandedOverview: {
+      ...typography.caption,
+      color: colors.textSecondary,
+      marginBottom: spacing.small,
+      fontStyle: "italic",
+    },
     expandedYear: {
       ...typography.caption,
       color: colors.textSecondary,

@@ -24,7 +24,7 @@ import {
 } from "react-native-reanimated"
 import { Image } from "expo-image"
 import { search } from "fast-fuzzy"
-import { BasicMovie } from "../models/movie"
+import { BasicMovie, Movie } from "../models/movie"
 import { getPickerStyles } from "../styles/pickerStyles"
 import { PickerUI } from "./pickerUI"
 import PickerSkeleton from "./pickerSkeleton"
@@ -48,6 +48,7 @@ type PickerState =
 
 interface MovieItemProps {
   movie: BasicMovie
+  detailedMovie: Movie | null
   isDisabled: boolean
   isExpanded: boolean
   onSelect: (movie: BasicMovie) => void
@@ -55,7 +56,7 @@ interface MovieItemProps {
 }
 
 const MovieItem = memo<MovieItemProps>(
-  ({ movie, isDisabled, isExpanded, onSelect, onLongPress }) => {
+  ({ movie, detailedMovie, isDisabled, isExpanded, onSelect, onLongPress }) => {
     const { colors } = useTheme()
     const pickerStyles = useMemo(() => getPickerStyles(colors), [colors])
 
@@ -105,7 +106,7 @@ const MovieItem = memo<MovieItemProps>(
           </Text>
         </View>
 
-        {isExpanded && (
+        {isExpanded && detailedMovie && (
           <View style={pickerStyles.expandedPreview}>
             <Image
               source={{ uri: fullPosterUri }}
@@ -115,10 +116,14 @@ const MovieItem = memo<MovieItemProps>(
             />
             <View style={pickerStyles.expandedInfo}>
               <Text style={pickerStyles.expandedTitle} numberOfLines={3}>
-                {movie.title}
+                {detailedMovie.title}
+              </Text>
+              <Text style={pickerStyles.expandedOverview} numberOfLines={4}>
+                {detailedMovie.overview}
               </Text>
               <Text style={pickerStyles.expandedYear}>
-                Release Year: {new Date(movie.release_date).getFullYear()}
+                Release Year:{" "}
+                {new Date(detailedMovie.release_date).getFullYear()}
               </Text>
               <Text style={pickerStyles.expandedHint}>
                 Tap this item to select.
@@ -136,6 +141,7 @@ const PickerContainer: FC = memo(() => {
     (state) => state.isInteractionsDisabled
   )
   const basicMovies = useGameStore((state) => state.basicMovies)
+  const allFullMovies = useGameStore((state) => state.movies)
   const makeGuess = useGameStore((state) => state.makeGuess)
   const loading = useGameStore((state) => state.loading)
   const tutorialState = useGameStore((state) => state.tutorialState)
@@ -143,9 +149,9 @@ const PickerContainer: FC = memo(() => {
     (state) => state.dismissGuessInputTip
   )
   const dismissResultsTip = useGameStore((state) => state.dismissResultsTip)
-  // --- END OF FIX ---
 
   const [expandedMovieId, setExpandedMovieId] = useState<number | null>(null)
+  const [detailedMovie, setDetailedMovie] = useState<Movie | null>(null)
   const [pickerState, setPickerState] = useState<PickerState>({
     status: "idle",
   })
@@ -202,16 +208,28 @@ const PickerContainer: FC = memo(() => {
     transform: [{ translateX: shakeAnimation.value }],
   }))
 
-  const handleLongPressMovie = useCallback((movie: BasicMovie) => {
-    hapticsService.medium()
-    setExpandedMovieId((prevId) => (prevId === movie.id ? null : movie.id))
-  }, [])
+  const handleLongPressMovie = useCallback(
+    (movie: BasicMovie) => {
+      hapticsService.medium()
+      const newId = expandedMovieId === movie.id ? null : movie.id
+      setExpandedMovieId(newId)
+
+      if (newId) {
+        const fullMovie = allFullMovies.find((m) => m.id === newId)
+        setDetailedMovie(fullMovie || null)
+      } else {
+        setDetailedMovie(null)
+      }
+    },
+    [expandedMovieId, allFullMovies]
+  )
 
   const handleSelectMovie = useCallback(
     (movie: BasicMovie) => {
       setExpandedMovieId(null)
+      setDetailedMovie(null)
       makeGuess(movie)
-      handleInputChange("") // Clear input after guess
+      handleInputChange("")
     },
     [makeGuess, handleInputChange]
   )
@@ -220,6 +238,7 @@ const PickerContainer: FC = memo(() => {
     ({ item }: ListRenderItemInfo<BasicMovie>) => (
       <MovieItem
         movie={item}
+        detailedMovie={detailedMovie}
         isDisabled={isInteractionsDisabled}
         isExpanded={expandedMovieId === item.id}
         onSelect={handleSelectMovie}
@@ -229,6 +248,7 @@ const PickerContainer: FC = memo(() => {
     [
       isInteractionsDisabled,
       expandedMovieId,
+      detailedMovie, // Add dependency
       handleSelectMovie,
       handleLongPressMovie,
     ]

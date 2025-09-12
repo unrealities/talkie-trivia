@@ -42,12 +42,8 @@ const VeryEasyHints = memo(() => {
   )
 })
 
-const HintContainer: React.FC = memo(() => {
-  const loading = useGameStore((state) => state.loading)
+const MainHintComponent = () => {
   const playerGame = useGameStore((state) => state.playerGame)
-  const isInteractionsDisabled = useGameStore(
-    (state) => state.isInteractionsDisabled
-  )
   const playerStats = useGameStore((state) => state.playerStats)
   const difficulty = useGameStore((state) => state.difficulty)
 
@@ -61,18 +57,6 @@ const HintContainer: React.FC = memo(() => {
     handleToggleHintOptions,
     handleHintSelection,
   } = useHintLogic()
-
-  if (loading) {
-    return <HintSkeleton />
-  }
-
-  if (difficulty === "hard" || difficulty === "very hard") {
-    return null
-  }
-
-  if (difficulty === "very easy" && !isInteractionsDisabled) {
-    return <VeryEasyHints />
-  }
 
   if (
     difficulty === "medium" &&
@@ -100,6 +84,28 @@ const HintContainer: React.FC = memo(() => {
       handleHintSelection={handleHintSelection}
     />
   )
+}
+
+const HintContainer: React.FC = memo(() => {
+  const loading = useGameStore((state) => state.loading)
+  const isInteractionsDisabled = useGameStore(
+    (state) => state.isInteractionsDisabled
+  )
+  const difficulty = useGameStore((state) => state.difficulty)
+
+  if (loading) {
+    return <HintSkeleton />
+  }
+
+  if (difficulty === "hard" || difficulty === "very hard") {
+    return null
+  }
+
+  if (difficulty === "very easy" && !isInteractionsDisabled) {
+    return <VeryEasyHints />
+  }
+
+  return <MainHintComponent />
 })
 
 export default HintContainer
