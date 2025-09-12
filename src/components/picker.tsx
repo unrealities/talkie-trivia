@@ -59,6 +59,7 @@ const MovieItem = memo<MovieItemProps>(
   ({ movie, detailedMovie, isDisabled, isExpanded, onSelect, onLongPress }) => {
     const { colors } = useTheme()
     const pickerStyles = useMemo(() => getPickerStyles(colors), [colors])
+    const defaultPoster = require("../../assets/movie_default.png")
 
     useEffect(() => {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
@@ -68,12 +69,14 @@ const MovieItem = memo<MovieItemProps>(
       ? ` (${movie.release_date.toString().substring(0, 4)})`
       : ""
     const titleWithYear = `${movie.title}${releaseYear}`
-    const posterUri = movie.poster_path
-      ? `${API_CONFIG.TMDB_IMAGE_BASE_URL_W92}${movie.poster_path}`
-      : null
-    const fullPosterUri = movie.poster_path
-      ? `${API_CONFIG.TMDB_IMAGE_BASE_URL_W500}${movie.poster_path}`
-      : null
+
+    const imageSource = movie.poster_path
+      ? { uri: `${API_CONFIG.TMDB_IMAGE_BASE_URL_W92}${movie.poster_path}` }
+      : defaultPoster
+
+    const fullImageSource = movie.poster_path
+      ? { uri: `${API_CONFIG.TMDB_IMAGE_BASE_URL_W500}${movie.poster_path}` }
+      : defaultPoster
 
     return (
       <Pressable
@@ -92,8 +95,8 @@ const MovieItem = memo<MovieItemProps>(
       >
         <View style={pickerStyles.resultItemContent}>
           <Image
-            source={{ uri: posterUri }}
-            placeholder={require("../../assets/movie_default.png")}
+            source={imageSource}
+            placeholder={defaultPoster}
             style={pickerStyles.resultImage}
             contentFit="cover"
           />
@@ -109,17 +112,14 @@ const MovieItem = memo<MovieItemProps>(
         {isExpanded && detailedMovie && (
           <View style={pickerStyles.expandedPreview}>
             <Image
-              source={{ uri: fullPosterUri }}
-              placeholder={require("../../assets/movie_default.png")}
+              source={fullImageSource}
+              placeholder={defaultPoster}
               style={pickerStyles.expandedImage}
               contentFit="cover"
             />
             <View style={pickerStyles.expandedInfo}>
               <Text style={pickerStyles.expandedTitle} numberOfLines={3}>
                 {detailedMovie.title}
-              </Text>
-              <Text style={pickerStyles.expandedOverview} numberOfLines={4}>
-                {detailedMovie.overview}
               </Text>
               <Text style={pickerStyles.expandedYear}>
                 Release Year:{" "}

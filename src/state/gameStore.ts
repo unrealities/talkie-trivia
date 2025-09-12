@@ -15,7 +15,7 @@ import Player from "../models/player"
 import { ASYNC_STORAGE_KEYS } from "../config/constants"
 import { analyticsService } from "../utils/analyticsService"
 import { generateImplicitHint } from "../utils/guessFeedbackUtils"
-import basicMoviesData from "../../data/basicMovies.json"
+import basicMoviesData from "../../utils/basicMovies/basicMovies.json"
 
 export interface GameState {
   // Core State
