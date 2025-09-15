@@ -1,3 +1,5 @@
+// src/components/personalizedStatsMessage.tsx
+
 import React, { useState, useEffect, useMemo } from "react"
 import { View, Text } from "react-native"
 import { FontAwesome } from "@expo/vector-icons"
@@ -11,10 +13,8 @@ import { useGameStore } from "../state/gameStore"
 
 const PersonalizedStatsMessage: React.FC = () => {
   const { player } = useAuth()
-  const { playerStats, playerGame } = useGameStore((state) => ({
-    playerStats: state.playerStats,
-    playerGame: state.playerGame,
-  }))
+  const playerStats = useGameStore((state) => state.playerStats)
+  const playerGame = useGameStore((state) => state.playerGame)
 
   const [history, setHistory] = useState<GameHistoryEntry[]>([])
   const [loading, setLoading] = useState(true)

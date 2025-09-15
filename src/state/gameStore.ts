@@ -57,6 +57,7 @@ export interface GameState {
   giveUp: () => void
   setShowModal: (show: boolean) => void
   handleConfettiStop: () => void
+  _processGameOver: () => Promise<void>
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
@@ -212,7 +213,12 @@ export const useGameStore = create<GameState>((set, get) => ({
 
     if (isCorrectAnswer) set({ showConfetti: true })
 
-    get()._processGameOver()
+    get()
+      ._processGameOver()
+      .catch((error) => {
+        console.error("Failed to process game over after guess:", error)
+        set({ flashMessage: "Could not save progress. Check connection." })
+      })
   },
 
   useHint: (hintType) => {
@@ -253,7 +259,12 @@ export const useGameStore = create<GameState>((set, get) => ({
         state.playerGame.gaveUp = true
       })
     )
-    get()._processGameOver()
+    get()
+      ._processGameOver()
+      .catch((error) => {
+        console.error("Failed to process game over after giving up:", error)
+        set({ flashMessage: "Could not save progress. Check connection." })
+      })
   },
 
   _processGameOver: async () => {
@@ -306,6 +317,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       set({ playerStats: updatedStats, showModal: true })
     } catch (e: any) {
       set({ error: `Failed to save progress: ${e.message}` })
+      throw e
     }
   },
 

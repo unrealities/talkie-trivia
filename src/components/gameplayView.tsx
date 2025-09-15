@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from "react"
-import { Pressable, Text } from "react-native"
+import { Pressable, Text, ActivityIndicator } from "react-native"
 import PickerContainer from "./picker"
 import HintContainer from "./hint"
 import ConfirmationModal from "./confirmationModal"
@@ -18,7 +18,7 @@ const GameplayView: React.FC = () => {
   const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
 
   const [showGiveUpConfirmation, setShowGiveUpConfirmation] = useState(false)
-
+  const [isGivingUp, setIsGivingUp] = useState(false)
   const handleGiveUpPress = useCallback(() => {
     hapticsService.warning()
     setShowGiveUpConfirmation(true)
@@ -28,6 +28,7 @@ const GameplayView: React.FC = () => {
 
   const confirmGiveUp = useCallback(() => {
     setShowGiveUpConfirmation(false)
+    setIsGivingUp(true)
     giveUp()
   }, [giveUp])
 
@@ -39,12 +40,16 @@ const GameplayView: React.FC = () => {
         onPress={handleGiveUpPress}
         style={({ pressed }) => [
           movieStyles.giveUpButton,
-          isInteractionsDisabled && movieStyles.disabledButton,
+          (isInteractionsDisabled || isGivingUp) && movieStyles.disabledButton,
           pressed && movieStyles.pressedButton,
         ]}
-        disabled={isInteractionsDisabled}
+        disabled={isInteractionsDisabled || isGivingUp}
       >
-        <Text style={movieStyles.giveUpButtonText}>Give Up?</Text>
+        {isGivingUp ? (
+          <ActivityIndicator color={colors.background} />
+        ) : (
+          <Text style={movieStyles.giveUpButtonText}>Give Up?</Text>
+        )}
       </Pressable>
       <ConfirmationModal
         isVisible={showGiveUpConfirmation}
