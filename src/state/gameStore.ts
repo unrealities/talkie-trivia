@@ -17,6 +17,8 @@ import { analyticsService } from "../utils/analyticsService"
 import { generateImplicitHint } from "../utils/guessFeedbackUtils"
 import basicMoviesData from "../../utils/basicMovies/basicMovies.json"
 
+export type GameStatus = "playing" | "revealing" | "gameOver"
+
 export interface GameState {
   // Core State
   playerGame: PlayerGame
@@ -28,6 +30,7 @@ export interface GameState {
   loading: boolean
   error: string | null
   isInteractionsDisabled: boolean
+  gameStatus: GameStatus
 
   // Settings
   difficulty: Difficulty
@@ -58,6 +61,7 @@ export interface GameState {
   setShowModal: (show: boolean) => void
   handleConfettiStop: () => void
   _processGameOver: () => Promise<void>
+  completeRevealSequence: () => void
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
@@ -69,6 +73,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   loading: true,
   error: null,
   isInteractionsDisabled: true,
+  gameStatus: "playing",
   difficulty: "medium",
   tutorialState: {
     showGuessInputTip: false,
@@ -80,7 +85,12 @@ export const useGameStore = create<GameState>((set, get) => ({
   lastGuessResult: null,
 
   initializeGame: async (player) => {
-    set({ loading: true, error: null, isInteractionsDisabled: true })
+    set({
+      loading: true,
+      error: null,
+      isInteractionsDisabled: true,
+      gameStatus: "playing",
+    })
     try {
       const storedDifficulty =
         ((await AsyncStorage.getItem(
@@ -125,6 +135,7 @@ export const useGameStore = create<GameState>((set, get) => ({
         movies: allMovies,
         loading: false,
         isInteractionsDisabled: isGameOver,
+        gameStatus: isGameOver ? "gameOver" : "playing",
       })
     } catch (e: any) {
       console.error("Zustand Store: Failed to initialize game:", e)
@@ -277,6 +288,10 @@ export const useGameStore = create<GameState>((set, get) => ({
     if (!isGameOver || playerGame.statsProcessed) return
     set({ isInteractionsDisabled: true })
 
+    setTimeout(() => {
+      set({ gameStatus: "revealing" })
+    }, 1200)
+
     const updatedStats = produce(playerStats, (draft) => {
       draft.games = (draft.games || 0) + 1
       if (playerGame.correctAnswer) {
@@ -314,11 +329,18 @@ export const useGameStore = create<GameState>((set, get) => ({
         updatedStats,
         historyEntry
       )
-      set({ playerStats: updatedStats, showModal: true })
+      set({ playerStats: updatedStats })
     } catch (e: any) {
       set({ error: `Failed to save progress: ${e.message}` })
       throw e
     }
+  },
+
+  completeRevealSequence: () => {
+    set({ gameStatus: "gameOver" })
+    setTimeout(() => {
+      set({ showModal: true })
+    }, 500)
   },
 
   setShowModal: (show) => set({ showModal: show }),

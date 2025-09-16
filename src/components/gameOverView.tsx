@@ -5,7 +5,6 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
   Easing,
-  interpolate,
 } from "react-native-reanimated"
 import ViewShot from "react-native-view-shot"
 import CountdownTimer from "./countdownTimer"
@@ -29,21 +28,19 @@ const GameOverView: React.FC<GameOverViewProps> = ({
 }) => {
   const { colors } = useTheme()
   const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
-  const flipAnimation = useSharedValue(0)
+  const fadeAnimation = useSharedValue(0)
   const viewShotRef = useRef<ViewShot>(null)
 
   useEffect(() => {
-    flipAnimation.value = withTiming(1, {
-      duration: 800,
-      easing: Easing.out(Easing.poly(4)),
+    fadeAnimation.value = withTiming(1, {
+      duration: 600,
+      easing: Easing.out(Easing.ease),
     })
-  }, [flipAnimation])
+  }, [fadeAnimation])
 
-  const animatedCardStyle = useAnimatedStyle(() => {
-    const rotateY = interpolate(flipAnimation.value, [0, 1], [-180, 0])
+  const animatedContainerStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ perspective: 1000 }, { rotateY: `${rotateY}deg` }],
-      opacity: flipAnimation.value,
+      opacity: fadeAnimation.value,
     }
   })
 
@@ -61,7 +58,7 @@ const GameOverView: React.FC<GameOverViewProps> = ({
     : "Better luck next time."
 
   return (
-    <View style={{ width: "100%" }}>
+    <Animated.View style={[{ width: "100%" }, animatedContainerStyle]}>
       <View style={styles.offscreenContainer}>
         <ViewShot
           ref={viewShotRef}
@@ -75,7 +72,7 @@ const GameOverView: React.FC<GameOverViewProps> = ({
         </ViewShot>
       </View>
 
-      <Animated.View style={[movieStyles.gameOverCard, animatedCardStyle]}>
+      <View style={movieStyles.gameOverCard}>
         <ScrollView
           style={movieStyles.gameOverScrollView}
           contentContainerStyle={movieStyles.gameOverContentContainer}
@@ -92,7 +89,7 @@ const GameOverView: React.FC<GameOverViewProps> = ({
             </Text>
           </View>
         </ScrollView>
-      </Animated.View>
+      </View>
 
       <GuessesContainer lastGuessResult={lastGuessResult} />
 
@@ -110,7 +107,7 @@ const GameOverView: React.FC<GameOverViewProps> = ({
 
       <PersonalizedStatsMessage />
       <CountdownTimer />
-    </View>
+    </Animated.View>
   )
 }
 

@@ -7,22 +7,24 @@ import GuessesContainer from "./guesses"
 import { getMovieStyles } from "../styles/movieStyles"
 import { useTheme } from "../contexts/themeContext"
 import { useGameStore } from "../state/gameStore"
+import RevealSequence from "./revealSequence"
 
 const GameplayContainer: React.FC = () => {
   const playerGame = useGameStore((state) => state.playerGame)
   const lastGuessResult = useGameStore((state) => state.lastGuessResult)
+  const gameStatus = useGameStore((state) => state.gameStatus)
+  const completeRevealSequence = useGameStore(
+    (state) => state.completeRevealSequence
+  )
 
   const { colors } = useTheme()
   const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
 
-  const isGameOver =
-    playerGame.correctAnswer ||
-    playerGame.gaveUp ||
-    playerGame.guesses.length >= playerGame.guessesMax
+  const showGameOverView = gameStatus === "gameOver"
 
   return (
     <View style={movieStyles.container}>
-      {isGameOver ? (
+      {showGameOverView ? (
         <GameOverView
           playerGame={playerGame}
           lastGuessResult={lastGuessResult}
@@ -33,6 +35,10 @@ const GameplayContainer: React.FC = () => {
           <GameplayView />
           <GuessesContainer lastGuessResult={lastGuessResult} />
         </>
+      )}
+
+      {gameStatus === "revealing" && (
+        <RevealSequence onAnimationComplete={completeRevealSequence} />
       )}
     </View>
   )
