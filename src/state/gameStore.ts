@@ -1,7 +1,7 @@
 import { create } from "zustand"
 import { produce } from "immer"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { PlayerGame, Difficulty, HintType } from "../models/game"
+import { PlayerGame, Difficulty, HintType, Guess } from "../models/game"
 import PlayerStats from "../models/playerStats"
 import { Movie, BasicMovie } from "../models/movie"
 import {
@@ -205,7 +205,10 @@ export const useGameStore = create<GameState>((set, get) => ({
 
     set(
       produce((state: GameState) => {
-        state.playerGame.guesses.push(selectedMovie.id)
+        state.playerGame.guesses.push({
+          movieId: selectedMovie.id,
+          hintInfo: hintInfo,
+        })
         state.playerGame.correctAnswer = isCorrectAnswer
         if (hintInfo) {
           state.playerGame.hintsUsed = {

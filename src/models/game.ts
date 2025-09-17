@@ -9,12 +9,17 @@ export interface HintInfo {
   value: string
 }
 
+export interface Guess {
+  movieId: number
+  hintInfo?: HintInfo | null
+}
+
 export interface PlayerGame {
   id: string // Unique ID for this player-game session, e.g., "player1-2025-07-16"
   playerID: string
   movie: Movie
   guessesMax: number
-  guesses: number[]
+  guesses: Guess[]
   correctAnswer: boolean
   gaveUp: boolean
   startDate: Date

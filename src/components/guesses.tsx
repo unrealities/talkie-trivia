@@ -13,9 +13,9 @@ import Ionicons from "@expo/vector-icons/Ionicons"
 
 import { getGuessesStyles } from "../styles/guessesStyles"
 import { useSkeletonAnimation } from "../utils/hooks/useSkeletonAnimation"
-import { BasicMovie } from "../models/movie"
+import { BasicMovie, Movie } from "../models/movie"
 import { useTheme } from "../contexts/themeContext"
-import { HintInfo, HintType, PlayerGame } from "../models/game"
+import { Guess, HintInfo, HintType, PlayerGame } from "../models/game"
 import { useGameStore } from "../state/gameStore"
 
 type GuessResult = {
@@ -33,14 +33,14 @@ interface GuessesContainerProps {
 
 interface GuessRowProps {
   index: number
-  guessId: number
+  guess: Guess
   movies: readonly BasicMovie[]
   isLastGuess: boolean
   lastGuessResult: GuessResult
 }
 
 const GuessRow = memo(
-  ({ index, guessId, movies, isLastGuess, lastGuessResult }: GuessRowProps) => {
+  ({ index, guess, movies, isLastGuess, lastGuessResult }: GuessRowProps) => {
     const { colors } = useTheme()
     const guessesStyles = useMemo(() => getGuessesStyles(colors), [colors])
 
@@ -49,12 +49,13 @@ const GuessRow = memo(
     const backgroundColor = useSharedValue(colors.surface)
     const feedbackAnim = useSharedValue(0)
 
+    const guessId = guess.movieId
     const guessTitle =
       movies.find((m: BasicMovie) => m.id === guessId)?.title || "Unknown Movie"
     const isCorrect = lastGuessResult?.correct === true
     const feedbackMessage =
       isLastGuess && !isCorrect ? lastGuessResult?.feedback : null
-    const hintInfo = isLastGuess ? lastGuessResult?.hintInfo : null
+    const hintInfo = guess.hintInfo
 
     const animatedTileStyle = useAnimatedStyle(() => {
       const rotateY = interpolate(rotate.value, [0, 1], [180, 360])
@@ -161,11 +162,7 @@ const GuessRow = memo(
             <Text
               numberOfLines={1}
               ellipsizeMode="tail"
-              style={[
-                guessesStyles.guessText,
-                (guessTitle.length > 35 || !!hintInfo) &&
-                  guessesStyles.guessTextSmall,
-              ]}
+              style={guessesStyles.guessText}
             >
               {guessTitle}
             </Text>
@@ -243,22 +240,22 @@ const GuessesContainer = memo(
     return (
       <View style={guessesStyles.container}>
         {Array.from({ length: guessesMax }).map((_, index) => {
-          const guessId = guesses[index]
+          const guess = guesses[index]
 
-          if (!guessId) {
+          if (!guess) {
             return <EmptyGuessTile key={index} index={index} />
           }
 
           const isLastGuess =
             !!lastGuessResult &&
             index === guesses.length - 1 &&
-            lastGuessResult.movieId === guessId
+            lastGuessResult.movieId === guess.movieId
 
           return (
             <GuessRow
-              key={`${guessId}-${index}`}
+              key={`${guess.movieId}-${index}`}
               index={index}
-              guessId={guessId}
+              guess={guess}
               movies={movies}
               isLastGuess={isLastGuess}
               lastGuessResult={lastGuessResult}

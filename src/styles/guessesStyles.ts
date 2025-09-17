@@ -44,7 +44,10 @@ export const getGuessesStyles = (colors: any) => {
     },
     guessTextContainer: {
       flex: 1,
-      justifyContent: "center",
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      overflow: "hidden",
     },
     guessText: {
       flexShrink: 1,
@@ -52,14 +55,12 @@ export const getGuessesStyles = (colors: any) => {
       fontFamily: "Arvo-Regular",
       fontSize: responsive.responsiveFontSize(14),
       lineHeight: responsive.responsiveFontSize(18),
-    },
-    guessTextSmall: {
-      fontSize: responsive.responsiveFontSize(12),
+      marginRight: spacing.small,
     },
     guessHintContainer: {
       flexDirection: "row",
       alignItems: "center",
-      marginTop: spacing.extraSmall,
+      flexShrink: 0,
     },
     guessHintIcon: {
       marginRight: spacing.extraSmall,

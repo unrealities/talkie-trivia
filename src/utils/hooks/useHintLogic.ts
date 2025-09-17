@@ -151,9 +151,12 @@ export function useHintLogic() {
 
     switch (difficulty) {
       case "easy": {
-        const guessesRemaining =
-          playerGame.guessesMax - playerGame.guesses.length
-        const effectiveHints = Math.min(hintsAvailable, guessesRemaining)
+        const usedHintsCount = Object.values(playerGame.hintsUsed || {}).filter(
+          (v) => v
+        ).length
+        const availableHintTypesCount = hintTypes.length - usedHintsCount
+        const effectiveHints = Math.min(hintsAvailable, availableHintTypesCount)
+
         if (
           effectiveHints <= 0 &&
           !Object.values(playerGame.hintsUsed || {}).some(Boolean)
