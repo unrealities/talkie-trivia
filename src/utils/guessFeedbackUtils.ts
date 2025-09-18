@@ -1,11 +1,10 @@
 import { Movie } from "../models/movie"
-import { HintType } from "../models/game"
+import { HintInfo, HintType } from "../models/game"
 
 interface ImplicitHintResult {
   feedback: string | null
   revealedHints: Partial<Record<HintType, boolean>>
-  hintType: HintType | null
-  hintValue: string | null
+  hintInfo: HintInfo[] | null
 }
 
 const getHintValue = (type: HintType, movie: Movie): string => {
@@ -25,7 +24,7 @@ const getHintValue = (type: HintType, movie: Movie): string => {
 
 /**
  * Compares a guessed movie with the correct movie to generate implicit hints.
- * It prioritizes revealing a NEW, unrevealed hint to the user.
+ * It finds all new, unrevealed hints for the user.
  */
 export function generateImplicitHint(
   guessedMovie: Movie,
@@ -35,8 +34,7 @@ export function generateImplicitHint(
   const result: ImplicitHintResult = {
     feedback: null,
     revealedHints: {},
-    hintType: null,
-    hintValue: null,
+    hintInfo: null,
   }
 
   const hintChecks: {
@@ -76,23 +74,35 @@ export function generateImplicitHint(
     },
   ]
 
-  // Find the first matching hint that has NOT already been revealed.
+  // Find all new hints that match, not just the first one.
+  const newHints: HintInfo[] = []
+
   for (const check of hintChecks) {
     if (check.condition && !usedHints[check.type]) {
-      result.feedback = check.message
+      newHints.push({
+        type: check.type,
+        value: getHintValue(check.type, correctMovie),
+      })
       result.revealedHints[check.type] = true
-      result.hintType = check.type
-      result.hintValue = getHintValue(check.type, correctMovie)
-      return result
     }
+  }
+
+  if (newHints.length > 0) {
+    // We provide feedback for the first new hint found to keep it simple.
+    const firstNewHintType = newHints[0].type
+    const feedbackMessage = hintChecks.find(
+      (c) => c.type === firstNewHintType
+    )?.message
+    result.feedback = feedbackMessage || "Good guess! A hint was revealed."
+    result.hintInfo = newHints
+    return result
   }
 
   // If no new hints were found, check if we can give recurring feedback for an already-revealed hint.
   for (const check of hintChecks) {
     if (check.condition && usedHints[check.type]) {
       result.feedback = `You're on the right track with the ${check.type}!`
-      result.hintType = check.type
-      result.hintValue = getHintValue(check.type, correctMovie)
+      // No new hint info to add here, just feedback text.
       return result
     }
   }

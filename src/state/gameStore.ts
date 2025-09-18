@@ -1,7 +1,13 @@
 import { create } from "zustand"
 import { produce } from "immer"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { PlayerGame, Difficulty, HintType, Guess } from "../models/game"
+import {
+  PlayerGame,
+  Difficulty,
+  HintType,
+  Guess,
+  HintInfo,
+} from "../models/game"
 import PlayerStats from "../models/playerStats"
 import { Movie, BasicMovie } from "../models/movie"
 import {
@@ -16,6 +22,10 @@ import { ASYNC_STORAGE_KEYS } from "../config/constants"
 import { analyticsService } from "../utils/analyticsService"
 import { generateImplicitHint } from "../utils/guessFeedbackUtils"
 import basicMoviesData from "../../utils/basicMovies/basicMovies.json"
+
+const uniqueBasicMovies = Array.from(
+  new Map(basicMoviesData.map((movie) => [movie.id, movie])).values()
+)
 
 export type GameStatus = "playing" | "revealing" | "gameOver"
 
@@ -47,7 +57,7 @@ export interface GameState {
     movieId: number
     correct: boolean
     feedback?: string | null
-    hintInfo?: any | null
+    hintInfo?: HintInfo[] | null
   } | null
 
   // Actions
@@ -68,7 +78,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   // --- INITIAL STATE ---
   playerGame: defaultPlayerGame,
   playerStats: defaultPlayerStats,
-  basicMovies: basicMoviesData as readonly BasicMovie[],
+  basicMovies: uniqueBasicMovies as readonly BasicMovie[],
   movies: [],
   loading: true,
   error: null,
@@ -178,8 +188,17 @@ export const useGameStore = create<GameState>((set, get) => ({
 
     const correctMovie = playerGame.movie
     const isCorrectAnswer = correctMovie.id === selectedMovie.id
-    let feedback = null
-    let hintInfo = null
+
+    const fullGuessedMovie = movies.find((m) => m.id === selectedMovie.id)
+
+    const hintResult =
+      isCorrectAnswer || !fullGuessedMovie
+        ? { feedback: null, revealedHints: {}, hintInfo: null }
+        : generateImplicitHint(
+            fullGuessedMovie,
+            correctMovie,
+            playerGame.hintsUsed
+          )
 
     analyticsService.trackGuessMade(
       playerGame.guesses.length + 1,
@@ -188,39 +207,26 @@ export const useGameStore = create<GameState>((set, get) => ({
       selectedMovie.title
     )
 
-    if (!isCorrectAnswer) {
-      const fullGuessedMovie = movies.find((m) => m.id === selectedMovie.id)
-      if (fullGuessedMovie) {
-        const result = generateImplicitHint(
-          fullGuessedMovie,
-          correctMovie,
-          playerGame.hintsUsed
-        )
-        feedback = result.feedback
-        if (result.hintType && result.hintValue) {
-          hintInfo = { type: result.hintType, value: result.hintValue }
-        }
-      }
-    }
-
     set(
       produce((state: GameState) => {
         state.playerGame.guesses.push({
           movieId: selectedMovie.id,
-          hintInfo: hintInfo,
+          hintInfo: hintResult.hintInfo,
         })
         state.playerGame.correctAnswer = isCorrectAnswer
-        if (hintInfo) {
+
+        if (Object.keys(hintResult.revealedHints).length > 0) {
           state.playerGame.hintsUsed = {
             ...state.playerGame.hintsUsed,
-            [hintInfo.type]: true,
+            ...hintResult.revealedHints,
           }
         }
+
         state.lastGuessResult = {
           movieId: selectedMovie.id,
           correct: isCorrectAnswer,
-          feedback,
-          hintInfo,
+          feedback: hintResult.feedback,
+          hintInfo: hintResult.hintInfo,
         }
       })
     )

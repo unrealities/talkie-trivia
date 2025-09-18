@@ -11,7 +11,7 @@ export interface HintInfo {
 
 export interface Guess {
   movieId: number
-  hintInfo?: HintInfo | null
+  hintInfo?: HintInfo[] | null
 }
 
 export interface PlayerGame {

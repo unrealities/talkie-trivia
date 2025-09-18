@@ -22,7 +22,7 @@ type GuessResult = {
   movieId: number
   correct: boolean
   feedback?: string | null
-  hintInfo?: HintInfo | null
+  hintInfo?: HintInfo[] | null
 } | null
 
 interface GuessesContainerProps {
@@ -55,7 +55,7 @@ const GuessRow = memo(
     const isCorrect = lastGuessResult?.correct === true
     const feedbackMessage =
       isLastGuess && !isCorrect ? lastGuessResult?.feedback : null
-    const hintInfo = guess.hintInfo
+    const hintInfoList = guess.hintInfo
 
     const animatedTileStyle = useAnimatedStyle(() => {
       const rotateY = interpolate(rotate.value, [0, 1], [180, 360])
@@ -166,18 +166,20 @@ const GuessRow = memo(
             >
               {guessTitle}
             </Text>
-            {hintInfo && (
-              <View style={guessesStyles.guessHintContainer}>
-                <Ionicons
-                  name={getIconNameForHint(hintInfo.type)}
-                  style={guessesStyles.guessHintIcon}
-                  color={colors.primary}
-                />
-                <Text style={guessesStyles.guessHintText} numberOfLines={1}>
-                  {hintInfo.value}
-                </Text>
-              </View>
-            )}
+            <View>
+              {hintInfoList?.map((hint, idx) => (
+                <View key={idx} style={guessesStyles.guessHintContainer}>
+                  <Ionicons
+                    name={getIconNameForHint(hint.type)}
+                    style={guessesStyles.guessHintIcon}
+                    color={colors.primary}
+                  />
+                  <Text style={guessesStyles.guessHintText} numberOfLines={1}>
+                    {hint.value}
+                  </Text>
+                </View>
+              ))}
+            </View>
           </View>
         </Animated.View>
       </Animated.View>

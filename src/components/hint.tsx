@@ -46,7 +46,8 @@ const MainHintComponent = () => {
   const playerGame = useGameStore((state) => state.playerGame)
   const playerStats = useGameStore((state) => state.playerStats)
   const difficulty = useGameStore((state) => state.difficulty)
-
+  const { colors } = useTheme()
+  const hintStyles = useMemo(() => getHintStyles(colors), [colors])
   const {
     showHintOptions,
     displayedHintText,
@@ -62,8 +63,6 @@ const MainHintComponent = () => {
     difficulty === "medium" &&
     !Object.values(playerGame.hintsUsed || {}).some(Boolean)
   ) {
-    const { colors } = useTheme()
-    const hintStyles = useMemo(() => getHintStyles(colors), [colors])
     return (
       <View style={hintStyles.container}>
         <Text style={hintStyles.hintLabelDisabled}>{hintLabelText}</Text>
