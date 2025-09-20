@@ -1,5 +1,6 @@
 import React, { lazy, Suspense, useState, useCallback, useMemo } from "react"
-import { ScrollView } from "react-native"
+import { ScrollView, View, Text, Platform } from "react-native"
+import { LinearGradient } from "expo-linear-gradient"
 import LoadingIndicator from "../../components/loadingIndicator"
 import { getAppStyles } from "../../styles/appStyles"
 import { useAuth } from "../../contexts/authContext"
@@ -39,21 +40,37 @@ const ProfileScreen: React.FC<{}> = () => {
 
   return (
     <>
-      <ScrollView style={appStyles.container}>
-        <Suspense fallback={<LoadingIndicator />}>
-          <GoogleLogin />
-          <ThemeSelector />
-          <DifficultySelector />
-          {loading && <LoadingIndicator />}
-          {!loading && player && playerStats && (
-            <>
-              <PlayerStatsContainer player={player} playerStats={playerStats} />
-              <GameHistory onHistoryItemPress={handleHistoryItemPress} />
-            </>
-          )}
-        </Suspense>
-      </ScrollView>
+      <LinearGradient
+        colors={[colors.background, colors.backgroundLight]}
+        style={appStyles.profileContainer}
+      >
+        <ScrollView
+          contentContainerStyle={appStyles.profileContentContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          <Suspense fallback={<LoadingIndicator />}>
+            <GoogleLogin />
 
+            <View style={appStyles.profileCard}>
+              <Text style={appStyles.profileCardTitle}>Settings</Text>
+              <ThemeSelector />
+              <DifficultySelector />
+            </View>
+
+            {loading && <LoadingIndicator />}
+            {!loading && player && playerStats && (
+              <View style={appStyles.profileCard}>
+                <Text style={appStyles.profileCardTitle}>Your Stats</Text>
+                <PlayerStatsContainer
+                  player={player}
+                  playerStats={playerStats}
+                />
+                <GameHistory onHistoryItemPress={handleHistoryItemPress} />
+              </View>
+            )}
+          </Suspense>
+        </ScrollView>
+      </LinearGradient>
       <Suspense fallback={null}>
         <HistoryDetailModal
           historyItem={selectedHistoryItem}

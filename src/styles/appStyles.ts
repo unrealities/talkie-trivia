@@ -1,16 +1,11 @@
 import { StyleSheet, Platform } from "react-native"
-import { responsive } from "./global"
+import { responsive, spacing, shadows, getTypography } from "./global"
 
 export const getAppStyles = (colors: any) =>
   StyleSheet.create({
     container: {
       backgroundColor: colors.background,
       flex: 1,
-      paddingTop: Platform.select({
-        ios: responsive.scale(20),
-        android: responsive.scale(10),
-        default: 0,
-      }),
       paddingHorizontal: responsive.scale(10),
     },
     loadingContainer: {
@@ -40,5 +35,33 @@ export const getAppStyles = (colors: any) =>
       color: colors.error,
       textAlign: "center",
       width: "80%",
+    },
+    profileContainer: {
+      flex: 1,
+    },
+    profileContentContainer: {
+      padding: spacing.medium,
+      paddingTop:
+        Platform.OS === "ios" ? responsive.scale(50) : responsive.scale(20),
+      alignItems: "center",
+    },
+    profileCard: {
+      backgroundColor: colors.surface,
+      borderRadius: responsive.scale(12),
+      padding: spacing.medium,
+      width: "100%",
+      maxWidth: responsive.scale(500),
+      marginBottom: spacing.large,
+      ...shadows.light,
+    },
+    profileCardTitle: {
+      ...getTypography(colors).heading2,
+      fontSize: responsive.responsiveFontSize(20),
+      color: colors.primary,
+      marginBottom: spacing.medium,
+      textAlign: "center",
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+      paddingBottom: spacing.small,
     },
   })

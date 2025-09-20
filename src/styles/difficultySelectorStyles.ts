@@ -4,7 +4,7 @@ import { responsive, spacing } from "./global"
 export const getDifficultySelectorStyles = (colors: any) =>
   StyleSheet.create({
     container: {
-      marginVertical: spacing.large,
+      marginBottom: spacing.medium,
       alignItems: "center",
     },
     title: {

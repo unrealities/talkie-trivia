@@ -4,7 +4,7 @@ import { responsive, spacing } from "./global"
 export const getThemeSelectorStyles = (colors: any) =>
   StyleSheet.create({
     container: {
-      marginVertical: spacing.large,
+      marginBottom: spacing.large,
       alignItems: "center",
     },
     title: {
