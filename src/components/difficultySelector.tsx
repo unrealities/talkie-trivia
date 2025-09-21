@@ -13,6 +13,8 @@ import { hapticsService } from "../utils/hapticsService"
 import { useTheme } from "../contexts/themeContext"
 import { useGameStore } from "../state/gameStore"
 import { useAuth } from "../contexts/authContext"
+import { FontAwesome } from "@expo/vector-icons"
+import { responsive } from "../styles/global"
 
 const DifficultySelector = () => {
   const { player } = useAuth()
@@ -106,11 +108,29 @@ const DifficultySelector = () => {
     setHoveredDifficulty(value)
   }
 
+  const selectedOptionLabel =
+    options.find((o) => o.value === difficulty)?.label || "Medium"
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Difficulty</Text>
+      <View style={styles.row}>
+        <View style={styles.labelContainer}>
+          <FontAwesome
+            name="gamepad"
+            size={responsive.responsiveFontSize(16)}
+            color={colors.textSecondary}
+          />
+          <Text style={styles.title}>Difficulty</Text>
+        </View>
+        <View style={styles.selectedOptionDisplay}>
+          <Text style={styles.selectedOptionTextDisplay}>
+            {selectedOptionLabel}
+          </Text>
+        </View>
+      </View>
+
       <Text style={styles.subtitle}>
-        Long-press any option to see its description.
+        Long-press any option below to see its description.
       </Text>
       <View style={styles.optionsContainer}>
         {options.map((option) => (

@@ -2,6 +2,8 @@ import React, { useMemo } from "react"
 import { View, Text, Pressable } from "react-native"
 import { useTheme, Theme } from "../contexts/themeContext"
 import { getThemeSelectorStyles } from "../styles/themeSelectorStyles"
+import { FontAwesome } from "@expo/vector-icons"
+import { responsive } from "../styles/global"
 
 const ThemeSelector = () => {
   const { theme, setTheme, colors } = useTheme()
@@ -15,7 +17,14 @@ const ThemeSelector = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Theme</Text>
+      <View style={styles.labelContainer}>
+        <FontAwesome
+          name="paint-brush"
+          size={responsive.responsiveFontSize(16)}
+          color={colors.textSecondary}
+        />
+        <Text style={styles.title}>Theme</Text>
+      </View>
       <View style={styles.optionsContainer}>
         {options.map((option) => (
           <Pressable

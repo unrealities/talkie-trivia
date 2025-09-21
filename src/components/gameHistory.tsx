@@ -123,7 +123,6 @@ const GameHistory = ({ onHistoryItemPress }: GameHistoryProps) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Game History</Text>
       <FlatList
         data={history}
         renderItem={renderItem}

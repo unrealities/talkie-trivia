@@ -6,14 +6,6 @@ export const getGameHistoryStyles = (colors: any) =>
     container: {
       flex: 1,
       width: "100%",
-      marginTop: spacing.large,
-    },
-    title: {
-      fontFamily: "Arvo-Bold",
-      fontSize: responsive.responsiveFontSize(20),
-      color: colors.primary,
-      marginBottom: spacing.medium,
-      textAlign: "center",
     },
     listContainer: {
       paddingBottom: spacing.large,
@@ -21,11 +13,13 @@ export const getGameHistoryStyles = (colors: any) =>
     itemContainer: {
       flexDirection: "row",
       alignItems: "center",
-      backgroundColor: colors.surface,
+      backgroundColor: colors.background,
       borderRadius: responsive.scale(8),
       marginBottom: spacing.small,
       padding: spacing.small,
       overflow: "hidden",
+      borderWidth: 1,
+      borderColor: colors.border,
     },
     posterImage: {
       width: responsive.scale(60),

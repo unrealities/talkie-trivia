@@ -24,11 +24,7 @@ const PlayerStatsContainer = memo(
     }
 
     return (
-      <View
-        style={playerStatsStyles.container}
-        key={props.player.id}
-        accessibilityLabel="Player Statistics"
-      >
+      <View style={playerStatsStyles.container} key={props.player.id}>
         <WinChart wins={props.playerStats.wins} />
         <View style={playerStatsStyles.statsContainer}>
           <View style={playerStatsStyles.statContainer}>

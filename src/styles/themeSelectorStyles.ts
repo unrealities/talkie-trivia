@@ -4,20 +4,28 @@ import { responsive, spacing } from "./global"
 export const getThemeSelectorStyles = (colors: any) =>
   StyleSheet.create({
     container: {
-      marginBottom: spacing.large,
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      width: "100%",
+    },
+    labelContainer: {
+      flexDirection: "row",
       alignItems: "center",
     },
     title: {
       fontFamily: "Arvo-Bold",
-      fontSize: responsive.responsiveFontSize(20),
-      color: colors.primary,
-      marginBottom: spacing.medium,
+      fontSize: responsive.responsiveFontSize(16),
+      color: colors.textPrimary,
+      marginLeft: spacing.small,
     },
     optionsContainer: {
       flexDirection: "row",
-      backgroundColor: colors.surface,
+      backgroundColor: colors.background,
       borderRadius: responsive.scale(8),
       padding: spacing.extraSmall,
+      borderWidth: 1,
+      borderColor: colors.border,
     },
     option: {
       paddingVertical: spacing.small,
