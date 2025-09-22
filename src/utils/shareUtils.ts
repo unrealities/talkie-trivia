@@ -1,4 +1,4 @@
-import { Alert, Share } from "react-native"
+import { Alert, Share, Platform } from "react-native"
 import ViewShot from "react-native-view-shot"
 import { PlayerGame } from "../models/game"
 import { analyticsService } from "./analyticsService"
@@ -38,6 +38,11 @@ export const generateShareMessage = (playerGame: PlayerGame): string => {
   return `${title}\n${resultLine}\n\n${grid}\n\nPlay at ${appUrl}`
 }
 
+async function dataUriToBlob(dataUri: string) {
+  const res = await fetch(dataUri)
+  return await res.blob()
+}
+
 export const shareGameResultAsImage = async (
   viewShotRef: React.RefObject<ViewShot>,
   playerGame: PlayerGame
@@ -58,13 +63,51 @@ export const shareGameResultAsImage = async (
     const uri = await viewShotRef.current.capture()
     const message = generateShareMessage(playerGame)
 
-    await Share.share({
-      url: uri,
-      message: message,
-      title: "Talkie Trivia Results",
-    })
+    if (Platform.OS === "web") {
+      if (navigator.share) {
+        const blob = await dataUriToBlob(uri)
+        const file = new File([blob], "talkie-trivia-result.jpg", {
+          type: "image/jpeg",
+        })
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            title: "Talkie Trivia Results",
+            text: message,
+            files: [file],
+          })
+        } else {
+          await navigator.share({
+            title: "Talkie Trivia Results",
+            text: message,
+          })
+        }
+      } else {
+        Alert.alert(
+          "Sharing not supported",
+          "Your browser does not support the Web Share API."
+        )
+      }
+    } else {
+      await Share.share(
+        {
+          url: uri,
+          message: message,
+          title: "Talkie Trivia Results",
+        },
+        {
+          dialogTitle: "Share your Talkie Trivia results!",
+        }
+      )
+    }
   } catch (error: any) {
+    if (error.name === "AbortError") {
+      console.log("Share action was cancelled by the user.")
+      return
+    }
+
     console.error("Sharing failed:", error)
+
     try {
       const message = generateShareMessage(playerGame)
       await Share.share(
@@ -72,7 +115,7 @@ export const shareGameResultAsImage = async (
         { dialogTitle: "Share your Talkie Trivia results!" }
       )
     } catch (fallbackError: any) {
-      Alert.alert("Share Error", fallbackError.message)
+      Alert.alert("Share Error", "Could not share your results.")
     }
   }
 }

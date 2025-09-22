@@ -1,5 +1,13 @@
-import React, { useEffect, useMemo, useRef } from "react"
-import { View, Pressable, Text, ScrollView, StyleSheet } from "react-native"
+import React, { useEffect, useMemo, useRef, useState } from "react"
+import {
+  View,
+  Pressable,
+  Text,
+  ScrollView,
+  StyleSheet,
+  Platform,
+  ActivityIndicator,
+} from "react-native"
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -30,6 +38,7 @@ const GameOverView: React.FC<GameOverViewProps> = ({
   const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
   const fadeAnimation = useSharedValue(0)
   const viewShotRef = useRef<ViewShot>(null)
+  const [isSharing, setIsSharing] = useState(false)
 
   useEffect(() => {
     fadeAnimation.value = withTiming(1, {
@@ -44,8 +53,11 @@ const GameOverView: React.FC<GameOverViewProps> = ({
     }
   })
 
-  const handleShare = () => {
-    shareGameResultAsImage(viewShotRef, playerGame)
+  const handleShare = async () => {
+    if (isSharing) return
+    setIsSharing(true)
+    await shareGameResultAsImage(viewShotRef, playerGame)
+    setIsSharing(false)
   }
 
   const resultTitle = playerGame.correctAnswer ? "You Got It!" : "So Close!"
@@ -66,6 +78,7 @@ const GameOverView: React.FC<GameOverViewProps> = ({
             fileName: "talkie-trivia-result",
             format: "jpg",
             quality: 0.9,
+            result: Platform.OS === "web" ? "data-uri" : "tmpfile",
           }}
         >
           <ShareCard playerGame={playerGame} />
@@ -98,10 +111,18 @@ const GameOverView: React.FC<GameOverViewProps> = ({
           onPress={handleShare}
           style={({ pressed }) => [
             movieStyles.gameOverButton,
-            pressed && movieStyles.pressedButton,
+            (pressed || isSharing) && movieStyles.pressedButton,
+            isSharing && movieStyles.disabledButton,
           ]}
+          disabled={isSharing}
         >
-          <Text style={movieStyles.gameOverButtonText}>Share Your Result</Text>
+          {isSharing ? (
+            <ActivityIndicator color={colors.background} />
+          ) : (
+            <Text style={movieStyles.gameOverButtonText}>
+              Share Your Result
+            </Text>
+          )}
         </Pressable>
       </View>
 
