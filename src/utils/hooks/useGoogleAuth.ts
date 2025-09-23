@@ -16,6 +16,11 @@ export function useGoogleAuth(onAuthStateChange: (user: User | null) => void) {
 
   const authConfig = useMemo(
     () => ({
+      // NOTE for developers: If you encounter a '400: malformed_request' error on web,
+      // ensure your Google Cloud Console OAuth 2.0 Web Client ID has the correct
+      // "Authorized JavaScript origins". For local development with Expo, this is typically
+      // your local server address (e.g., http://localhost:8081). For production, it's your
+      // deployed site's URL.
       androidClientId: Constants.expoConfig?.extra?.androidClientId,
       expoClientId: Constants.expoConfig?.extra?.expoClientId,
       iosClientId: Constants.expoConfig?.extra?.iosClientId,

@@ -60,8 +60,13 @@ export const shareGameResultAsImage = async (
       throw new Error("ViewShot is not ready.")
     }
 
-    const uri = await viewShotRef.current.capture()
+    const captureResult = await viewShotRef.current.capture()
     const message = generateShareMessage(playerGame)
+
+    const uri =
+      Platform.OS === "web"
+        ? `data:image/jpeg;base64,${captureResult}`
+        : captureResult
 
     if (Platform.OS === "web") {
       if (navigator.share) {
