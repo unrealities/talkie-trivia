@@ -78,7 +78,7 @@ const GameOverView: React.FC<GameOverViewProps> = ({
             fileName: "talkie-trivia-result",
             format: "jpg",
             quality: 0.9,
-            result: Platform.OS === "web" ? "data-uri" : "tmpfile",
+            result: Platform.OS === "web" ? "base64" : "tmpfile",
           }}
         >
           <ShareCard playerGame={playerGame} />

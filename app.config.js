@@ -62,7 +62,8 @@ module.exports = ({ config }) => ({
       themoviedbKey: process.env.THEMOVIEDB_APIKEY,
       expoClientId: process.env.CLIENTID_EXPO,
       iosClientId: process.env.CLIENTID_IOS,
-      webClientId: process.env.CLIENTID_WEB
+      webClientId: process.env.CLIENTID_WEB,
+      androidClientId: process.env.CLIENTID_ANDROID
     },
   },
 });
