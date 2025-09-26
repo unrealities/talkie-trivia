@@ -1,11 +1,10 @@
-import { Alert, Share, Platform } from "react-native"
-import ViewShot from "react-native-view-shot"
+import { Share } from "react-native"
 import { PlayerGame } from "../models/game"
 import { analyticsService } from "./analyticsService"
 import { hapticsService } from "./hapticsService"
 
 export const generateShareMessage = (playerGame: PlayerGame): string => {
-  const appUrl = "talkie-trivia.com (Coming Soon)"
+  const appUrl = "https://talkie-trivia.com"
   const gameDate =
     playerGame.startDate instanceof Date
       ? playerGame.startDate
@@ -24,29 +23,21 @@ export const generateShareMessage = (playerGame: PlayerGame): string => {
 
   if (playerGame.correctAnswer) {
     resultLine = `✅ Guessed in ${guessCount}/${playerGame.guessesMax} tries!`
-    grid = "🟥 ".repeat(guessCount - 1) + "🟩"
+    grid = "🟥".repeat(guessCount - 1) + "🟩"
   } else if (playerGame.gaveUp) {
     resultLine = `🤔 Gave up after ${guessCount} guess${
       guessCount === 1 ? "" : "es"
     }.`
-    grid = "🟥 ".repeat(guessCount) + "⏹️"
+    grid = "🟥".repeat(guessCount) + "⏹️"
   } else {
     resultLine = `😢 Didn't guess the movie!`
-    grid = "🟥 ".repeat(playerGame.guessesMax).trim()
+    grid = "🟥".repeat(playerGame.guessesMax).trim()
   }
 
   return `${title}\n${resultLine}\n\n${grid}\n\nPlay at ${appUrl}`
 }
 
-async function dataUriToBlob(dataUri: string) {
-  const res = await fetch(dataUri)
-  return await res.blob()
-}
-
-export const shareGameResultAsImage = async (
-  viewShotRef: React.RefObject<ViewShot>,
-  playerGame: PlayerGame
-) => {
+export const shareGameResult = async (playerGame: PlayerGame) => {
   hapticsService.medium()
   const outcome = playerGame.correctAnswer
     ? "win"
@@ -55,72 +46,26 @@ export const shareGameResultAsImage = async (
     : "lose"
   analyticsService.trackShareResults(outcome)
 
+  const message = generateShareMessage(playerGame)
+
   try {
-    if (!viewShotRef.current?.capture) {
-      throw new Error("ViewShot is not ready.")
-    }
-
-    const captureResult = await viewShotRef.current.capture()
-    const message = generateShareMessage(playerGame)
-
-    const uri =
-      Platform.OS === "web"
-        ? `data:image/jpeg;base64,${captureResult}`
-        : captureResult
-
-    if (Platform.OS === "web") {
-      if (navigator.share) {
-        const blob = await dataUriToBlob(uri)
-        const file = new File([blob], "talkie-trivia-result.jpg", {
-          type: "image/jpeg",
-        })
-
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            title: "Talkie Trivia Results",
-            text: message,
-            files: [file],
-          })
-        } else {
-          await navigator.share({
-            title: "Talkie Trivia Results",
-            text: message,
-          })
-        }
-      } else {
-        Alert.alert(
-          "Sharing not supported",
-          "Your browser does not support the Web Share API."
-        )
+    await Share.share(
+      {
+        message,
+        title: "Talkie Trivia Results",
+      },
+      {
+        dialogTitle: "Share your Talkie Trivia results!",
       }
-    } else {
-      await Share.share(
-        {
-          url: uri,
-          message: message,
-          title: "Talkie Trivia Results",
-        },
-        {
-          dialogTitle: "Share your Talkie Trivia results!",
-        }
-      )
-    }
+    )
   } catch (error: any) {
-    if (error.name === "AbortError") {
-      console.log("Share action was cancelled by the user.")
+    if (
+      error.name === "AbortError" ||
+      error.message.includes("Share Canceled")
+    ) {
+      console.log("Share action was canceled by the user.")
       return
     }
-
-    console.error("Sharing failed:", error)
-
-    try {
-      const message = generateShareMessage(playerGame)
-      await Share.share(
-        { message, title: "Talkie Trivia Results" },
-        { dialogTitle: "Share your Talkie Trivia results!" }
-      )
-    } catch (fallbackError: any) {
-      Alert.alert("Share Error", "Could not share your results.")
-    }
+    throw error
   }
 }

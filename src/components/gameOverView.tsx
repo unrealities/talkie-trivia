@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Platform,
   ActivityIndicator,
+  Alert,
 } from "react-native"
 import Animated, {
   useSharedValue,
@@ -14,14 +15,12 @@ import Animated, {
   withTiming,
   Easing,
 } from "react-native-reanimated"
-import ViewShot from "react-native-view-shot"
 import CountdownTimer from "./countdownTimer"
 import Facts from "./facts"
 import PersonalizedStatsMessage from "./personalizedStatsMessage"
-import ShareCard from "./shareCard"
 import { PlayerGame } from "../models/game"
 import { getMovieStyles } from "../styles/movieStyles"
-import { shareGameResultAsImage } from "../utils/shareUtils"
+import { shareGameResult } from "../utils/shareUtils"
 import { useTheme } from "../contexts/themeContext"
 import GuessesContainer from "./guesses"
 
@@ -37,7 +36,6 @@ const GameOverView: React.FC<GameOverViewProps> = ({
   const { colors } = useTheme()
   const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
   const fadeAnimation = useSharedValue(0)
-  const viewShotRef = useRef<ViewShot>(null)
   const [isSharing, setIsSharing] = useState(false)
 
   useEffect(() => {
@@ -56,8 +54,17 @@ const GameOverView: React.FC<GameOverViewProps> = ({
   const handleShare = async () => {
     if (isSharing) return
     setIsSharing(true)
-    await shareGameResultAsImage(viewShotRef, playerGame)
-    setIsSharing(false)
+    try {
+      await shareGameResult(playerGame)
+    } catch (error) {
+      console.error("Error during sharing process:", error)
+      Alert.alert(
+        "Sharing Failed",
+        "An error occurred while trying to share your results."
+      )
+    } finally {
+      setIsSharing(false)
+    }
   }
 
   const resultTitle = playerGame.correctAnswer ? "You Got It!" : "So Close!"
@@ -71,20 +78,6 @@ const GameOverView: React.FC<GameOverViewProps> = ({
 
   return (
     <Animated.View style={[{ width: "100%" }, animatedContainerStyle]}>
-      <View style={styles.offscreenContainer}>
-        <ViewShot
-          ref={viewShotRef}
-          options={{
-            fileName: "talkie-trivia-result",
-            format: "jpg",
-            quality: 0.9,
-            result: Platform.OS === "web" ? "base64" : "tmpfile",
-          }}
-        >
-          <ShareCard playerGame={playerGame} />
-        </ViewShot>
-      </View>
-
       <View style={movieStyles.gameOverCard}>
         <ScrollView
           style={movieStyles.gameOverScrollView}
@@ -131,12 +124,5 @@ const GameOverView: React.FC<GameOverViewProps> = ({
     </Animated.View>
   )
 }
-
-const styles = StyleSheet.create({
-  offscreenContainer: {
-    position: "absolute",
-    left: -9999,
-  },
-})
 
 export default GameOverView
