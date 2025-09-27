@@ -13,10 +13,11 @@ import Ionicons from "@expo/vector-icons/Ionicons"
 
 import { getGuessesStyles } from "../styles/guessesStyles"
 import { useSkeletonAnimation } from "../utils/hooks/useSkeletonAnimation"
-import { BasicMovie, Movie } from "../models/movie"
+import { BasicMovie } from "../models/movie"
 import { useTheme } from "../contexts/themeContext"
-import { Guess, HintInfo, HintType, PlayerGame } from "../models/game"
 import { useGameStore } from "../state/gameStore"
+import { Guess, HintInfo, HintType, PlayerGame } from "../models/game"
+import { useShallow } from "zustand/react/shallow"
 
 type GuessResult = {
   movieId: number
@@ -217,9 +218,13 @@ const GuessesContainer = memo(
     gameForDisplay,
     allMoviesForDisplay,
   }: GuessesContainerProps) => {
-    const loading = useGameStore((state) => state.loading)
-    const playerGame = useGameStore((state) => state.playerGame)
-    const basicMovies = useGameStore((state) => state.basicMovies)
+    const { loading, playerGame, basicMovies } = useGameStore(
+      useShallow((state) => ({
+        loading: state.loading,
+        playerGame: state.playerGame,
+        basicMovies: state.basicMovies,
+      }))
+    )
 
     const isDataLoading = gameForDisplay ? false : loading
     const currentGame = gameForDisplay || playerGame

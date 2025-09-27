@@ -4,6 +4,7 @@ import { HintType } from "../../models/game"
 import { useGameStore } from "../../state/gameStore"
 import { hapticsService } from "../hapticsService"
 import { analyticsService } from "../analyticsService"
+import { useShallow } from "zustand/react/shallow"
 
 if (
   Platform.OS === "android" &&
@@ -15,13 +16,21 @@ if (
 type HintStatus = "available" | "used" | "disabled"
 
 export function useHintLogic() {
-  const playerGame = useGameStore((state) => state.playerGame)
-  const isInteractionsDisabled = useGameStore(
-    (state) => state.isInteractionsDisabled
+  const {
+    playerGame,
+    isInteractionsDisabled,
+    playerStats,
+    difficulty,
+    useHint,
+  } = useGameStore(
+    useShallow((state) => ({
+      playerGame: state.playerGame,
+      isInteractionsDisabled: state.isInteractionsDisabled,
+      playerStats: state.playerStats,
+      difficulty: state.difficulty,
+      useHint: state.useHint,
+    }))
   )
-  const playerStats = useGameStore((state) => state.playerStats)
-  const difficulty = useGameStore((state) => state.difficulty)
-  const useHint = useGameStore((state) => state.useHint)
 
   const [showHintOptions, setShowHintOptions] = useState(false)
   const [displayedHintText, setDisplayedHintText] = useState<string | null>(

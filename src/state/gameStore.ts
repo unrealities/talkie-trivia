@@ -301,7 +301,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       set({ gameStatus: "revealing" })
     }, 1200)
 
-    const updatedStats = produce(playerStats, (draft) => {
+    const updatedStats = produce(playerStats, (draft: PlayerStats) => {
       draft.games = (draft.games || 0) + 1
       if (playerGame.correctAnswer) {
         draft.currentStreak = (draft.currentStreak || 0) + 1
@@ -315,16 +315,16 @@ export const useGameStore = create<GameState>((set, get) => ({
       }
     })
 
-    const historyEntry = new GameHistoryEntry(
-      generateDateId(playerGame.startDate),
-      playerGame.movie.id,
-      playerGame.movie.title,
-      playerGame.movie.poster_path,
-      playerGame.correctAnswer,
-      playerGame.gaveUp,
-      playerGame.guesses.length,
-      playerGame.guessesMax
-    )
+    const historyEntry: GameHistoryEntry = {
+      dateId: generateDateId(playerGame.startDate),
+      movieId: playerGame.movie.id,
+      movieTitle: playerGame.movie.title,
+      posterPath: playerGame.movie.poster_path,
+      wasCorrect: playerGame.correctAnswer,
+      gaveUp: playerGame.gaveUp,
+      guessCount: playerGame.guesses.length,
+      guessesMax: playerGame.guessesMax,
+    }
 
     set(
       produce((state: GameState) => {

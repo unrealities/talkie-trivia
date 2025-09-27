@@ -17,15 +17,15 @@ export const gameHistoryEntryConverter = {
   },
   fromFirestore: (snapshot: any, options: any): GameHistoryEntry => {
     const data = snapshot.data(options)
-    return new GameHistoryEntry(
-      data.dateId,
-      data.movieId,
-      data.movieTitle,
-      data.posterPath,
-      data.wasCorrect,
-      data.gaveUp,
-      data.guessCount,
-      data.guessesMax
-    )
+    return {
+      dateId: data.dateId,
+      movieId: data.movieId,
+      movieTitle: data.movieTitle,
+      posterPath: data.posterPath,
+      wasCorrect: data.wasCorrect,
+      gaveUp: data.gaveUp,
+      guessCount: data.guessCount,
+      guessesMax: data.guessesMax,
+    }
   },
 }

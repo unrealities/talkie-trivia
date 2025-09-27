@@ -24,6 +24,7 @@ import { hapticsService } from "../utils/hapticsService"
 import { useTheme } from "../contexts/themeContext"
 import { ANIMATION_CONSTANTS } from "../config/constants"
 import { useGameStore } from "../state/gameStore"
+import { useShallow } from "zustand/react/shallow"
 
 const splitSummary = (summary: string, splits: number = 5): string[] => {
   if (!summary) return Array(splits).fill("")
@@ -55,24 +56,30 @@ const CountContainer = memo<CountContainerProps>(
 )
 
 const CluesContainer = memo(() => {
-  // --- THIS IS THE FIX ---
-  // We are selecting each piece of state individually.
-  // This is the most efficient way and avoids the warning.
-  const playerGame = useGameStore((state) => state.playerGame)
-  const isInteractionsDisabled = useGameStore(
-    (state) => state.isInteractionsDisabled
-  )
-  const difficulty = useGameStore((state) => state.difficulty)
-  const loading = useGameStore((state) => state.loading)
-  // --- END OF FIX ---
-
   const { colors } = useTheme()
   const cluesStyles = useMemo(() => getCluesStyles(colors), [colors])
-  const { correctAnswer, guesses } = playerGame
+
+  const {
+    correctAnswer,
+    guesses,
+    movieOverview,
+    isInteractionsDisabled,
+    difficulty,
+    loading,
+  } = useGameStore(
+    useShallow((state) => ({
+      correctAnswer: state.playerGame.correctAnswer,
+      guesses: state.playerGame.guesses,
+      movieOverview: state.playerGame.movie?.overview,
+      isInteractionsDisabled: state.isInteractionsDisabled,
+      difficulty: state.difficulty,
+      loading: state.loading,
+    }))
+  )
 
   const clues = useMemo(
-    () => splitSummary(playerGame?.movie?.overview || ""),
-    [playerGame?.movie?.overview]
+    () => splitSummary(movieOverview || ""),
+    [movieOverview]
   )
 
   const [revealedClues, setRevealedClues] = useState<string[]>([])

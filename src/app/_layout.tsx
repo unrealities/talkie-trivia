@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Slot } from "expo-router"
-import { View } from "react-native"
+import { View, LogBox } from "react-native"
 import ErrorBoundary from "../components/errorBoundary"
 import { NetworkProvider, useNetwork } from "../contexts/networkContext"
 import { AuthProvider, useAuth } from "../contexts/authContext"
@@ -9,6 +9,12 @@ import LoadingIndicator from "../components/loadingIndicator"
 import ErrorMessage from "../components/errorMessage"
 import { getAppStyles } from "../styles/appStyles"
 import { useGameStore } from "../state/gameStore"
+
+LogBox.ignoreLogs([
+  "Warning: VictoryPie",
+  "Warning: Slice",
+  "Warning: VictoryLabel",
+])
 
 function RootLayoutNav() {
   const { isNetworkConnected } = useNetwork()
