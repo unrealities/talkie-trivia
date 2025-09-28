@@ -38,10 +38,18 @@ interface GuessRowProps {
   movies: readonly BasicMovie[]
   isLastGuess: boolean
   lastGuessResult: GuessResult
+  correctMovieId: number
 }
 
 const GuessRow = memo(
-  ({ index, guess, movies, isLastGuess, lastGuessResult }: GuessRowProps) => {
+  ({
+    index,
+    guess,
+    movies,
+    isLastGuess,
+    lastGuessResult,
+    correctMovieId,
+  }: GuessRowProps) => {
     const { colors } = useTheme()
     const guessesStyles = useMemo(() => getGuessesStyles(colors), [colors])
 
@@ -53,7 +61,7 @@ const GuessRow = memo(
     const guessId = guess.movieId
     const guessTitle =
       movies.find((m: BasicMovie) => m.id === guessId)?.title || "Unknown Movie"
-    const isCorrect = lastGuessResult?.correct === true
+    const isCorrect = guess.movieId === correctMovieId
     const feedbackMessage =
       isLastGuess && !isCorrect ? lastGuessResult?.feedback : null
     const hintInfoList = guess.hintInfo
@@ -232,7 +240,8 @@ const GuessesContainer = memo(
 
     const { colors } = useTheme()
     const guessesStyles = useMemo(() => getGuessesStyles(colors), [colors])
-    const { guesses, guessesMax } = currentGame
+    const { guesses, guessesMax, movie } = currentGame
+    const correctMovieId = movie.id
 
     if (isDataLoading) {
       return (
@@ -266,6 +275,7 @@ const GuessesContainer = memo(
               movies={movies}
               isLastGuess={isLastGuess}
               lastGuessResult={lastGuessResult}
+              correctMovieId={correctMovieId}
             />
           )
         })}
