@@ -170,7 +170,7 @@ export function useHintLogic() {
           effectiveHints <= 0 &&
           !Object.values(playerGame.hintsUsed || {}).some(Boolean)
         ) {
-          return "Out of hints!"
+          return ""
         }
         return `Need a Hint? (${effectiveHints} available)`
       }

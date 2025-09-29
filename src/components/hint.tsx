@@ -59,6 +59,10 @@ const MainHintComponent = () => {
     handleHintSelection,
   } = useHintLogic()
 
+  if (difficulty === "easy" && !hintLabelText) {
+    return null
+  }
+
   if (
     difficulty === "medium" &&
     !Object.values(playerGame.hintsUsed || {}).some(Boolean)
