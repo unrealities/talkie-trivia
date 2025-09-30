@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useState, useCallback, useMemo } from "react"
-import { ScrollView, View, Text, Pressable } from "react-native"
+import { ScrollView, View, Text } from "react-native"
 import { LinearGradient } from "expo-linear-gradient"
 import LoadingIndicator from "../../components/loadingIndicator"
 import { getAppStyles } from "../../styles/appStyles"
@@ -62,7 +62,25 @@ const ProfileScreen: React.FC<{}> = () => {
     setSelectedHistoryItem(null)
   }, [])
 
-  const isSignedIn = player && user && !user.isAnonymous
+  const isGoogleSignedIn = player && user && !user.isAnonymous
+  const isUserAuthenticated = player && user
+
+  const displayName = player?.name || "Guest"
+
+  if (!isUserAuthenticated) {
+    return (
+      <LinearGradient
+        colors={[colors.background, colors.backgroundLight]}
+        style={appStyles.profileContainer}
+      >
+        <LoadingIndicator />
+      </LinearGradient>
+    )
+  }
+
+  const headerSubtitle = isGoogleSignedIn
+    ? "Here's how you're doing."
+    : "You are currently playing as a guest. Your game data is saved locally but is not backed up or shared on leaderboards."
 
   return (
     <>
@@ -77,15 +95,14 @@ const ProfileScreen: React.FC<{}> = () => {
           <Suspense fallback={<LoadingIndicator />}>
             {loading ? (
               <LoadingIndicator />
-            ) : isSignedIn ? (
-              // --- Logged-in View ---
+            ) : (
               <View style={{ width: "100%" }}>
                 <View style={appStyles.profileHeader}>
                   <Text style={appStyles.profileTitle}>
-                    Welcome, {player.name}!
+                    Welcome, {displayName}!
                   </Text>
                   <Text style={appStyles.profileSubtitle}>
-                    Here's how you're doing.
+                    {headerSubtitle}
                   </Text>
                 </View>
 
@@ -106,24 +123,40 @@ const ProfileScreen: React.FC<{}> = () => {
                   <DifficultySelector />
                 </Section>
 
-                <Section title="Account" icon="user">
-                  <GoogleLogin />
-                </Section>
-              </View>
-            ) : (
-              // --- Logged-out View ---
-              <View style={appStyles.signInPromptContainer}>
-                <FontAwesome
-                  name="user-circle"
-                  size={responsive.scale(60)}
-                  color={colors.primary}
-                />
-                <Text style={appStyles.signInPromptTitle}>Join the Fun!</Text>
-                <Text style={appStyles.signInPromptText}>
-                  Sign in with Google to save your stats, track your game
-                  history, and compete on the leaderboards.
-                </Text>
-                <GoogleLogin />
+                {!isGoogleSignedIn && (
+                  <View
+                    style={[
+                      appStyles.signInPromptContainer,
+                      {
+                        marginTop: 0,
+                        paddingVertical: responsive.scale(15),
+                        borderTopWidth: 1,
+                        borderTopColor: colors.border,
+                      },
+                    ]}
+                  >
+                    <FontAwesome
+                      name="google"
+                      size={responsive.scale(30)}
+                      color={colors.primary}
+                      style={{ marginBottom: responsive.scale(10) }}
+                    />
+                    <Text style={appStyles.signInPromptTitle}>
+                      Save Your Progress
+                    </Text>
+                    <Text style={appStyles.signInPromptText}>
+                      Sign in with Google below to secure your stats permanently
+                      and join the leaderboards.
+                    </Text>
+                    <GoogleLogin />
+                  </View>
+                )}
+
+                {isGoogleSignedIn && (
+                  <Section title="Account" icon="user">
+                    <GoogleLogin />
+                  </Section>
+                )}
               </View>
             )}
           </Suspense>
