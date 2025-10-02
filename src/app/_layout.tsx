@@ -22,23 +22,24 @@ function RootLayoutNav() {
   const styles = useMemo(() => getAppStyles(colors), [colors])
   const [retryKey, setRetryKey] = useState(0)
 
-  const { player } = useAuth()
+  const { player, loading: authLoading, error: authError } = useAuth()
+
   const initializeGame = useGameStore((state) => state.initializeGame)
-  const loading = useGameStore((state) => state.loading)
-  const error = useGameStore((state) => state.error)
+  const gameLoading = useGameStore((state) => state.loading)
+  const gameError = useGameStore((state) => state.error)
 
   useEffect(() => {
-    if (player && isNetworkConnected) {
+    if (player && isNetworkConnected && !authError) {
       initializeGame(player)
     }
-  }, [player, isNetworkConnected, retryKey])
+  }, [player, isNetworkConnected, retryKey, authError])
 
   const handleRetry = useCallback(() => {
     setRetryKey((prevKey) => prevKey + 1)
   }, [])
 
   if (isNetworkConnected === null) {
-    return <LoadingIndicator />
+    return <LoadingIndicator message="Checking network connection..." />
   }
 
   if (!isNetworkConnected) {
@@ -52,14 +53,33 @@ function RootLayoutNav() {
     )
   }
 
-  if (loading) {
-    return <LoadingIndicator />
+  if (authLoading) {
+    return <LoadingIndicator message="Authenticating user session..." />
   }
 
-  if (error) {
+  if (gameLoading) {
+    return <LoadingIndicator message="Loading daily movie and user data..." />
+  }
+
+  if (authError) {
+    let displayMessage = `Critical Setup Error: ${authError}. Please try restarting the app.`
+
+    if (authError.includes("Missing or insufficient permissions")) {
+      displayMessage =
+        "Critical Error: Cannot access user data (Firebase permissions failure). This usually indicates an issue with your account setup or backend configuration. Please restart the app or contact support."
+    }
+
     return (
       <View style={styles.container}>
-        <ErrorMessage message={error} onRetry={handleRetry} />
+        <ErrorMessage message={displayMessage} onRetry={handleRetry} />
+      </View>
+    )
+  }
+
+  if (gameError) {
+    return (
+      <View style={styles.container}>
+        <ErrorMessage message={gameError} onRetry={handleRetry} />
       </View>
     )
   }
