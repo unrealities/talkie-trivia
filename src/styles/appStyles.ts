@@ -45,6 +45,12 @@ export const getAppStyles = (colors: any) =>
         Platform.OS === "ios" ? responsive.scale(60) : responsive.scale(30),
       alignItems: "center",
       paddingBottom: spacing.extraLarge,
+      width: "100%",
+    },
+    profileContentArea: {
+      width: "100%",
+      maxWidth: responsive.scale(500),
+      alignSelf: "center",
     },
     profileHeader: {
       alignItems: "center",

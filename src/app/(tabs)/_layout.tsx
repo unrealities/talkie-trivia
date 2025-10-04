@@ -36,6 +36,8 @@ const TabLayout = () => {
           marginHorizontal: 10,
           borderRadius: 10,
           paddingVertical: 5,
+          justifyContent: "center",
+          alignItems: "center",
         },
         tabBarLabelStyle: {
           fontFamily: "Arvo-Bold",
@@ -46,7 +48,6 @@ const TabLayout = () => {
         tabBarIconStyle: {
           display: "none",
         },
-        tabBarLabelPosition: "beside-icon",
         tabBarStyle: {
           paddingHorizontal: 20,
           backgroundColor: colors.background,

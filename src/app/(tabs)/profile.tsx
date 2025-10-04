@@ -96,7 +96,7 @@ const ProfileScreen: React.FC<{}> = () => {
             {loading ? (
               <LoadingIndicator />
             ) : (
-              <View style={{ width: "100%" }}>
+              <View style={appStyles.profileContentArea}>
                 <View style={appStyles.profileHeader}>
                   <Text style={appStyles.profileTitle}>
                     Welcome, {displayName}!
