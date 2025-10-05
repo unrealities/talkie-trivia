@@ -35,16 +35,14 @@ const GameScreen = () => {
         <Suspense fallback={<LoadingIndicator />}>
           <GameplayContainer />
         </Suspense>
+        <Suspense fallback={null}>
+          <FlashMessages message={flashMessage} />
+          <ConfettiCelebration
+            startConfetti={showConfetti}
+            onConfettiStop={handleConfettiStop}
+          />
+        </Suspense>
       </ScrollView>
-
-      {/* Overlays */}
-      <Suspense fallback={null}>
-        <FlashMessages message={flashMessage} />
-        <ConfettiCelebration
-          startConfetti={showConfetti}
-          onConfettiStop={handleConfettiStop}
-        />
-      </Suspense>
     </LinearGradient>
   )
 }

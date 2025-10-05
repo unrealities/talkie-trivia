@@ -16,11 +16,12 @@ import { ASYNC_STORAGE_KEYS } from "../config/constants"
 
 export type Theme = "light" | "dark" | "system"
 export type AppColorScheme = "light" | "dark"
+export type ThemeColors = typeof lightColors
 
 interface ThemeContextType {
   theme: Theme
   setTheme: (theme: Theme) => void
-  colors: typeof lightColors
+  colors: ThemeColors
   colorScheme: AppColorScheme
 }
 
@@ -34,8 +35,8 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const systemColorScheme = useRNColorScheme() ?? "light"
   const [theme, setThemeState] = useState<Theme>("system")
 
-  // The actual color scheme being used by the app
-  const colorScheme = theme === "system" ? systemColorScheme : theme
+  const colorScheme: AppColorScheme =
+    theme === "system" ? (systemColorScheme as AppColorScheme) : theme
 
   useEffect(() => {
     const loadTheme = async () => {
@@ -70,7 +71,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
-  const colors = colorScheme === "dark" ? darkColors : lightColors
+  const colors: ThemeColors = colorScheme === "dark" ? darkColors : lightColors
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, colors, colorScheme }}>

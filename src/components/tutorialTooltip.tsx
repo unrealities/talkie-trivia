@@ -24,7 +24,7 @@ const TutorialTooltip: React.FC<TutorialTooltipProps> = ({
   onDismiss,
   style,
 }) => {
-  const { colors } = useTheme()
+  const colors = useTheme()
   const styles = useMemo(() => getTutorialTooltipStyles(colors), [colors])
   const animation = useSharedValue(0)
 
@@ -35,25 +35,17 @@ const TutorialTooltip: React.FC<TutorialTooltipProps> = ({
     })
   }, [isVisible, animation])
 
-  const animatedContainerStyle = useAnimatedStyle(() => {
-    return {
-      opacity: animation.value,
-      transform: [
-        {
-          translateY: interpolate(animation.value, [0, 1], [10, 0]),
-        },
-      ],
-    }
-  })
+  const animatedContainerStyle = useAnimatedStyle(() => ({
+    opacity: animation.value,
+    transform: [{ translateY: interpolate(animation.value, [0, 1], [10, 0]) }],
+  }))
 
   const handleDismiss = () => {
     hapticsService.medium()
     onDismiss()
   }
 
-  if (!isVisible) {
-    return null
-  }
+  if (!isVisible) return null
 
   return (
     <Animated.View style={[styles.container, animatedContainerStyle, style]}>

@@ -31,3 +31,12 @@ export const darkColors = {
   textDisabled: "#616161",
   quinary: "#29D7D7",
 }
+
+export type ThemeColors = typeof lightColors
+
+interface ThemeContextType {
+  theme: Theme
+  setTheme: (theme: Theme) => void
+  colors: ThemeColors
+  colorScheme: AppColorScheme
+}
