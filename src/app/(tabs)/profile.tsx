@@ -106,29 +106,13 @@ const ProfileScreen: React.FC<{}> = () => {
                   </Text>
                 </View>
 
-                <Section title="Statistics" icon="bar-chart">
-                  <PlayerStatsContainer
-                    player={player}
-                    playerStats={playerStats}
-                  />
-                </Section>
-
-                <Section title="Game History" icon="history">
-                  <GameHistory onHistoryItemPress={handleHistoryItemPress} />
-                </Section>
-
-                <Section title="Settings" icon="cog">
-                  <ThemeSelector />
-                  <View style={appStyles.divider} />
-                  <DifficultySelector />
-                </Section>
-
                 {!isGoogleSignedIn && (
                   <View
                     style={[
                       appStyles.signInPromptContainer,
                       {
                         marginTop: 0,
+                        marginBottom: 20,
                         paddingVertical: responsive.scale(15),
                         borderTopWidth: 1,
                         borderTopColor: colors.border,
@@ -157,6 +141,23 @@ const ProfileScreen: React.FC<{}> = () => {
                     <GoogleLogin />
                   </Section>
                 )}
+
+                <Section title="Settings" icon="cog">
+                  <ThemeSelector />
+                  <View style={appStyles.divider} />
+                  <DifficultySelector />
+                </Section>
+
+                <Section title="Statistics" icon="bar-chart">
+                  <PlayerStatsContainer
+                    player={player}
+                    playerStats={playerStats}
+                  />
+                </Section>
+
+                <Section title="Game History" icon="history">
+                  <GameHistory onHistoryItemPress={handleHistoryItemPress} />
+                </Section>
               </View>
             )}
           </Suspense>
