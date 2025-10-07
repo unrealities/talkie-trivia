@@ -6,30 +6,32 @@ interface ConfettiCelebrationProps {
   startConfetti: boolean
   onConfettiStop?: () => void
 }
-
 const ConfettiCelebration: React.FC<ConfettiCelebrationProps> = ({
   startConfetti,
   onConfettiStop,
 }) => {
   const { colors } = useTheme()
   const confettiRef = useRef<any>(null)
-  const start = useCallback(() => {
-    confettiRef.current?.start()
-  }, [])
-  const stop = useCallback(() => {
-    onConfettiStop?.()
-  }, [onConfettiStop])
+
+  const start = useCallback(() => confettiRef.current?.start(), [])
+  const stop = useCallback(() => onConfettiStop?.(), [onConfettiStop])
 
   useEffect(() => {
     if (startConfetti) start()
   }, [startConfetti, start])
 
   const confettiColors = useMemo(
-    () => [colors.primary, colors.secondary, colors.tertiary, colors.quinary],
+    () => [
+      colors.primary,
+      colors.secondary,
+      colors.tertiary,
+      colors.quinary,
+      colors.success,
+    ],
     [colors]
   )
 
-  const confettiCannon = startConfetti ? (
+  return startConfetti ? (
     <ConfettiCannon
       testID="confetti-cannon"
       count={250}
@@ -39,9 +41,9 @@ const ConfettiCelebration: React.FC<ConfettiCelebrationProps> = ({
       fadeOut={true}
       explosionSpeed={500}
       ref={confettiRef}
+      onAnimationEnd={stop}
     />
   ) : null
-  return confettiCannon
 }
 
 export default ConfettiCelebration
