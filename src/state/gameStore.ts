@@ -178,8 +178,8 @@ export const useGameStore = create<GameState>((set, get) => ({
         state.tutorialState.showResultsTip = false
       })
     )
-    AsyncStorage.setItem(ASYNC_STORAGE_KEYS.TUTORIAL_RESULTS_SEEN, "true")
     analyticsService.trackOnboardingCompleted()
+    AsyncStorage.setItem(ASYNC_STORAGE_KEYS.TUTORIAL_RESULTS_SEEN, "true")
   },
 
   makeGuess: (selectedMovie) => {

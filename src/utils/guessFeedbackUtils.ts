@@ -10,10 +10,13 @@ interface ImplicitHintResult {
 const getHintValue = (type: HintType, movie: Movie): string => {
   switch (type) {
     case "decade":
-      return movie.release_date ? `${movie.release_date.substring(0, 3)}0s` : ""
+      // Handle movies without a proper date gracefully
+      if (!movie.release_date || movie.release_date.length < 4) return ""
+      return `${movie.release_date.substring(0, 3)}0s`
     case "director":
       return movie.director?.name || ""
     case "actor":
+      // For actor hints in the guess list, we use the first actor's name
       return movie.actors?.[0]?.name || ""
     case "genre":
       return movie.genres?.[0]?.name || ""
@@ -24,7 +27,7 @@ const getHintValue = (type: HintType, movie: Movie): string => {
 
 /**
  * Compares a guessed movie with the correct movie to generate implicit hints.
- * It finds all new, unrevealed hints for the user.
+ * It finds all matching attributes for display and marks new matches as revealed.
  */
 export function generateImplicitHint(
   guessedMovie: Movie,
@@ -34,7 +37,20 @@ export function generateImplicitHint(
   const result: ImplicitHintResult = {
     feedback: null,
     revealedHints: {},
-    hintInfo: null,
+    hintInfo: [],
+  }
+
+  const hintsFound: HintInfo[] = []
+  let newHintRevealed = false
+  let firstNewMatchMessage: string | null = null
+
+  // Ensure movies have basic properties for comparison
+  if (!guessedMovie || !correctMovie) {
+    return {
+      feedback: "An unexpected error occurred with movie data.",
+      revealedHints: {},
+      hintInfo: null,
+    }
   }
 
   const hintChecks: {
@@ -43,68 +59,79 @@ export function generateImplicitHint(
     message: string
   }[] = [
     {
+      type: "decade",
+      condition:
+        !!guessedMovie.release_date &&
+        !!correctMovie.release_date &&
+        Math.floor(new Date(correctMovie.release_date).getFullYear() / 10) ===
+          Math.floor(new Date(guessedMovie.release_date).getFullYear() / 10),
+      message: `You're in the right decade! (Hint Revealed)`,
+    },
+    {
       type: "director",
-      condition: guessedMovie.director?.id === correctMovie.director?.id,
+      condition:
+        guessedMovie.director?.id === correctMovie.director?.id &&
+        !!correctMovie.director?.id,
       message: `You guessed another movie by the same director! (Hint Revealed)`,
     },
     {
       type: "actor",
-      condition: !!correctMovie.actors
-        .slice(0, 5)
-        .find((actor) =>
-          new Set(guessedMovie.actors.slice(0, 5).map((a) => a.id)).has(
-            actor.id
-          )
-        ),
+      condition:
+        !!correctMovie.actors &&
+        !!guessedMovie.actors &&
+        // Check if top 5 actors of correct movie are present in top 5 of guessed movie
+        correctMovie.actors
+          .slice(0, 5)
+          .some((actor) =>
+            new Set(guessedMovie.actors.slice(0, 5).map((a) => a.id)).has(
+              actor.id
+            )
+          ),
       message: `A lead actor from your guess is also in this movie! (Hint Revealed)`,
     },
     {
-      type: "decade",
-      condition:
-        Math.floor(new Date(correctMovie.release_date).getFullYear() / 10) ===
-        Math.floor(new Date(guessedMovie.release_date).getFullYear() / 10),
-      message: `You're in the right decade! (Hint Revealed)`,
-    },
-    {
       type: "genre",
-      condition: !!correctMovie.genres.find((genre) =>
-        new Set(guessedMovie.genres.map((g) => g.id)).has(genre.id)
-      ),
+      condition:
+        !!correctMovie.genres &&
+        !!guessedMovie.genres &&
+        // Check if any genre overlaps
+        correctMovie.genres.some((genre) =>
+          new Set(guessedMovie.genres.map((g) => g.id)).has(genre.id)
+        ),
       message: `This movie shares a genre with your guess! (Hint Revealed)`,
     },
   ]
 
-  // Find all new hints that match, not just the first one.
-  const newHints: HintInfo[] = []
-
+  // 1. Check for all matches and track new revelations
   for (const check of hintChecks) {
-    if (check.condition && !usedHints[check.type]) {
-      newHints.push({
-        type: check.type,
-        value: getHintValue(check.type, correctMovie),
-      })
-      result.revealedHints[check.type] = true
+    if (check.condition) {
+      const value = getHintValue(check.type, correctMovie)
+      if (value) {
+        hintsFound.push({ type: check.type, value })
+
+        if (!usedHints[check.type]) {
+          result.revealedHints[check.type] = true
+          newHintRevealed = true
+          if (!firstNewMatchMessage) {
+            // Use the exciting message for the *first* newly revealed hint
+            firstNewMatchMessage = check.message
+          }
+        }
+      }
     }
   }
 
-  if (newHints.length > 0) {
-    // We provide feedback for the first new hint found to keep it simple.
-    const firstNewHintType = newHints[0].type
-    const feedbackMessage = hintChecks.find(
-      (c) => c.type === firstNewHintType
-    )?.message
-    result.feedback = feedbackMessage || "Good guess! A hint was revealed."
-    result.hintInfo = newHints
-    return result
-  }
+  // 2. Format the final result
+  result.hintInfo = hintsFound
 
-  // If no new hints were found, check if we can give recurring feedback for an already-revealed hint.
-  for (const check of hintChecks) {
-    if (check.condition && usedHints[check.type]) {
-      result.feedback = `You're on the right track with the ${check.type}!`
-      // No new hint info to add here, just feedback text.
-      return result
-    }
+  // 3. Set the feedback message based on the outcome
+  if (newHintRevealed) {
+    result.feedback = firstNewMatchMessage
+  } else if (hintsFound.length > 0) {
+    // If nothing new was revealed, but something matched (already-known hints)
+    result.feedback = "You're getting warmer! Try another movie."
+  } else {
+    result.feedback = "Not quite! Try again."
   }
 
   return result
