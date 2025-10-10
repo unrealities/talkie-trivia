@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from "react"
-import { View, StyleSheet } from "react-native"
+import { View, StyleSheet, ActivityIndicator, Platform } from "react-native"
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -11,8 +11,25 @@ import { Svg, Circle } from "react-native-svg"
 import { responsive } from "../styles/global"
 import { useTheme } from "../contexts/themeContext"
 
-const CustomLoadingIndicator = () => {
+interface CustomLoadingIndicatorProps {
+  isLowEndDevice?: boolean
+}
+
+const CustomLoadingIndicator: React.FC<CustomLoadingIndicatorProps> = ({
+  isLowEndDevice = false,
+}) => {
   const { colors } = useTheme()
+
+  if (isLowEndDevice || Platform.OS === "web") {
+    return (
+      <ActivityIndicator
+        size="large"
+        color={colors.primary}
+        testID="standard-activity-indicator"
+      />
+    )
+  }
+
   const progress = useSharedValue(0)
   const size = responsive.scale(50)
   const strokeWidth = responsive.scale(4)
@@ -52,7 +69,12 @@ const CustomLoadingIndicator = () => {
   )
 
   return (
-    <View style={styles.container} testID="activity-indicator">
+    <View
+      style={styles.rotateContainer}
+      testID="activity-indicator"
+      accessibilityLabel="Loading content"
+      accessibilityRole="progressbar"
+    >
       <Animated.View style={[styles.rotateContainer, animatedStyle]}>
         <Svg width={size} height={size}>
           <Circle
