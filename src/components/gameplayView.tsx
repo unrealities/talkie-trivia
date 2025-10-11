@@ -7,11 +7,14 @@ import { hapticsService } from "../utils/hapticsService"
 import { getMovieStyles } from "../styles/movieStyles"
 import { useTheme } from "../contexts/themeContext"
 import { useGameStore } from "../state/gameStore"
+import { useShallow } from "zustand/react/shallow"
 
 const GameplayView: React.FC = () => {
-  const giveUp = useGameStore((state) => state.giveUp)
-  const isInteractionsDisabled = useGameStore(
-    (state) => state.isInteractionsDisabled
+  const { giveUp, isInteractionsDisabled } = useGameStore(
+    useShallow((state) => ({
+      giveUp: state.giveUp,
+      isInteractionsDisabled: state.isInteractionsDisabled,
+    }))
   )
 
   const { colors } = useTheme()

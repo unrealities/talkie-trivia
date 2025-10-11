@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useMemo,
   useState,
+  useRef,
 } from "react"
 import {
   ListRenderItemInfo,
@@ -14,6 +15,9 @@ import {
   LayoutAnimation,
   Platform,
   UIManager,
+  ActivityIndicator,
+  StyleProp,
+  ViewStyle,
 } from "react-native"
 import {
   useAnimatedStyle,
@@ -33,6 +37,7 @@ import { useTheme } from "../contexts/themeContext"
 import { API_CONFIG } from "../config/constants"
 import { useGameStore } from "../state/gameStore"
 import TutorialTooltip from "./tutorialTooltip"
+import { useShallow } from "zustand/react/shallow"
 
 if (
   Platform.OS === "android" &&
@@ -40,11 +45,6 @@ if (
 ) {
   UIManager.setLayoutAnimationEnabledExperimental(true)
 }
-
-type PickerState =
-  | { status: "idle" }
-  | { status: "searching"; query: string }
-  | { status: "results"; query: string; results: readonly BasicMovie[] }
 
 interface MovieItemProps {
   movie: BasicMovie
@@ -62,7 +62,9 @@ const MovieItem = memo<MovieItemProps>(
     const defaultPoster = require("../../assets/movie_default.png")
 
     useEffect(() => {
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+      if (Platform.OS !== "web") {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+      }
     }, [isExpanded])
 
     const releaseYear = movie.release_date
@@ -133,76 +135,111 @@ const MovieItem = memo<MovieItemProps>(
         )}
       </Pressable>
     )
-  }
+  },
+  (prevProps, nextProps) =>
+    prevProps.movie.id === nextProps.movie.id &&
+    prevProps.isDisabled === nextProps.isDisabled &&
+    prevProps.isExpanded === nextProps.isExpanded &&
+    prevProps.detailedMovie === nextProps.detailedMovie
 )
 
 const PickerContainer: FC = memo(() => {
-  const isInteractionsDisabled = useGameStore(
-    (state) => state.isInteractionsDisabled
+  const {
+    isInteractionsDisabled,
+    basicMovies,
+    allFullMovies,
+    makeGuess,
+    loading,
+    tutorialState,
+    dismissGuessInputTip,
+    dismissResultsTip,
+  } = useGameStore(
+    useShallow((state) => ({
+      isInteractionsDisabled: state.isInteractionsDisabled,
+      basicMovies: state.basicMovies,
+      allFullMovies: state.movies,
+      makeGuess: state.makeGuess,
+      loading: state.loading,
+      tutorialState: state.tutorialState,
+      dismissGuessInputTip: state.dismissGuessInputTip,
+      dismissResultsTip: state.dismissResultsTip,
+    }))
   )
-  const basicMovies = useGameStore((state) => state.basicMovies)
-  const allFullMovies = useGameStore((state) => state.movies)
-  const makeGuess = useGameStore((state) => state.makeGuess)
-  const loading = useGameStore((state) => state.loading)
-  const tutorialState = useGameStore((state) => state.tutorialState)
-  const dismissGuessInputTip = useGameStore(
-    (state) => state.dismissGuessInputTip
-  )
-  const dismissResultsTip = useGameStore((state) => state.dismissResultsTip)
 
+  const [query, setQuery] = useState("")
+  const [results, setResults] = useState<readonly BasicMovie[]>([])
+  const [isSearching, setIsSearching] = useState(false)
   const [expandedMovieId, setExpandedMovieId] = useState<number | null>(null)
   const [detailedMovie, setDetailedMovie] = useState<Movie | null>(null)
-  const [pickerState, setPickerState] = useState<PickerState>({
-    status: "idle",
-  })
+
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const shakeAnimation = useSharedValue(0)
 
-  const triggerShake = () => {
+  const triggerShake = useCallback(() => {
     shakeAnimation.value = withSequence(
       withTiming(-10, { duration: 50 }),
       withRepeat(withTiming(10, { duration: 100 }), 3, true),
       withTiming(0, { duration: 50 })
     )
-  }
+  }, [shakeAnimation])
 
-  const filterMovies = useCallback(
-    (searchTerm: string): BasicMovie[] => {
-      const trimmedTerm = searchTerm.trim()
-      if (trimmedTerm.length < 2) return []
-      return search(trimmedTerm, [...basicMovies], {
-        keySelector: (movie) => movie.title,
-        threshold: 0.8,
-      }) as BasicMovie[]
-    },
+  const filterMovies = useMemo(
+    () =>
+      (searchTerm: string): BasicMovie[] => {
+        const trimmedTerm = searchTerm.trim()
+        if (trimmedTerm.length < 2) return []
+        return search(trimmedTerm, [...basicMovies], {
+          keySelector: (movie) => movie.title,
+          threshold: 0.8,
+        }) as BasicMovie[]
+      },
     [basicMovies]
   )
 
   const handleInputChange = useCallback(
     (text: string) => {
       if (isInteractionsDisabled) return
-      if (text === "") {
-        setPickerState({ status: "idle" })
-      } else {
-        setPickerState({ status: "searching", query: text })
+
+      setQuery(text)
+      setExpandedMovieId(null)
+      setDetailedMovie(null)
+
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current)
       }
+
+      const trimmedText = text.trim()
+      if (trimmedText.length < 2) {
+        setResults([])
+        setIsSearching(false)
+        return
+      }
+
+      setIsSearching(true)
+
+      searchTimeoutRef.current = setTimeout(() => {
+        const filtered = filterMovies(trimmedText)
+
+        if (filtered.length > 0) {
+          hapticsService.light()
+        } else if (trimmedText.length > 2) {
+          triggerShake()
+        }
+
+        setResults(filtered)
+        setIsSearching(false)
+      }, 300) // 300ms debounce
     },
-    [isInteractionsDisabled]
+    [isInteractionsDisabled, filterMovies, triggerShake]
   )
 
   useEffect(() => {
-    if (pickerState.status !== "searching") return
-    const handler = setTimeout(() => {
-      const filtered = filterMovies(pickerState.query)
-      if (filtered.length > 0) hapticsService.light()
-      else if (pickerState.query.length > 2) triggerShake()
-      setPickerState({
-        status: "results",
-        query: pickerState.query,
-        results: filtered,
-      })
-    }, 300)
-    return () => clearTimeout(handler)
-  }, [pickerState, filterMovies])
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current)
+      }
+    }
+  }, [])
 
   const animatedInputStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: shakeAnimation.value }],
@@ -248,16 +285,14 @@ const PickerContainer: FC = memo(() => {
     [
       isInteractionsDisabled,
       expandedMovieId,
-      detailedMovie, // Add dependency
+      detailedMovie,
       handleSelectMovie,
       handleLongPressMovie,
     ]
   )
 
-  const showResultsTip =
-    pickerState.status === "results" &&
-    pickerState.results.length > 0 &&
-    tutorialState.showResultsTip
+  const showResults = query.length >= 2 || isSearching
+  const showResultsTip = results.length > 0 && tutorialState.showResultsTip
 
   if (loading) {
     return <PickerSkeleton />
@@ -266,7 +301,10 @@ const PickerContainer: FC = memo(() => {
   return (
     <View style={{ width: "100%", zIndex: 10 }}>
       <PickerUI
-        pickerState={pickerState}
+        query={query}
+        isSearching={isSearching}
+        results={results}
+        showResults={showResults}
         animatedInputStyle={animatedInputStyle}
         isInteractionsDisabled={isInteractionsDisabled}
         handleInputChange={handleInputChange}

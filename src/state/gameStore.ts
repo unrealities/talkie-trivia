@@ -22,6 +22,7 @@ import { ASYNC_STORAGE_KEYS } from "../config/constants"
 import { analyticsService } from "../utils/analyticsService"
 import { generateImplicitHint } from "../utils/guessFeedbackUtils"
 import basicMoviesData from "../../utils/basicMovies/basicMovies.json"
+import { useShallow } from "zustand/react/shallow"
 
 const uniqueBasicMovies = Array.from(
   new Map(basicMoviesData.map((movie) => [movie.id, movie])).values()

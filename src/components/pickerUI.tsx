@@ -14,13 +14,11 @@ import { BasicMovie } from "../models/movie"
 import { getPickerStyles } from "../styles/pickerStyles"
 import { useTheme } from "../contexts/themeContext"
 
-type PickerState =
-  | { status: "idle" }
-  | { status: "searching"; query: string }
-  | { status: "results"; query: string; results: readonly BasicMovie[] }
-
 interface PickerUIProps {
-  pickerState: PickerState
+  query: string
+  isSearching: boolean
+  results: readonly BasicMovie[]
+  showResults: boolean
   animatedInputStyle: StyleProp<ViewStyle>
   isInteractionsDisabled: boolean
   handleInputChange: (text: string) => void
@@ -29,7 +27,10 @@ interface PickerUIProps {
 
 export const PickerUI: React.FC<PickerUIProps> = memo(
   ({
-    pickerState,
+    query,
+    isSearching,
+    results,
+    showResults,
     animatedInputStyle,
     isInteractionsDisabled,
     handleInputChange,
@@ -37,14 +38,6 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
   }) => {
     const { colors } = useTheme()
     const pickerStyles = useMemo(() => getPickerStyles(colors), [colors])
-
-    const query =
-      pickerState.status === "searching" || pickerState.status === "results"
-        ? pickerState.query
-        : ""
-
-    const showResults =
-      pickerState.status === "results" || pickerState.status === "searching"
 
     return (
       <View style={pickerStyles.container}>
@@ -67,18 +60,25 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
               value={query}
               editable={!isInteractionsDisabled}
             />
+            {isSearching && (
+              <ActivityIndicator
+                size="small"
+                color={colors.primary}
+                style={pickerStyles.activityIndicator}
+              />
+            )}
           </View>
         </Animated.View>
 
         {/* The results container will now render as an overlay due to the styles */}
         {showResults && (
           <View style={pickerStyles.resultsContainer}>
-            {pickerState.status === "searching" ? (
-              <ActivityIndicator size="large" color={colors.primary} />
-            ) : pickerState.status === "results" ? (
+            {isSearching ? (
+              <Text style={pickerStyles.noResultsText}>Searching...</Text>
+            ) : results.length > 0 ? (
               <>
                 <FlatList
-                  data={pickerState.results}
+                  data={results}
                   renderItem={renderItem}
                   keyExtractor={(item) => item.id.toString()}
                   style={pickerStyles.resultsShow}
@@ -86,21 +86,17 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
                   initialNumToRender={10}
                   maxToRenderPerBatch={10}
                   windowSize={11}
-                  ListEmptyComponent={
-                    <Text style={pickerStyles.noResultsText}>
-                      No movies found for "{pickerState.query}"
-                    </Text>
-                  }
                 />
-                {pickerState.status === "results" &&
-                  pickerState.results.length > 0 && (
-                    <View style={pickerStyles.previewHintContainer}>
-                      <Text style={pickerStyles.previewHintText}>
-                        💡 Hold any result to preview
-                      </Text>
-                    </View>
-                  )}
+                <View style={pickerStyles.previewHintContainer}>
+                  <Text style={pickerStyles.previewHintText}>
+                    💡 Hold any result to preview
+                  </Text>
+                </View>
               </>
+            ) : query.length >= 2 ? (
+              <Text style={pickerStyles.noResultsText}>
+                No movies found for "{query}"
+              </Text>
             ) : null}
           </View>
         )}
