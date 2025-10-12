@@ -38,6 +38,7 @@ import { API_CONFIG } from "../config/constants"
 import { useGameStore } from "../state/gameStore"
 import TutorialTooltip from "./tutorialTooltip"
 import { useShallow } from "zustand/react/shallow"
+import { normalizeSearchString } from "../utils/stringUtils"
 
 if (
   Platform.OS === "android" &&
@@ -188,8 +189,11 @@ const PickerContainer: FC = memo(() => {
       (searchTerm: string): BasicMovie[] => {
         const trimmedTerm = searchTerm.trim()
         if (trimmedTerm.length < 2) return []
-        return search(trimmedTerm, [...basicMovies], {
-          keySelector: (movie) => movie.title,
+
+        const normalizedSearchTerm = normalizeSearchString(trimmedTerm)
+
+        return search(normalizedSearchTerm, [...basicMovies], {
+          keySelector: (movie) => normalizeSearchString(movie.title),
           threshold: 0.8,
         }) as BasicMovie[]
       },

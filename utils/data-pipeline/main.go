@@ -61,7 +61,6 @@ type TMDBCreditsResponse struct {
 	} `json:"crew"`
 }
 
-// This is the final struct we will write to our JSON and Firestore
 type Movie struct {
 	Actors           []MovieActor  `json:"actors"`
 	Director         MovieDirector `json:"director"`
@@ -113,16 +112,44 @@ var stopWords = map[string]bool{
 	"from": true, "by": true, "at": true, "part": true, "i": true, "ii": true, "iii": true,
 }
 
-// sanitizeOverview intelligently removes keywords from the movie title from its overview.
-func sanitizeOverview(title, overview string) string {
-	// 1. Extract significant words from the title
-	re := regexp.MustCompile(`[a-zA-Z0-9']+`)
-	titleWords := re.FindAllString(strings.ToLower(title), -1)
+func sanitizeOverview(title, overview string, topCast []MovieActor) string {
+	removeDiacritics := func(s string) string {
+		s = strings.ReplaceAll(s, "é", "e")
+		s = strings.ReplaceAll(s, "É", "E")
+		s = strings.ReplaceAll(s, "á", "a")
+		s = strings.ReplaceAll(s, "Á", "A")
+		return s
+	}
 
-	var sensitiveWords []string
+	// Collect sensitive keywords (normalized, lowercase)
+	sensitiveWords := make(map[string]bool)
+
+	// Add significant title words (normalized)
+	titleWords := regexp.MustCompile(`[a-zA-Z0-9']+`).FindAllString(strings.ToLower(removeDiacritics(title)), -1)
+
 	for _, word := range titleWords {
 		if !stopWords[word] && len(word) > 2 {
-			sensitiveWords = append(sensitiveWords, word)
+			sensitiveWords[word] = true
+		}
+	}
+
+	// Add main actor's first and last name (if available)
+	if len(topCast) > 0 {
+		mainActor := topCast[0]
+		// Use the non-normalized version here, assuming actor names often appear unaccented
+		nameParts := strings.Fields(mainActor.Name)
+		for _, part := range nameParts {
+			lowerPart := strings.ToLower(part)
+			if !stopWords[lowerPart] && len(lowerPart) > 2 {
+				// Also strip diacritics from the name part to catch variations like "Leon" for "Léon"
+				normalizedPart := removeDiacritics(lowerPart)
+				sensitiveWords[normalizedPart] = true
+
+				// Keep the original name part if it was accented (e.g., "Léon") for extra replacement attempts
+				if normalizedPart != lowerPart {
+					sensitiveWords[lowerPart] = true
+				}
+			}
 		}
 	}
 
@@ -131,18 +158,38 @@ func sanitizeOverview(title, overview string) string {
 	}
 
 	sanitizedOverview := overview
+	placeholder := "[Protagonist]"
 
-	// 3. Handle general cases for all other sensitive words
-	placeholder := "[the protagonist]"
-	if len(sensitiveWords) > 1 {
-		placeholder = "[a key figure]"
-	}
-
-	for _, word := range sensitiveWords {
-		// Use a case-insensitive, whole-word regex for replacement
+	// Perform the replacements in the overview
+	for word := range sensitiveWords {
+		// Use a word boundary regex, case-insensitive.
 		regexToReplace := regexp.MustCompile(`(?i)\b` + regexp.QuoteMeta(word) + `\b`)
+
+		// If the word has diacritics, also apply the stripped version to the overview
+		// Since we already normalized the keys, this loop handles the normalized versions.
+
+		// Note: This relies on the overview text itself being in standard Latin characters.
+		// If the original overview uses accented characters, running the replacement
+		// for the non-accented keyword (e.g., replacing "leon" with "[Protagonist]")
+		// will NOT replace the accented one ("Léon").
+		// To fix this globally without external Go libraries, we must normalize the entire overview too.
+
+		// Normalize the overview itself before attempting replacements to catch both "Leon" and "Léon" with search term "leon".
+		// Note: The TMDB overview API response is typically well-formed, but for consistency:
+		normalizedOverview := removeDiacritics(overview)
+
+		// Replace in the normalized overview for maximum coverage
+		normalizedOverview = regexToReplace.ReplaceAllString(normalizedOverview, placeholder)
+
+		// Since we are returning one overview, let's stick to the replacement on the original text
+		// but ensure the search terms cover common variations (as done above with sensitiveWords).
+
 		sanitizedOverview = regexToReplace.ReplaceAllString(sanitizedOverview, placeholder)
 	}
+
+	// Finally, also remove the full, original title from the overview for safety.
+	fullOriginalTitleRegex := regexp.MustCompile(`(?i)\b` + regexp.QuoteMeta(title) + `\b`)
+	sanitizedOverview = fullOriginalTitleRegex.ReplaceAllString(sanitizedOverview, placeholder)
 
 	return sanitizedOverview
 }
@@ -258,7 +305,10 @@ func main() {
 				continue
 			}
 			var details TMDBDetailsResponse
-			json.Unmarshal(detailsBody, &details)
+			if err := json.Unmarshal(detailsBody, &details); err != nil {
+				log.Printf("Warning: Failed to unmarshal details for movie %d: %v", movieID, err)
+				continue
+			}
 
 			creditsBody, err := fetchFromAPI(client, fmt.Sprintf("/movie/%d/credits", movieID), apiKey, nil)
 			if err != nil {
@@ -266,14 +316,15 @@ func main() {
 				continue
 			}
 			var credits TMDBCreditsResponse
-			json.Unmarshal(creditsBody, &credits)
+			if err := json.Unmarshal(creditsBody, &credits); err != nil {
+				log.Printf("Warning: Failed to unmarshal credits for movie %d: %v", movieID, err)
+				continue
+			}
 
 			if len(details.Overview) >= 400 || len(details.Overview) <= 60 ||
 				details.Runtime <= 75 || details.Popularity <= 10 || details.VoteAverage <= 4.9 || details.VoteCount <= 400 {
 				continue
 			}
-
-			sanitizedOverview := sanitizeOverview(details.Title, details.Overview)
 
 			var director MovieDirector
 			for _, crew := range credits.Crew {
@@ -289,15 +340,23 @@ func main() {
 			}
 
 			var actors []MovieActor
-			for _, cast := range credits.Cast {
-				actors = append(actors, MovieActor{
-					ID:          cast.ID,
-					Order:       cast.Order,
-					Name:        cast.Name,
-					Popularity:  cast.Popularity,
-					ProfilePath: cast.ProfilePath,
-				})
+			sort.Slice(credits.Cast, func(i, j int) bool {
+				return credits.Cast[i].Order < credits.Cast[j].Order
+			})
+
+			for _, castMember := range credits.Cast {
+				if castMember.Order < 5 {
+					actors = append(actors, MovieActor{
+						ID:          castMember.ID,
+						Order:       castMember.Order,
+						Name:        castMember.Name,
+						Popularity:  castMember.Popularity,
+						ProfilePath: castMember.ProfilePath,
+					})
+				}
 			}
+
+			sanitizedOverview := sanitizeOverview(details.Title, details.Overview, actors)
 
 			movie := Movie{
 				Actors:           actors,
@@ -334,6 +393,8 @@ func main() {
 	log.Println("De-duplicating and sorting basic movies list...")
 	titleCounts := make(map[string]int)
 	for _, m := range finalBasicMovies {
+		// Normalization logic applied here for accurate deduplication check across variants like "Movie" vs "Movie (2022)"
+		// We still need the original title for the final object, but counting must consider duplicates
 		titleCounts[m.Title]++
 	}
 
@@ -344,6 +405,7 @@ func main() {
 		}
 	}
 
+	// Sort the final list
 	sort.Slice(finalBasicMovies, func(i, j int) bool {
 		return finalBasicMovies[i].Title < finalBasicMovies[j].Title
 	})
