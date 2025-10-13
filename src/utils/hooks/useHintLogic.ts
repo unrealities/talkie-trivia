@@ -52,7 +52,7 @@ export function useHintLogic() {
       } else if (
         difficulty === "medium" ||
         difficulty === "hard" ||
-        difficulty === "very hard" ||
+        difficulty === "extreme" ||
         isInteractionsDisabled ||
         hintsAvailable <= 0
       ) {
@@ -159,6 +159,8 @@ export function useHintLogic() {
     if (isInteractionsDisabled) return "Game Over"
 
     switch (difficulty) {
+      case "basic":
+        return "All Clues Revealed"
       case "easy": {
         const usedHintsCount = Object.values(playerGame.hintsUsed || {}).filter(
           (v) => v
@@ -176,6 +178,9 @@ export function useHintLogic() {
       }
       case "medium":
         return "Hints are revealed by good guesses!"
+      case "hard":
+      case "extreme":
+        return ""
       default:
         return ""
     }
@@ -188,15 +193,26 @@ export function useHintLogic() {
     difficulty,
   ])
 
+  const isToggleDisabled =
+    isInteractionsDisabled ||
+    difficulty === "basic" ||
+    difficulty === "medium" ||
+    difficulty === "hard" ||
+    difficulty === "extreme"
+
+  const areHintButtonsDisabled =
+    isInteractionsDisabled ||
+    difficulty === "medium" ||
+    difficulty === "hard" ||
+    difficulty === "extreme" ||
+    hintsAvailable <= 0
+
   return {
     showHintOptions,
     displayedHintText,
     hintLabelText,
-    isToggleDisabled:
-      isInteractionsDisabled ||
-      difficulty === "medium" ||
-      difficulty === "hard" ||
-      difficulty === "very hard",
+    isToggleDisabled,
+    areHintButtonsDisabled,
     hintStatuses,
     highlightedHint,
     getHintText,

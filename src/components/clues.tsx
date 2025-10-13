@@ -117,7 +117,7 @@ const CluesContainer = memo(() => {
     let numCluesToReveal
     if (correctAnswer || isInteractionsDisabled) {
       numCluesToReveal = clues.length
-    } else if (difficulty === "very hard") {
+    } else if (difficulty === "extreme") {
       numCluesToReveal = guesses.length < 2 ? 1 : 2
     } else {
       numCluesToReveal = Math.min(guesses.length + 1, clues.length)

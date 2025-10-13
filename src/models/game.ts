@@ -1,6 +1,6 @@
 import { Movie } from "./movie"
 
-export type Difficulty = "very easy" | "easy" | "medium" | "hard" | "very hard"
+export type Difficulty = "basic" | "easy" | "medium" | "hard" | "extreme"
 
 export type HintType = "decade" | "director" | "actor" | "genre"
 

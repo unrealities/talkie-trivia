@@ -30,8 +30,8 @@ const DifficultySelector = () => {
 
   const options: { label: string; value: Difficulty; description: string }[] = [
     {
-      label: "Very Easy",
-      value: "very easy",
+      label: "Basic",
+      value: "basic",
       description:
         "All movie facts and hints are revealed at the start of the game.",
     },
@@ -54,8 +54,8 @@ const DifficultySelector = () => {
         "A pure test of knowledge. No hints are available or revealed throughout the game.",
     },
     {
-      label: "Very Hard",
-      value: "very hard",
+      label: "Extreme",
+      value: "extreme",
       description:
         "The ultimate challenge. You only get 3 guesses, clues are revealed more slowly, and no hints are available.",
     },

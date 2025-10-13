@@ -57,7 +57,7 @@ export const getDifficultySelectorStyles = (colors: any) =>
     },
     option: {
       paddingVertical: spacing.small,
-      paddingHorizontal: spacing.medium,
+      paddingHorizontal: spacing.small,
       borderRadius: responsive.scale(6),
       margin: spacing.extraSmall,
       backgroundColor: colors.surface,

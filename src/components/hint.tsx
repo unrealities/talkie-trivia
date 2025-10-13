@@ -20,7 +20,7 @@ const HintSkeleton = memo(() => {
   )
 })
 
-const VeryEasyHints = memo(() => {
+const BasicHints = memo(() => {
   const { getHintText } = useHintLogic()
   const { colors } = useTheme()
   const styles = useMemo(() => getHintStyles(colors), [colors])
@@ -29,7 +29,7 @@ const VeryEasyHints = memo(() => {
 
   return (
     <View style={styles.veryEasyContainer}>
-      <Text style={styles.veryEasyTitle}>All Hints Revealed</Text>
+      <Text style={styles.veryEasyTitle}>All Clues Revealed</Text>
       {hintTypes.map((type) => (
         <View key={type} style={styles.veryEasyRow}>
           <Text style={styles.veryEasyHintLabel}>
@@ -100,12 +100,12 @@ const HintContainer: React.FC = memo(() => {
     return <HintSkeleton />
   }
 
-  if (difficulty === "hard" || difficulty === "very hard") {
+  if (difficulty === "hard" || difficulty === "extreme") {
     return null
   }
 
-  if (difficulty === "very easy" && !isInteractionsDisabled) {
-    return <VeryEasyHints />
+  if (difficulty === "basic" && !isInteractionsDisabled) {
+    return <BasicHints />
   }
 
   return <MainHintComponent />

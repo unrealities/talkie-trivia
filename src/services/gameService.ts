@@ -136,7 +136,7 @@ export const gameService = {
 
     const today = new Date()
     const dateId = generateDateId(today)
-    const guessesMax = difficulty === "very hard" ? 3 : 5
+    const guessesMax = difficulty === "extreme" ? 3 : 5
 
     const [game, stats] = await Promise.all([
       _fetchOrCreatePlayerGame(
@@ -150,7 +150,8 @@ export const gameService = {
     ])
 
     game.guessesMax = guessesMax
-    if (difficulty === "very easy") {
+
+    if (difficulty === "basic") {
       game.hintsUsed = {
         actor: true,
         decade: true,
