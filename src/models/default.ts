@@ -2,6 +2,7 @@ import { Movie } from "../models/movie"
 import { PlayerGame } from "../models/game"
 import PlayerStats from "../models/playerStats"
 import { GAME_DEFAULTS } from "../config/constants"
+import { DIFFICULTY_MODES, DEFAULT_DIFFICULTY } from "../config/difficulty"
 
 export const defaultMovie: Movie = {
   actors: [],
@@ -23,7 +24,7 @@ export const defaultPlayerGame: PlayerGame = {
   id: "",
   playerID: "",
   movie: defaultMovie,
-  guessesMax: GAME_DEFAULTS.MAX_GUESSES,
+  guessesMax: DIFFICULTY_MODES[DEFAULT_DIFFICULTY].guessesMax,
   guesses: [],
   correctAnswer: false,
   gaveUp: false,

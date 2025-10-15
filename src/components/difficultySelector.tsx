@@ -7,7 +7,6 @@ import Animated, {
   Easing,
   runOnJS,
 } from "react-native-reanimated"
-import { Difficulty } from "../models/game"
 import { getDifficultySelectorStyles } from "../styles/difficultySelectorStyles"
 import { hapticsService } from "../utils/hapticsService"
 import { useTheme } from "../contexts/themeContext"
@@ -15,6 +14,20 @@ import { useGameStore } from "../state/gameStore"
 import { useAuth } from "../contexts/authContext"
 import { FontAwesome } from "@expo/vector-icons"
 import { responsive } from "../styles/global"
+import {
+  DifficultyLevel,
+  DIFFICULTY_MODES,
+  DifficultyMode,
+} from "../config/difficulty"
+
+type Option = DifficultyMode & { value: DifficultyLevel }
+
+const options: Option[] = (
+  Object.keys(DIFFICULTY_MODES) as DifficultyLevel[]
+).map((key) => ({
+  value: key,
+  ...DIFFICULTY_MODES[key],
+}))
 
 const DifficultySelector = () => {
   const { player } = useAuth()
@@ -24,45 +37,11 @@ const DifficultySelector = () => {
   const { colors } = useTheme()
   const styles = useMemo(() => getDifficultySelectorStyles(colors), [colors])
 
-  const [hoveredDifficulty, setHoveredDifficulty] = useState<Difficulty | null>(
-    null
-  )
-
-  const options: { label: string; value: Difficulty; description: string }[] = [
-    {
-      label: "Basic",
-      value: "basic",
-      description:
-        "All movie facts and hints are revealed at the start of the game.",
-    },
-    {
-      label: "Easy",
-      value: "easy",
-      description:
-        "Reveal clues gradually. You can use earned hint points to reveal specific hints like Decade, Director, Actor, or Genre.",
-    },
-    {
-      label: "Medium",
-      value: "medium",
-      description:
-        "Hints are automatically revealed when you make a guess that shares a category (like actor or decade) with the correct movie.",
-    },
-    {
-      label: "Hard",
-      value: "hard",
-      description:
-        "A pure test of knowledge. No hints are available or revealed throughout the game.",
-    },
-    {
-      label: "Extreme",
-      value: "extreme",
-      description:
-        "The ultimate challenge. You only get 3 guesses, clues are revealed more slowly, and no hints are available.",
-    },
-  ]
+  const [hoveredDifficulty, setHoveredDifficulty] =
+    useState<DifficultyLevel | null>(null)
 
   const handleSelect = useCallback(
-    (newDifficulty: Difficulty) => {
+    (newDifficulty: DifficultyLevel) => {
       if (player) {
         hapticsService.medium()
         setDifficulty(newDifficulty, player)
@@ -103,7 +82,7 @@ const DifficultySelector = () => {
     opacity: descriptionOpacity.value,
   }))
 
-  const handleLongPress = (value: Difficulty) => {
+  const handleLongPress = (value: DifficultyLevel) => {
     hapticsService.light()
     setHoveredDifficulty(value)
   }

@@ -25,6 +25,7 @@ import { useTheme } from "../contexts/themeContext"
 import { ANIMATION_CONSTANTS } from "../config/constants"
 import { useGameStore } from "../state/gameStore"
 import { useShallow } from "zustand/react/shallow"
+import { DIFFICULTY_MODES } from "../config/difficulty"
 
 const splitSummary = (summary: string, splits: number = 5): string[] => {
   if (!summary) return Array(splits).fill("")
@@ -115,12 +116,18 @@ const CluesContainer = memo(() => {
     if (loading) return
 
     let numCluesToReveal
+    const hintStrategy = DIFFICULTY_MODES[difficulty]?.hintStrategy
+    const currentGuessCount = guesses.length
+
     if (correctAnswer || isInteractionsDisabled) {
       numCluesToReveal = clues.length
-    } else if (difficulty === "extreme") {
-      numCluesToReveal = guesses.length < 2 ? 1 : 2
+    } else if (hintStrategy === "EXTREME_CHALLENGE") {
+      numCluesToReveal = Math.floor(currentGuessCount / 2) + 1
+      numCluesToReveal = Math.min(numCluesToReveal, clues.length)
+    } else if (hintStrategy === "ALL_REVEALED") {
+      numCluesToReveal = clues.length
     } else {
-      numCluesToReveal = Math.min(guesses.length + 1, clues.length)
+      numCluesToReveal = Math.min(currentGuessCount + 1, clues.length)
     }
 
     if (numCluesToReveal > revealedClues.length) {
@@ -129,27 +136,32 @@ const CluesContainer = memo(() => {
       const lastClue = newRevealedClues[newRevealedClues.length - 1] || ""
       lastClueRef.current = lastClue
 
-      highlightProgress.value = 0
-      typewriterProgress.value = 0
-      setTypewriterText("")
+      if (hintStrategy === "ALL_REVEALED") {
+        setTypewriterText(lastClue)
+        setRevealedClues(newRevealedClues)
+      } else {
+        highlightProgress.value = 0
+        typewriterProgress.value = 0
+        setTypewriterText("")
 
-      const typewriterDuration =
-        lastClue.length * ANIMATION_CONSTANTS.TYPEWRITER_CHAR_DURATION
+        const typewriterDuration =
+          lastClue.length * ANIMATION_CONSTANTS.TYPEWRITER_CHAR_DURATION
 
-      highlightProgress.value = withSequence(
-        withTiming(1, { duration: 400 }),
-        withDelay(typewriterDuration + 200, withTiming(0, { duration: 500 }))
-      )
+        highlightProgress.value = withSequence(
+          withTiming(1, { duration: 400 }),
+          withDelay(typewriterDuration + 200, withTiming(0, { duration: 500 }))
+        )
 
-      typewriterProgress.value = withDelay(
-        200,
-        withTiming(lastClue.length, {
-          duration: typewriterDuration,
-          easing: Easing.linear,
-        })
-      )
+        typewriterProgress.value = withDelay(
+          200,
+          withTiming(lastClue.length, {
+            duration: typewriterDuration,
+            easing: Easing.linear,
+          })
+        )
+        setRevealedClues(newRevealedClues)
+      }
 
-      setRevealedClues(newRevealedClues)
       setTimeout(
         () => scrollViewRef.current?.scrollToEnd({ animated: true }),
         100
@@ -218,7 +230,7 @@ const CluesContainer = memo(() => {
                   {oldCluesText}
                   {oldCluesText ? " " : ""}
                   {isGameOver ? (
-                    <Text>{lastClueRef.current}</Text>
+                    <Text>{clues.slice(-1)[0]}</Text>
                   ) : (
                     <Animated.Text style={animatedHighlightStyle}>
                       {typewriterText}

@@ -1,13 +1,7 @@
 import { create } from "zustand"
 import { produce } from "immer"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import {
-  PlayerGame,
-  Difficulty,
-  HintType,
-  Guess,
-  HintInfo,
-} from "../models/game"
+import { PlayerGame, HintType, Guess, HintInfo } from "../models/game"
 import PlayerStats from "../models/playerStats"
 import { Movie, BasicMovie } from "../models/movie"
 import {
@@ -21,12 +15,17 @@ import Player from "../models/player"
 import { ASYNC_STORAGE_KEYS } from "../config/constants"
 import { analyticsService } from "../utils/analyticsService"
 import { generateImplicitHint } from "../utils/guessFeedbackUtils"
-import basicMoviesData from "../../utils/basicMovies/basicMovies.json"
+import basicMoviesData from "../../data/popularMovies.json"
 import { useShallow } from "zustand/react/shallow"
+import {
+  DifficultyLevel,
+  DIFFICULTY_MODES,
+  DEFAULT_DIFFICULTY,
+} from "../config/difficulty"
 
 const uniqueBasicMovies = Array.from(
   new Map(basicMoviesData.map((movie) => [movie.id, movie])).values()
-)
+) as readonly BasicMovie[]
 
 export type GameStatus = "playing" | "revealing" | "gameOver"
 
@@ -44,7 +43,7 @@ export interface GameState {
   gameStatus: GameStatus
 
   // Settings
-  difficulty: Difficulty
+  difficulty: DifficultyLevel
   tutorialState: {
     showGuessInputTip: boolean
     showResultsTip: boolean
@@ -63,7 +62,7 @@ export interface GameState {
 
   // Actions
   initializeGame: (player: Player) => Promise<void>
-  setDifficulty: (newDifficulty: Difficulty, player: Player) => void
+  setDifficulty: (newDifficulty: DifficultyLevel, player: Player) => void
   dismissGuessInputTip: () => void
   dismissResultsTip: () => void
   makeGuess: (selectedMovie: BasicMovie) => void
@@ -79,13 +78,13 @@ export const useGameStore = create<GameState>((set, get) => ({
   // --- INITIAL STATE ---
   playerGame: defaultPlayerGame,
   playerStats: defaultPlayerStats,
-  basicMovies: uniqueBasicMovies as readonly BasicMovie[],
+  basicMovies: uniqueBasicMovies,
   movies: [],
   loading: true,
   error: null,
   isInteractionsDisabled: true,
   gameStatus: "playing",
-  difficulty: "medium",
+  difficulty: DEFAULT_DIFFICULTY,
   tutorialState: {
     showGuessInputTip: false,
     showResultsTip: false,
@@ -103,10 +102,17 @@ export const useGameStore = create<GameState>((set, get) => ({
       gameStatus: "playing",
     })
     try {
-      const storedDifficulty =
+      let storedDifficulty =
         ((await AsyncStorage.getItem(
           ASYNC_STORAGE_KEYS.DIFFICULTY_SETTING
-        )) as Difficulty) || "medium"
+        )) as DifficultyLevel) || DEFAULT_DIFFICULTY
+
+      if (!DIFFICULTY_MODES[storedDifficulty]) {
+        console.warn(
+          `Invalid difficulty setting found in storage: '${storedDifficulty}'. Defaulting to ${DEFAULT_DIFFICULTY}.`
+        )
+        storedDifficulty = DEFAULT_DIFFICULTY
+      }
 
       const hasSeenGuessInputTip = await AsyncStorage.getItem(
         ASYNC_STORAGE_KEYS.TUTORIAL_GUESS_INPUT_SEEN
@@ -184,7 +190,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   makeGuess: (selectedMovie) => {
-    const { playerGame, movies } = get()
+    const { playerGame, movies, difficulty } = get()
     if (playerGame.correctAnswer || playerGame.gaveUp) return
 
     const correctMovie = playerGame.movie
@@ -208,26 +214,33 @@ export const useGameStore = create<GameState>((set, get) => ({
       selectedMovie.title
     )
 
+    const hintStrategy = DIFFICULTY_MODES[difficulty].hintStrategy
+    const isExtremeChallenge = hintStrategy === "EXTREME_CHALLENGE"
+    const canMakeGuess =
+      !isExtremeChallenge || playerGame.guesses.length < playerGame.guessesMax
+
     set(
       produce((state: GameState) => {
-        state.playerGame.guesses.push({
-          movieId: selectedMovie.id,
-          hintInfo: hintResult.hintInfo,
-        })
-        state.playerGame.correctAnswer = isCorrectAnswer
+        if (canMakeGuess) {
+          state.playerGame.guesses.push({
+            movieId: selectedMovie.id,
+            hintInfo: hintResult.hintInfo,
+          })
+          state.playerGame.correctAnswer = isCorrectAnswer
 
-        if (Object.keys(hintResult.revealedHints).length > 0) {
-          state.playerGame.hintsUsed = {
-            ...state.playerGame.hintsUsed,
-            ...hintResult.revealedHints,
+          if (Object.keys(hintResult.revealedHints).length > 0) {
+            state.playerGame.hintsUsed = {
+              ...state.playerGame.hintsUsed,
+              ...hintResult.revealedHints,
+            }
           }
-        }
 
-        state.lastGuessResult = {
-          movieId: selectedMovie.id,
-          correct: isCorrectAnswer,
-          feedback: hintResult.feedback,
-          hintInfo: hintResult.hintInfo,
+          state.lastGuessResult = {
+            movieId: selectedMovie.id,
+            correct: isCorrectAnswer,
+            feedback: hintResult.feedback,
+            hintInfo: hintResult.hintInfo,
+          }
         }
       })
     )
@@ -243,7 +256,12 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   useHint: (hintType) => {
-    const { playerGame, playerStats } = get()
+    const { playerGame, playerStats, difficulty } = get()
+    const isUserSpendStrategy =
+      DIFFICULTY_MODES[difficulty].hintStrategy === "USER_SPEND"
+
+    if (!isUserSpendStrategy) return
+
     if (playerGame.hintsUsed?.[hintType] || playerStats.hintsAvailable <= 0)
       return
 

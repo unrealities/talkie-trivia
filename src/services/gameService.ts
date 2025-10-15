@@ -16,7 +16,7 @@ import { playerStatsConverter } from "../utils/firestore/converters/playerStats"
 import { gameHistoryEntryConverter } from "../utils/firestore/converters/gameHistoryEntry"
 import Player from "../models/player"
 import PlayerStats from "../models/playerStats"
-import { Difficulty, PlayerGame } from "../models/game"
+import { PlayerGame } from "../models/game"
 import { Movie } from "../models/movie"
 import {
   defaultPlayerGame,
@@ -26,6 +26,11 @@ import {
 import { FIRESTORE_COLLECTIONS } from "../config/constants"
 import { GameHistoryEntry } from "../models/gameHistory"
 import popularMoviesData from "../../data/popularMovies.json"
+import {
+  DifficultyLevel,
+  DIFFICULTY_MODES,
+  DEFAULT_DIFFICULTY,
+} from "../config/difficulty"
 
 /**
  * Selects the movie for today from a local data file.
@@ -86,7 +91,9 @@ const _fetchOrCreatePlayerGame = async (
   const gameSnap = await getDoc(playerGameRef)
 
   if (gameSnap.exists()) {
-    return gameSnap.data()
+    const existingGame = gameSnap.data()
+    existingGame.guessesMax = guessesMax
+    return existingGame
   } else {
     const newPlayerGame: PlayerGame = {
       ...defaultPlayerGame,
@@ -121,7 +128,7 @@ const _fetchOrCreatePlayerStats = async (
 }
 
 export const gameService = {
-  getInitialGameData: async (player: Player, difficulty: Difficulty) => {
+  getInitialGameData: async (player: Player, difficulty: DifficultyLevel) => {
     // Select the movie for today from local data
     const movieForToday = _getMovieForToday()
 
@@ -136,7 +143,17 @@ export const gameService = {
 
     const today = new Date()
     const dateId = generateDateId(today)
-    const guessesMax = difficulty === "extreme" ? 3 : 5
+
+    let difficultyMode = DIFFICULTY_MODES[difficulty]
+
+    if (!difficultyMode) {
+      console.error(
+        `Invalid difficulty key: ${difficulty}. Falling back to default: ${DEFAULT_DIFFICULTY}.`
+      )
+      difficultyMode = DIFFICULTY_MODES[DEFAULT_DIFFICULTY]
+    }
+
+    const guessesMax = difficultyMode.guessesMax
 
     const [game, stats] = await Promise.all([
       _fetchOrCreatePlayerGame(
@@ -151,13 +168,15 @@ export const gameService = {
 
     game.guessesMax = guessesMax
 
-    if (difficulty === "basic") {
+    if (difficultyMode.hintStrategy === "ALL_REVEALED") {
       game.hintsUsed = {
         actor: true,
         decade: true,
         director: true,
         genre: true,
       }
+    } else {
+      game.hintsUsed = game.hintsUsed || {}
     }
 
     return {

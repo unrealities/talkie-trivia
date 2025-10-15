@@ -1,6 +1,7 @@
 import { Movie } from "./movie"
+import { DifficultyLevel } from "../config/difficulty"
 
-export type Difficulty = "basic" | "easy" | "medium" | "hard" | "extreme"
+export type Difficulty = DifficultyLevel
 
 export type HintType = "decade" | "director" | "actor" | "genre"
 

@@ -5,6 +5,7 @@ import { useGameStore } from "../../state/gameStore"
 import { hapticsService } from "../hapticsService"
 import { analyticsService } from "../analyticsService"
 import { useShallow } from "zustand/react/shallow"
+import { DIFFICULTY_MODES } from "../../config/difficulty"
 
 if (
   Platform.OS === "android" &&
@@ -42,6 +43,8 @@ export function useHintLogic() {
   const hintsAvailable = playerStats?.hintsAvailable ?? 0
   const hintTypes: HintType[] = ["decade", "director", "actor", "genre"]
 
+  const currentHintStrategy = DIFFICULTY_MODES[difficulty].hintStrategy
+
   const hintStatuses = useMemo(() => {
     const statuses: Record<HintType, HintStatus> = {} as any
     const usedHints = playerGame.hintsUsed || {}
@@ -50,11 +53,11 @@ export function useHintLogic() {
       if (usedHints[type]) {
         statuses[type] = "used"
       } else if (
-        difficulty === "medium" ||
-        difficulty === "hard" ||
-        difficulty === "extreme" ||
+        currentHintStrategy === "NONE_DISABLED" ||
+        currentHintStrategy === "EXTREME_CHALLENGE" ||
+        currentHintStrategy === "ALL_REVEALED" ||
         isInteractionsDisabled ||
-        hintsAvailable <= 0
+        (currentHintStrategy === "USER_SPEND" && hintsAvailable <= 0)
       ) {
         statuses[type] = "disabled"
       } else {
@@ -62,13 +65,18 @@ export function useHintLogic() {
       }
     }
     return statuses
-  }, [playerGame.hintsUsed, isInteractionsDisabled, hintsAvailable, difficulty])
+  }, [
+    playerGame.hintsUsed,
+    isInteractionsDisabled,
+    hintsAvailable,
+    currentHintStrategy,
+  ])
 
   useEffect(() => {
     const currentHints = playerGame.hintsUsed || {}
     const previousHints = prevHintsUsedRef.current || {}
 
-    if (difficulty !== "easy" && difficulty !== "medium") {
+    if (currentHintStrategy !== "IMPLICIT_FEEDBACK") {
       prevHintsUsedRef.current = currentHints
       return
     }
@@ -87,7 +95,7 @@ export function useHintLogic() {
     }
 
     prevHintsUsedRef.current = currentHints
-  }, [playerGame.hintsUsed, difficulty])
+  }, [playerGame.hintsUsed, currentHintStrategy])
 
   const getHintText = useCallback(
     (hintType: HintType): string => {
@@ -113,7 +121,7 @@ export function useHintLogic() {
 
   const handleHintSelection = useCallback(
     (hintType: HintType) => {
-      if (difficulty !== "easy") return
+      if (currentHintStrategy !== "USER_SPEND") return
 
       hapticsService.medium()
 
@@ -126,17 +134,17 @@ export function useHintLogic() {
         useHint(hintType)
       }
     },
-    [hintStatuses, difficulty, getHintText, useHint]
+    [hintStatuses, currentHintStrategy, getHintText, useHint]
   )
 
   useEffect(() => {
-    if (difficulty !== "easy") {
+    if (currentHintStrategy !== "USER_SPEND") {
       setDisplayedHintText(null)
     }
-  }, [playerGame.guesses.length, difficulty])
+  }, [playerGame.guesses.length, currentHintStrategy])
 
   const handleToggleHintOptions = useCallback(() => {
-    if (difficulty !== "easy") return
+    if (currentHintStrategy !== "USER_SPEND") return
 
     hapticsService.light()
 
@@ -153,33 +161,34 @@ export function useHintLogic() {
     }
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setShowHintOptions((prevShow) => !prevShow)
-  }, [showHintOptions, hintsAvailable, playerGame.hintsUsed, difficulty])
+  }, [
+    showHintOptions,
+    hintsAvailable,
+    playerGame.hintsUsed,
+    currentHintStrategy,
+  ])
 
   const hintLabelText = useMemo(() => {
     if (isInteractionsDisabled) return "Game Over"
 
-    switch (difficulty) {
-      case "basic":
+    switch (currentHintStrategy) {
+      case "ALL_REVEALED":
         return "All Clues Revealed"
-      case "easy": {
+      case "USER_SPEND": {
         const usedHintsCount = Object.values(playerGame.hintsUsed || {}).filter(
           (v) => v
         ).length
-        const availableHintTypesCount = hintTypes.length - usedHintsCount
-        const effectiveHints = Math.min(hintsAvailable, availableHintTypesCount)
+        const effectiveHints = Math.max(0, hintsAvailable)
 
-        if (
-          effectiveHints <= 0 &&
-          !Object.values(playerGame.hintsUsed || {}).some(Boolean)
-        ) {
+        if (effectiveHints <= 0 && usedHintsCount === 0) {
           return ""
         }
         return `Need a Hint? (${effectiveHints} available)`
       }
-      case "medium":
-        return "Hints are revealed by good guesses!"
-      case "hard":
-      case "extreme":
+      case "IMPLICIT_FEEDBACK":
+        return "Hints are revealed by successful guesses!"
+      case "NONE_DISABLED":
+      case "EXTREME_CHALLENGE":
         return ""
       default:
         return ""
@@ -188,23 +197,15 @@ export function useHintLogic() {
     hintsAvailable,
     isInteractionsDisabled,
     playerGame.hintsUsed,
-    playerGame.guesses.length,
-    playerGame.guessesMax,
-    difficulty,
+    currentHintStrategy,
   ])
 
   const isToggleDisabled =
-    isInteractionsDisabled ||
-    difficulty === "basic" ||
-    difficulty === "medium" ||
-    difficulty === "hard" ||
-    difficulty === "extreme"
+    isInteractionsDisabled || currentHintStrategy !== "USER_SPEND"
 
   const areHintButtonsDisabled =
     isInteractionsDisabled ||
-    difficulty === "medium" ||
-    difficulty === "hard" ||
-    difficulty === "extreme" ||
+    currentHintStrategy !== "USER_SPEND" ||
     hintsAvailable <= 0
 
   return {

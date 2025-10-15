@@ -8,6 +8,8 @@ import { useSkeletonAnimation } from "../utils/hooks/useSkeletonAnimation"
 import { useGameStore } from "../state/gameStore"
 import { useTheme } from "../contexts/themeContext"
 import { HintType } from "../models/game"
+import { DIFFICULTY_MODES } from "../config/difficulty"
+import { useShallow } from "zustand/react/shallow"
 
 const HintSkeleton = memo(() => {
   const { colors } = useTheme()
@@ -33,7 +35,7 @@ const BasicHints = memo(() => {
       {hintTypes.map((type) => (
         <View key={type} style={styles.veryEasyRow}>
           <Text style={styles.veryEasyHintLabel}>
-            {type.charAt(0).toUpperCase() + type.slice(1)}
+            {type.charAt(0).toUpperCase() + type.slice(1)}:
           </Text>
           <Text style={styles.veryEasyHintValue}>{getHintText(type)}</Text>
         </View>
@@ -43,9 +45,16 @@ const BasicHints = memo(() => {
 })
 
 const MainHintComponent = () => {
-  const playerGame = useGameStore((state) => state.playerGame)
-  const playerStats = useGameStore((state) => state.playerStats)
-  const difficulty = useGameStore((state) => state.difficulty)
+  const { playerGame, difficulty, playerStats } = useGameStore(
+    useShallow((state) => ({
+      playerGame: state.playerGame,
+      difficulty: state.difficulty,
+      playerStats: state.playerStats,
+    }))
+  )
+
+  const currentHintStrategy = DIFFICULTY_MODES[difficulty].hintStrategy
+
   const { colors } = useTheme()
   const hintStyles = useMemo(() => getHintStyles(colors), [colors])
   const {
@@ -59,12 +68,22 @@ const MainHintComponent = () => {
     handleHintSelection,
   } = useHintLogic()
 
-  if (difficulty === "easy" && !hintLabelText) {
-    return null
+  const isNonInteractiveStrategy =
+    currentHintStrategy === "NONE_DISABLED" ||
+    currentHintStrategy === "EXTREME_CHALLENGE" ||
+    currentHintStrategy === "ALL_REVEALED"
+
+  if (
+    isNonInteractiveStrategy &&
+    !Object.values(playerGame.hintsUsed || {}).some(Boolean)
+  ) {
+    if (currentHintStrategy !== "IMPLICIT_FEEDBACK") {
+      return null
+    }
   }
 
   if (
-    difficulty === "medium" &&
+    currentHintStrategy === "IMPLICIT_FEEDBACK" &&
     !Object.values(playerGame.hintsUsed || {}).some(Boolean)
   ) {
     return (
@@ -96,15 +115,15 @@ const HintContainer: React.FC = memo(() => {
   )
   const difficulty = useGameStore((state) => state.difficulty)
 
+  const currentStrategy = loading
+    ? null
+    : DIFFICULTY_MODES[difficulty]?.hintStrategy
+
   if (loading) {
     return <HintSkeleton />
   }
 
-  if (difficulty === "hard" || difficulty === "extreme") {
-    return null
-  }
-
-  if (difficulty === "basic" && !isInteractionsDisabled) {
+  if (currentStrategy === "ALL_REVEALED" && !isInteractionsDisabled) {
     return <BasicHints />
   }
 
