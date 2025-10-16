@@ -40,7 +40,13 @@ export const getGameHistoryStyles = (colors: any) =>
       fontFamily: "Arvo-Regular",
       fontSize: responsive.responsiveFontSize(12),
       color: colors.textSecondary,
-      marginBottom: spacing.small,
+      marginBottom: spacing.extraSmall,
+    },
+    difficultyText: {
+      fontFamily: "Arvo-Italic",
+      fontSize: responsive.responsiveFontSize(12),
+      color: colors.primary,
+      marginBottom: spacing.extraSmall,
     },
     resultText: {
       fontFamily: "Arvo-Regular",

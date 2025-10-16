@@ -25,6 +25,7 @@ export const defaultPlayerGame: PlayerGame = {
   playerID: "",
   movie: defaultMovie,
   guessesMax: DIFFICULTY_MODES[DEFAULT_DIFFICULTY].guessesMax,
+  difficulty: DEFAULT_DIFFICULTY,
   guesses: [],
   correctAnswer: false,
   gaveUp: false,

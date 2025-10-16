@@ -14,6 +14,7 @@ import { getGameHistoryStyles } from "../styles/gameHistoryStyles"
 import { hapticsService } from "../utils/hapticsService"
 import { useTheme } from "../contexts/themeContext"
 import { API_CONFIG } from "../config/constants"
+import { DIFFICULTY_MODES } from "../config/difficulty"
 import { gameService } from "../services/gameService"
 
 interface GameHistoryItemProps {
@@ -25,6 +26,8 @@ const GameHistoryItem = memo(({ item, onPress }: GameHistoryItemProps) => {
   const { colors } = useTheme()
   const styles = useMemo(() => getGameHistoryStyles(colors), [colors])
   const posterUri = `${API_CONFIG.TMDB_IMAGE_BASE_URL_W185}${item.posterPath}`
+  const difficultyLabel =
+    DIFFICULTY_MODES[item.difficulty]?.label || "Unknown Difficulty"
   const date = new Date(item.dateId)
   const formattedDate = date.toLocaleDateString("en-US", {
     weekday: "long",
@@ -66,6 +69,7 @@ const GameHistoryItem = memo(({ item, onPress }: GameHistoryItemProps) => {
           {item.movieTitle}
         </Text>
         <Text style={styles.dateText}>{formattedDate}</Text>
+        <Text style={styles.difficultyText}>Difficulty: {difficultyLabel}</Text>
         {getResultText()}
       </View>
     </Pressable>

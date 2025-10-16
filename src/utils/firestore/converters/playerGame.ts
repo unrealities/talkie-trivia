@@ -1,5 +1,6 @@
 import { PlayerGame } from "../../../models/game"
 import { defaultPlayerGame } from "../../../models/default"
+import { DEFAULT_DIFFICULTY } from "../../../config/difficulty"
 import { Timestamp } from "firebase/firestore"
 
 export const playerGameConverter = {
@@ -13,6 +14,7 @@ export const playerGameConverter = {
       playerID: playerGame.playerID,
       movie: playerGame.movie,
       guessesMax: playerGame.guessesMax,
+      difficulty: playerGame.difficulty || DEFAULT_DIFFICULTY,
       guesses: playerGame.guesses,
       correctAnswer: playerGame.correctAnswer,
       gaveUp: playerGame.gaveUp,
@@ -41,6 +43,7 @@ export const playerGameConverter = {
     return {
       ...defaultPlayerGame,
       ...data,
+      difficulty: data.difficulty || DEFAULT_DIFFICULTY,
       startDate: safeToDate(data.startDate),
       endDate: safeToDate(data.endDate),
     }

@@ -20,6 +20,7 @@ export interface PlayerGame {
   playerID: string
   movie: Movie
   guessesMax: number
+  difficulty: DifficultyLevel
   guesses: Guess[]
   correctAnswer: boolean
   gaveUp: boolean

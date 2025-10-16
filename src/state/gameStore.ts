@@ -140,6 +140,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       const { initialPlayerGame, initialPlayerStats, allMovies } =
         await gameService.getInitialGameData(player, storedDifficulty)
 
+      initialPlayerGame.difficulty = storedDifficulty
       const isGameOver =
         initialPlayerGame.correctAnswer ||
         initialPlayerGame.gaveUp ||
@@ -343,6 +344,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       gaveUp: playerGame.gaveUp,
       guessCount: playerGame.guesses.length,
       guessesMax: playerGame.guessesMax,
+      difficulty: playerGame.difficulty,
     }
 
     set(

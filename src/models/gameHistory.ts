@@ -1,3 +1,5 @@
+import { DifficultyLevel } from "../config/difficulty"
+
 export interface GameHistoryEntry {
   dateId: string // YYYY-MM-DD
   movieId: number
@@ -7,4 +9,5 @@ export interface GameHistoryEntry {
   gaveUp: boolean
   guessCount: number
   guessesMax: number
+  difficulty: DifficultyLevel
 }
