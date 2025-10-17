@@ -54,8 +54,8 @@ export const getAppStyles = (colors: any) =>
     },
     profileHeader: {
       alignItems: "center",
-      marginBottom: spacing.large,
-      paddingBottom: spacing.medium,
+      marginBottom: spacing.medium,
+      paddingBottom: spacing.small,
       borderBottomWidth: 1,
       borderBottomColor: colors.border,
       width: "100%",
@@ -63,11 +63,6 @@ export const getAppStyles = (colors: any) =>
     profileTitle: {
       ...getTypography(colors).heading2,
       color: colors.textPrimary,
-    },
-    profileSubtitle: {
-      ...getTypography(colors).bodyText,
-      color: colors.textSecondary,
-      marginTop: spacing.extraSmall,
     },
     profileSection: {
       backgroundColor: colors.surface,
@@ -123,6 +118,6 @@ export const getAppStyles = (colors: any) =>
     signInPromptText: {
       ...getTypography(colors).bodyText,
       textAlign: "center",
-      marginBottom: spacing.large,
+      marginBottom: spacing.small,
     },
   })

@@ -1,5 +1,6 @@
 import { GameHistoryEntry } from "../../../models/gameHistory"
 import { Timestamp } from "firebase/firestore"
+import { DEFAULT_DIFFICULTY } from "../../../config/difficulty"
 
 export const gameHistoryEntryConverter = {
   toFirestore: (entry: GameHistoryEntry) => {
@@ -12,6 +13,7 @@ export const gameHistoryEntryConverter = {
       gaveUp: entry.gaveUp,
       guessCount: entry.guessCount,
       guessesMax: entry.guessesMax,
+      difficulty: entry.difficulty,
       createdAt: Timestamp.now(),
     }
   },
@@ -26,6 +28,7 @@ export const gameHistoryEntryConverter = {
       gaveUp: data.gaveUp,
       guessCount: data.guessCount,
       guessesMax: data.guessesMax,
+      difficulty: data.difficulty || DEFAULT_DIFFICULTY,
     }
   },
 }

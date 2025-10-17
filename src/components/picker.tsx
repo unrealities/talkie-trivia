@@ -15,9 +15,6 @@ import {
   LayoutAnimation,
   Platform,
   UIManager,
-  ActivityIndicator,
-  StyleProp,
-  ViewStyle,
 } from "react-native"
 import {
   useAnimatedStyle,

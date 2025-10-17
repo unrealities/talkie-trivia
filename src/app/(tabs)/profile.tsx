@@ -78,10 +78,6 @@ const ProfileScreen: React.FC<{}> = () => {
     )
   }
 
-  const headerSubtitle = isGoogleSignedIn
-    ? "Here's how you're doing."
-    : "You are currently playing as a guest. Your game data is saved locally but is not backed up or shared on leaderboards."
-
   return (
     <>
       <LinearGradient
@@ -101,9 +97,7 @@ const ProfileScreen: React.FC<{}> = () => {
                   <Text style={appStyles.profileTitle}>
                     Welcome, {displayName}!
                   </Text>
-                  <Text style={appStyles.profileSubtitle}>
-                    {headerSubtitle}
-                  </Text>
+                  =
                 </View>
 
                 {!isGoogleSignedIn && (
@@ -143,9 +137,9 @@ const ProfileScreen: React.FC<{}> = () => {
                 )}
 
                 <Section title="Settings" icon="cog">
-                  <ThemeSelector />
-                  <View style={appStyles.divider} />
                   <DifficultySelector />
+                  <View style={appStyles.divider} />
+                  <ThemeSelector />
                 </Section>
 
                 <Section title="Statistics" icon="bar-chart">

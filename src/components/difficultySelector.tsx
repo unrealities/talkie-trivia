@@ -108,9 +108,6 @@ const DifficultySelector = () => {
         </View>
       </View>
 
-      <Text style={styles.subtitle}>
-        Long-press any option below to see its description.
-      </Text>
       <View style={styles.optionsContainer}>
         {options.map((option) => (
           <Pressable
