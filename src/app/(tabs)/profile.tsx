@@ -97,7 +97,6 @@ const ProfileScreen: React.FC<{}> = () => {
                   <Text style={appStyles.profileTitle}>
                     Welcome, {displayName}!
                   </Text>
-                  =
                 </View>
 
                 {!isGoogleSignedIn && (

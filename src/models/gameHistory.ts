@@ -10,4 +10,5 @@ export interface GameHistoryEntry {
   guessCount: number
   guessesMax: number
   difficulty: DifficultyLevel
+  score: number
 }

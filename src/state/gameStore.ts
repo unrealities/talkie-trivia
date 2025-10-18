@@ -14,9 +14,9 @@ import { gameService } from "../services/gameService"
 import Player from "../models/player"
 import { ASYNC_STORAGE_KEYS } from "../config/constants"
 import { analyticsService } from "../utils/analyticsService"
+import { calculateScore } from "../utils/scoreUtils"
 import { generateImplicitHint } from "../utils/guessFeedbackUtils"
 import basicMoviesData from "../../data/popularMovies.json"
-import { useShallow } from "zustand/react/shallow"
 import {
   DifficultyLevel,
   DIFFICULTY_MODES,
@@ -199,14 +199,25 @@ export const useGameStore = create<GameState>((set, get) => ({
 
     const fullGuessedMovie = movies.find((m) => m.id === selectedMovie.id)
 
-    const hintResult =
-      isCorrectAnswer || !fullGuessedMovie
-        ? { feedback: null, revealedHints: {}, hintInfo: null }
-        : generateImplicitHint(
-            fullGuessedMovie,
-            correctMovie,
-            playerGame.hintsUsed
-          )
+    const hintStrategy = DIFFICULTY_MODES[difficulty].hintStrategy
+
+    let hintResult: {
+      feedback: string | null
+      revealedHints: Partial<Record<HintType, boolean>>
+      hintInfo: HintInfo[] | null
+    } = { feedback: null, revealedHints: {}, hintInfo: null }
+
+    if (!isCorrectAnswer && fullGuessedMovie) {
+      if (hintStrategy === "IMPLICIT_FEEDBACK") {
+        hintResult = generateImplicitHint(
+          fullGuessedMovie,
+          correctMovie,
+          playerGame.hintsUsed
+        )
+      } else {
+        hintResult.feedback = "Not quite! Try again."
+      }
+    }
 
     analyticsService.trackGuessMade(
       playerGame.guesses.length + 1,
@@ -215,10 +226,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       selectedMovie.title
     )
 
-    const hintStrategy = DIFFICULTY_MODES[difficulty].hintStrategy
-    const isExtremeChallenge = hintStrategy === "EXTREME_CHALLENGE"
-    const canMakeGuess =
-      !isExtremeChallenge || playerGame.guesses.length < playerGame.guessesMax
+    const canMakeGuess = playerGame.guesses.length < playerGame.guessesMax
 
     set(
       produce((state: GameState) => {
@@ -321,8 +329,11 @@ export const useGameStore = create<GameState>((set, get) => ({
       set({ gameStatus: "revealing" })
     }, 1200)
 
+    const calculatedScore = calculateScore(playerGame)
+
     const updatedStats = produce(playerStats, (draft: PlayerStats) => {
       draft.games = (draft.games || 0) + 1
+      draft.allTimeScore = (draft.allTimeScore || 0) + calculatedScore
       if (playerGame.correctAnswer) {
         draft.currentStreak = (draft.currentStreak || 0) + 1
         draft.maxStreak = Math.max(draft.currentStreak, draft.maxStreak || 0)
@@ -345,6 +356,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       guessCount: playerGame.guesses.length,
       guessesMax: playerGame.guessesMax,
       difficulty: playerGame.difficulty,
+      score: calculatedScore,
     }
 
     set(

@@ -7,4 +7,5 @@ export default interface PlayerStats {
   hintsAvailable: number
   hintsUsedCount: number
   lastStreakMessageDate?: string
+  allTimeScore: number
 }

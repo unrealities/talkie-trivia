@@ -14,6 +14,7 @@ export const gameHistoryEntryConverter = {
       guessCount: entry.guessCount,
       guessesMax: entry.guessesMax,
       difficulty: entry.difficulty,
+      score: entry.score,
       createdAt: Timestamp.now(),
     }
   },
@@ -29,6 +30,7 @@ export const gameHistoryEntryConverter = {
       guessCount: data.guessCount,
       guessesMax: data.guessesMax,
       difficulty: data.difficulty || DEFAULT_DIFFICULTY,
+      score: data.score || 0,
     }
   },
 }

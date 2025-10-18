@@ -43,6 +43,7 @@ export const defaultPlayerStats: PlayerStats = {
   wins: Array(GAME_DEFAULTS.MAX_GUESSES).fill(0),
   hintsAvailable: GAME_DEFAULTS.INITIAL_HINTS,
   hintsUsedCount: 0,
+  allTimeScore: 0,
 }
 
 export const generateDateId = (date: Date): string => {

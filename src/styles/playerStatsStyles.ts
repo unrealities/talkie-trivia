@@ -36,6 +36,11 @@ export const getPlayerStatsStyles = (colors: any) =>
       textAlign: "left",
       flexShrink: 1,
     },
+    scoreText: {
+      fontSize: responsive.responsiveFontSize(14),
+      fontFamily: "Arvo-Bold",
+      color: colors.tertiary,
+    },
     streakText: {
       fontSize: responsive.responsiveFontSize(14),
       fontFamily: "Arvo-Bold",

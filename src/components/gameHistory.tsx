@@ -72,6 +72,10 @@ const GameHistoryItem = memo(({ item, onPress }: GameHistoryItemProps) => {
         <Text style={styles.difficultyText}>Difficulty: {difficultyLabel}</Text>
         {getResultText()}
       </View>
+      <View style={styles.scoreContainer}>
+        <Text style={styles.scoreText}>{item.score}</Text>
+        <Text style={styles.scoreLabel}>PTS</Text>
+      </View>
     </Pressable>
   )
 })

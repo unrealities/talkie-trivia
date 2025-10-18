@@ -28,6 +28,12 @@ const PlayerStatsContainer = memo(
         <WinChart wins={props.playerStats.wins} />
         <View style={playerStatsStyles.statsContainer}>
           <View style={playerStatsStyles.statContainer}>
+            <Text style={playerStatsStyles.header}>All-Time Score</Text>
+            <Text style={[playerStatsStyles.text, playerStatsStyles.scoreText]}>
+              {props.playerStats.allTimeScore.toLocaleString()}
+            </Text>
+          </View>
+          <View style={playerStatsStyles.statContainer}>
             <Text style={playerStatsStyles.header}>Games Played</Text>
             <Text style={playerStatsStyles.text}>
               {props.playerStats.games}

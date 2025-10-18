@@ -121,9 +121,6 @@ const CluesContainer = memo(() => {
 
     if (correctAnswer || isInteractionsDisabled) {
       numCluesToReveal = clues.length
-    } else if (hintStrategy === "EXTREME_CHALLENGE") {
-      numCluesToReveal = Math.floor(currentGuessCount / 2) + 1
-      numCluesToReveal = Math.min(numCluesToReveal, clues.length)
     } else if (hintStrategy === "ALL_REVEALED") {
       numCluesToReveal = clues.length
     } else {

@@ -20,6 +20,7 @@ export const getGameHistoryStyles = (colors: any) =>
       overflow: "hidden",
       borderWidth: 1,
       borderColor: colors.border,
+      justifyContent: "space-between",
     },
     posterImage: {
       width: responsive.scale(60),
@@ -57,6 +58,22 @@ export const getGameHistoryStyles = (colors: any) =>
     },
     lossText: {
       color: colors.error,
+    },
+    scoreContainer: {
+      alignItems: "center",
+      justifyContent: "center",
+      paddingLeft: spacing.small,
+    },
+    scoreText: {
+      fontFamily: "Arvo-Bold",
+      fontSize: responsive.responsiveFontSize(20),
+      color: colors.tertiary,
+    },
+    scoreLabel: {
+      fontFamily: "Arvo-Regular",
+      fontSize: responsive.responsiveFontSize(10),
+      color: colors.textSecondary,
+      marginTop: -spacing.extraSmall,
     },
     emptyContainer: {
       alignItems: "center",
