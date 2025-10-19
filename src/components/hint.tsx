@@ -68,29 +68,20 @@ const MainHintComponent = () => {
     handleHintSelection,
   } = useHintLogic()
 
-  const isNonInteractiveStrategy =
-    currentHintStrategy === "NONE_DISABLED" ||
-    currentHintStrategy === "EXTREME_CHALLENGE" ||
-    currentHintStrategy === "ALL_REVEALED"
-
-  if (
-    isNonInteractiveStrategy &&
-    !Object.values(playerGame.hintsUsed || {}).some(Boolean)
-  ) {
-    if (currentHintStrategy !== "IMPLICIT_FEEDBACK") {
-      return null
-    }
-  }
-
-  if (
-    currentHintStrategy === "IMPLICIT_FEEDBACK" &&
-    !Object.values(playerGame.hintsUsed || {}).some(Boolean)
-  ) {
+  if (currentHintStrategy === "IMPLICIT_FEEDBACK") {
     return (
       <View style={hintStyles.container}>
         <Text style={hintStyles.hintLabelDisabled}>{hintLabelText}</Text>
       </View>
     )
+  }
+
+  const isNonInteractiveStrategy =
+    currentHintStrategy === "NONE_DISABLED" ||
+    currentHintStrategy === "EXTREME_CHALLENGE"
+
+  if (isNonInteractiveStrategy) {
+    return null
   }
 
   return (

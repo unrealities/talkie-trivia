@@ -62,7 +62,7 @@ export interface GameState {
 
   // Actions
   initializeGame: (player: Player) => Promise<void>
-  setDifficulty: (newDifficulty: DifficultyLevel, player: Player) => void
+  setDifficulty: (newDifficulty: DifficultyLevel) => void
   dismissGuessInputTip: () => void
   dismissResultsTip: () => void
   makeGuess: (selectedMovie: BasicMovie) => void
@@ -165,10 +165,14 @@ export const useGameStore = create<GameState>((set, get) => ({
     }
   },
 
-  setDifficulty: (newDifficulty, player) => {
+  setDifficulty: (newDifficulty) => {
     AsyncStorage.setItem(ASYNC_STORAGE_KEYS.DIFFICULTY_SETTING, newDifficulty)
-    set({ difficulty: newDifficulty })
-    get().initializeGame(player)
+    set(
+      produce((state: GameState) => {
+        state.difficulty = newDifficulty
+        state.playerGame.guessesMax = DIFFICULTY_MODES[newDifficulty].guessesMax
+      })
+    )
   },
 
   dismissGuessInputTip: () => {

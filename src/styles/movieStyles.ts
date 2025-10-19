@@ -12,6 +12,7 @@ export const getMovieStyles = (colors: any) => {
       maxWidth: responsive.scale(600),
       alignSelf: "center",
       marginBottom: spacing.extraLarge,
+      paddingHorizontal: spacing.small,
     },
     scrollContentContainer: {
       paddingBottom: spacing.extraLarge,
