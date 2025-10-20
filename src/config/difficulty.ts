@@ -13,6 +13,7 @@ export type DifficultyLevel =
  */
 export type HintStrategy =
   | "ALL_REVEALED"
+  | "HINTS_ONLY_REVEALED"
   | "USER_SPEND"
   | "IMPLICIT_FEEDBACK"
   | "NONE_DISABLED"
@@ -33,15 +34,27 @@ export interface DifficultyMode {
 export const DEFAULT_DIFFICULTY: DifficultyLevel = "LEVEL_3"
 
 /**
+ * A numerical ranking for each difficulty level to easily compare them.
+ * Lower numbers are easier.
+ */
+export const DIFFICULTY_RANKING: Record<DifficultyLevel, number> = {
+  LEVEL_1: 1,
+  LEVEL_2: 2,
+  LEVEL_3: 3,
+  LEVEL_4: 4,
+  LEVEL_5: 5,
+}
+
+/**
  * Centralized mapping of internal difficulty levels to their configuration.
  */
 export const DIFFICULTY_MODES: Record<DifficultyLevel, DifficultyMode> = {
   LEVEL_1: {
     label: "Basic",
     description:
-      "All movie facts and hints are revealed at the start of the game.",
+      "All movie hints (like Director and Decade) are revealed at the start. Clues are revealed gradually.",
     guessesMax: 5,
-    hintStrategy: "ALL_REVEALED",
+    hintStrategy: "HINTS_ONLY_REVEALED",
     scoreMultiplier: 0.4, // Max score: 400
     scoreRangePercentage: 0.75,
   },

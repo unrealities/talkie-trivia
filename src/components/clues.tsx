@@ -92,7 +92,6 @@ const CluesContainer = memo(() => {
   const scrollViewRef = useRef<ScrollView>(null)
 
   const oldCluesText = revealedClues.slice(0, -1).join(" ")
-  const spacer = oldCluesText && typewriterText ? " " : ""
 
   const handleSkipAnimation = useCallback(() => {
     cancelAnimation(typewriterProgress)
@@ -124,7 +123,15 @@ const CluesContainer = memo(() => {
     } else if (hintStrategy === "ALL_REVEALED") {
       numCluesToReveal = clues.length
     } else {
-      numCluesToReveal = Math.min(currentGuessCount + 1, clues.length)
+      // Logic for progressive clue reveal based on difficulty.
+      if (difficulty === "LEVEL_5") {
+        // Slower reveal for "Extreme" mode (one new clue every two guesses).
+        numCluesToReveal = Math.floor(currentGuessCount / 2) + 1
+      } else {
+        // Standard reveal for other modes (one new clue per guess).
+        numCluesToReveal = currentGuessCount + 1
+      }
+      numCluesToReveal = Math.min(numCluesToReveal, clues.length)
     }
 
     if (numCluesToReveal > revealedClues.length) {
@@ -133,6 +140,7 @@ const CluesContainer = memo(() => {
       const lastClue = newRevealedClues[newRevealedClues.length - 1] || ""
       lastClueRef.current = lastClue
 
+      // Skip the typewriter animation for modes where all clues are revealed at once.
       if (hintStrategy === "ALL_REVEALED") {
         setTypewriterText(lastClue)
         setRevealedClues(newRevealedClues)
@@ -165,7 +173,9 @@ const CluesContainer = memo(() => {
       )
     } else if (numCluesToReveal < revealedClues.length) {
       setRevealedClues(clues.slice(0, numCluesToReveal))
-      setTypewriterText(clues[clues.length - 1] || "")
+      const lastClue = clues[numCluesToReveal - 1] || ""
+      setTypewriterText(lastClue)
+      lastClueRef.current = lastClue
     }
 
     return () => {
@@ -227,7 +237,9 @@ const CluesContainer = memo(() => {
                   {oldCluesText}
                   {oldCluesText ? " " : ""}
                   {isGameOver ? (
-                    <Text>{clues.slice(-1)[0]}</Text>
+                    <Text>
+                      {clues.slice(revealedClues.length - 1).join(" ")}
+                    </Text>
                   ) : (
                     <Animated.Text style={animatedHighlightStyle}>
                       {typewriterText}

@@ -31,7 +31,7 @@ const BasicHints = memo(() => {
 
   return (
     <View style={styles.veryEasyContainer}>
-      <Text style={styles.veryEasyTitle}>All Clues Revealed</Text>
+      <Text style={styles.veryEasyTitle}>All Hints Revealed</Text>
       {hintTypes.map((type) => (
         <View key={type} style={styles.veryEasyRow}>
           <Text style={styles.veryEasyHintLabel}>
@@ -114,7 +114,12 @@ const HintContainer: React.FC = memo(() => {
     return <HintSkeleton />
   }
 
-  if (currentStrategy === "ALL_REVEALED" && !isInteractionsDisabled) {
+  // Render the BasicHints component if the strategy is ALL_REVEALED or HINTS_ONLY_REVEALED.
+  if (
+    (currentStrategy === "ALL_REVEALED" ||
+      currentStrategy === "HINTS_ONLY_REVEALED") &&
+    !isInteractionsDisabled
+  ) {
     return <BasicHints />
   }
 
