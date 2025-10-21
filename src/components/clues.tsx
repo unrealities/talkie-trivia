@@ -120,18 +120,15 @@ const CluesContainer = memo(() => {
 
     if (correctAnswer || isInteractionsDisabled) {
       numCluesToReveal = clues.length
-    } else if (hintStrategy === "ALL_REVEALED") {
-      numCluesToReveal = clues.length
+    } else if (
+      hintStrategy === "ALL_REVEALED" ||
+      hintStrategy === "HINTS_ONLY_REVEALED"
+    ) {
+      // For modes where clues are still progressive, calculate as normal.
+      numCluesToReveal = Math.min(currentGuessCount + 1, clues.length)
     } else {
-      // Logic for progressive clue reveal based on difficulty.
-      if (difficulty === "LEVEL_5") {
-        // Slower reveal for "Extreme" mode (one new clue every two guesses).
-        numCluesToReveal = Math.floor(currentGuessCount / 2) + 1
-      } else {
-        // Standard reveal for other modes (one new clue per guess).
-        numCluesToReveal = currentGuessCount + 1
-      }
-      numCluesToReveal = Math.min(numCluesToReveal, clues.length)
+      // Standard reveal for all other progressive modes.
+      numCluesToReveal = Math.min(currentGuessCount + 1, clues.length)
     }
 
     if (numCluesToReveal > revealedClues.length) {
@@ -140,38 +137,33 @@ const CluesContainer = memo(() => {
       const lastClue = newRevealedClues[newRevealedClues.length - 1] || ""
       lastClueRef.current = lastClue
 
-      // Skip the typewriter animation for modes where all clues are revealed at once.
-      if (hintStrategy === "ALL_REVEALED") {
-        setTypewriterText(lastClue)
-        setRevealedClues(newRevealedClues)
-      } else {
-        highlightProgress.value = 0
-        typewriterProgress.value = 0
-        setTypewriterText("")
+      highlightProgress.value = 0
+      typewriterProgress.value = 0
+      setTypewriterText("")
 
-        const typewriterDuration =
-          lastClue.length * ANIMATION_CONSTANTS.TYPEWRITER_CHAR_DURATION
+      const typewriterDuration =
+        lastClue.length * ANIMATION_CONSTANTS.TYPEWRITER_CHAR_DURATION
 
-        highlightProgress.value = withSequence(
-          withTiming(1, { duration: 400 }),
-          withDelay(typewriterDuration + 200, withTiming(0, { duration: 500 }))
-        )
+      highlightProgress.value = withSequence(
+        withTiming(1, { duration: 400 }),
+        withDelay(typewriterDuration + 200, withTiming(0, { duration: 500 }))
+      )
 
-        typewriterProgress.value = withDelay(
-          200,
-          withTiming(lastClue.length, {
-            duration: typewriterDuration,
-            easing: Easing.linear,
-          })
-        )
-        setRevealedClues(newRevealedClues)
-      }
+      typewriterProgress.value = withDelay(
+        200,
+        withTiming(lastClue.length, {
+          duration: typewriterDuration,
+          easing: Easing.linear,
+        })
+      )
+      setRevealedClues(newRevealedClues)
 
       setTimeout(
         () => scrollViewRef.current?.scrollToEnd({ animated: true }),
         100
       )
     } else if (numCluesToReveal < revealedClues.length) {
+      // This handles cases where difficulty is increased mid-game, reducing revealed clues.
       setRevealedClues(clues.slice(0, numCluesToReveal))
       const lastClue = clues[numCluesToReveal - 1] || ""
       setTypewriterText(lastClue)

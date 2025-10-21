@@ -2,6 +2,7 @@ import { Share } from "react-native"
 import { PlayerGame } from "../models/game"
 import { analyticsService } from "./analyticsService"
 import { hapticsService } from "./hapticsService"
+import { calculateScore } from "./scoreUtils"
 
 export const generateShareMessage = (playerGame: PlayerGame): string => {
   const appUrl = "https://talkie-trivia.com"
@@ -34,7 +35,10 @@ export const generateShareMessage = (playerGame: PlayerGame): string => {
     grid = "🟥".repeat(playerGame.guessesMax).trim()
   }
 
-  return `${title}\n${resultLine}\n\n${grid}\n\nPlay at ${appUrl}`
+  const score = calculateScore(playerGame)
+  const scoreLine = `Score: 🏆 ${score}`
+
+  return `${title}\n${resultLine}\n\n${grid}\n${scoreLine}\n\nPlay at ${appUrl}`
 }
 
 export const shareGameResult = async (playerGame: PlayerGame) => {
