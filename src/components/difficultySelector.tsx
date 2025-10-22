@@ -44,7 +44,7 @@ const DifficultySelector = () => {
     (newDifficulty: DifficultyLevel) => {
       if (player) {
         hapticsService.medium()
-        setDifficulty(newDifficulty, player)
+        setDifficulty(newDifficulty)
       }
     },
     [setDifficulty, player]

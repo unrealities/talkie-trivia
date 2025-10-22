@@ -24,7 +24,6 @@ import {
   DIFFICULTY_RANKING,
 } from "../config/difficulty"
 
-// Create a unique list of basic movies for the search picker from the local JSON data.
 const uniqueBasicMovies = Array.from(
   new Map(basicMoviesData.map((movie) => [movie.id, movie])).values()
 ) as readonly BasicMovie[]
@@ -45,10 +44,6 @@ export interface GameState {
   gameStatus: GameStatus
 
   // Settings
-  /**
-   * Represents the user's currently selected difficulty for UI purposes (e.g., showing hints).
-   * This can be changed mid-game.
-   */
   difficulty: DifficultyLevel
   tutorialState: {
     showGuessInputTip: boolean
@@ -146,8 +141,6 @@ export const useGameStore = create<GameState>((set, get) => ({
       const { initialPlayerGame, initialPlayerStats, allMovies } =
         await gameService.getInitialGameData(player, storedDifficulty)
 
-      // The 'difficulty' on playerGame tracks the *lowest* difficulty set for scoring fairness.
-      // It's initialized to the user's preferred setting.
       initialPlayerGame.difficulty = storedDifficulty
       const isGameOver =
         initialPlayerGame.correctAnswer ||
@@ -173,29 +166,19 @@ export const useGameStore = create<GameState>((set, get) => ({
     }
   },
 
-  setDifficulty: (newDifficulty) => {
-    // Prevent difficulty changes after the game has concluded.
-    if (get().isInteractionsDisabled) return
-
+  setDifficulty: (newDifficulty: DifficultyLevel) => {
     AsyncStorage.setItem(ASYNC_STORAGE_KEYS.DIFFICULTY_SETTING, newDifficulty)
 
     set(
       produce((state: GameState) => {
-        // Update the UI-facing difficulty to provide immediate feedback (e.g., show/hide clues).
         state.difficulty = newDifficulty
-
-        // Adjust the max guesses for the current UI selection.
         state.playerGame.guessesMax = DIFFICULTY_MODES[newDifficulty].guessesMax
 
-        // To prevent cheating, the score is calculated based on the lowest difficulty
-        // selected during the game session. Here, we check if the new difficulty is lower
-        // than the one currently stored for scoring.
         const currentLowestRank =
           DIFFICULTY_RANKING[state.playerGame.difficulty]
         const newRank = DIFFICULTY_RANKING[newDifficulty]
 
         if (newRank < currentLowestRank) {
-          // If the user selects an easier mode, update the official game difficulty.
           state.playerGame.difficulty = newDifficulty
           state.flashMessage = `Score will be based on ${DIFFICULTY_MODES[newDifficulty].label} mode.`
         }
