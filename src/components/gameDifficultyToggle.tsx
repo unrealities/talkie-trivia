@@ -20,7 +20,7 @@ const options = (Object.keys(DIFFICULTY_MODES) as DifficultyLevel[]).map(
   })
 )
 
-const DROPDOWN_HEIGHT = options.length * 60 // Increased height per item
+const DROPDOWN_HEIGHT = options.length * 40
 
 const GameDifficultyToggle = () => {
   const { colors } = useTheme()

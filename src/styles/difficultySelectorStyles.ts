@@ -48,8 +48,8 @@ export const getDifficultySelectorStyles = (colors: any) =>
       borderColor: colors.border,
     },
     option: {
-      paddingVertical: spacing.small,
-      paddingHorizontal: spacing.small,
+      paddingVertical: spacing.extraSmall,
+      paddingHorizontal: spacing.extraSmall,
       borderRadius: responsive.scale(6),
       margin: spacing.extraSmall,
       backgroundColor: colors.surface,

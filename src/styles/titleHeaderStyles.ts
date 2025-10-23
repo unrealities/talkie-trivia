@@ -13,7 +13,6 @@ export const getTitleHeaderStyles = (colors: any) =>
       color: colors.primary,
       fontFamily: "Arvo-Bold",
       fontSize: responsive.responsiveFontSize(18),
-      paddingTop: responsive.scale(4),
       textAlign: "left",
     },
   })

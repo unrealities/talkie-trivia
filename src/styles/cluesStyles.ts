@@ -7,14 +7,14 @@ export const getCluesStyles = (colors: any) =>
       flex: 1,
       justifyContent: "flex-start",
       marginVertical: spacing.extraSmall,
-      minHeight: responsive.scale(220),
+      minHeight: responsive.scale(160),
       paddingHorizontal: spacing.small,
       width: "100%",
       alignSelf: "stretch",
     },
     countContainer: {
       alignSelf: "flex-end",
-      marginBottom: responsive.scale(12),
+      marginBottom: responsive.scale(4),
       marginRight: spacing.large,
       marginTop: spacing.small,
     },
@@ -24,7 +24,7 @@ export const getCluesStyles = (colors: any) =>
       alignSelf: "stretch",
     },
     scrollViewContent: {
-      paddingBottom: spacing.large,
+      paddingBottom: spacing.extraSmall,
     },
     skeletonContainer: {
       paddingHorizontal: spacing.small,
@@ -41,7 +41,7 @@ export const getCluesStyles = (colors: any) =>
     },
     cluesBox: {
       paddingHorizontal: spacing.medium,
-      paddingVertical: spacing.large,
+      paddingVertical: spacing.medium,
       width: "100%",
     },
     clueChunk: {

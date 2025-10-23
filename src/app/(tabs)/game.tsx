@@ -44,7 +44,7 @@ const GameScreen = () => {
             justifyContent: "space-between",
             alignItems: "center",
             width: "100%",
-            paddingHorizontal: spacing.medium,
+            paddingHorizontal: spacing.small,
             borderBottomWidth: 1,
             borderBottomColor: colors.border,
             zIndex: 1,
