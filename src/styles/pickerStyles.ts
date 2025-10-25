@@ -73,11 +73,13 @@ export const getPickerStyles = (colors: any) => {
     resultsShow: {
       flex: 1,
     },
+    resultItemContainer: {
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
     resultItem: {
       paddingVertical: spacing.small,
       paddingHorizontal: spacing.medium,
-      borderBottomWidth: 1,
-      borderBottomColor: colors.border,
       overflow: "hidden",
     },
     resultItemContent: {

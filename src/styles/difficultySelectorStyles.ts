@@ -41,8 +41,8 @@ export const getDifficultySelectorStyles = (colors: any) =>
       flexWrap: "wrap",
       justifyContent: "center",
       backgroundColor: colors.background,
-      borderRadius: responsive.scale(8),
-      marginTop: spacing.small,
+      borderRadius: responsive.scale(6),
+      marginTop: spacing.extraSmall,
       padding: spacing.extraSmall,
       borderWidth: 1,
       borderColor: colors.border,
@@ -69,7 +69,7 @@ export const getDifficultySelectorStyles = (colors: any) =>
     descriptionContainer: {
       marginTop: spacing.extraSmall,
       minHeight: responsive.scale(60),
-      paddingHorizontal: spacing.small,
+      paddingHorizontal: spacing.extraSmall,
       justifyContent: "center",
     },
     descriptionText: {
@@ -77,6 +77,6 @@ export const getDifficultySelectorStyles = (colors: any) =>
       fontSize: responsive.responsiveFontSize(12),
       color: colors.textSecondary,
       textAlign: "center",
-      lineHeight: responsive.responsiveFontSize(18),
+      lineHeight: responsive.responsiveFontSize(16),
     },
   })

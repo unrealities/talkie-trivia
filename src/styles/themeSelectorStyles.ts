@@ -29,7 +29,7 @@ export const getThemeSelectorStyles = (colors: any) =>
     },
     option: {
       paddingVertical: spacing.small,
-      paddingHorizontal: spacing.medium,
+      paddingHorizontal: spacing.small,
       borderRadius: responsive.scale(6),
     },
     selectedOption: {

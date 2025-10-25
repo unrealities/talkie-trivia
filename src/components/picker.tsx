@@ -79,59 +79,61 @@ const MovieItem = memo<MovieItemProps>(
       : defaultPoster
 
     return (
-      <Pressable
-        accessible
-        accessibilityRole="button"
-        aria-label={`Select and guess movie: ${movie.title}. Long press to preview.`}
-        onPress={() => onSelect(movie)}
-        onLongPress={() => onLongPress(movie)}
-        delayLongPress={200}
-        style={({ pressed }) => [
-          pickerStyles.resultItem,
-          pressed && { backgroundColor: colors.surface },
-        ]}
-        android_ripple={{ color: colors.surface }}
-        disabled={isDisabled}
-      >
-        <View style={pickerStyles.resultItemContent}>
-          <Image
-            source={imageSource}
-            placeholder={defaultPoster}
-            style={pickerStyles.resultImage}
-            contentFit="cover"
-          />
-          <Text
-            style={pickerStyles.unselected}
-            numberOfLines={2}
-            ellipsizeMode="tail"
-          >
-            {titleWithYear}
-          </Text>
-        </View>
-
-        {isExpanded && detailedMovie && (
-          <View style={pickerStyles.expandedPreview}>
+      <View style={pickerStyles.resultItemContainer}>
+        <Pressable
+          accessible
+          accessibilityRole="button"
+          aria-label={`Select and guess movie: ${movie.title}. Long press to preview.`}
+          onPress={() => onSelect(movie)}
+          onLongPress={() => onLongPress(movie)}
+          delayLongPress={200}
+          style={({ pressed }) => [
+            pickerStyles.resultItem,
+            pressed && { backgroundColor: colors.surface },
+          ]}
+          android_ripple={{ color: colors.surface }}
+          disabled={isDisabled}
+        >
+          <View style={pickerStyles.resultItemContent}>
             <Image
-              source={fullImageSource}
+              source={imageSource}
               placeholder={defaultPoster}
-              style={pickerStyles.expandedImage}
+              style={pickerStyles.resultImage}
               contentFit="cover"
             />
-            <View style={pickerStyles.expandedInfo}>
-              <Text style={pickerStyles.expandedTitle} numberOfLines={3}>
-                {detailedMovie.title}
-              </Text>
-              <Text style={pickerStyles.expandedYear}>
-                Release Year:{" "}
-                {new Date(detailedMovie.release_date).getFullYear()}
-              </Text>
-              <Text style={pickerStyles.expandedHint}>
-                Tap this item to select.
-              </Text>
-            </View>
+            <Text
+              style={pickerStyles.unselected}
+              numberOfLines={2}
+              ellipsizeMode="tail"
+            >
+              {titleWithYear}
+            </Text>
           </View>
-        )}
-      </Pressable>
+
+          {isExpanded && detailedMovie && (
+            <View style={pickerStyles.expandedPreview}>
+              <Image
+                source={fullImageSource}
+                placeholder={defaultPoster}
+                style={pickerStyles.expandedImage}
+                contentFit="cover"
+              />
+              <View style={pickerStyles.expandedInfo}>
+                <Text style={pickerStyles.expandedTitle} numberOfLines={3}>
+                  {detailedMovie.title}
+                </Text>
+                <Text style={pickerStyles.expandedYear}>
+                  Release Year:{" "}
+                  {new Date(detailedMovie.release_date).getFullYear()}
+                </Text>
+                <Text style={pickerStyles.expandedHint}>
+                  Tap this item to select.
+                </Text>
+              </View>
+            </View>
+          )}
+        </Pressable>
+      </View>
     )
   },
   (prevProps, nextProps) =>
