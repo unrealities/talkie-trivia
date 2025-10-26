@@ -28,7 +28,7 @@ export const getGoogleLoginStyles = (colors: any) =>
       width: "100%",
       maxWidth: responsive.scale(400),
       alignSelf: "center",
-      paddingVertical: responsive.scale(25),
+      paddingVertical: responsive.scale(10),
     },
     errorText: {
       color: colors.error,
