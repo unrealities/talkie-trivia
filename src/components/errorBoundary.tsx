@@ -1,7 +1,9 @@
-import React, { Component, ErrorInfo, ReactNode } from "react"
-import { View, Text, Button, Alert, StyleSheet } from "react-native"
+import React, { Component, ErrorInfo, ReactNode, useMemo } from "react"
+import { View, Text, Button, Alert } from "react-native"
 import * as Updates from "expo-updates"
 import { analyticsService } from "../utils/analyticsService"
+import { useTheme } from "../contexts/themeContext"
+import { getErrorBoundaryStyles } from "../styles/errorBoundaryStyles"
 
 interface Props {
   children: ReactNode
@@ -10,6 +12,27 @@ interface Props {
 interface State {
   hasError: boolean
   error: Error | null
+}
+
+const ErrorDisplay = ({ error, onReload }) => {
+  const { colors } = useTheme()
+  const styles = useMemo(() => getErrorBoundaryStyles(colors), [colors])
+
+  return (
+    <View style={styles.errorContainer}>
+      <Text style={styles.titleText}>Oops! Something went wrong.</Text>
+      <Text style={styles.messageText}>
+        An unexpected error occurred. Please try reloading the app.
+      </Text>
+      <Button
+        title="Reload App"
+        onPress={onReload}
+        color={colors.primary}
+        testID="reload-button"
+      />
+      {__DEV__ && <Text style={styles.errorDetails}>{error?.message}</Text>}
+    </View>
+  )
 }
 
 class ErrorBoundary extends Component<Props, State> {
@@ -46,54 +69,12 @@ class ErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return (
-        <View style={styles.errorContainer}>
-          <Text style={styles.titleText}>Oops! Something went wrong.</Text>
-          <Text style={styles.messageText}>
-            An unexpected error occurred. Please try reloading the app.
-          </Text>
-          <Button
-            title="Reload App"
-            onPress={this.handleReload}
-            color="#FFC107" // Hardcoded primary color
-            testID="reload-button"
-          />
-          {__DEV__ && (
-            <Text style={styles.errorDetails}>{this.state.error?.message}</Text>
-          )}
-        </View>
+        <ErrorDisplay error={this.state.error} onReload={this.handleReload} />
       )
     }
 
     return this.props.children
   }
 }
-
-const styles = StyleSheet.create({
-  errorContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#121212", // Hardcoded dark background
-    padding: 20,
-  },
-  titleText: {
-    fontSize: 20,
-    fontFamily: "Arvo-Bold",
-    color: "#FFFFFF",
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  messageText: {
-    fontSize: 16,
-    color: "#A0A0A0",
-    textAlign: "center",
-    marginBottom: 30,
-  },
-  errorDetails: {
-    marginTop: 30,
-    fontSize: 12,
-    color: "#A0A0A0",
-  },
-})
 
 export default ErrorBoundary

@@ -3,19 +3,10 @@ import React, {
   memo,
   useCallback,
   useEffect,
-  useMemo,
-  useState,
   useRef,
+  useState,
 } from "react"
-import {
-  ListRenderItemInfo,
-  Pressable,
-  Text,
-  View,
-  LayoutAnimation,
-  Platform,
-  UIManager,
-} from "react-native"
+import { ListRenderItemInfo, View, Platform, UIManager } from "react-native"
 import {
   useAnimatedStyle,
   useSharedValue,
@@ -23,15 +14,12 @@ import {
   withSequence,
   withTiming,
 } from "react-native-reanimated"
-import { Image } from "expo-image"
 import { search } from "fast-fuzzy"
 import { BasicMovie, Movie } from "../models/movie"
-import { getPickerStyles } from "../styles/pickerStyles"
 import { PickerUI } from "./pickerUI"
 import PickerSkeleton from "./pickerSkeleton"
+import PickerMovieItem from "./pickerMovieItem"
 import { hapticsService } from "../utils/hapticsService"
-import { useTheme } from "../contexts/themeContext"
-import { API_CONFIG } from "../config/constants"
 import { useGameStore } from "../state/gameStore"
 import TutorialTooltip from "./tutorialTooltip"
 import { useShallow } from "zustand/react/shallow"
@@ -43,105 +31,6 @@ if (
 ) {
   UIManager.setLayoutAnimationEnabledExperimental(true)
 }
-
-interface MovieItemProps {
-  movie: BasicMovie
-  detailedMovie: Movie | null
-  isDisabled: boolean
-  isExpanded: boolean
-  onSelect: (movie: BasicMovie) => void
-  onLongPress: (movie: BasicMovie) => void
-}
-
-const MovieItem = memo<MovieItemProps>(
-  ({ movie, detailedMovie, isDisabled, isExpanded, onSelect, onLongPress }) => {
-    const { colors } = useTheme()
-    const pickerStyles = useMemo(() => getPickerStyles(colors), [colors])
-    const defaultPoster = require("../../assets/movie_default.png")
-
-    useEffect(() => {
-      if (Platform.OS !== "web") {
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-      }
-    }, [isExpanded])
-
-    const releaseYear = movie.release_date
-      ? ` (${movie.release_date.toString().substring(0, 4)})`
-      : ""
-    const titleWithYear = `${movie.title}${releaseYear}`
-
-    const imageSource = movie.poster_path
-      ? { uri: `${API_CONFIG.TMDB_IMAGE_BASE_URL_W92}${movie.poster_path}` }
-      : defaultPoster
-
-    const fullImageSource = movie.poster_path
-      ? { uri: `${API_CONFIG.TMDB_IMAGE_BASE_URL_W500}${movie.poster_path}` }
-      : defaultPoster
-
-    return (
-      <View style={pickerStyles.resultItemContainer}>
-        <Pressable
-          accessible
-          accessibilityRole="button"
-          aria-label={`Select and guess movie: ${movie.title}. Long press to preview.`}
-          onPress={() => onSelect(movie)}
-          onLongPress={() => onLongPress(movie)}
-          delayLongPress={200}
-          style={({ pressed }) => [
-            pickerStyles.resultItem,
-            pressed && { backgroundColor: colors.surface },
-          ]}
-          android_ripple={{ color: colors.surface }}
-          disabled={isDisabled}
-        >
-          <View style={pickerStyles.resultItemContent}>
-            <Image
-              source={imageSource}
-              placeholder={defaultPoster}
-              style={pickerStyles.resultImage}
-              contentFit="cover"
-            />
-            <Text
-              style={pickerStyles.unselected}
-              numberOfLines={2}
-              ellipsizeMode="tail"
-            >
-              {titleWithYear}
-            </Text>
-          </View>
-
-          {isExpanded && detailedMovie && (
-            <View style={pickerStyles.expandedPreview}>
-              <Image
-                source={fullImageSource}
-                placeholder={defaultPoster}
-                style={pickerStyles.expandedImage}
-                contentFit="cover"
-              />
-              <View style={pickerStyles.expandedInfo}>
-                <Text style={pickerStyles.expandedTitle} numberOfLines={3}>
-                  {detailedMovie.title}
-                </Text>
-                <Text style={pickerStyles.expandedYear}>
-                  Release Year:{" "}
-                  {new Date(detailedMovie.release_date).getFullYear()}
-                </Text>
-                <Text style={pickerStyles.expandedHint}>
-                  Tap this item to select.
-                </Text>
-              </View>
-            </View>
-          )}
-        </Pressable>
-      </View>
-    )
-  },
-  (prevProps, nextProps) =>
-    prevProps.movie.id === nextProps.movie.id &&
-    prevProps.isDisabled === nextProps.isDisabled &&
-    prevProps.isExpanded === nextProps.isExpanded &&
-    prevProps.detailedMovie === nextProps.detailedMovie
-)
 
 const PickerContainer: FC = memo(() => {
   const {
@@ -183,19 +72,18 @@ const PickerContainer: FC = memo(() => {
     )
   }, [shakeAnimation])
 
-  const filterMovies = useMemo(
-    () =>
-      (searchTerm: string): BasicMovie[] => {
-        const trimmedTerm = searchTerm.trim()
-        if (trimmedTerm.length < 2) return []
+  const filterMovies = useCallback(
+    (searchTerm: string): BasicMovie[] => {
+      const trimmedTerm = searchTerm.trim()
+      if (trimmedTerm.length < 2) return []
 
-        const normalizedSearchTerm = normalizeSearchString(trimmedTerm)
+      const normalizedSearchTerm = normalizeSearchString(trimmedTerm)
 
-        return search(normalizedSearchTerm, [...basicMovies], {
-          keySelector: (movie) => normalizeSearchString(movie.title),
-          threshold: 0.8,
-        }) as BasicMovie[]
-      },
+      return search(normalizedSearchTerm, [...basicMovies], {
+        keySelector: (movie) => normalizeSearchString(movie.title),
+        threshold: 0.8,
+      }) as BasicMovie[]
+    },
     [basicMovies]
   )
 
@@ -276,7 +164,7 @@ const PickerContainer: FC = memo(() => {
 
   const renderItem = useCallback(
     ({ item }: ListRenderItemInfo<BasicMovie>) => (
-      <MovieItem
+      <PickerMovieItem
         movie={item}
         detailedMovie={detailedMovie}
         isDisabled={isInteractionsDisabled}

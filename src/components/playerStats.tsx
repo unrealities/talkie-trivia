@@ -1,11 +1,12 @@
 import React, { memo, useMemo } from "react"
-import { Text, View } from "react-native"
+import { View } from "react-native"
 
 import Player from "../models/player"
 import PlayerStats from "../models/playerStats"
 import WinChart from "./winChart"
 import { getPlayerStatsStyles } from "../styles/playerStatsStyles"
 import { useTheme } from "../contexts/themeContext"
+import StatItem from "./statItem"
 
 export interface PlayerStatsContainerProps {
   player: Player
@@ -27,44 +28,26 @@ const PlayerStatsContainer = memo(
       <View style={playerStatsStyles.container} key={props.player.id}>
         <WinChart wins={props.playerStats.wins} />
         <View style={playerStatsStyles.statsContainer}>
-          <View style={playerStatsStyles.statContainer}>
-            <Text style={playerStatsStyles.header}>All-Time Score</Text>
-            <Text style={[playerStatsStyles.text, playerStatsStyles.scoreText]}>
-              {props.playerStats.allTimeScore.toLocaleString()}
-            </Text>
-          </View>
-          <View style={playerStatsStyles.statContainer}>
-            <Text style={playerStatsStyles.header}>Games Played</Text>
-            <Text style={playerStatsStyles.text}>
-              {props.playerStats.games}
-            </Text>
-          </View>
-          <View style={playerStatsStyles.statContainer}>
-            <Text style={playerStatsStyles.header}>Current Streak</Text>
-            <Text
-              style={[playerStatsStyles.text, playerStatsStyles.streakText]}
-            >
-              {" "}
-              {/* Apply streakText style */}
-              {props.playerStats.currentStreak}
-            </Text>
-          </View>
-          <View style={playerStatsStyles.statContainer}>
-            <Text style={playerStatsStyles.header}>Max Streak</Text>
-            <Text
-              style={[playerStatsStyles.text, playerStatsStyles.streakText]}
-            >
-              {" "}
-              {/* Apply streakText style */}
-              {props.playerStats.maxStreak}
-            </Text>
-          </View>
-          <View style={playerStatsStyles.statContainer}>
-            <Text style={playerStatsStyles.header}>Hints Available</Text>
-            <Text style={playerStatsStyles.text}>
-              {props.playerStats.hintsAvailable}
-            </Text>
-          </View>
+          <StatItem
+            label="All-Time Score"
+            value={props.playerStats.allTimeScore.toLocaleString()}
+            valueStyle={playerStatsStyles.scoreText}
+          />
+          <StatItem label="Games Played" value={props.playerStats.games} />
+          <StatItem
+            label="Current Streak"
+            value={props.playerStats.currentStreak}
+            valueStyle={playerStatsStyles.streakText}
+          />
+          <StatItem
+            label="Max Streak"
+            value={props.playerStats.maxStreak}
+            valueStyle={playerStatsStyles.streakText}
+          />
+          <StatItem
+            label="Hints Available"
+            value={props.playerStats.hintsAvailable}
+          />
         </View>
       </View>
     )

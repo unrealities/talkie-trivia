@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo } from "react"
-import { View, Text, StyleSheet } from "react-native"
 import { Image } from "expo-image"
 import Animated, {
   useSharedValue,
@@ -12,8 +11,8 @@ import Animated, {
 } from "react-native-reanimated"
 import { useTheme } from "../contexts/themeContext"
 import { useGameStore } from "../state/gameStore"
-import { responsive, shadows } from "../styles/global"
 import { API_CONFIG } from "../config/constants"
+import { getRevealSequenceStyles } from "../styles/revealSequenceStyles"
 
 const defaultMovieImage = require("../../assets/movie_default.png")
 
@@ -26,6 +25,7 @@ const RevealSequence: React.FC<RevealSequenceProps> = ({
 }) => {
   const movie = useGameStore((state) => state.playerGame.movie)
   const { colors } = useTheme()
+  const styles = useMemo(() => getRevealSequenceStyles(colors), [colors])
 
   const containerOpacity = useSharedValue(0)
   const posterRotate = useSharedValue(0)
@@ -69,37 +69,6 @@ const RevealSequence: React.FC<RevealSequenceProps> = ({
   const imageSource = movie.poster_path
     ? { uri: `${API_CONFIG.TMDB_IMAGE_BASE_URL_W500}${movie.poster_path}` }
     : defaultMovieImage
-
-  const styles = useMemo(
-    () =>
-      StyleSheet.create({
-        container: {
-          ...StyleSheet.absoluteFillObject,
-          backgroundColor: "rgba(0,0,0,0.7)",
-          justifyContent: "center",
-          alignItems: "center",
-          zIndex: 100,
-        },
-        poster: {
-          width: responsive.scale(180),
-          height: responsive.scale(270),
-          borderRadius: responsive.scale(10),
-          ...shadows.medium,
-        },
-        title: {
-          fontFamily: "Arvo-Bold",
-          fontSize: responsive.responsiveFontSize(24),
-          color: colors.primary,
-          textAlign: "center",
-          marginTop: responsive.scale(20),
-          paddingHorizontal: responsive.scale(10),
-          textShadowColor: "rgba(0, 0, 0, 0.75)",
-          textShadowOffset: { width: 1, height: 1 },
-          textShadowRadius: 2,
-        },
-      }),
-    [colors]
-  )
 
   return (
     <Animated.View style={[styles.container, containerStyle]}>

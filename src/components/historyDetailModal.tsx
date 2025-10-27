@@ -1,11 +1,5 @@
 import React, { useState, useEffect, Suspense, lazy, useMemo } from "react"
-import {
-  View,
-  ActivityIndicator,
-  ScrollView,
-  Text,
-  StyleSheet,
-} from "react-native"
+import { View, ActivityIndicator, ScrollView, Text } from "react-native"
 import { GameHistoryEntry } from "../models/gameHistory"
 import { Movie } from "../models/movie"
 import { PlayerGame } from "../models/game"
@@ -14,6 +8,7 @@ import { gameService } from "../services/gameService"
 import { useTheme } from "../contexts/themeContext"
 import LoadingIndicator from "./loadingIndicator"
 import { useGameStore } from "../state/gameStore"
+import { getHistoryDetailModalStyles } from "../styles/historyDetailModalStyles"
 
 const MovieModal = lazy(() => import("./modal"))
 const Facts = lazy(() => import("./facts"))
@@ -31,6 +26,7 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
   const { player } = useAuth()
   const basicMovies = useGameStore((state) => state.basicMovies)
   const { colors } = useTheme()
+  const styles = useMemo(() => getHistoryDetailModalStyles(colors), [colors])
 
   const [movie, setMovie] = useState<Movie | null>(null)
   const [playerGame, setPlayerGame] = useState<PlayerGame | null>(null)
@@ -70,14 +66,6 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
 
     fetchData()
   }, [historyItem, player])
-
-  const styles = useMemo(
-    () =>
-      StyleSheet.create({
-        // ... styles remain the same
-      }),
-    [colors]
-  )
 
   const renderModalContent = () => {
     if (isLoading) {

@@ -9,6 +9,7 @@ import { useTheme } from "../../contexts/themeContext"
 import { useGameStore } from "../../state/gameStore"
 import { FontAwesome } from "@expo/vector-icons"
 import { responsive } from "../../styles/global"
+import ProfileSection from "../../components/profileSection"
 
 const GoogleLogin = lazy(() => import("../../components/googleLogin"))
 const PlayerStatsContainer = lazy(() => import("../../components/playerStats"))
@@ -20,28 +21,6 @@ const DifficultySelector = lazy(
 const HistoryDetailModal = lazy(
   () => import("../../components/historyDetailModal")
 )
-
-const Section: React.FC<{
-  title: string
-  icon: keyof typeof FontAwesome.glyphMap
-  children: React.ReactNode
-}> = ({ title, icon, children }) => {
-  const { colors } = useTheme()
-  const appStyles = useMemo(() => getAppStyles(colors), [colors])
-  return (
-    <View style={appStyles.profileSection}>
-      <View style={appStyles.profileSectionHeader}>
-        <FontAwesome
-          name={icon}
-          size={responsive.responsiveFontSize(16)}
-          color={colors.primary}
-        />
-        <Text style={appStyles.profileSectionTitle}>{title}</Text>
-      </View>
-      <View style={appStyles.profileSectionContent}>{children}</View>
-    </View>
-  )
-}
 
 const ProfileScreen: React.FC<{}> = () => {
   const { player, user } = useAuth()
@@ -130,27 +109,27 @@ const ProfileScreen: React.FC<{}> = () => {
                 )}
 
                 {isGoogleSignedIn && (
-                  <Section title="Account" icon="user">
+                  <ProfileSection title="Account" icon="user">
                     <GoogleLogin />
-                  </Section>
+                  </ProfileSection>
                 )}
 
-                <Section title="Settings" icon="cog">
+                <ProfileSection title="Settings" icon="cog">
                   <DifficultySelector />
                   <View style={appStyles.divider} />
                   <ThemeSelector />
-                </Section>
+                </ProfileSection>
 
-                <Section title="Statistics" icon="bar-chart">
+                <ProfileSection title="Statistics" icon="bar-chart">
                   <PlayerStatsContainer
                     player={player}
                     playerStats={playerStats}
                   />
-                </Section>
+                </ProfileSection>
 
-                <Section title="Game History" icon="history">
+                <ProfileSection title="Game History" icon="history">
                   <GameHistory onHistoryItemPress={handleHistoryItemPress} />
-                </Section>
+                </ProfileSection>
               </View>
             )}
           </Suspense>
