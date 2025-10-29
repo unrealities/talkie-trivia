@@ -1,8 +1,10 @@
 import { StyleSheet } from "react-native"
-import { responsive } from "./global"
+import { responsive, getTypography } from "./global"
 
-export const getFactsStyles = (colors: any) =>
-  StyleSheet.create({
+export const getFactsStyles = (colors: any) => {
+  const typography = getTypography(colors)
+
+  return StyleSheet.create({
     container: {
       alignItems: "center",
       flex: 1,
@@ -15,11 +17,10 @@ export const getFactsStyles = (colors: any) =>
       flexWrap: "wrap",
     },
     header: {
-      fontFamily: "Arvo-Bold",
+      ...typography.heading1,
       fontSize: responsive.responsiveFontSize(24),
       paddingBottom: responsive.scale(15),
       textAlign: "center",
-      color: colors.textPrimary,
       textDecorationLine: "underline",
     },
     imdbIcon: {
@@ -27,6 +28,7 @@ export const getFactsStyles = (colors: any) =>
       paddingBottom: responsive.scale(12),
     },
     subHeaderSmall: {
+      ...typography.caption,
       fontFamily: "Arvo-Italic",
       fontSize: responsive.responsiveFontSize(14),
       textAlign: "center",
@@ -52,12 +54,10 @@ export const getFactsStyles = (colors: any) =>
       resizeMode: "contain",
     },
     text: {
-      fontFamily: "Arvo-Regular",
-      fontSize: responsive.responsiveFontSize(16),
+      ...typography.bodyText,
       paddingTop: responsive.scale(12),
       textAlign: "center",
       marginBottom: responsive.scale(12),
-      color: colors.textSecondary,
       lineHeight: responsive.responsiveFontSize(20),
     },
     pressable: {
@@ -74,8 +74,9 @@ export const getFactsStyles = (colors: any) =>
       backgroundColor: colors.background,
     },
     errorText: {
-      color: colors.error,
+      ...typography.bodyText,
       fontFamily: "Arvo-Bold",
+      color: colors.error,
       fontSize: responsive.responsiveFontSize(18),
       textAlign: "center",
     },
@@ -86,3 +87,4 @@ export const getFactsStyles = (colors: any) =>
       backgroundColor: colors.background,
     },
   })
+}

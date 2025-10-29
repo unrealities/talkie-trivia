@@ -1,8 +1,10 @@
 import { StyleSheet } from "react-native"
-import { responsive } from "./global"
+import { responsive, getTypography } from "./global"
 
-export const getTitleHeaderStyles = (colors: any) =>
-  StyleSheet.create({
+export const getTitleHeaderStyles = (colors: any) => {
+  const typography = getTypography(colors)
+
+  return StyleSheet.create({
     container: {
       justifyContent: "center",
       alignItems: "flex-start",
@@ -10,9 +12,10 @@ export const getTitleHeaderStyles = (colors: any) =>
       flex: 1,
     },
     header: {
-      color: colors.primary,
-      fontFamily: "Arvo-Bold",
+      ...typography.heading2,
       fontSize: responsive.responsiveFontSize(18),
+      color: colors.primary,
       textAlign: "left",
     },
   })
+}

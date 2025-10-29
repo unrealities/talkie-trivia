@@ -1,8 +1,11 @@
 import { StyleSheet } from "react-native"
-import { responsive } from "./global"
+import { responsive, getTypography, getButtonStyles } from "./global"
 
-export const getConfirmationModalStyles = (colors: any) =>
-  StyleSheet.create({
+export const getConfirmationModalStyles = (colors: any) => {
+  const typography = getTypography(colors)
+  const buttonStyles = getButtonStyles(colors)
+
+  return StyleSheet.create({
     centeredView: {
       flex: 1,
       justifyContent: "center",
@@ -17,28 +20,26 @@ export const getConfirmationModalStyles = (colors: any) =>
       maxWidth: responsive.scale(400),
     },
     title: {
-      fontFamily: "Arvo-Bold",
+      ...typography.heading2,
       fontSize: responsive.responsiveFontSize(20),
       marginBottom: responsive.scale(10),
       textAlign: "center",
-      color: colors.textPrimary,
     },
     message: {
-      fontFamily: "Arvo-Regular",
-      fontSize: responsive.responsiveFontSize(16),
+      ...typography.bodyText,
       marginBottom: responsive.scale(20),
       textAlign: "center",
-      color: colors.textSecondary,
     },
     buttonContainer: {
       flexDirection: "row",
       justifyContent: "space-around",
     },
     button: {
-      borderRadius: responsive.scale(5),
+      ...buttonStyles.base,
       padding: responsive.scale(10),
-      elevation: 2,
       minWidth: responsive.scale(100),
+      shadowColor: "transparent",
+      elevation: 0,
     },
     confirmButton: {
       backgroundColor: colors.primary,
@@ -49,13 +50,12 @@ export const getConfirmationModalStyles = (colors: any) =>
       borderWidth: 2,
     },
     confirmButtonText: {
+      ...buttonStyles.text,
       color: colors.background,
-      fontFamily: "Arvo-Bold",
-      textAlign: "center",
     },
     cancelButtonText: {
+      ...buttonStyles.text,
       color: colors.error,
-      fontFamily: "Arvo-Bold",
-      textAlign: "center",
     },
   })
+}

@@ -1,15 +1,15 @@
 import { StyleSheet } from "react-native"
-import { responsive } from "./global"
+import { responsive, getButtonStyles } from "./global"
 
-export const getGoogleLoginStyles = (colors: any) =>
-  StyleSheet.create({
+export const getGoogleLoginStyles = (colors: any) => {
+  const buttonStyles = getButtonStyles(colors)
+
+  return StyleSheet.create({
     button: {
+      ...buttonStyles.base,
       backgroundColor: "transparent",
       borderWidth: 2,
       borderColor: colors.primary,
-      borderRadius: responsive.scale(8),
-      justifyContent: "center",
-      alignItems: "center",
       height: responsive.scale(40),
       width: "100%",
       maxWidth: responsive.scale(280),
@@ -17,10 +17,8 @@ export const getGoogleLoginStyles = (colors: any) =>
       shadowColor: "transparent",
     },
     buttonText: {
+      ...buttonStyles.text,
       color: colors.textPrimary,
-      fontFamily: "Arvo-Bold",
-      textAlign: "center",
-      fontSize: responsive.responsiveFontSize(16),
     },
     container: {
       alignItems: "center",
@@ -38,3 +36,4 @@ export const getGoogleLoginStyles = (colors: any) =>
       fontSize: responsive.responsiveFontSize(14),
     },
   })
+}

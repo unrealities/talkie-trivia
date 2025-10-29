@@ -1,8 +1,10 @@
 import { StyleSheet } from "react-native"
-import { responsive, spacing } from "./global"
+import { responsive, spacing, getTypography } from "./global"
 
-export const getCluesStyles = (colors: any) =>
-  StyleSheet.create({
+export const getCluesStyles = (colors: any) => {
+  const typography = getTypography(colors)
+
+  return StyleSheet.create({
     container: {
       flex: 1,
       justifyContent: "flex-start",
@@ -52,15 +54,16 @@ export const getCluesStyles = (colors: any) =>
       backgroundColor: "transparent",
     },
     text: {
-      fontFamily: "Arvo-Regular",
+      ...typography.bodyText,
       fontSize: responsive.responsiveFontSize(14),
       lineHeight: responsive.responsiveFontSize(20),
       color: colors.textPrimary,
     },
     wordCountText: {
-      color: colors.primary,
-      fontFamily: "Arvo-Regular",
+      ...typography.caption,
       fontSize: responsive.responsiveFontSize(11),
+      color: colors.primary,
       textAlign: "right",
     },
   })
+}

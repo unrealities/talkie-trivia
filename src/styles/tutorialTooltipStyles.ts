@@ -1,8 +1,10 @@
 import { StyleSheet } from "react-native"
-import { responsive, spacing, shadows } from "./global"
+import { responsive, spacing, shadows, getButtonStyles } from "./global"
 
-export const getTutorialTooltipStyles = (colors: any) =>
-  StyleSheet.create({
+export const getTutorialTooltipStyles = (colors: any) => {
+  const buttonStyles = getButtonStyles(colors)
+
+  return StyleSheet.create({
     container: {
       position: "absolute",
       zIndex: 100,
@@ -26,14 +28,13 @@ export const getTutorialTooltipStyles = (colors: any) =>
       marginBottom: spacing.medium,
     },
     button: {
+      ...buttonStyles.base,
       backgroundColor: colors.background,
-      borderRadius: responsive.scale(6),
-      paddingVertical: spacing.small,
       alignSelf: "center",
       paddingHorizontal: spacing.large,
     },
     buttonText: {
-      fontFamily: "Arvo-Bold",
+      ...buttonStyles.text,
       fontSize: responsive.responsiveFontSize(14),
       color: colors.tertiary,
     },
@@ -51,3 +52,4 @@ export const getTutorialTooltipStyles = (colors: any) =>
       transform: [{ rotate: "180deg" }],
     },
   })
+}

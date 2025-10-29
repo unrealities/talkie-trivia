@@ -1,5 +1,5 @@
 import { Dimensions, PixelRatio, Platform } from "react-native"
-import { lightColors } from "./themes"
+import { lightColors, ThemeColors } from "./themes"
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
@@ -109,3 +109,26 @@ export const shadows = {
     elevation: 8,
   },
 }
+
+export const getButtonStyles = (colors: ThemeColors) => ({
+  base: {
+    borderRadius: responsive.scale(8),
+    paddingVertical: spacing.small,
+    paddingHorizontal: spacing.medium,
+    justifyContent: "center",
+    alignItems: "center",
+    ...shadows.light,
+  },
+  text: {
+    fontFamily: "Arvo-Bold",
+    fontSize: responsive.responsiveFontSize(16),
+    textAlign: "center",
+  },
+  pressed: {
+    transform: [{ translateY: 2 }],
+    opacity: 0.8,
+  },
+  disabled: {
+    opacity: 0.6,
+  },
+})

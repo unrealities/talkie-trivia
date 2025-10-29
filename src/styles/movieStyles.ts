@@ -1,8 +1,15 @@
 import { StyleSheet } from "react-native"
-import { responsive, spacing, shadows, getTypography } from "../styles/global"
+import {
+  responsive,
+  spacing,
+  shadows,
+  getTypography,
+  getButtonStyles,
+} from "../styles/global"
 
 export const getMovieStyles = (colors: any) => {
   const typography = getTypography(colors)
+  const buttonStyles = getButtonStyles(colors)
 
   return StyleSheet.create({
     container: {
@@ -21,26 +28,21 @@ export const getMovieStyles = (colors: any) => {
       flexGrow: 1,
     },
     disabledButton: {
-      opacity: 0.6,
+      ...buttonStyles.disabled,
     },
     giveUpButton: {
-      alignItems: "center",
-      alignSelf: "center",
+      ...buttonStyles.base,
       backgroundColor: colors.error,
       borderRadius: responsive.scale(10),
       padding: spacing.medium,
       width: "100%",
-      ...shadows.light,
     },
     giveUpButtonText: {
+      ...buttonStyles.text,
       color: colors.textPrimary,
-      fontFamily: "Arvo-Bold",
-      fontSize: responsive.responsiveFontSize(16),
-      textAlign: "center",
     },
     pressedButton: {
-      transform: [{ translateY: 2 }],
-      opacity: 0.8,
+      ...buttonStyles.pressed,
     },
     gameOverCard: {
       backgroundColor: colors.surface,
@@ -100,17 +102,13 @@ export const getMovieStyles = (colors: any) => {
       paddingVertical: spacing.medium,
     },
     gameOverButton: {
+      ...buttonStyles.base,
       backgroundColor: colors.quinary,
-      paddingVertical: spacing.small,
       paddingHorizontal: spacing.large,
-      borderRadius: responsive.scale(8),
-      ...shadows.light,
       width: "80%",
-      alignItems: "center",
     },
     gameOverButtonText: {
-      ...typography.bodyText,
-      fontFamily: "Arvo-Bold",
+      ...buttonStyles.text,
       color: colors.background,
     },
     countdownContainer: {
