@@ -1,16 +1,15 @@
-import React, { memo, useEffect, useMemo } from "react"
-import { View, Pressable, Text } from "react-native"
+import React, { memo, useEffect } from "react"
+import { View, Pressable, ViewStyle, TextStyle } from "react-native"
 import Ionicons from "@expo/vector-icons/Ionicons"
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated"
-import { getHintStyles } from "../styles/hintStyles"
-import { responsive } from "../styles/global"
-import { useTheme } from "../contexts/themeContext"
 import { HintType } from "../models/game"
 import HintButton from "./hintButton"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { Typography } from "./ui/typography"
 
 type HintStatus = "available" | "used" | "disabled"
 
@@ -26,7 +25,7 @@ interface HintUIProps {
   handleHintSelection: (type: HintType) => void
 }
 
-const HINT_CONTAINER_HEIGHT = responsive.scale(60)
+const HINT_CONTAINER_HEIGHT = 80 // Adjusted for better spacing
 
 const HintUI: React.FC<HintUIProps> = memo(
   ({
@@ -40,8 +39,7 @@ const HintUI: React.FC<HintUIProps> = memo(
     handleToggleHintOptions,
     handleHintSelection,
   }) => {
-    const { colors } = useTheme()
-    const hintStyles = useMemo(() => getHintStyles(colors), [colors])
+    const styles = useStyles(themedStyles)
     const animatedHeight = useSharedValue(0)
 
     const animatedContainerStyle = useAnimatedStyle(() => {
@@ -63,7 +61,7 @@ const HintUI: React.FC<HintUIProps> = memo(
     }, [showHintOptions, animatedHeight])
 
     return (
-      <View style={hintStyles.container}>
+      <View style={styles.container}>
         <Pressable
           onPress={handleToggleHintOptions}
           disabled={isToggleDisabled}
@@ -71,22 +69,23 @@ const HintUI: React.FC<HintUIProps> = memo(
           accessibilityRole="button"
           accessibilityState={{ disabled: isToggleDisabled }}
           accessibilityLabel={hintLabelText}
-          style={isToggleDisabled ? hintStyles.disabled : {}}
+          style={isToggleDisabled ? styles.disabled : {}}
         >
-          <Text
+          <Typography
+            variant="body"
             style={[
-              hintStyles.hintLabel,
-              isToggleDisabled && { color: colors.textDisabled },
+              styles.hintLabel,
+              isToggleDisabled && styles.hintLabelDisabled,
             ]}
           >
             {hintLabelText}
-          </Text>
+          </Typography>
         </Pressable>
 
         <Animated.View
-          style={[hintStyles.hintButtonsContainer, animatedContainerStyle]}
+          style={[styles.hintButtonsContainer, animatedContainerStyle]}
         >
-          <View style={hintStyles.hintButtonArea}>
+          <View style={styles.hintButtonArea}>
             <HintButton
               hintType="decade"
               iconName="calendar-outline"
@@ -127,13 +126,12 @@ const HintUI: React.FC<HintUIProps> = memo(
         </Animated.View>
 
         {displayedHintText && (
-          <View style={hintStyles.displayedHintContainer}>
-            <View style={hintStyles.displayedHintContent}>
-              <Ionicons
-                name="bulb-outline"
-                style={hintStyles.displayedHintIcon}
-              />
-              <Text style={hintStyles.hintText}>{displayedHintText}</Text>
+          <View style={styles.displayedHintContainer}>
+            <View style={styles.displayedHintContent}>
+              <Ionicons name="bulb-outline" style={styles.displayedHintIcon} />
+              <Typography style={styles.hintText}>
+                {displayedHintText}
+              </Typography>
             </View>
           </View>
         )}
@@ -141,5 +139,81 @@ const HintUI: React.FC<HintUIProps> = memo(
     )
   }
 )
+
+interface HintUIStyles {
+  container: ViewStyle
+  disabled: ViewStyle
+  hintLabel: TextStyle
+  hintLabelDisabled: TextStyle
+  hintButtonsContainer: ViewStyle
+  hintButtonArea: ViewStyle
+  displayedHintContainer: ViewStyle
+  displayedHintContent: ViewStyle
+  displayedHintIcon: TextStyle
+  hintText: TextStyle
+}
+
+const themedStyles = (theme: Theme): HintUIStyles => ({
+  container: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: theme.responsive.scale(2),
+    width: "100%",
+  },
+  disabled: {
+    opacity: 0.5,
+  },
+  hintLabel: {
+    ...theme.typography.bodyText,
+    fontFamily: "Arvo-Bold",
+    fontSize: theme.responsive.responsiveFontSize(14),
+    marginVertical: theme.responsive.scale(4),
+    textAlign: "center",
+    paddingVertical: theme.responsive.scale(4),
+  },
+  hintLabelDisabled: {
+    color: theme.colors.textDisabled,
+  },
+  hintButtonsContainer: {
+    flexDirection: "column",
+    alignItems: "center",
+    width: "100%",
+    overflow: "hidden",
+  },
+  hintButtonArea: {
+    flexDirection: "row",
+    justifyContent: "center",
+    flexWrap: "nowrap",
+    width: "100%",
+  },
+  displayedHintContainer: {
+    marginTop: theme.spacing.small,
+    padding: theme.responsive.scale(2),
+    backgroundColor: theme.colors.tertiary,
+    borderRadius: theme.responsive.scale(10),
+    width: "90%",
+    alignSelf: "center",
+  },
+  displayedHintContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.responsive.scale(8),
+    paddingVertical: theme.spacing.small,
+    paddingHorizontal: theme.spacing.medium,
+  },
+  displayedHintIcon: {
+    color: theme.colors.tertiary,
+    fontSize: theme.responsive.responsiveFontSize(18),
+    marginRight: theme.spacing.small,
+  },
+  hintText: {
+    color: theme.colors.primary,
+    fontFamily: "Arvo-Bold",
+    fontSize: theme.responsive.responsiveFontSize(16),
+    textAlign: "center",
+  },
+})
 
 export default HintUI

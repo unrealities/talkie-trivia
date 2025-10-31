@@ -1,5 +1,10 @@
 import React, { useEffect, useMemo } from "react"
-import { View, StyleSheet, ActivityIndicator, Platform } from "react-native"
+import {
+  View,
+  ActivityIndicator,
+  Platform,
+  ViewStyle,
+} from "react-native"
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -8,8 +13,7 @@ import Animated, {
   Easing,
 } from "react-native-reanimated"
 import { Svg, Circle } from "react-native-svg"
-import { responsive } from "../styles/global"
-import { useTheme } from "../contexts/themeContext"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
 
 interface CustomLoadingIndicatorProps {
   isLowEndDevice?: boolean
@@ -18,7 +22,8 @@ interface CustomLoadingIndicatorProps {
 const CustomLoadingIndicator: React.FC<CustomLoadingIndicatorProps> = ({
   isLowEndDevice = false,
 }) => {
-  const { colors } = useTheme()
+  const styles = useStyles(themedStyles)
+  const { colors, responsive } = styles.rawTheme
 
   if (isLowEndDevice || Platform.OS === "web") {
     return (
@@ -50,23 +55,6 @@ const CustomLoadingIndicator: React.FC<CustomLoadingIndicatorProps> = ({
       transform: [{ rotate: `${progress.value * 360}deg` }],
     }
   })
-
-  const styles = useMemo(
-    () =>
-      StyleSheet.create({
-        container: {
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: colors.background,
-        },
-        rotateContainer: {
-          alignItems: "center",
-          justifyContent: "center",
-        },
-      }),
-    [colors]
-  )
 
   return (
     <View
@@ -104,5 +92,18 @@ const CustomLoadingIndicator: React.FC<CustomLoadingIndicatorProps> = ({
     </View>
   )
 }
+
+interface CustomLoadingIndicatorStyles {
+  rotateContainer: ViewStyle
+  rawTheme: Theme
+}
+
+const themedStyles = (theme: Theme): CustomLoadingIndicatorStyles => ({
+  rotateContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  rawTheme: theme,
+})
 
 export default CustomLoadingIndicator

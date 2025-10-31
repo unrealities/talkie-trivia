@@ -87,27 +87,36 @@ export const spacing = {
   extraLarge: scale(32),
 }
 
+// FIX: Platform-agnostic shadows to resolve web deprecation warning.
 export const shadows = {
-  light: {
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
+  light: Platform.select({
+    ios: {
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.23,
+      shadowRadius: 2.62,
     },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
-  },
-  medium: {
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
+    android: {
+      elevation: 4,
     },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.65,
-    elevation: 8,
-  },
+    web: {
+      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    },
+  }),
+  medium: Platform.select({
+    ios: {
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+      shadowRadius: 4.65,
+    },
+    android: {
+      elevation: 8,
+    },
+    web: {
+      boxShadow: "0 4px 8px rgba(0,0,0,0.15)",
+    },
+  }),
 }
 
 export const getButtonStyles = (colors: ThemeColors) => ({

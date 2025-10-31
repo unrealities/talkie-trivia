@@ -1,9 +1,9 @@
-import React, { useMemo } from "react"
-import { View, Text } from "react-native"
+import React from "react"
+import { View, ViewStyle, TextStyle } from "react-native"
 import { FontAwesome } from "@expo/vector-icons"
-import { useTheme } from "../contexts/themeContext"
-import { getAppStyles } from "../styles/appStyles"
-import { responsive } from "../styles/global"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { Card } from "./ui/card"
+import { Typography } from "./ui/typography"
 
 interface ProfileSectionProps {
   title: string
@@ -16,22 +16,63 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   icon,
   children,
 }) => {
-  const { colors } = useTheme()
-  const appStyles = useMemo(() => getAppStyles(colors), [colors])
+  const styles = useStyles(themedStyles)
 
   return (
-    <View style={appStyles.profileSection}>
-      <View style={appStyles.profileSectionHeader}>
+    <Card style={styles.card}>
+      <View style={styles.header}>
         <FontAwesome
           name={icon}
-          size={responsive.responsiveFontSize(16)}
-          color={colors.primary}
+          size={styles.icon.fontSize}
+          color={styles.icon.color}
         />
-        <Text style={appStyles.profileSectionTitle}>{title}</Text>
+        <Typography variant="h2" style={styles.title}>
+          {title}
+        </Typography>
       </View>
-      <View style={appStyles.profileSectionContent}>{children}</View>
-    </View>
+      <View style={styles.content}>{children}</View>
+    </Card>
   )
 }
+
+interface ProfileSectionStyles {
+  card: ViewStyle
+  header: ViewStyle
+  icon: TextStyle
+  title: TextStyle
+  content: ViewStyle
+}
+
+const themedStyles = (theme: Theme): ProfileSectionStyles => ({
+  card: {
+    width: "100%",
+    maxWidth: theme.responsive.scale(500),
+    marginBottom: theme.spacing.large,
+    overflow: "hidden", // Ensures children conform to border radius
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: theme.spacing.medium,
+    backgroundColor:
+      theme.colorScheme === "dark"
+        ? "rgba(255,255,255,0.05)"
+        : "rgba(0,0,0,0.02)",
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.border,
+  },
+  icon: {
+    fontSize: theme.responsive.responsiveFontSize(16),
+    color: theme.colors.primary,
+  },
+  title: {
+    fontSize: theme.responsive.responsiveFontSize(18),
+    color: theme.colors.primary,
+    marginLeft: theme.spacing.small,
+  },
+  content: {
+    padding: theme.spacing.medium,
+  },
+})
 
 export default ProfileSection

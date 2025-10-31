@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo } from "react"
-import { Pressable, Text, StyleProp, ViewStyle } from "react-native"
+import React, { useEffect } from "react"
+import { Pressable, Text, StyleProp, ViewStyle, TextStyle } from "react-native"
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -9,9 +9,7 @@ import Animated, {
 } from "react-native-reanimated"
 import Ionicons from "@expo/vector-icons/Ionicons"
 import { HintType } from "../models/game"
-import { useTheme } from "../contexts/themeContext"
-import { getHintStyles } from "../styles/hintStyles"
-import { responsive } from "../styles/global"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
 
 type HintStatus = "available" | "used" | "disabled"
 
@@ -34,8 +32,7 @@ const HintButton: React.FC<HintButtonProps> = ({
   accessibilityHintCount,
   isHighlighted,
 }) => {
-  const { colors } = useTheme()
-  const hintStyles = useMemo(() => getHintStyles(colors), [colors])
+  const styles = useStyles(themedStyles)
   const highlightAnimation = useSharedValue(0)
 
   useEffect(() => {
@@ -57,19 +54,29 @@ const HintButton: React.FC<HintButtonProps> = ({
     return {
       transform: [{ scale: 1 + highlightAnimation.value * 0.05 }],
       borderColor: isHighlighted
-        ? colors.primary
-        : hintStyles.hintButton.borderColor,
+        ? styles.highlightedHintButton.borderColor
+        : styles.hintButton.borderColor,
     }
   })
 
-  const buttonStyle: StyleProp<ViewStyle> = [hintStyles.hintButton]
+  const buttonStyle: StyleProp<ViewStyle> = [styles.hintButton]
+  const textStyle: StyleProp<TextStyle> = [styles.buttonTextSmall]
+  let iconColor = styles.buttonTextSmall.color
+
   if (status === "disabled") {
-    buttonStyle.push(hintStyles.disabled)
+    buttonStyle.push(styles.disabled)
+    textStyle.push(styles.disabledText)
+    iconColor = styles.disabledText.color
   } else if (status === "used") {
-    buttonStyle.push(hintStyles.usedHintButton)
+    buttonStyle.push(styles.usedHintButton)
+    textStyle.push(styles.usedText)
+    iconColor = styles.usedText.color
   }
+
   if (isHighlighted) {
-    buttonStyle.push(hintStyles.highlightedHintButton)
+    buttonStyle.push(styles.highlightedHintButton)
+    textStyle.push(styles.highlightedText)
+    iconColor = styles.highlightedText.color
   }
 
   const getAccessibilityLabel = () => {
@@ -97,30 +104,70 @@ const HintButton: React.FC<HintButtonProps> = ({
       >
         <Ionicons
           name={iconName}
-          size={responsive.scale(20)}
-          color={
-            isHighlighted
-              ? colors.primary
-              : status === "disabled"
-              ? colors.textDisabled
-              : status === "used"
-              ? colors.tertiary
-              : colors.textSecondary
-          }
+          size={styles.icon.fontSize}
+          color={iconColor}
         />
-        <Text
-          style={[
-            hintStyles.buttonTextSmall,
-            status === "disabled" && { color: colors.textDisabled },
-            status === "used" && { color: colors.tertiary },
-            isHighlighted && { color: colors.primary },
-          ]}
-        >
-          {label}
-        </Text>
+        <Text style={textStyle}>{label}</Text>
       </Pressable>
     </Animated.View>
   )
 }
+
+interface HintButtonStyles {
+  hintButton: ViewStyle
+  usedHintButton: ViewStyle
+  highlightedHintButton: ViewStyle
+  disabled: ViewStyle
+  icon: TextStyle
+  buttonTextSmall: TextStyle
+  disabledText: TextStyle
+  usedText: TextStyle
+  highlightedText: TextStyle
+}
+
+const themedStyles = (theme: Theme): HintButtonStyles => ({
+  hintButton: {
+    borderRadius: theme.responsive.scale(4),
+    padding: theme.responsive.scale(6),
+    minWidth: "20%",
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: theme.responsive.scale(4),
+    marginVertical: theme.responsive.scale(8),
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: theme.colors.textSecondary,
+  },
+  usedHintButton: {
+    borderColor: theme.colors.tertiary,
+    opacity: 0.8,
+  },
+  highlightedHintButton: {
+    borderColor: theme.colors.primary,
+    borderWidth: 2,
+    ...theme.shadows.medium,
+    shadowColor: theme.colors.primary,
+  },
+  disabled: {
+    opacity: 0.5,
+  },
+  icon: {
+    fontSize: theme.responsive.scale(20),
+  },
+  buttonTextSmall: {
+    ...theme.typography.caption,
+    color: theme.colors.textSecondary,
+    marginTop: theme.spacing.extraSmall,
+  },
+  disabledText: {
+    color: theme.colors.textDisabled,
+  },
+  usedText: {
+    color: theme.colors.tertiary,
+  },
+  highlightedText: {
+    color: theme.colors.primary,
+  },
+})
 
 export default HintButton

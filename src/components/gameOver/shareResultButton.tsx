@@ -1,9 +1,10 @@
-import React, { useMemo, useState } from "react"
-import { View, Pressable, Text, ActivityIndicator, Alert } from "react-native"
-import { useTheme } from "../../contexts/themeContext"
-import { getMovieStyles } from "../../styles/movieStyles"
-import { shareGameResult } from "../../utils/shareUtils"
+import React, { useState } from "react"
+import { View, Alert, ViewStyle } from "react-native"
 import { PlayerGame } from "../../models/game"
+import { shareGameResult } from "../../utils/shareUtils"
+import { Button } from "../ui/button"
+import { useStyles, Theme } from "../../utils/hooks/useStyles"
+import { u } from "../../styles/utils"
 
 interface ShareResultButtonProps {
   playerGame: PlayerGame
@@ -12,8 +13,7 @@ interface ShareResultButtonProps {
 const ShareResultButton: React.FC<ShareResultButtonProps> = ({
   playerGame,
 }) => {
-  const { colors } = useTheme()
-  const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
+  const styles = useStyles(themedStyles)
   const [isSharing, setIsSharing] = useState(false)
 
   const handleShare = async () => {
@@ -33,24 +33,30 @@ const ShareResultButton: React.FC<ShareResultButtonProps> = ({
   }
 
   return (
-    <View style={movieStyles.gameOverButtonsContainer}>
-      <Pressable
+    <View style={[u.wFull, u.alignCenter, styles.container]}>
+      <Button
+        title="Share Your Result"
         onPress={handleShare}
-        style={({ pressed }) => [
-          movieStyles.gameOverButton,
-          (pressed || isSharing) && movieStyles.pressedButton,
-          isSharing && movieStyles.disabledButton,
-        ]}
-        disabled={isSharing}
-      >
-        {isSharing ? (
-          <ActivityIndicator color={colors.background} />
-        ) : (
-          <Text style={movieStyles.gameOverButtonText}>Share Your Result</Text>
-        )}
-      </Pressable>
+        isLoading={isSharing}
+        variant="tertiary"
+        style={styles.button}
+      />
     </View>
   )
 }
+
+interface ShareButtonStyles {
+  container: ViewStyle
+  button: ViewStyle
+}
+
+const themedStyles = (theme: Theme): ShareButtonStyles => ({
+  container: {
+    paddingVertical: theme.spacing.medium,
+  },
+  button: {
+    width: "80%",
+  },
+})
 
 export default ShareResultButton

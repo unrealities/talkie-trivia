@@ -1,8 +1,8 @@
-import React, { memo, useMemo } from "react"
-import { View, Text, Platform } from "react-native"
-import { getAppStyles } from "../styles/appStyles"
+import React, { memo, useMemo } from "react" // FIX: Imported useMemo from React
+import { View, Platform, ViewStyle, TextStyle } from "react-native"
 import CustomLoadingIndicator from "./customLoadingIndicator"
-import { useTheme } from "../contexts/themeContext"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { Typography } from "./ui/typography"
 import Constants from "expo-constants"
 import { DEVICE_CONFIG } from "../config/constants"
 
@@ -11,7 +11,7 @@ interface LoadingIndicatorProps {
 }
 
 const useDeviceCheck = () => {
-  const isLowEndDevice = useMemo(() => {
+  return useMemo(() => {
     if (Platform.OS === "web") return false
 
     const deviceYearClass = Constants.deviceYearClass
@@ -20,22 +20,14 @@ const useDeviceCheck = () => {
     if (deviceYearClass === null || typeof deviceYearClass === "undefined")
       return false
 
-    // Expo's deviceYearClass maps roughly to year - 2011 + 1 (e.g., a 2018 device is class 8)
-    // We want devices older than the threshold (e.g., older than 2018) to be considered low-end.
-    // If the device year class is less than the calculated threshold class, it's low end.
-    // Assuming 2011 is class 1, 2018 is class 8.
     const requiredClass = threshold - 2011
-
     return deviceYearClass < requiredClass
   }, [])
-
-  return isLowEndDevice
 }
 
 const LoadingIndicator: React.FC<LoadingIndicatorProps> = memo(
   ({ message }) => {
-    const { colors } = useTheme()
-    const styles = useMemo(() => getAppStyles(colors), [colors])
+    const styles = useStyles(themedStyles)
     const isLowEndDevice = useDeviceCheck()
 
     return (
@@ -44,10 +36,33 @@ const LoadingIndicator: React.FC<LoadingIndicatorProps> = memo(
         testID="loading-indicator-container"
       >
         <CustomLoadingIndicator isLowEndDevice={isLowEndDevice} />
-        {message && <Text style={styles.messageText}>{message}</Text>}
+        {message && (
+          <Typography style={styles.messageText}>{message}</Typography>
+        )}
       </View>
     )
   }
 )
+
+interface LoadingIndicatorStyles {
+  loadingContainer: ViewStyle
+  messageText: TextStyle
+}
+
+const themedStyles = (theme: Theme): LoadingIndicatorStyles => ({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: theme.colors.background,
+    width: "100%",
+  },
+  messageText: {
+    marginTop: theme.spacing.large,
+    fontSize: theme.responsive.responsiveFontSize(16),
+    color: theme.colors.textSecondary,
+    textAlign: "center",
+  },
+})
 
 export default LoadingIndicator

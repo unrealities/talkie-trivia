@@ -1,32 +1,45 @@
-import React, { useMemo } from "react"
-import { View } from "react-native"
+import React from "react"
+import { View, ViewStyle } from "react-native"
 import Animated from "react-native-reanimated"
-import { getPickerStyles } from "../styles/pickerStyles"
 import { useSkeletonAnimation } from "../utils/hooks/useSkeletonAnimation"
-import { useTheme } from "../contexts/themeContext"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
 
 const PickerSkeleton = () => {
-  const { colors } = useTheme()
-  const pickerStyles = useMemo(() => getPickerStyles(colors), [colors])
+  const styles = useStyles(themedStyles)
   const animatedStyle = useSkeletonAnimation()
 
   return (
-    <Animated.View style={[pickerStyles.container, animatedStyle]}>
-      <View style={pickerStyles.inputContainer}>
-        <View
-          style={[
-            pickerStyles.input,
-            {
-              backgroundColor: colors.surface,
-              borderColor: colors.border,
-            },
-          ]}
-        />
+    <Animated.View style={[styles.container, animatedStyle]}>
+      <View style={styles.inputContainer}>
+        <View style={styles.input} />
       </View>
-      <View style={pickerStyles.resultsContainer} />
-      <View style={[pickerStyles.button, pickerStyles.disabledButton]} />
     </Animated.View>
   )
 }
+
+interface SkeletonStyles {
+  container: ViewStyle
+  inputContainer: ViewStyle
+  input: ViewStyle
+}
+
+const themedStyles = (theme: Theme): SkeletonStyles => ({
+  container: {
+    width: "100%",
+    marginTop: theme.spacing.medium,
+    marginBottom: theme.spacing.medium,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    position: "relative",
+    width: "100%",
+  },
+  input: {
+    flex: 1,
+    height: 50, // Approximate height of the TextInput
+    borderRadius: theme.responsive.scale(8),
+    backgroundColor: theme.colors.surface,
+  },
+})
 
 export default PickerSkeleton

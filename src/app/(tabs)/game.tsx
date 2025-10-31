@@ -1,12 +1,12 @@
-import React, { lazy, Suspense, useMemo } from "react"
-import { ScrollView, View } from "react-native"
+import React, { lazy, Suspense } from "react"
+import { ScrollView, View, ViewStyle } from "react-native"
 import { LinearGradient } from "expo-linear-gradient"
 import LoadingIndicator from "../../components/loadingIndicator"
-import { getMovieStyles } from "../../styles/movieStyles"
 import { useTheme } from "../../contexts/themeContext"
 import { useGameStore } from "../../state/gameStore"
 import TitleHeader from "../../components/titleHeader"
-import { spacing } from "../../styles/global"
+import { useStyles, Theme } from "../../utils/hooks/useStyles"
+import { u } from "../../styles/utils"
 
 const GameplayContainer = lazy(
   () => import("../../components/gameplayContainer")
@@ -24,32 +24,21 @@ const GameScreen = () => {
   const handleConfettiStop = useGameStore((state) => state.handleConfettiStop)
   const flashMessage = useGameStore((state) => state.flashMessage)
 
-  const { colors } = useTheme()
-  const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
+  const { colors } = useTheme() // Still needed for LinearGradient
+  const styles = useStyles(themedStyles)
 
   return (
     <LinearGradient
       colors={[colors.background, colors.backgroundLight]}
-      style={{ flex: 1 }}
+      style={u.flex}
     >
       <ScrollView
-        contentContainerStyle={movieStyles.scrollContentContainer}
-        style={{ flex: 1 }}
+        contentContainerStyle={styles.scrollContentContainer}
+        style={u.flex}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            width: "100%",
-            paddingHorizontal: spacing.small,
-            borderBottomWidth: 1,
-            borderBottomColor: colors.border,
-            zIndex: 1,
-          }}
-        >
+        <View style={styles.headerContainer}>
           <TitleHeader />
           <Suspense fallback={null}>
             <GameDifficultyToggle />
@@ -70,5 +59,29 @@ const GameScreen = () => {
     </LinearGradient>
   )
 }
+
+interface GameScreenStyles {
+  scrollContentContainer: ViewStyle
+  headerContainer: ViewStyle
+}
+
+const themedStyles = (theme: Theme): GameScreenStyles => ({
+  scrollContentContainer: {
+    paddingTop: theme.spacing.large,
+    paddingBottom: theme.spacing.extraLarge,
+    alignItems: "center",
+    flexGrow: 1,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    paddingHorizontal: theme.spacing.small,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.border,
+    zIndex: 1,
+  },
+})
 
 export default GameScreen

@@ -1,8 +1,9 @@
-import React, { memo, useMemo } from "react"
-import { Modal, Pressable, Text, View } from "react-native"
-import { getConfirmationModalStyles } from "../styles/confirmationModalStyles"
+import React, { memo } from "react"
+import { Modal, View } from "react-native"
 import { hapticsService } from "../utils/hapticsService"
-import { useTheme } from "../contexts/themeContext"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { Button } from "./ui/button"
+import { Typography } from "./ui/typography"
 
 interface ConfirmationModalProps {
   isVisible: boolean
@@ -24,8 +25,7 @@ const ConfirmationModal = memo(
     onConfirm,
     onCancel,
   }: ConfirmationModalProps) => {
-    const { colors } = useTheme()
-    const styles = useMemo(() => getConfirmationModalStyles(colors), [colors])
+    const styles = useStyles(themedStyles)
 
     const handleConfirm = () => {
       hapticsService.heavy()
@@ -49,29 +49,27 @@ const ConfirmationModal = memo(
             testID="confirmation-modal-container"
           >
             <View style={styles.modalView}>
-              <Text style={styles.title}>{title}</Text>
-              <Text style={styles.message}>{message}</Text>
+              <Typography variant="h2" style={styles.title}>
+                {title}
+              </Typography>
+
+              <Typography variant="body" style={styles.message}>
+                {message}
+              </Typography>
+
               <View style={styles.buttonContainer}>
-                <Pressable
-                  style={({ pressed }) => [
-                    styles.button,
-                    styles.cancelButton,
-                    pressed && { opacity: 0.7 },
-                  ]}
+                <Button
+                  title={cancelText}
+                  variant="secondary"
                   onPress={handleCancel}
-                >
-                  <Text style={styles.cancelButtonText}>{cancelText}</Text>
-                </Pressable>
-                <Pressable
-                  style={({ pressed }) => [
-                    styles.button,
-                    styles.confirmButton,
-                    pressed && { opacity: 0.7 },
-                  ]}
+                  style={styles.button}
+                />
+                <Button
+                  title={confirmText}
+                  variant="primary"
                   onPress={handleConfirm}
-                >
-                  <Text style={styles.confirmButtonText}>{confirmText}</Text>
-                </Pressable>
+                  style={styles.button}
+                />
               </View>
             </View>
           </View>
@@ -80,5 +78,39 @@ const ConfirmationModal = memo(
     )
   }
 )
+
+const themedStyles = (theme: Theme) => ({
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalView: {
+    backgroundColor: theme.colors.background,
+    borderRadius: theme.responsive.scale(10),
+    padding: theme.responsive.scale(20),
+    width: "80%",
+    maxWidth: theme.responsive.scale(400),
+    ...theme.shadows.medium,
+  },
+  title: {
+    fontSize: theme.responsive.responsiveFontSize(20),
+    marginBottom: theme.spacing.small,
+    textAlign: "center",
+  },
+  message: {
+    marginBottom: theme.spacing.large,
+    textAlign: "center",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  button: {
+    flex: 1,
+    marginHorizontal: theme.spacing.small,
+  },
+})
 
 export default ConfirmationModal

@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState, useEffect } from "react"
-import { View, Text, Pressable } from "react-native"
+import { View, Pressable, ViewStyle, TextStyle } from "react-native"
 import Animated, {
   useSharedValue,
   withTiming,
@@ -7,18 +7,17 @@ import Animated, {
   Easing,
   runOnJS,
 } from "react-native-reanimated"
-import { getDifficultySelectorStyles } from "../styles/difficultySelectorStyles"
 import { hapticsService } from "../utils/hapticsService"
-import { useTheme } from "../contexts/themeContext"
 import { useGameStore } from "../state/gameStore"
 import { useAuth } from "../contexts/authContext"
 import { FontAwesome } from "@expo/vector-icons"
-import { responsive } from "../styles/global"
 import {
   DifficultyLevel,
   DIFFICULTY_MODES,
   DifficultyMode,
 } from "../config/difficulty"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { Typography } from "./ui/typography"
 
 type Option = DifficultyMode & { value: DifficultyLevel }
 
@@ -33,9 +32,7 @@ const DifficultySelector = () => {
   const { player } = useAuth()
   const difficulty = useGameStore((state) => state.difficulty)
   const setDifficulty = useGameStore((state) => state.setDifficulty)
-
-  const { colors } = useTheme()
-  const styles = useMemo(() => getDifficultySelectorStyles(colors), [colors])
+  const styles = useStyles(themedStyles)
 
   const [hoveredDifficulty, setHoveredDifficulty] =
     useState<DifficultyLevel | null>(null)
@@ -96,15 +93,15 @@ const DifficultySelector = () => {
         <View style={styles.labelContainer}>
           <FontAwesome
             name="gamepad"
-            size={responsive.responsiveFontSize(16)}
-            color={colors.textSecondary}
+            size={styles.icon.fontSize}
+            color={styles.icon.color}
           />
-          <Text style={styles.title}>Difficulty</Text>
+          <Typography style={styles.title}>Difficulty</Typography>
         </View>
         <View style={styles.selectedOptionDisplay}>
-          <Text style={styles.selectedOptionTextDisplay}>
+          <Typography style={styles.selectedOptionTextDisplay}>
             {selectedOptionLabel}
-          </Text>
+          </Typography>
         </View>
       </View>
 
@@ -125,24 +122,126 @@ const DifficultySelector = () => {
             accessibilityState={{ selected: difficulty === option.value }}
             accessibilityLabel={`Set difficulty to ${option.label}. ${option.description}`}
           >
-            <Text
+            <Typography
               style={[
                 styles.optionText,
                 difficulty === option.value && styles.selectedOptionText,
               ]}
             >
               {option.label}
-            </Text>
+            </Typography>
           </Pressable>
         ))}
       </View>
       <Animated.View
         style={[styles.descriptionContainer, animatedDescriptionStyle]}
       >
-        <Text style={styles.descriptionText}>{currentDescription}</Text>
+        <Typography style={styles.descriptionText}>
+          {currentDescription}
+        </Typography>
       </Animated.View>
     </View>
   )
 }
+
+interface DifficultySelectorStyles {
+  container: ViewStyle
+  row: ViewStyle
+  labelContainer: ViewStyle
+  icon: TextStyle
+  title: TextStyle
+  selectedOptionDisplay: ViewStyle
+  selectedOptionTextDisplay: TextStyle
+  optionsContainer: ViewStyle
+  option: ViewStyle
+  selectedOption: ViewStyle
+  optionText: TextStyle
+  selectedOptionText: TextStyle
+  descriptionContainer: ViewStyle
+  descriptionText: TextStyle
+}
+
+const themedStyles = (theme: Theme): DifficultySelectorStyles => ({
+  container: {
+    width: "100%",
+    alignItems: "center",
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+  },
+  labelContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  icon: {
+    fontSize: theme.responsive.responsiveFontSize(16),
+    color: theme.colors.textSecondary,
+  },
+  title: {
+    fontFamily: "Arvo-Bold",
+    fontSize: theme.responsive.responsiveFontSize(16),
+    color: theme.colors.textPrimary,
+    marginLeft: theme.spacing.small,
+  },
+  selectedOptionDisplay: {
+    backgroundColor: theme.colors.background,
+    paddingVertical: theme.spacing.extraSmall,
+    paddingHorizontal: theme.spacing.small,
+    borderRadius: theme.responsive.scale(6),
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  selectedOptionTextDisplay: {
+    fontFamily: "Arvo-Regular",
+    fontSize: theme.responsive.responsiveFontSize(14),
+    color: theme.colors.textSecondary,
+  },
+  optionsContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    backgroundColor: theme.colors.background,
+    borderRadius: theme.responsive.scale(6),
+    marginTop: theme.spacing.extraSmall,
+    padding: theme.spacing.extraSmall,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  option: {
+    paddingVertical: theme.spacing.extraSmall,
+    paddingHorizontal: theme.spacing.extraSmall,
+    borderRadius: theme.responsive.scale(6),
+    margin: theme.spacing.extraSmall,
+    backgroundColor: theme.colors.surface,
+  },
+  selectedOption: {
+    backgroundColor: theme.colors.primary,
+  },
+  optionText: {
+    fontFamily: "Arvo-Regular",
+    fontSize: theme.responsive.responsiveFontSize(14),
+    color: theme.colors.textPrimary,
+  },
+  selectedOptionText: {
+    fontFamily: "Arvo-Bold",
+    color: theme.colors.background,
+  },
+  descriptionContainer: {
+    marginTop: theme.spacing.extraSmall,
+    minHeight: theme.responsive.scale(60),
+    paddingHorizontal: theme.spacing.extraSmall,
+    justifyContent: "center",
+  },
+  descriptionText: {
+    fontFamily: "Arvo-Regular",
+    fontSize: theme.responsive.responsiveFontSize(12),
+    color: theme.colors.textSecondary,
+    textAlign: "center",
+    lineHeight: theme.responsive.responsiveFontSize(16),
+  },
+})
 
 export default DifficultySelector

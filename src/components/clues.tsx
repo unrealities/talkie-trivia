@@ -6,7 +6,14 @@ import React, {
   memo,
   useCallback,
 } from "react"
-import { Text, View, ScrollView, Pressable } from "react-native"
+import {
+  Text,
+  View,
+  ScrollView,
+  Pressable,
+  ViewStyle,
+  TextStyle,
+} from "react-native"
 import Animated, {
   useSharedValue,
   withTiming,
@@ -19,13 +26,12 @@ import Animated, {
   cancelAnimation,
   Easing,
 } from "react-native-reanimated"
-import { getCluesStyles } from "../styles/cluesStyles"
 import { hapticsService } from "../utils/hapticsService"
-import { useTheme } from "../contexts/themeContext"
 import { ANIMATION_CONSTANTS } from "../config/constants"
 import { useGameStore } from "../state/gameStore"
 import { useShallow } from "zustand/react/shallow"
 import { DIFFICULTY_MODES } from "../config/difficulty"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
 
 const splitSummary = (summary: string, splits: number = 5): string[] => {
   if (!summary) return Array(splits).fill("")
@@ -37,18 +43,18 @@ const splitSummary = (summary: string, splits: number = 5): string[] => {
   ).filter((chunk) => chunk.length > 0)
 }
 
-interface CountContainerProps {
-  currentWordLength: number
-  totalWordLength: number
-}
-
-const CountContainer = memo<CountContainerProps>(
-  ({ currentWordLength, totalWordLength }) => {
-    const { colors } = useTheme()
-    const cluesStyles = useMemo(() => getCluesStyles(colors), [colors])
+const CountContainer = memo(
+  ({
+    currentWordLength,
+    totalWordLength,
+  }: {
+    currentWordLength: number
+    totalWordLength: number
+  }) => {
+    const styles = useStyles(themedStyles)
     return (
-      <View style={cluesStyles.countContainer}>
-        <Text style={cluesStyles.wordCountText}>
+      <View style={styles.countContainer}>
+        <Text style={styles.wordCountText}>
           {currentWordLength}/{totalWordLength} words revealed
         </Text>
       </View>
@@ -57,8 +63,7 @@ const CountContainer = memo<CountContainerProps>(
 )
 
 const CluesContainer = memo(() => {
-  const { colors } = useTheme()
-  const cluesStyles = useMemo(() => getCluesStyles(colors), [colors])
+  const styles = useStyles(themedStyles)
 
   const {
     correctAnswer,
@@ -82,15 +87,12 @@ const CluesContainer = memo(() => {
     () => splitSummary(movieOverview || ""),
     [movieOverview]
   )
-
   const [revealedClues, setRevealedClues] = useState<string[]>([])
   const [typewriterText, setTypewriterText] = useState("")
   const lastClueRef = useRef<string>("")
-
   const highlightProgress = useSharedValue(0)
   const typewriterProgress = useSharedValue(0)
   const scrollViewRef = useRef<ScrollView>(null)
-
   const oldCluesText = revealedClues.slice(0, -1).join(" ")
 
   const handleSkipAnimation = useCallback(() => {
@@ -124,10 +126,8 @@ const CluesContainer = memo(() => {
       hintStrategy === "ALL_REVEALED" ||
       hintStrategy === "HINTS_ONLY_REVEALED"
     ) {
-      // For modes where clues are still progressive, calculate as normal.
       numCluesToReveal = Math.min(currentGuessCount + 1, clues.length)
     } else {
-      // Standard reveal for all other progressive modes.
       numCluesToReveal = Math.min(currentGuessCount + 1, clues.length)
     }
 
@@ -143,12 +143,10 @@ const CluesContainer = memo(() => {
 
       const typewriterDuration =
         lastClue.length * ANIMATION_CONSTANTS.TYPEWRITER_CHAR_DURATION
-
       highlightProgress.value = withSequence(
         withTiming(1, { duration: 400 }),
         withDelay(typewriterDuration + 200, withTiming(0, { duration: 500 }))
       )
-
       typewriterProgress.value = withDelay(
         200,
         withTiming(lastClue.length, {
@@ -157,13 +155,11 @@ const CluesContainer = memo(() => {
         })
       )
       setRevealedClues(newRevealedClues)
-
       setTimeout(
         () => scrollViewRef.current?.scrollToEnd({ animated: true }),
         100
       )
     } else if (numCluesToReveal < revealedClues.length) {
-      // This handles cases where difficulty is increased mid-game, reducing revealed clues.
       setRevealedClues(clues.slice(0, numCluesToReveal))
       const lastClue = clues[numCluesToReveal - 1] || ""
       setTypewriterText(lastClue)
@@ -184,6 +180,7 @@ const CluesContainer = memo(() => {
   ])
 
   const animatedHighlightStyle = useAnimatedStyle(() => {
+    const { colors } = styles.rawTheme
     const backgroundColor = interpolateColor(
       highlightProgress.value,
       [0, 1],
@@ -200,21 +197,19 @@ const CluesContainer = memo(() => {
   const isGameOver = correctAnswer || isInteractionsDisabled
 
   return (
-    <View style={cluesStyles.container}>
+    <View style={styles.container}>
       {loading ? (
-        <View style={cluesStyles.skeletonContainer}>
-          <View style={cluesStyles.skeletonLine} />
-          <View style={cluesStyles.skeletonLine} />
-          <View
-            style={[cluesStyles.skeletonLine, cluesStyles.skeletonLineShort]}
-          />
+        <View style={styles.skeletonContainer}>
+          <View style={styles.skeletonLine} />
+          <View style={styles.skeletonLine} />
+          <View style={[styles.skeletonLine, styles.skeletonLineShort]} />
         </View>
       ) : (
         <>
           <ScrollView
             ref={scrollViewRef}
-            style={cluesStyles.scrollView}
-            contentContainerStyle={cluesStyles.scrollViewContent}
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollViewContent}
             showsVerticalScrollIndicator={false}
           >
             <Pressable
@@ -224,8 +219,8 @@ const CluesContainer = memo(() => {
                 !isGameOver ? "Tap to reveal the full clue immediately" : ""
               }
             >
-              <View style={cluesStyles.cluesBox}>
-                <Text style={cluesStyles.text}>
+              <View style={styles.cluesBox}>
+                <Text style={styles.text}>
                   {oldCluesText}
                   {oldCluesText ? " " : ""}
                   {isGameOver ? (
@@ -251,6 +246,77 @@ const CluesContainer = memo(() => {
       )}
     </View>
   )
+})
+
+interface CluesStyles {
+  container: ViewStyle
+  countContainer: ViewStyle
+  scrollView: ViewStyle
+  scrollViewContent: ViewStyle
+  skeletonContainer: ViewStyle
+  skeletonLine: ViewStyle
+  skeletonLineShort: ViewStyle
+  cluesBox: ViewStyle
+  text: TextStyle
+  wordCountText: TextStyle
+  rawTheme: Theme
+}
+
+const themedStyles = (theme: Theme): CluesStyles => ({
+  container: {
+    flex: 1,
+    justifyContent: "flex-start",
+    marginVertical: theme.spacing.extraSmall,
+    minHeight: theme.responsive.scale(160),
+    paddingHorizontal: theme.spacing.small,
+    width: "100%",
+    alignSelf: "stretch",
+  },
+  countContainer: {
+    alignSelf: "flex-end",
+    marginBottom: theme.responsive.scale(4),
+    marginRight: theme.spacing.large,
+    marginTop: theme.spacing.small,
+  },
+  scrollView: {
+    flexGrow: 1,
+    width: "100%",
+    alignSelf: "stretch",
+  },
+  scrollViewContent: {
+    paddingBottom: theme.spacing.extraSmall,
+  },
+  skeletonContainer: {
+    paddingHorizontal: theme.spacing.small,
+    paddingVertical: theme.spacing.small,
+  },
+  skeletonLine: {
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.responsive.scale(4),
+    height: theme.responsive.responsiveFontSize(14),
+    marginBottom: theme.spacing.small,
+  },
+  skeletonLineShort: {
+    width: "70%",
+  },
+  cluesBox: {
+    paddingHorizontal: theme.spacing.medium,
+    paddingVertical: theme.spacing.medium,
+    width: "100%",
+  },
+  text: {
+    ...theme.typography.bodyText,
+    fontSize: theme.responsive.responsiveFontSize(14),
+    lineHeight: theme.responsive.responsiveFontSize(20),
+    color: theme.colors.textPrimary,
+  },
+  wordCountText: {
+    ...theme.typography.caption,
+    fontSize: theme.responsive.responsiveFontSize(11),
+    color: theme.colors.primary,
+    textAlign: "right",
+  },
+  rawTheme: theme,
 })
 
 export default CluesContainer

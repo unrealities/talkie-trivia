@@ -1,19 +1,15 @@
-import React, { memo, useMemo } from "react"
-import { Pressable, Text, View, ActivityIndicator } from "react-native"
-import { getGoogleLoginStyles } from "../styles/googleLoginStyles"
+import React, { memo } from "react"
+import { View } from "react-native"
 import { useAuth } from "../contexts/authContext"
-import ErrorMessage from "./errorMessage"
 import { hapticsService } from "../utils/hapticsService"
-import { useTheme } from "../contexts/themeContext"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { Button } from "./ui/button"
+import { Typography } from "./ui/typography"
 
 const GoogleLogin: React.FC = memo(() => {
   const { player, user, handleSignIn, handleSignOut, isSigningIn, error } =
     useAuth()
-  const { colors } = useTheme()
-  const googleLoginStyles = useMemo(
-    () => getGoogleLoginStyles(colors),
-    [colors]
-  )
+  const styles = useStyles(themedStyles)
 
   const isSignedIn = !!user && !user.isAnonymous
   const displayName = user?.displayName || player?.name || ""
@@ -38,33 +34,45 @@ const GoogleLogin: React.FC = memo(() => {
   }
 
   return (
-    <View style={googleLoginStyles.container}>
-      <Pressable
-        testID="googleButton"
+    <View style={styles.container}>
+      <Button
+        title={buttonText}
         onPress={handlePress}
-        style={({ pressed }) => [
-          googleLoginStyles.button,
-          { opacity: pressed || isSigningIn ? 0.7 : 1 },
-        ]}
-        disabled={isSigningIn}
+        isLoading={isSigningIn}
+        variant="secondary"
+        style={styles.button}
         accessibilityLabel={accessibilityLabel}
         accessibilityHint={accessibilityHint}
         accessibilityRole="button"
         accessibilityState={{ disabled: isSigningIn }}
-      >
-        {isSigningIn ? (
-          <ActivityIndicator
-            size="small"
-            color={googleLoginStyles.buttonText.color}
-            testID="activityIndicator"
-          />
-        ) : (
-          <Text style={googleLoginStyles.buttonText}>{buttonText}</Text>
-        )}
-      </Pressable>
-      {error && <ErrorMessage message={error} />}
+      />
+      {error && (
+        <Typography variant="error" style={styles.errorText}>
+          {error}
+        </Typography>
+      )}
     </View>
   )
+})
+
+const themedStyles = (theme: Theme) => ({
+  container: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    maxWidth: theme.responsive.scale(400),
+    alignSelf: "center",
+    paddingVertical: theme.spacing.small,
+  },
+  button: {
+    width: "100%",
+    maxWidth: theme.responsive.scale(280),
+  },
+  errorText: {
+    marginTop: theme.spacing.small,
+    textAlign: "center",
+    fontSize: theme.responsive.responsiveFontSize(14),
+  },
 })
 
 export default GoogleLogin

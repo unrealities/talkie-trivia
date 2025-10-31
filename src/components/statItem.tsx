@@ -1,7 +1,8 @@
-import React, { useMemo } from "react"
-import { View, Text, StyleProp, TextStyle } from "react-native"
-import { useTheme } from "../contexts/themeContext"
-import { getPlayerStatsStyles } from "../styles/playerStatsStyles"
+import React from "react"
+import { View, StyleProp, TextStyle } from "react-native"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { Typography } from "./ui/typography"
+import { u } from "../styles/utils"
 
 interface StatItemProps {
   label: string
@@ -10,18 +11,41 @@ interface StatItemProps {
 }
 
 const StatItem: React.FC<StatItemProps> = ({ label, value, valueStyle }) => {
-  const { colors } = useTheme()
-  const playerStatsStyles = useMemo(
-    () => getPlayerStatsStyles(colors),
-    [colors]
-  )
+  const styles = useStyles(themedStyles)
 
   return (
-    <View style={playerStatsStyles.statContainer}>
-      <Text style={playerStatsStyles.header}>{label}</Text>
-      <Text style={[playerStatsStyles.text, valueStyle]}>{value}</Text>
+    <View
+      style={[u.flexRow, u.justifyBetween, u.alignCenter, styles.container]}
+    >
+      <Typography style={styles.label}>{label}</Typography>
+      <Typography style={[styles.value, valueStyle]}>{value}</Typography>
     </View>
   )
 }
+
+interface StatItemStyles {
+  container: ViewStyle
+  label: TextStyle
+  value: TextStyle
+}
+
+const themedStyles = (theme: Theme): StatItemStyles => ({
+  container: {
+    paddingVertical: theme.spacing.extraSmall,
+    width: "100%",
+  },
+  label: {
+    ...theme.typography.bodyText,
+    fontFamily: "Arvo-Bold",
+    color: theme.colors.textSecondary,
+    fontSize: theme.responsive.responsiveFontSize(16),
+  },
+  value: {
+    ...theme.typography.bodyText,
+    fontFamily: "Arvo-Bold",
+    color: theme.colors.quinary,
+    fontSize: theme.responsive.responsiveFontSize(16),
+  },
+})
 
 export default StatItem

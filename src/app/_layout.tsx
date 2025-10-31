@@ -1,14 +1,14 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { Slot } from "expo-router"
-import { View, LogBox } from "react-native"
+import { View, LogBox, ViewStyle, TextStyle } from "react-native"
 import ErrorBoundary from "../components/errorBoundary"
 import { NetworkProvider, useNetwork } from "../contexts/networkContext"
 import { AuthProvider, useAuth } from "../contexts/authContext"
-import { ThemeProvider, useTheme } from "../contexts/themeContext"
+import { ThemeProvider } from "../contexts/themeContext"
 import LoadingIndicator from "../components/loadingIndicator"
 import ErrorMessage from "../components/errorMessage"
-import { getAppStyles } from "../styles/appStyles"
 import { useGameStore } from "../state/gameStore"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
 
 LogBox.ignoreLogs([
   "Warning: VictoryPie",
@@ -18,8 +18,7 @@ LogBox.ignoreLogs([
 
 function RootLayoutNav() {
   const { isNetworkConnected } = useNetwork()
-  const { colors } = useTheme()
-  const styles = useMemo(() => getAppStyles(colors), [colors])
+  const styles = useStyles(themedStyles)
   const [retryKey, setRetryKey] = useState(0)
 
   const { player, loading: authLoading, error: authError } = useAuth()
@@ -32,7 +31,7 @@ function RootLayoutNav() {
     if (player && isNetworkConnected && !authError) {
       initializeGame(player)
     }
-  }, [player, isNetworkConnected, retryKey, authError])
+  }, [player, isNetworkConnected, retryKey, authError, initializeGame])
 
   const handleRetry = useCallback(() => {
     setRetryKey((prevKey) => prevKey + 1)
@@ -61,10 +60,11 @@ function RootLayoutNav() {
     return <LoadingIndicator message="Loading daily movie and user data..." />
   }
 
-  if (authError) {
-    let displayMessage = `Critical Setup Error: ${authError}. Please try restarting the app.`
+  const criticalError = authError || gameError
+  if (criticalError) {
+    let displayMessage = `Critical Setup Error: ${criticalError}. Please try restarting the app.`
 
-    if (authError.includes("Missing or insufficient permissions")) {
+    if (authError?.includes("Missing or insufficient permissions")) {
       displayMessage =
         "Critical Error: Cannot access user data (Firebase permissions failure). This usually indicates an issue with your account setup or backend configuration. Please restart the app or contact support."
     }
@@ -72,14 +72,6 @@ function RootLayoutNav() {
     return (
       <View style={styles.container}>
         <ErrorMessage message={displayMessage} onRetry={handleRetry} />
-      </View>
-    )
-  }
-
-  if (gameError) {
-    return (
-      <View style={styles.container}>
-        <ErrorMessage message={gameError} onRetry={handleRetry} />
       </View>
     )
   }
@@ -100,3 +92,26 @@ export default function RootLayout() {
     </ErrorBoundary>
   )
 }
+
+interface RootLayoutStyles {
+  container: ViewStyle
+  errorText: TextStyle
+}
+
+// Colocate the styles directly within the layout file
+const themedStyles = (theme: Theme): RootLayoutStyles => ({
+  container: {
+    backgroundColor: theme.colors.background,
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: theme.responsive.scale(10),
+  },
+  errorText: {
+    fontFamily: "Arvo-Regular",
+    fontSize: theme.responsive.responsiveFontSize(18),
+    color: theme.colors.error,
+    textAlign: "center",
+    width: "80%",
+  },
+})

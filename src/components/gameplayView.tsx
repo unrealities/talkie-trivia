@@ -1,13 +1,14 @@
-import React, { useState, useCallback, useMemo } from "react"
-import { Pressable, Text, ActivityIndicator } from "react-native"
+import React, { useState, useCallback } from "react"
+import { View, ViewStyle } from "react-native"
 import PickerContainer from "./picker"
 import HintContainer from "./hint"
 import ConfirmationModal from "./confirmationModal"
 import { hapticsService } from "../utils/hapticsService"
-import { getMovieStyles } from "../styles/movieStyles"
-import { useTheme } from "../contexts/themeContext"
 import { useGameStore } from "../state/gameStore"
 import { useShallow } from "zustand/react/shallow"
+import { Button } from "./ui/button"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { u } from "../styles/utils"
 
 const GameplayView: React.FC = () => {
   const { giveUp, isInteractionsDisabled } = useGameStore(
@@ -16,12 +17,11 @@ const GameplayView: React.FC = () => {
       isInteractionsDisabled: state.isInteractionsDisabled,
     }))
   )
-
-  const { colors } = useTheme()
-  const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
+  const styles = useStyles(themedStyles)
 
   const [showGiveUpConfirmation, setShowGiveUpConfirmation] = useState(false)
   const [isGivingUp, setIsGivingUp] = useState(false)
+
   const handleGiveUpPress = useCallback(() => {
     hapticsService.warning()
     setShowGiveUpConfirmation(true)
@@ -39,21 +39,16 @@ const GameplayView: React.FC = () => {
     <>
       <HintContainer />
       <PickerContainer />
-      <Pressable
+
+      <Button
+        title="Give Up?"
         onPress={handleGiveUpPress}
-        style={({ pressed }) => [
-          movieStyles.giveUpButton,
-          (isInteractionsDisabled || isGivingUp) && movieStyles.disabledButton,
-          pressed && movieStyles.pressedButton,
-        ]}
-        disabled={isInteractionsDisabled || isGivingUp}
-      >
-        {isGivingUp ? (
-          <ActivityIndicator color={colors.background} />
-        ) : (
-          <Text style={movieStyles.giveUpButtonText}>Give Up?</Text>
-        )}
-      </Pressable>
+        isLoading={isGivingUp}
+        disabled={isInteractionsDisabled}
+        variant="error"
+        style={[u.wFull, styles.giveUpButton]}
+      />
+
       <ConfirmationModal
         isVisible={showGiveUpConfirmation}
         title="Give Up?"
@@ -66,5 +61,15 @@ const GameplayView: React.FC = () => {
     </>
   )
 }
+
+interface GameplayViewStyles {
+  giveUpButton: ViewStyle
+}
+
+const themedStyles = (theme: Theme): GameplayViewStyles => ({
+  giveUpButton: {
+    backgroundColor: theme.colors.error,
+  },
+})
 
 export default GameplayView

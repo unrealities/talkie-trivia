@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo } from "react"
+import React, { memo, useEffect } from "react"
 import {
   View,
   Text,
@@ -6,12 +6,14 @@ import {
   LayoutAnimation,
   Platform,
   UIManager,
+  ViewStyle,
+  TextStyle,
+  ImageStyle,
 } from "react-native"
 import { Image } from "expo-image"
-import { useTheme } from "../contexts/themeContext"
-import { getPickerStyles } from "../styles/pickerStyles"
 import { BasicMovie, Movie } from "../models/movie"
 import { API_CONFIG } from "../config/constants"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
 
 if (
   Platform.OS === "android" &&
@@ -33,8 +35,7 @@ const defaultPoster = require("../../assets/movie_default.png")
 
 const PickerMovieItem = memo<MovieItemProps>(
   ({ movie, detailedMovie, isDisabled, isExpanded, onSelect, onLongPress }) => {
-    const { colors } = useTheme()
-    const pickerStyles = useMemo(() => getPickerStyles(colors), [colors])
+    const styles = useStyles(themedStyles)
 
     useEffect(() => {
       if (Platform.OS !== "web") {
@@ -56,7 +57,7 @@ const PickerMovieItem = memo<MovieItemProps>(
       : defaultPoster
 
     return (
-      <View style={pickerStyles.resultItemContainer}>
+      <View style={styles.resultItemContainer}>
         <Pressable
           accessible
           accessibilityRole="button"
@@ -65,21 +66,21 @@ const PickerMovieItem = memo<MovieItemProps>(
           onLongPress={() => onLongPress(movie)}
           delayLongPress={200}
           style={({ pressed }) => [
-            pickerStyles.resultItem,
-            pressed && { backgroundColor: colors.surface },
+            styles.resultItem,
+            pressed && styles.pressedItem,
           ]}
-          android_ripple={{ color: colors.surface }}
+          android_ripple={{ color: styles.pressedItem.backgroundColor }}
           disabled={isDisabled}
         >
-          <View style={pickerStyles.resultItemContent}>
+          <View style={styles.resultItemContent}>
             <Image
               source={imageSource}
               placeholder={defaultPoster}
-              style={pickerStyles.resultImage}
+              style={styles.resultImage}
               contentFit="cover"
             />
             <Text
-              style={pickerStyles.unselected}
+              style={styles.unselected}
               numberOfLines={2}
               ellipsizeMode="tail"
             >
@@ -88,22 +89,22 @@ const PickerMovieItem = memo<MovieItemProps>(
           </View>
 
           {isExpanded && detailedMovie && (
-            <View style={pickerStyles.expandedPreview}>
+            <View style={styles.expandedPreview}>
               <Image
                 source={fullImageSource}
                 placeholder={defaultPoster}
-                style={pickerStyles.expandedImage}
+                style={styles.expandedImage}
                 contentFit="cover"
               />
-              <View style={pickerStyles.expandedInfo}>
-                <Text style={pickerStyles.expandedTitle} numberOfLines={3}>
+              <View style={styles.expandedInfo}>
+                <Text style={styles.expandedTitle} numberOfLines={3}>
                   {detailedMovie.title}
                 </Text>
-                <Text style={pickerStyles.expandedYear}>
+                <Text style={styles.expandedYear}>
                   Release Year:{" "}
                   {new Date(detailedMovie.release_date).getFullYear()}
                 </Text>
-                <Text style={pickerStyles.expandedHint}>
+                <Text style={styles.expandedHint}>
                   Tap this item to select.
                 </Text>
               </View>
@@ -112,12 +113,89 @@ const PickerMovieItem = memo<MovieItemProps>(
         </Pressable>
       </View>
     )
-  },
-  (prevProps, nextProps) =>
-    prevProps.movie.id === nextProps.movie.id &&
-    prevProps.isDisabled === nextProps.isDisabled &&
-    prevProps.isExpanded === nextProps.isExpanded &&
-    prevProps.detailedMovie === nextProps.detailedMovie
+  }
 )
+
+interface PickerMovieItemStyles {
+  resultItemContainer: ViewStyle
+  resultItem: ViewStyle
+  pressedItem: ViewStyle
+  resultItemContent: ViewStyle
+  resultImage: ImageStyle
+  unselected: TextStyle
+  expandedPreview: ViewStyle
+  expandedImage: ImageStyle
+  expandedInfo: ViewStyle
+  expandedTitle: TextStyle
+  expandedYear: TextStyle
+  expandedHint: TextStyle
+}
+
+const themedStyles = (theme: Theme): PickerMovieItemStyles => ({
+  resultItemContainer: {
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.border,
+  },
+  resultItem: {
+    paddingVertical: theme.spacing.small,
+    paddingHorizontal: theme.spacing.medium,
+    overflow: "hidden",
+  },
+  pressedItem: {
+    backgroundColor: theme.colors.surface,
+  },
+  resultItemContent: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  resultImage: {
+    width: theme.responsive.scale(30),
+    height: theme.responsive.scale(45),
+    borderRadius: theme.responsive.scale(4),
+    marginRight: theme.spacing.medium,
+    backgroundColor: theme.colors.surface,
+  },
+  unselected: {
+    ...theme.typography.bodyText,
+    fontSize: theme.responsive.responsiveFontSize(14),
+    flex: 1,
+  },
+  expandedPreview: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: theme.spacing.medium,
+    padding: theme.spacing.small,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.responsive.scale(8),
+  },
+  expandedImage: {
+    width: theme.responsive.scale(80),
+    height: theme.responsive.scale(120),
+    borderRadius: theme.responsive.scale(6),
+    marginRight: theme.spacing.medium,
+  },
+  expandedInfo: {
+    flex: 1,
+    height: "100%",
+    justifyContent: "center",
+  },
+  expandedTitle: {
+    ...theme.typography.bodyText,
+    color: theme.colors.textPrimary,
+    fontFamily: "Arvo-Bold",
+    fontSize: theme.responsive.responsiveFontSize(16),
+    marginBottom: theme.spacing.extraSmall,
+  },
+  expandedYear: {
+    ...theme.typography.caption,
+    color: theme.colors.textSecondary,
+    marginBottom: theme.spacing.small,
+  },
+  expandedHint: {
+    ...theme.typography.caption,
+    color: theme.colors.primary,
+    fontFamily: "Arvo-Italic",
+  },
+})
 
 export default PickerMovieItem

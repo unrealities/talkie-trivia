@@ -1,17 +1,24 @@
-import React, { memo, useEffect, useMemo } from "react"
-import { Modal, Pressable, Text, View, Share, Alert } from "react-native"
+import React, { memo, useEffect } from "react"
+import {
+  Modal,
+  Pressable,
+  View,
+  Share,
+  Alert,
+  ViewStyle,
+} from "react-native"
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
   Easing,
 } from "react-native-reanimated"
-import { getModalStyles } from "../styles/modalStyles"
 import { PlayerGame } from "../models/game"
 import { generateShareMessage } from "../utils/shareUtils"
 import { analyticsService } from "../utils/analyticsService"
 import { hapticsService } from "../utils/hapticsService"
-import { useTheme } from "../contexts/themeContext"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { Button } from "./ui/button"
 
 interface MovieModalProps {
   playerGame?: PlayerGame | null
@@ -22,8 +29,7 @@ interface MovieModalProps {
 
 const MovieModal: React.FC<MovieModalProps> = memo(
   ({ playerGame, show, toggleModal, children }) => {
-    const { colors } = useTheme()
-    const modalStyles = useMemo(() => getModalStyles(colors), [colors])
+    const styles = useStyles(themedStyles)
     const animatedValue = useSharedValue(0)
 
     const animatedModalContentStyle = useAnimatedStyle(() => {
@@ -75,18 +81,22 @@ const MovieModal: React.FC<MovieModalProps> = memo(
 
     const renderContent = () => {
       return (
-        <Animated.View
-          style={[modalStyles.modalView, animatedModalContentStyle]}
-        >
+        <Animated.View style={[styles.modalView, animatedModalContentStyle]}>
           {children}
-          <View style={modalStyles.buttonContainer}>
-            <Pressable style={modalStyles.button} onPress={handleClose}>
-              <Text style={modalStyles.buttonText}>Close</Text>
-            </Pressable>
+          <View style={styles.buttonContainer}>
+            <Button
+              title="Close"
+              variant="secondary"
+              onPress={handleClose}
+              style={styles.button}
+            />
             {playerGame && (
-              <Pressable style={modalStyles.shareButton} onPress={handleShare}>
-                <Text style={modalStyles.buttonText}>Share</Text>
-              </Pressable>
+              <Button
+                title="Share"
+                variant="primary"
+                onPress={handleShare}
+                style={styles.button}
+              />
             )}
           </View>
         </Animated.View>
@@ -103,7 +113,7 @@ const MovieModal: React.FC<MovieModalProps> = memo(
         statusBarTranslucent
       >
         <Pressable
-          style={modalStyles.centeredView}
+          style={styles.centeredView}
           onPress={handleClose}
           accessible={true}
           accessibilityLabel="Close modal by tapping outside"
@@ -117,5 +127,41 @@ const MovieModal: React.FC<MovieModalProps> = memo(
     )
   }
 )
+
+interface ModalStyles {
+  centeredView: ViewStyle
+  modalView: ViewStyle
+  buttonContainer: ViewStyle
+  button: ViewStyle
+}
+
+const themedStyles = (theme: Theme): ModalStyles => ({
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+  },
+  modalView: {
+    width: "90%",
+    maxHeight: "80%", // Increased for better content visibility
+    maxWidth: theme.responsive.scale(500),
+    alignSelf: "center",
+    backgroundColor: theme.colors.background,
+    borderRadius: theme.responsive.scale(15),
+    padding: theme.spacing.large,
+    ...theme.shadows.medium,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    width: "100%",
+    marginTop: theme.spacing.medium,
+  },
+  button: {
+    flex: 1,
+    marginHorizontal: theme.spacing.small,
+  },
+})
 
 export default MovieModal

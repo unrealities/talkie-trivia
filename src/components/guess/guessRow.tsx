@@ -1,5 +1,7 @@
-import React, { memo, useEffect, useMemo } from "react"
-import { Text, View } from "react-native"
+// FILE: src/components/guess/guessRow.tsx
+
+import React, { memo, useEffect } from "react"
+import { Text, View, ViewStyle, TextStyle, ImageStyle } from "react-native"
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -10,11 +12,10 @@ import Animated, {
   Easing,
 } from "react-native-reanimated"
 import Ionicons from "@expo/vector-icons/Ionicons"
-
-import { getGuessesStyles } from "../../styles/guessesStyles"
 import { BasicMovie } from "../../models/movie"
-import { useTheme } from "../../contexts/themeContext"
 import { Guess, HintInfo, HintType } from "../../models/game"
+import { useStyles, Theme } from "../../utils/hooks/useStyles"
+import { u } from "../../styles/utils"
 
 type GuessResult = {
   movieId: number
@@ -41,17 +42,21 @@ const GuessRow = memo(
     lastGuessResult,
     correctMovieId,
   }: GuessRowProps) => {
-    const { colors } = useTheme()
-    const guessesStyles = useMemo(() => getGuessesStyles(colors), [colors])
+    const styles = useStyles(themedStyles)
 
     const rotate = useSharedValue(0)
     const shakeX = useSharedValue(0)
-    const backgroundColor = useSharedValue(colors.surface)
+    const backgroundColor = useSharedValue(
+      styles.guessTile.backgroundColor as string
+    )
     const feedbackAnim = useSharedValue(0)
 
     const guessId = guess.movieId
-    const guessTitle =
-      movies.find((m: BasicMovie) => m.id === guessId)?.title || "Unknown Movie"
+    const guessMovie = movies.find((m: BasicMovie) => m.id === guessId)
+    const guessTitle = guessMovie?.title || "Unknown Movie"
+    const releaseYear = guessMovie?.release_date
+      ? ` (${new Date(guessMovie.release_date).getFullYear()})`
+      : ""
     const isCorrect = guess.movieId === correctMovieId
     const feedbackMessage =
       isLastGuess && !isCorrect ? lastGuessResult?.feedback : null
@@ -83,6 +88,7 @@ const GuessRow = memo(
     }))
 
     useEffect(() => {
+      const { colors } = styles.rawTheme
       rotate.value = withTiming(1, { duration: 600 })
 
       if (isLastGuess && lastGuessResult) {
@@ -99,14 +105,12 @@ const GuessRow = memo(
               withTiming(0, { duration: 300, easing: Easing.ease })
             )
           )
-
           shakeX.value = withSequence(
             withDelay(2800, withTiming(-15, { duration: 60 })),
             withTiming(15, { duration: 120 }),
             withTiming(-15, { duration: 120 }),
             withTiming(0, { duration: 60 })
           )
-
           backgroundColor.value = withSequence(
             withDelay(2700, withTiming(colors.error, { duration: 150 })),
             withTiming(colors.surface, { duration: 800 })
@@ -117,7 +121,7 @@ const GuessRow = memo(
       isLastGuess,
       lastGuessResult,
       isCorrect,
-      colors,
+      styles,
       backgroundColor,
       rotate,
       shakeX,
@@ -137,54 +141,148 @@ const GuessRow = memo(
     }
 
     return (
-      <Animated.View style={[guessesStyles.guessTile, animatedTileStyle]}>
+      <Animated.View style={[styles.guessTile, animatedTileStyle]}>
         {feedbackMessage && (
           <Animated.View
-            style={[guessesStyles.feedbackOverlay, animatedFeedbackStyle]}
+            style={[styles.feedbackOverlay, animatedFeedbackStyle]}
           >
-            <Text style={guessesStyles.feedbackText}>{feedbackMessage}</Text>
+            <Text style={styles.feedbackText}>{feedbackMessage}</Text>
           </Animated.View>
         )}
-        <Animated.View
-          style={[
-            guessesStyles.container,
-            animatedContentStyle,
-            { flexDirection: "row", alignItems: "center" },
-          ]}
-        >
-          <Text style={guessesStyles.guessNumber}>{index + 1}</Text>
+        <Animated.View style={[styles.contentContainer, animatedContentStyle]}>
+          <Text style={styles.guessNumber}>{index + 1}</Text>
           <Ionicons
             name={isCorrect ? "checkmark-circle" : "close-circle"}
-            style={guessesStyles.guessIcon}
-            color={isCorrect ? colors.success : colors.error}
+            style={isCorrect ? styles.iconSuccess : styles.iconError}
           />
-          <View style={guessesStyles.guessTextContainer}>
+          <View style={styles.guessTextContainer}>
             <Text
               numberOfLines={1}
               ellipsizeMode="tail"
-              style={guessesStyles.guessText}
+              style={styles.guessText}
             >
-              {guessTitle}
+              {`${guessTitle}${releaseYear}`}
             </Text>
-            <View>
-              {hintInfoList?.map((hint, idx) => (
-                <View key={idx} style={guessesStyles.guessHintContainer}>
-                  <Ionicons
-                    name={getIconNameForHint(hint.type)}
-                    style={guessesStyles.guessHintIcon}
-                    color={colors.primary}
-                  />
-                  <Text style={guessesStyles.guessHintText} numberOfLines={1}>
-                    {hint.value}
-                  </Text>
-                </View>
-              ))}
-            </View>
+            {hintInfoList && hintInfoList.length > 0 && (
+              <View style={styles.hintsWrapper}>
+                {hintInfoList.map((hint, idx) => (
+                  <View key={idx} style={styles.guessHintContainer}>
+                    <Ionicons
+                      name={getIconNameForHint(hint.type)}
+                      style={styles.guessHintIcon}
+                    />
+                    <Text style={styles.guessHintText} numberOfLines={1}>
+                      {hint.value}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            )}
           </View>
         </Animated.View>
       </Animated.View>
     )
   }
 )
+
+interface GuessRowStyles {
+  guessTile: ViewStyle
+  feedbackOverlay: ViewStyle
+  feedbackText: TextStyle
+  contentContainer: ViewStyle
+  guessNumber: TextStyle
+  iconSuccess: TextStyle
+  iconError: TextStyle
+  guessTextContainer: ViewStyle
+  guessText: TextStyle
+  hintsWrapper: ViewStyle
+  guessHintContainer: ViewStyle
+  guessHintIcon: TextStyle
+  guessHintText: TextStyle
+  rawTheme: Theme // Expose theme for animations
+}
+
+const themedStyles = (theme: Theme): GuessRowStyles => ({
+  guessTile: {
+    ...u.flexRow,
+    ...u.alignCenter,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.responsive.scale(8),
+    paddingHorizontal: theme.spacing.medium,
+    minHeight: theme.responsive.scale(44),
+    marginBottom: theme.spacing.small,
+    paddingVertical: theme.spacing.small,
+    position: "relative",
+    overflow: "hidden",
+    ...theme.shadows.light,
+  },
+  feedbackOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: theme.colors.tertiary,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: theme.spacing.small,
+    zIndex: 1,
+  },
+  feedbackText: {
+    color: theme.colors.background,
+    fontFamily: "Arvo-Bold",
+    fontSize: theme.responsive.responsiveFontSize(14),
+    textAlign: "center",
+  },
+  contentContainer: {
+    ...u.flexRow,
+    ...u.alignCenter,
+    ...u.wFull,
+  },
+  guessNumber: {
+    color: theme.colors.textSecondary,
+    fontFamily: "Arvo-Bold",
+    fontSize: theme.responsive.responsiveFontSize(14),
+    marginRight: theme.spacing.small,
+  },
+  iconSuccess: {
+    marginRight: theme.spacing.medium,
+    fontSize: theme.responsive.responsiveFontSize(22),
+    color: theme.colors.success,
+  },
+  iconError: {
+    marginRight: theme.spacing.medium,
+    fontSize: theme.responsive.responsiveFontSize(22),
+    color: theme.colors.error,
+  },
+  guessTextContainer: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  guessText: {
+    ...theme.typography.bodyText,
+    color: theme.colors.textPrimary,
+    fontSize: theme.responsive.responsiveFontSize(14),
+    lineHeight: theme.responsive.responsiveFontSize(18),
+  },
+  hintsWrapper: {
+    ...u.flexRow,
+    flexWrap: "wrap",
+    marginTop: theme.spacing.extraSmall,
+  },
+  guessHintContainer: {
+    ...u.flexRow,
+    ...u.alignCenter,
+    marginRight: theme.spacing.medium,
+  },
+  guessHintIcon: {
+    marginRight: theme.spacing.extraSmall,
+    fontSize: theme.responsive.responsiveFontSize(12),
+    color: theme.colors.primary,
+    opacity: 0.8,
+  },
+  guessHintText: {
+    fontFamily: "Arvo-Bold",
+    fontSize: theme.responsive.responsiveFontSize(11),
+    color: theme.colors.primary,
+  },
+  rawTheme: theme,
+})
 
 export default GuessRow

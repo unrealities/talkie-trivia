@@ -1,14 +1,19 @@
-import React, { useState, useEffect, Suspense, lazy, useMemo } from "react"
-import { View, ActivityIndicator, ScrollView, Text } from "react-native"
+import React, { useState, useEffect, Suspense, lazy } from "react"
+import {
+  View,
+  ActivityIndicator,
+  ScrollView,
+  ViewStyle,
+  TextStyle,
+} from "react-native"
 import { GameHistoryEntry } from "../models/gameHistory"
 import { Movie } from "../models/movie"
 import { PlayerGame } from "../models/game"
 import { useAuth } from "../contexts/authContext"
 import { gameService } from "../services/gameService"
-import { useTheme } from "../contexts/themeContext"
-import LoadingIndicator from "./loadingIndicator"
 import { useGameStore } from "../state/gameStore"
-import { getHistoryDetailModalStyles } from "../styles/historyDetailModalStyles"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { Typography } from "./ui/typography"
 
 const MovieModal = lazy(() => import("./modal"))
 const Facts = lazy(() => import("./facts"))
@@ -25,8 +30,7 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
 }) => {
   const { player } = useAuth()
   const basicMovies = useGameStore((state) => state.basicMovies)
-  const { colors } = useTheme()
-  const styles = useMemo(() => getHistoryDetailModalStyles(colors), [colors])
+  const styles = useStyles(themedStyles)
 
   const [movie, setMovie] = useState<Movie | null>(null)
   const [playerGame, setPlayerGame] = useState<PlayerGame | null>(null)
@@ -71,14 +75,17 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
     if (isLoading) {
       return (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={colors.primary} />
+          <ActivityIndicator
+            size="large"
+            color={styles.rawTheme.colors.primary}
+          />
         </View>
       )
     }
     if (error) {
       return (
         <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>{error}</Text>
+          <Typography variant="error">{error}</Typography>
         </View>
       )
     }
@@ -88,8 +95,10 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
           <Facts movie={movie} isScrollEnabled={false} />
           {playerGame && (
             <View>
-              <Text style={styles.historyGuessesTitle}>Your Guesses</Text>
-              <Suspense fallback={<LoadingIndicator />}>
+              <Typography variant="h2" style={styles.guessesTitle}>
+                Your Guesses
+              </Typography>
+              <Suspense fallback={<ActivityIndicator />}>
                 <GuessesContainer
                   gameForDisplay={playerGame}
                   allMoviesForDisplay={basicMovies}
@@ -110,7 +119,10 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
         <Suspense
           fallback={
             <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color={colors.primary} />
+              <ActivityIndicator
+                size="large"
+                color={styles.rawTheme.colors.primary}
+              />
             </View>
           }
         >
@@ -120,5 +132,35 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
     </Suspense>
   )
 }
+
+interface HistoryDetailModalStyles {
+  loadingContainer: ViewStyle
+  errorContainer: ViewStyle
+  guessesTitle: TextStyle
+  rawTheme: Theme
+}
+
+const themedStyles = (theme: Theme): HistoryDetailModalStyles => ({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: theme.responsive.scale(300),
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: theme.spacing.large,
+    minHeight: theme.responsive.scale(300),
+  },
+  guessesTitle: {
+    fontSize: theme.responsive.responsiveFontSize(20),
+    textAlign: "center",
+    marginTop: theme.spacing.large,
+    marginBottom: theme.spacing.medium,
+  },
+  rawTheme: theme,
+})
 
 export default HistoryDetailModal

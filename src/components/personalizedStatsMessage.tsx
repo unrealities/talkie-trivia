@@ -1,25 +1,22 @@
-// src/components/personalizedStatsMessage.tsx
-
 import React, { useState, useEffect, useMemo } from "react"
-import { View, Text } from "react-native"
+import { View, ViewStyle, TextStyle } from "react-native"
 import { FontAwesome } from "@expo/vector-icons"
 import { useAuth } from "../contexts/authContext"
 import { gameService } from "../services/gameService"
 import { GameHistoryEntry } from "../models/gameHistory"
-import { getMovieStyles } from "../styles/movieStyles"
-import { useTheme } from "../contexts/themeContext"
-import { responsive } from "../styles/global"
 import { useGameStore } from "../state/gameStore"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { Typography } from "./ui/typography"
+import { u } from "../styles/utils"
 
 const PersonalizedStatsMessage: React.FC = () => {
   const { player } = useAuth()
   const playerStats = useGameStore((state) => state.playerStats)
   const playerGame = useGameStore((state) => state.playerGame)
+  const styles = useStyles(themedStyles)
 
   const [history, setHistory] = useState<GameHistoryEntry[]>([])
   const [loading, setLoading] = useState(true)
-  const { colors } = useTheme()
-  const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -85,15 +82,43 @@ const PersonalizedStatsMessage: React.FC = () => {
   if (!message) return null
 
   return (
-    <View style={movieStyles.personalizedMessageContainer}>
+    <View style={styles.container}>
       <FontAwesome
         name={message.icon as any}
-        size={responsive.scale(16)}
-        color={colors.tertiary}
+        size={styles.icon.fontSize}
+        color={styles.icon.color}
       />
-      <Text style={movieStyles.personalizedMessageText}>{message.text}</Text>
+      <Typography style={styles.text}>{message.text}</Typography>
     </View>
   )
 }
+
+interface MessageStyles {
+  container: ViewStyle
+  icon: TextStyle
+  text: TextStyle
+}
+
+const themedStyles = (theme: Theme): MessageStyles => ({
+  container: {
+    ...u.flexRow,
+    ...u.alignCenter,
+    ...u.justifyCenter,
+    paddingHorizontal: theme.spacing.medium,
+    paddingVertical: theme.spacing.small,
+    marginTop: theme.spacing.medium,
+  },
+  icon: {
+    fontSize: theme.responsive.scale(16),
+    color: theme.colors.tertiary,
+  },
+  text: {
+    ...theme.typography.caption,
+    color: theme.colors.tertiary,
+    fontFamily: "Arvo-Bold",
+    marginLeft: theme.spacing.small,
+    textAlign: "center",
+  },
+})
 
 export default PersonalizedStatsMessage

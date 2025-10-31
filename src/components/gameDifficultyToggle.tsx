@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState, useEffect } from "react"
-import { View, Text, Pressable } from "react-native"
+import { View, Text, Pressable, ViewStyle, TextStyle } from "react-native"
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -7,24 +7,23 @@ import Animated, {
   Easing,
 } from "react-native-reanimated"
 import { FontAwesome } from "@expo/vector-icons"
-import { getGameDifficultyToggleStyles } from "../styles/gameDifficultyToggleStyles"
 import { hapticsService } from "../utils/hapticsService"
-import { useTheme } from "../contexts/themeContext"
 import { useGameStore } from "../state/gameStore"
 import { DifficultyLevel, DIFFICULTY_MODES } from "../config/difficulty"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
 
-const options = (Object.keys(DIFFICULTY_MODES) as DifficultyLevel[]).map(
-  (key) => ({
-    value: key,
-    label: DIFFICULTY_MODES[key].label,
-  })
-)
+const options = (
+  Object.keys(DIFFICULTY_MODES) as DifficultyLevel[]
+).map((key) => ({
+  value: key,
+  label: DIFFICULTY_MODES[key].label,
+}))
 
 const DROPDOWN_HEIGHT = options.length * 44
 
 const GameDifficultyToggle = () => {
-  const { colors } = useTheme()
-  const styles = useMemo(() => getGameDifficultyToggleStyles(colors), [colors])
+  const styles = useStyles(themedStyles)
+  const { colors } = styles.rawTheme;
 
   const difficulty = useGameStore((state) => state.difficulty)
   const setDifficulty = useGameStore((state) => state.setDifficulty)
@@ -41,7 +40,7 @@ const GameDifficultyToggle = () => {
       duration: 250,
       easing: Easing.inOut(Easing.ease),
     })
-  }, [isExpanded])
+  }, [isExpanded, animation])
 
   const animatedDropdownStyle = useAnimatedStyle(() => {
     return {
@@ -110,5 +109,74 @@ const GameDifficultyToggle = () => {
     </View>
   )
 }
+
+
+interface GameDifficultyToggleStyles {
+    container: ViewStyle;
+    toggleButton: ViewStyle;
+    toggleButtonText: TextStyle;
+    dropdownContainer: ViewStyle;
+    optionButton: ViewStyle;
+    optionText: TextStyle;
+    selectedOptionText: TextStyle;
+    disabledOption: ViewStyle;
+    disabledText: TextStyle;
+    rawTheme: Theme;
+}
+
+const themedStyles = (theme: Theme): GameDifficultyToggleStyles => ({
+    container: {
+        alignItems: "center",
+        marginVertical: theme.spacing.small,
+        zIndex: 10,
+    },
+    toggleButton: {
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: theme.colors.surface,
+        paddingVertical: theme.spacing.extraSmall,
+        paddingHorizontal: theme.spacing.small,
+        borderRadius: theme.responsive.scale(8),
+        ...theme.shadows.light,
+    },
+    toggleButtonText: {
+        fontFamily: "Arvo-Bold",
+        fontSize: theme.responsive.responsiveFontSize(14),
+        color: theme.colors.textPrimary,
+        marginRight: theme.spacing.small,
+    },
+    dropdownContainer: {
+        position: "absolute",
+        top: "100%",
+        width: theme.responsive.scale(120),
+        backgroundColor: theme.colors.backgroundLight,
+        borderRadius: theme.responsive.scale(8),
+        marginTop: theme.spacing.extraSmall,
+        ...theme.shadows.medium,
+        overflow: "hidden",
+    },
+    optionButton: {
+        padding: theme.spacing.small,
+        alignItems: "center",
+        borderBottomWidth: 1,
+        borderBottomColor: theme.colors.border,
+    },
+    optionText: {
+        fontFamily: "Arvo-Regular",
+        fontSize: theme.responsive.responsiveFontSize(16),
+        color: theme.colors.textPrimary,
+    },
+    selectedOptionText: {
+        fontFamily: "Arvo-Bold",
+        color: theme.colors.primary,
+    },
+    disabledOption: {
+        backgroundColor: theme.colors.backgroundLight,
+    },
+    disabledText: {
+        color: theme.colors.textDisabled,
+    },
+    rawTheme: theme,
+});
 
 export default GameDifficultyToggle

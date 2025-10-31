@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react"
+import React, { useEffect } from "react"
 import { Image } from "expo-image"
 import Animated, {
   useSharedValue,
@@ -9,10 +9,10 @@ import Animated, {
   runOnJS,
   Easing,
 } from "react-native-reanimated"
-import { useTheme } from "../contexts/themeContext"
 import { useGameStore } from "../state/gameStore"
 import { API_CONFIG } from "../config/constants"
-import { getRevealSequenceStyles } from "../styles/revealSequenceStyles"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { ViewStyle, ImageStyle, TextStyle } from "react-native"
 
 const defaultMovieImage = require("../../assets/movie_default.png")
 
@@ -24,8 +24,7 @@ const RevealSequence: React.FC<RevealSequenceProps> = ({
   onAnimationComplete,
 }) => {
   const movie = useGameStore((state) => state.playerGame.movie)
-  const { colors } = useTheme()
-  const styles = useMemo(() => getRevealSequenceStyles(colors), [colors])
+  const styles = useStyles(themedStyles)
 
   const containerOpacity = useSharedValue(0)
   const posterRotate = useSharedValue(0)
@@ -40,10 +39,9 @@ const RevealSequence: React.FC<RevealSequenceProps> = ({
     titleOpacity.value = withDelay(
       1200,
       withTiming(1, { duration: 500 }, () => {
-        // Trigger the state transition back in the store after all animations are done
         setTimeout(() => {
           runOnJS(onAnimationComplete)()
-        }, 1000) // Hold the final reveal for a second before transitioning
+        }, 1000)
       })
     )
   }, [containerOpacity, posterRotate, titleOpacity, onAnimationComplete])
@@ -81,5 +79,38 @@ const RevealSequence: React.FC<RevealSequenceProps> = ({
     </Animated.View>
   )
 }
+
+interface RevealSequenceStyles {
+  container: ViewStyle
+  poster: ImageStyle
+  title: TextStyle
+}
+
+const themedStyles = (theme: Theme): RevealSequenceStyles => ({
+  container: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.85)",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 100,
+  },
+  poster: {
+    width: theme.responsive.scale(180),
+    height: theme.responsive.scale(270),
+    borderRadius: theme.responsive.scale(10),
+    ...theme.shadows.medium,
+  },
+  title: {
+    fontFamily: "Arvo-Bold",
+    fontSize: theme.responsive.responsiveFontSize(24),
+    color: theme.colors.primary,
+    textAlign: "center",
+    marginTop: theme.spacing.large,
+    paddingHorizontal: theme.spacing.small,
+    textShadowColor: "rgba(0, 0, 0, 0.75)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+})
 
 export default RevealSequence

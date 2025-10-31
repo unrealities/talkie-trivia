@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useCallback, memo, useMemo } from "react"
-import { View, Text } from "react-native"
-import { getMovieStyles } from "../styles/movieStyles"
-import { useTheme } from "../contexts/themeContext"
+import React, { useState, useEffect, useCallback, memo } from "react"
+import { View, TextStyle, ViewStyle } from "react-native"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { Typography } from "./ui/typography"
 
 const CountdownTimer: React.FC = () => {
-  const { colors } = useTheme()
-  const movieStyles = useMemo(() => getMovieStyles(colors), [colors])
+  const styles = useStyles(themedStyles)
 
   const calculateTimeLeft = useCallback(() => {
     const now = new Date()
@@ -45,12 +44,32 @@ const CountdownTimer: React.FC = () => {
   }, [calculateTimeLeft])
 
   return (
-    <View style={movieStyles.countdownContainer}>
-      <Text style={movieStyles.countdownText}>
+    <View style={styles.container}>
+      <Typography style={styles.text}>
         Next game in {timeLeft.hours}:{timeLeft.minutes}:{timeLeft.seconds}
-      </Text>
+      </Typography>
     </View>
   )
 }
+
+interface CountdownStyles {
+  container: ViewStyle
+  text: TextStyle
+}
+
+const themedStyles = (theme: Theme): CountdownStyles => ({
+  container: {
+    marginTop: theme.spacing.large,
+    padding: theme.spacing.small,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.responsive.scale(8),
+  },
+  text: {
+    ...theme.typography.caption,
+    fontFamily: "Arvo-Bold",
+    color: theme.colors.textSecondary,
+    fontSize: theme.responsive.responsiveFontSize(14),
+  },
+})
 
 export default memo(CountdownTimer)

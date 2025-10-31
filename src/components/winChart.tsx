@@ -1,51 +1,46 @@
 import React, { memo, useMemo } from "react"
-import { View, Text } from "react-native"
+import { View, ViewStyle, TextStyle } from "react-native"
 import {
   VictoryBar,
   VictoryChart,
   VictoryAxis,
   VictoryLabel,
 } from "./victory-charts"
-import { responsive } from "../styles/global"
-import { getWinChartStyles } from "../styles/winChartStyles"
-import { useTheme } from "../contexts/themeContext"
+import { Typography } from "./ui/typography"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
 
 export interface WinChartProps {
-  wins: number[] // e.g., [10, 20, 30, 15, 5]
+  wins: number[]
 }
 
 const WinChart = memo(({ wins }: WinChartProps) => {
-  const { colors } = useTheme()
-  const winChartStyles = useMemo(() => getWinChartStyles(colors), [colors])
+  const styles = useStyles(themedStyles)
+  const { colors, responsive, typography } = styles.rawTheme
   const totalWins = wins.reduce((a, b) => a + b, 0)
 
   const accessibilityLabel = useMemo(() => {
     if (totalWins === 0) {
       return "Win distribution chart is empty. No wins recorded yet."
     }
-
     const descriptions = wins
-      .map((count, index) => {
-        if (count > 0) {
-          const guessText = index === 0 ? "guess" : "guesses"
-          const winText = count === 1 ? "win" : "wins"
-          return `${count} ${winText} with ${index + 1} ${guessText}`
-        }
-        return ""
-      })
+      .map((count, index) =>
+        count > 0
+          ? `${count} ${count === 1 ? "win" : "wins"} with ${index + 1} ${
+              index === 0 ? "guess" : "guesses"
+            }`
+          : ""
+      )
       .filter(Boolean)
       .join(". ")
-
     return `Bar chart showing win distribution. ${descriptions}.`
   }, [wins, totalWins])
 
-  // Show a message if the user hasn't won any games yet
   if (totalWins === 0) {
     return (
-      <View style={winChartStyles.emptyContainer}>
-        <Text style={winChartStyles.emptyText}>
+      <View style={styles.emptyContainer}>
+        <Typography style={styles.emptyText}>
           Your win distribution will appear here after your first win!
-        </Text>
+        </Typography>
       </View>
     )
   }
@@ -56,10 +51,7 @@ const WinChart = memo(({ wins }: WinChartProps) => {
   }))
 
   return (
-    <View
-      style={winChartStyles.container}
-      accessibilityLabel={accessibilityLabel}
-    >
+    <View style={styles.container} accessibilityLabel={accessibilityLabel}>
       <VictoryChart
         domainPadding={{ x: responsive.scale(25) }}
         height={responsive.scale(220)}
@@ -73,9 +65,7 @@ const WinChart = memo(({ wins }: WinChartProps) => {
         <VictoryAxis
           style={{
             axis: { stroke: "transparent" },
-            tickLabels: {
-              fill: "transparent",
-            },
+            tickLabels: { fill: "transparent" },
             grid: { stroke: "transparent" },
           }}
         />
@@ -83,10 +73,7 @@ const WinChart = memo(({ wins }: WinChartProps) => {
           data={chartData}
           barWidth={responsive.scale(20)}
           style={{
-            data: {
-              fill: colors.primary,
-              borderRadius: responsive.scale(4),
-            },
+            data: { fill: colors.primary, borderRadius: responsive.scale(4) },
             labels: {
               fill: colors.textSecondary,
               fontFamily: "Arvo-Bold",
@@ -100,9 +87,7 @@ const WinChart = memo(({ wins }: WinChartProps) => {
           dependentAxis
           style={{
             axis: { stroke: "transparent" },
-            tickLabels: {
-              fill: "transparent",
-            },
+            tickLabels: { fill: "transparent" },
             grid: { stroke: colors.border, strokeDasharray: "4, 8" },
           }}
         />
@@ -121,4 +106,34 @@ const WinChart = memo(({ wins }: WinChartProps) => {
     </View>
   )
 })
+
+interface WinChartStyles {
+  container: ViewStyle
+  emptyContainer: ViewStyle
+  emptyText: TextStyle
+  rawTheme: Theme
+}
+
+const themedStyles = (theme: Theme): WinChartStyles => ({
+  container: {
+    alignItems: "center",
+    alignSelf: "center",
+    flex: 1,
+    flexDirection: "column",
+    padding: theme.responsive.scale(15),
+    width: "100%",
+  },
+  emptyContainer: {
+    padding: theme.spacing.large,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  emptyText: {
+    fontFamily: "Arvo-Italic",
+    textAlign: "center",
+    color: theme.colors.textSecondary,
+  },
+  rawTheme: theme,
+})
+
 export default WinChart

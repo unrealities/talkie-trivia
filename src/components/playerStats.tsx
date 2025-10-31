@@ -1,60 +1,88 @@
-import React, { memo, useMemo } from "react"
-import { View } from "react-native"
-
+import React, { memo } from "react"
+import { View, TextStyle, ViewStyle } from "react-native"
 import Player from "../models/player"
 import PlayerStats from "../models/playerStats"
 import WinChart from "./winChart"
-import { getPlayerStatsStyles } from "../styles/playerStatsStyles"
-import { useTheme } from "../contexts/themeContext"
 import StatItem from "./statItem"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { u } from "../styles/utils"
+import { Typography } from "./ui/typography"
 
 export interface PlayerStatsContainerProps {
-  player: Player
-  playerStats: PlayerStats
+  player: Player | null
+  playerStats: PlayerStats | null
 }
 
 const PlayerStatsContainer = memo(
-  (props: PlayerStatsContainerProps) => {
-    const { colors } = useTheme()
-    const playerStatsStyles = useMemo(
-      () => getPlayerStatsStyles(colors),
-      [colors]
-    )
-    if (!props || !props.player || !props.playerStats) {
-      return null
+  ({ player, playerStats }: PlayerStatsContainerProps) => {
+    const styles = useStyles(themedStyles)
+
+    if (!player || !playerStats) {
+      return (
+        <View style={[styles.container, u.justifyCenter, u.alignCenter]}>
+          <Typography>No statistics available.</Typography>
+        </View>
+      )
     }
 
     return (
-      <View style={playerStatsStyles.container} key={props.player.id}>
-        <WinChart wins={props.playerStats.wins} />
-        <View style={playerStatsStyles.statsContainer}>
+      <View
+        style={styles.container}
+        key={player.id}
+        accessible={true}
+        accessibilityLabel="Player Statistics"
+      >
+        <WinChart wins={playerStats.wins} />
+        <View style={styles.statsContainer}>
           <StatItem
             label="All-Time Score"
-            value={props.playerStats.allTimeScore.toLocaleString()}
-            valueStyle={playerStatsStyles.scoreText}
+            value={playerStats.allTimeScore.toLocaleString()}
+            valueStyle={styles.scoreText}
           />
-          <StatItem label="Games Played" value={props.playerStats.games} />
+          <StatItem label="Games Played" value={playerStats.games} />
           <StatItem
             label="Current Streak"
-            value={props.playerStats.currentStreak}
-            valueStyle={playerStatsStyles.streakText}
+            value={playerStats.currentStreak}
+            valueStyle={styles.streakText}
           />
           <StatItem
             label="Max Streak"
-            value={props.playerStats.maxStreak}
-            valueStyle={playerStatsStyles.streakText}
+            value={playerStats.maxStreak}
+            valueStyle={styles.streakText}
           />
           <StatItem
             label="Hints Available"
-            value={props.playerStats.hintsAvailable}
+            value={playerStats.hintsAvailable}
           />
         </View>
       </View>
     )
-  },
-  (prevProps, nextProps) =>
-    prevProps.player.id === nextProps.player.id &&
-    prevProps.playerStats === nextProps.playerStats
+  }
 )
+
+interface PlayerStatsStyles {
+  container: ViewStyle
+  statsContainer: ViewStyle
+  scoreText: TextStyle
+  streakText: TextStyle
+}
+
+const themedStyles = (theme: Theme): PlayerStatsStyles => ({
+  container: {
+    flex: 1,
+    padding: theme.spacing.small,
+    width: "100%",
+  },
+  statsContainer: {
+    paddingTop: theme.spacing.medium,
+    width: "100%",
+  },
+  scoreText: {
+    color: theme.colors.tertiary,
+  },
+  streakText: {
+    color: theme.colors.primary,
+  },
+})
 
 export default PlayerStatsContainer

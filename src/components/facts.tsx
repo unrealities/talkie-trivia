@@ -1,20 +1,23 @@
-import React, { useCallback, memo, useMemo } from "react"
+import React, { useCallback, memo } from "react"
 import {
   Text,
   Pressable,
   View,
   ActivityIndicator,
   ScrollView,
+  ViewStyle,
+  TextStyle,
+  ImageStyle,
 } from "react-native"
 import { Image } from "expo-image"
 import { FontAwesome } from "@expo/vector-icons"
-import { Actors } from "./actors"
-import { Actor, Director, Movie } from "../models/movie"
-import { getFactsStyles } from "../styles/factsStyles"
-import { useTheme } from "../contexts/themeContext"
+import ActorsWrapper from "./actors"
+import { Director, Movie } from "../models/movie"
 import { analyticsService } from "../utils/analyticsService"
 import { useIMDbLink } from "../utils/hooks/useIMDbLink"
-import { responsive } from "../styles/global"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { u } from "../styles/utils"
+import { Typography } from "./ui/typography"
 
 type ImageSource = { uri: string } | number
 const defaultMovieImage = require("../../assets/movie_default.png")
@@ -29,39 +32,43 @@ const MovieHeader = memo(
     tagline: string
     onPress: () => void
   }) => {
-    const { colors } = useTheme()
-    const factsStyles = useMemo(() => getFactsStyles(colors), [colors])
+    const styles = useStyles(themedStyles)
     return (
       <>
         <Pressable
           onPress={onPress}
           style={({ pressed }) => [
-            factsStyles.pressable,
+            styles.headerPressable,
             { opacity: pressed ? 0.7 : 1 },
           ]}
           accessible={true}
           accessibilityLabel={`Open IMDb page for ${title}`}
           role="link"
         >
-          <View style={factsStyles.headerContainer}>
-            <Text style={factsStyles.header}>{title}</Text>
+          <View style={styles.headerContainer}>
+            <Typography variant="h1" style={styles.header}>
+              {title}
+            </Typography>
             <FontAwesome
               name="imdb"
-              size={responsive.scale(28)}
-              color="#F5C518"
-              style={factsStyles.imdbIcon}
+              size={styles.imdbIcon.fontSize}
+              color={styles.imdbIcon.color}
+              style={styles.imdbIcon}
             />
           </View>
         </Pressable>
-        {tagline && <Text style={factsStyles.subHeaderSmall}>{tagline}</Text>}
+        {tagline && (
+          <Typography variant="caption" style={styles.tagline}>
+            {tagline}
+          </Typography>
+        )}
       </>
     )
   }
 )
 
 const MoviePoster = memo(({ posterPath }: { posterPath: string }) => {
-  const { colors } = useTheme()
-  const factsStyles = useMemo(() => getFactsStyles(colors), [colors])
+  const styles = useStyles(themedStyles)
   const imageSource: ImageSource = posterPath
     ? { uri: `https://image.tmdb.org/t/p/w500${posterPath}` }
     : defaultMovieImage
@@ -69,7 +76,7 @@ const MoviePoster = memo(({ posterPath }: { posterPath: string }) => {
   return (
     <Image
       source={imageSource}
-      style={factsStyles.posterImage}
+      style={styles.posterImage}
       placeholder={defaultMovieImage}
       contentFit="cover"
     />
@@ -77,12 +84,13 @@ const MoviePoster = memo(({ posterPath }: { posterPath: string }) => {
 })
 
 const DirectorInfo = memo(({ director }: { director?: Director }) => {
-  const { colors } = useTheme()
-  const factsStyles = useMemo(() => getFactsStyles(colors), [colors])
+  const styles = useStyles(themedStyles)
   if (!director?.name) return null
 
   return (
-    <Text style={factsStyles.subHeaderSmall}>Directed by {director.name}</Text>
+    <Typography variant="caption" style={styles.director}>
+      Directed by {director.name}
+    </Typography>
   )
 })
 
@@ -95,8 +103,7 @@ interface FactsProps {
 
 const Facts = memo(
   ({ movie, isLoading = false, error, isScrollEnabled = true }: FactsProps) => {
-    const { colors } = useTheme()
-    const factsStyles = useMemo(() => getFactsStyles(colors), [colors])
+    const styles = useStyles(themedStyles)
     const { openLink } = useIMDbLink()
 
     const handleMoviePress = useCallback(() => {
@@ -104,34 +111,26 @@ const Facts = memo(
       openLink(movie.imdb_id, "title")
     }, [openLink, movie.imdb_id, movie.title])
 
-    const handleActorPress = useCallback(
-      (actor: Actor) => {
-        analyticsService.trackActorLinkTapped(actor.name)
-        openLink(actor.imdb_id, "name")
-      },
-      [openLink]
-    )
-
     if (isLoading) {
       return (
         <ActivityIndicator
           testID="activity-indicator"
           size="large"
-          color={colors.primary}
+          color={styles.loadingIndicator.color}
         />
       )
     }
 
     if (error) {
       return (
-        <View style={factsStyles.errorContainer}>
-          <Text style={factsStyles.errorText}>{error}</Text>
+        <View style={[u.flex, u.justifyCenter, u.alignCenter, u.pMd]}>
+          <Typography variant="error">{error}</Typography>
         </View>
       )
     }
 
     return (
-      <View style={factsStyles.container}>
+      <View style={styles.container}>
         <MovieHeader
           title={movie.title}
           tagline={movie.tagline}
@@ -139,23 +138,99 @@ const Facts = memo(
         />
         <ScrollView
           scrollEnabled={isScrollEnabled}
-          contentContainerStyle={factsStyles.scrollContainer}
+          contentContainerStyle={styles.scrollContainer}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
           <MoviePoster posterPath={movie.poster_path} />
           <DirectorInfo director={movie.director} />
-          {movie.actors && movie.actors.length > 0 && (
-            <Actors actors={movie.actors} onActorPress={handleActorPress} />
-          )}
+          <ActorsWrapper movie={movie} />
         </ScrollView>
       </View>
     )
-  },
-  (prevProps, nextProps) =>
-    prevProps.movie.id === nextProps.movie.id &&
-    prevProps.isLoading === nextProps.isLoading &&
-    prevProps.error === nextProps.error
+  }
 )
+
+interface FactsStyles {
+  container: ViewStyle
+  headerContainer: ViewStyle
+  header: TextStyle
+  imdbIcon: TextStyle & { fontSize: number }
+  tagline: TextStyle
+  director: TextStyle
+  scrollContainer: ViewStyle
+  posterImage: ImageStyle
+  headerPressable: ViewStyle
+  loadingIndicator: { color: string }
+}
+
+const themedStyles = (theme: Theme): FactsStyles => ({
+  container: {
+    alignItems: "center",
+    flex: 1,
+    width: "100%",
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    flexWrap: "wrap",
+  },
+  header: {
+    ...theme.typography.heading1,
+    fontSize: theme.responsive.responsiveFontSize(24),
+    paddingBottom: theme.spacing.medium,
+    textAlign: "center",
+    textDecorationLine: "underline",
+  },
+  imdbIcon: {
+    marginLeft: theme.spacing.small,
+    paddingBottom: theme.spacing.small,
+    fontSize: theme.responsive.scale(28),
+    color: "#F5C518",
+  },
+  tagline: {
+    fontFamily: "Arvo-Italic",
+    fontSize: theme.responsive.responsiveFontSize(14),
+    textAlign: "center",
+    width: "90%",
+    marginBottom: theme.spacing.small,
+    color: theme.colors.primary,
+    fontStyle: "italic",
+    lineHeight: theme.responsive.responsiveFontSize(16),
+  },
+  director: {
+    fontFamily: "Arvo-Italic",
+    fontSize: theme.responsive.responsiveFontSize(14),
+    textAlign: "center",
+    width: "90%",
+    marginBottom: theme.spacing.small,
+    color: theme.colors.textSecondary,
+    fontStyle: "italic",
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    alignItems: "center",
+    paddingVertical: theme.spacing.medium,
+    paddingBottom: theme.spacing.large,
+    width: "100%",
+  },
+  posterImage: {
+    width: "100%",
+    height: undefined,
+    aspectRatio: 2 / 3,
+    marginBottom: theme.spacing.medium,
+    borderRadius: theme.responsive.scale(8),
+  },
+  headerPressable: {
+    width: "100%",
+    alignItems: "center",
+    paddingVertical: theme.spacing.small,
+    backgroundColor: "transparent",
+  },
+  loadingIndicator: {
+    color: theme.colors.primary,
+  },
+})
 
 export default Facts

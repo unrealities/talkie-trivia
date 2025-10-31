@@ -1,14 +1,13 @@
-import React, { memo, useMemo } from "react"
-import { View } from "react-native"
-import { getGuessesStyles } from "../styles/guessesStyles"
+import React, { memo } from "react"
+import { View, ViewStyle } from "react-native"
 import { BasicMovie } from "../models/movie"
-import { useTheme } from "../contexts/themeContext"
 import { useGameStore } from "../state/gameStore"
 import { HintInfo, PlayerGame } from "../models/game"
 import { useShallow } from "zustand/react/shallow"
 import GuessRow from "./guess/guessRow"
 import EmptyGuessTile from "./guess/emptyGuessTile"
 import SkeletonRow from "./guess/skeletonRow"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
 
 type GuessResult = {
   movieId: number
@@ -36,19 +35,18 @@ const GuessesContainer = memo(
         basicMovies: state.basicMovies,
       }))
     )
+    const styles = useStyles(themedStyles)
 
     const isDataLoading = gameForDisplay ? false : loading
     const currentGame = gameForDisplay || playerGame
     const movies = allMoviesForDisplay || basicMovies
 
-    const { colors } = useTheme()
-    const guessesStyles = useMemo(() => getGuessesStyles(colors), [colors])
     const { guesses, guessesMax, movie } = currentGame
     const correctMovieId = movie.id
 
     if (isDataLoading) {
       return (
-        <View style={guessesStyles.container}>
+        <View style={styles.container}>
           {Array.from({ length: guessesMax }).map((_, index) => (
             <SkeletonRow key={index} index={index} />
           ))}
@@ -57,7 +55,7 @@ const GuessesContainer = memo(
     }
 
     return (
-      <View style={guessesStyles.container}>
+      <View style={styles.container}>
         {Array.from({ length: guessesMax }).map((_, index) => {
           const guess = guesses[index]
 
@@ -86,5 +84,16 @@ const GuessesContainer = memo(
     )
   }
 )
+
+interface GuessesContainerStyles {
+  container: ViewStyle
+}
+
+const themedStyles = (theme: Theme): GuessesContainerStyles => ({
+  container: {
+    width: "100%",
+    paddingVertical: theme.spacing.small,
+  },
+})
 
 export default GuessesContainer

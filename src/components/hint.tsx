@@ -1,43 +1,45 @@
-import React, { memo, useMemo } from "react"
-import { View, Text } from "react-native"
+import React, { memo } from "react"
+import { View, TextStyle, ViewStyle } from "react-native"
 import Animated from "react-native-reanimated"
 import { useHintLogic } from "../utils/hooks/useHintLogic"
 import HintUI from "./hintUI"
-import { getHintStyles } from "../styles/hintStyles"
 import { useSkeletonAnimation } from "../utils/hooks/useSkeletonAnimation"
 import { useGameStore } from "../state/gameStore"
-import { useTheme } from "../contexts/themeContext"
 import { HintType } from "../models/game"
 import { DIFFICULTY_MODES } from "../config/difficulty"
 import { useShallow } from "zustand/react/shallow"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { Typography } from "./ui/typography"
 
 const HintSkeleton = memo(() => {
-  const { colors } = useTheme()
-  const hintStyles = useMemo(() => getHintStyles(colors), [colors])
+  const styles = useStyles(themedStyles)
   const animatedStyle = useSkeletonAnimation()
   return (
-    <View style={hintStyles.container}>
-      <Animated.View style={[hintStyles.skeletonLabel, animatedStyle]} />
+    <View style={styles.container}>
+      <Animated.View style={[styles.skeletonLabel, animatedStyle]} />
     </View>
   )
 })
 
 const BasicHints = memo(() => {
   const { getHintText } = useHintLogic()
-  const { colors } = useTheme()
-  const styles = useMemo(() => getHintStyles(colors), [colors])
+  const styles = useStyles(themedStyles)
 
   const hintTypes: HintType[] = ["decade", "director", "actor", "genre"]
 
   return (
-    <View style={styles.veryEasyContainer}>
-      <Text style={styles.veryEasyTitle}>All Hints Revealed</Text>
+    <View style={styles.basicHintsContainer}>
+      <Typography variant="h2" style={styles.basicHintsTitle}>
+        All Hints Revealed
+      </Typography>
       {hintTypes.map((type) => (
-        <View key={type} style={styles.veryEasyRow}>
-          <Text style={styles.veryEasyHintLabel}>
+        <View key={type} style={styles.basicHintsRow}>
+          <Typography style={styles.basicHintsLabel}>
             {type.charAt(0).toUpperCase() + type.slice(1)}:
-          </Text>
-          <Text style={styles.veryEasyHintValue}>{getHintText(type)}</Text>
+          </Typography>
+          <Typography style={styles.basicHintsValue}>
+            {getHintText(type)}
+          </Typography>
         </View>
       ))}
     </View>
@@ -45,43 +47,39 @@ const BasicHints = memo(() => {
 })
 
 const MainHintComponent = () => {
-  const { playerGame, difficulty, playerStats } = useGameStore(
+  const { playerStats } = useGameStore(
     useShallow((state) => ({
-      playerGame: state.playerGame,
-      difficulty: state.difficulty,
       playerStats: state.playerStats,
     }))
   )
 
-  const currentHintStrategy = DIFFICULTY_MODES[difficulty].hintStrategy
-
-  const { colors } = useTheme()
-  const hintStyles = useMemo(() => getHintStyles(colors), [colors])
   const {
     showHintOptions,
-    displayedHintText,
     hintLabelText,
     isToggleDisabled,
     hintStatuses,
     highlightedHint,
     handleToggleHintOptions,
     handleHintSelection,
+    displayedHintText,
   } = useHintLogic()
+  const styles = useStyles(themedStyles)
 
-  if (currentHintStrategy === "IMPLICIT_FEEDBACK") {
+  if (!hintLabelText) return null
+
+  // Implicit Feedback mode only shows the label.
+  if (
+    DIFFICULTY_MODES[useGameStore.getState().difficulty].hintStrategy ===
+      "IMPLICIT_FEEDBACK" &&
+    !isToggleDisabled
+  ) {
     return (
-      <View style={hintStyles.container}>
-        <Text style={hintStyles.hintLabelDisabled}>{hintLabelText}</Text>
+      <View style={styles.container}>
+        <Typography variant="caption" style={styles.hintLabelDisabled}>
+          {hintLabelText}
+        </Typography>
       </View>
     )
-  }
-
-  const isNonInteractiveStrategy =
-    currentHintStrategy === "NONE_DISABLED" ||
-    currentHintStrategy === "EXTREME_CHALLENGE"
-
-  if (isNonInteractiveStrategy) {
-    return null
   }
 
   return (
@@ -100,21 +98,26 @@ const MainHintComponent = () => {
 }
 
 const HintContainer: React.FC = memo(() => {
-  const loading = useGameStore((state) => state.loading)
-  const isInteractionsDisabled = useGameStore(
-    (state) => state.isInteractionsDisabled
+  const { loading, isInteractionsDisabled, difficulty } = useGameStore(
+    useShallow((state) => ({
+      loading: state.loading,
+      isInteractionsDisabled: state.isInteractionsDisabled,
+      difficulty: state.difficulty,
+    }))
   )
-  const difficulty = useGameStore((state) => state.difficulty)
-
-  const currentStrategy = loading
-    ? null
-    : DIFFICULTY_MODES[difficulty]?.hintStrategy
 
   if (loading) {
     return <HintSkeleton />
   }
 
-  // Render the BasicHints component if the strategy is ALL_REVEALED or HINTS_ONLY_REVEALED.
+  const currentStrategy = DIFFICULTY_MODES[difficulty]?.hintStrategy
+  if (
+    currentStrategy === "NONE_DISABLED" ||
+    currentStrategy === "EXTREME_CHALLENGE"
+  ) {
+    return null
+  }
+
   if (
     (currentStrategy === "ALL_REVEALED" ||
       currentStrategy === "HINTS_ONLY_REVEALED") &&
@@ -124,6 +127,70 @@ const HintContainer: React.FC = memo(() => {
   }
 
   return <MainHintComponent />
+})
+
+interface HintStyles {
+  container: ViewStyle
+  skeletonLabel: ViewStyle
+  hintLabelDisabled: TextStyle
+  basicHintsContainer: ViewStyle
+  basicHintsTitle: TextStyle
+  basicHintsRow: ViewStyle
+  basicHintsLabel: TextStyle
+  basicHintsValue: TextStyle
+}
+
+const themedStyles = (theme: Theme): HintStyles => ({
+  container: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: theme.responsive.scale(2),
+    width: "100%",
+  },
+  skeletonLabel: {
+    backgroundColor: theme.colors.surface,
+    height: theme.responsive.scale(20),
+    width: "50%",
+    borderRadius: theme.responsive.scale(4),
+    marginVertical: theme.spacing.small,
+  },
+  hintLabelDisabled: {
+    ...theme.typography.caption,
+    color: theme.colors.textDisabled,
+    fontFamily: "Arvo-Italic",
+    textAlign: "center",
+    paddingVertical: theme.spacing.small,
+  },
+  basicHintsContainer: {
+    width: "90%",
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.responsive.scale(8),
+    padding: theme.spacing.medium,
+    marginVertical: theme.spacing.small,
+  },
+  basicHintsTitle: {
+    fontSize: theme.responsive.responsiveFontSize(16),
+    color: theme.colors.primary,
+    textAlign: "center",
+    marginBottom: theme.spacing.medium,
+  },
+  basicHintsRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: theme.spacing.extraSmall,
+  },
+  basicHintsLabel: {
+    ...theme.typography.bodyText,
+    fontFamily: "Arvo-Bold",
+    color: theme.colors.textPrimary,
+  },
+  basicHintsValue: {
+    ...theme.typography.bodyText,
+    flex: 1,
+    textAlign: "right",
+    marginLeft: theme.spacing.small,
+  },
 })
 
 export default HintContainer
