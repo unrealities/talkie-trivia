@@ -29,7 +29,24 @@ module.exports = ({ config }) => ({
       "@react-native-google-signin/google-signin",
       "expo-font",
       "expo-router",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "flipper": true,
+            "useFrameworks": "static", 
+            "podfileProperties": {
+              "use_modular_headers!": "true"
+            },
+            "newArchEnabled": false
+          },
+          "android": {
+            "flipper": true,
+            "newArchEnabled": false 
+          }
+        }
+      ]
     ],
     ios: {
       bundleIdentifier: "com.unrealities.talkietrivia",

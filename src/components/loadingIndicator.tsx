@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from "react" // FIX: Imported useMemo from React
+import React, { memo, useMemo } from "react"
 import { View, Platform, ViewStyle, TextStyle } from "react-native"
 import CustomLoadingIndicator from "./customLoadingIndicator"
 import { useStyles, Theme } from "../utils/hooks/useStyles"

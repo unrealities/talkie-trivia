@@ -1,13 +1,15 @@
-import React, { memo } from "react"
+import React, { memo, useMemo, useCallback } from "react"
 import { View, ViewStyle } from "react-native"
+import { FlashList, ListRenderItemInfo } from "@shopify/flash-list"
 import { BasicMovie } from "../models/movie"
 import { useGameStore } from "../state/gameStore"
-import { HintInfo, PlayerGame } from "../models/game"
+import { HintInfo, PlayerGame, Guess } from "../models/game"
 import { useShallow } from "zustand/react/shallow"
 import GuessRow from "./guess/guessRow"
 import EmptyGuessTile from "./guess/emptyGuessTile"
 import SkeletonRow from "./guess/skeletonRow"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { spacing, responsive } from "../styles/global"
 
 type GuessResult = {
   movieId: number
@@ -21,6 +23,13 @@ interface GuessesContainerProps {
   gameForDisplay?: PlayerGame
   allMoviesForDisplay?: readonly BasicMovie[]
 }
+
+type ListItem =
+  | { type: "guess"; guess: Guess; index: number }
+  | { type: "empty"; index: number }
+  | { type: "skeleton"; index: number }
+
+const ESTIMATED_ROW_HEIGHT = responsive.scale(44) + spacing.small // minHeight + marginBottom
 
 const GuessesContainer = memo(
   ({
@@ -44,54 +53,87 @@ const GuessesContainer = memo(
     const { guesses, guessesMax, movie } = currentGame
     const correctMovieId = movie.id
 
-    if (isDataLoading) {
-      return (
-        <View style={styles.container}>
-          {Array.from({ length: guessesMax }).map((_, index) => (
-            <SkeletonRow key={index} index={index} />
-          ))}
-        </View>
-      )
-    }
+    const listData: ListItem[] = useMemo(() => {
+      if (isDataLoading) {
+        return Array.from({ length: guessesMax }, (_, index) => ({
+          type: "skeleton",
+          index,
+        }))
+      }
+
+      const items: ListItem[] = []
+      for (let i = 0; i < guessesMax; i++) {
+        if (guesses[i]) {
+          items.push({ type: "guess", guess: guesses[i], index: i })
+        } else {
+          items.push({ type: "empty", index: i })
+        }
+      }
+      return items
+    }, [isDataLoading, guesses, guessesMax])
+
+    const renderListItem = useCallback(
+      ({ item }: ListRenderItemInfo<ListItem>) => {
+        switch (item.type) {
+          case "skeleton":
+            return <SkeletonRow index={item.index} />
+          case "empty":
+            return <EmptyGuessTile index={item.index} />
+          case "guess": {
+            const isLastGuess =
+              !!lastGuessResult &&
+              item.index === guesses.length - 1 &&
+              lastGuessResult.movieId === item.guess.movieId
+            return (
+              <GuessRow
+                index={item.index}
+                guess={item.guess}
+                movies={movies}
+                isLastGuess={isLastGuess}
+                lastGuessResult={lastGuessResult}
+                correctMovieId={correctMovieId}
+              />
+            )
+          }
+          default:
+            return null
+        }
+      },
+      [lastGuessResult, guesses.length, movies, correctMovieId]
+    )
+
+    const keyExtractor = useCallback(
+      (item: ListItem) => item.index.toString(),
+      []
+    )
+
+    const listContainerHeight = guessesMax * ESTIMATED_ROW_HEIGHT
 
     return (
-      <View style={styles.container}>
-        {Array.from({ length: guessesMax }).map((_, index) => {
-          const guess = guesses[index]
-
-          if (!guess) {
-            return <EmptyGuessTile key={index} index={index} />
-          }
-
-          const isLastGuess =
-            !!lastGuessResult &&
-            index === guesses.length - 1 &&
-            lastGuessResult.movieId === guess.movieId
-
-          return (
-            <GuessRow
-              key={`${guess.movieId}-${index}`}
-              index={index}
-              guess={guess}
-              movies={movies}
-              isLastGuess={isLastGuess}
-              lastGuessResult={lastGuessResult}
-              correctMovieId={correctMovieId}
-            />
-          )
-        })}
+      <View style={[styles.listWrapper, { height: listContainerHeight }]}>
+        <FlashList
+          data={listData}
+          renderItem={renderListItem}
+          keyExtractor={keyExtractor}
+          estimatedItemSize={ESTIMATED_ROW_HEIGHT}
+          contentContainerStyle={styles.container}
+          scrollEnabled={false}
+        />
       </View>
     )
   }
 )
 
 interface GuessesContainerStyles {
+  listWrapper: ViewStyle
   container: ViewStyle
 }
 
 const themedStyles = (theme: Theme): GuessesContainerStyles => ({
-  container: {
+  listWrapper: {
     width: "100%",
+  },
+  container: {
     paddingVertical: theme.spacing.small,
   },
 })

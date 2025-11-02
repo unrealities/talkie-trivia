@@ -1,20 +1,11 @@
-// FILE: src/components/guess/guessRow.tsx
-
-import React, { memo, useEffect } from "react"
-import { Text, View, ViewStyle, TextStyle, ImageStyle } from "react-native"
-import Animated, {
-  interpolate,
-  useAnimatedStyle,
-  useSharedValue,
-  withDelay,
-  withSequence,
-  withTiming,
-  Easing,
-} from "react-native-reanimated"
+import React, { memo } from "react"
+import { Text, View, ViewStyle, TextStyle, StyleSheet } from "react-native"
+import Animated from "react-native-reanimated"
 import Ionicons from "@expo/vector-icons/Ionicons"
 import { BasicMovie } from "../../models/movie"
 import { Guess, HintInfo, HintType } from "../../models/game"
-import { useStyles, Theme } from "../../utils/hooks/useStyles"
+import { useStyles, Theme, useThemeTokens } from "../../utils/hooks/useStyles"
+import { useGuessAnimation } from "../../utils/hooks/useGuessAnimation"
 import { u } from "../../styles/utils"
 
 type GuessResult = {
@@ -42,17 +33,20 @@ const GuessRow = memo(
     lastGuessResult,
     correctMovieId,
   }: GuessRowProps) => {
+    const theme = useThemeTokens()
     const styles = useStyles(themedStyles)
 
-    const rotate = useSharedValue(0)
-    const shakeX = useSharedValue(0)
-    const backgroundColor = useSharedValue(
-      styles.guessTile.backgroundColor as string
-    )
-    const feedbackAnim = useSharedValue(0)
+    // --- Animation Logic Abstracted to Custom Hook ---
+    const { animatedTileStyle, animatedContentStyle, animatedFeedbackStyle } =
+      useGuessAnimation({
+        isCorrect: guess.movieId === correctMovieId,
+        isLastGuess,
+        lastGuessResult,
+        theme,
+      })
 
-    const guessId = guess.movieId
-    const guessMovie = movies.find((m: BasicMovie) => m.id === guessId)
+    // --- Component Data Preparation ---
+    const guessMovie = movies.find((m: BasicMovie) => m.id === guess.movieId)
     const guessTitle = guessMovie?.title || "Unknown Movie"
     const releaseYear = guessMovie?.release_date
       ? ` (${new Date(guessMovie.release_date).getFullYear()})`
@@ -61,72 +55,6 @@ const GuessRow = memo(
     const feedbackMessage =
       isLastGuess && !isCorrect ? lastGuessResult?.feedback : null
     const hintInfoList = guess.hintInfo
-
-    const animatedTileStyle = useAnimatedStyle(() => {
-      const rotateY = interpolate(rotate.value, [0, 1], [180, 360])
-      return {
-        backgroundColor: backgroundColor.value,
-        transform: [
-          { perspective: 1000 },
-          { rotateY: `${rotateY}deg` },
-          { translateX: shakeX.value },
-        ],
-      }
-    })
-
-    const animatedContentStyle = useAnimatedStyle(() => ({
-      opacity: rotate.value,
-    }))
-
-    const animatedFeedbackStyle = useAnimatedStyle(() => ({
-      opacity: feedbackAnim.value,
-      transform: [
-        {
-          scale: interpolate(feedbackAnim.value, [0, 1], [0.8, 1]),
-        },
-      ],
-    }))
-
-    useEffect(() => {
-      const { colors } = styles.rawTheme
-      rotate.value = withTiming(1, { duration: 600 })
-
-      if (isLastGuess && lastGuessResult) {
-        if (isCorrect) {
-          backgroundColor.value = withSequence(
-            withDelay(600, withTiming(colors.success, { duration: 400 })),
-            withDelay(1000, withTiming(colors.surface, { duration: 500 }))
-          )
-        } else {
-          feedbackAnim.value = withSequence(
-            withDelay(700, withTiming(1, { duration: 300 })),
-            withDelay(
-              1800,
-              withTiming(0, { duration: 300, easing: Easing.ease })
-            )
-          )
-          shakeX.value = withSequence(
-            withDelay(2800, withTiming(-15, { duration: 60 })),
-            withTiming(15, { duration: 120 }),
-            withTiming(-15, { duration: 120 }),
-            withTiming(0, { duration: 60 })
-          )
-          backgroundColor.value = withSequence(
-            withDelay(2700, withTiming(colors.error, { duration: 150 })),
-            withTiming(colors.surface, { duration: 800 })
-          )
-        }
-      }
-    }, [
-      isLastGuess,
-      lastGuessResult,
-      isCorrect,
-      styles,
-      backgroundColor,
-      rotate,
-      shakeX,
-      feedbackAnim,
-    ])
 
     const getIconNameForHint = (
       hint: HintType
@@ -199,7 +127,6 @@ interface GuessRowStyles {
   guessHintContainer: ViewStyle
   guessHintIcon: TextStyle
   guessHintText: TextStyle
-  rawTheme: Theme // Expose theme for animations
 }
 
 const themedStyles = (theme: Theme): GuessRowStyles => ({
@@ -282,7 +209,6 @@ const themedStyles = (theme: Theme): GuessRowStyles => ({
     fontSize: theme.responsive.responsiveFontSize(11),
     color: theme.colors.primary,
   },
-  rawTheme: theme,
 })
 
 export default GuessRow

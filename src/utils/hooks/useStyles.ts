@@ -12,7 +12,7 @@ import {
  * Consolidates all design system tokens into a single object for use in style factories.
  * This is the heart of the themed styling system.
  */
-const useThemeTokens = () => {
+export const useThemeTokens = () => {
   const { colors, colorScheme } = useTheme()
   return {
     colors,

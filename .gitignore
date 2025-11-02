@@ -19,6 +19,8 @@ data/credits.json
 utils/secrets.json
 utils/serviceAccountKey.json
 eas.json
+GoogleService-Info.plist
+google-services.json
 
 # third-party
 repomix*

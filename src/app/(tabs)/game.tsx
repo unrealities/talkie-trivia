@@ -19,43 +19,49 @@ const GameDifficultyToggle = lazy(
   () => import("../../components/gameDifficultyToggle")
 )
 
+const GameLayout = ({ children }: { children: React.ReactNode }) => {
+  const styles = useStyles(themedStyles)
+  return (
+    <ScrollView
+      contentContainerStyle={styles.scrollContentContainer}
+      style={u.flex}
+      showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps="handled"
+    >
+      <View style={styles.headerContainer}>
+        <TitleHeader />
+        <Suspense fallback={null}>
+          <GameDifficultyToggle />
+        </Suspense>
+      </View>
+      {children}
+    </ScrollView>
+  )
+}
+
 const GameScreen = () => {
   const showConfetti = useGameStore((state) => state.showConfetti)
   const handleConfettiStop = useGameStore((state) => state.handleConfettiStop)
   const flashMessage = useGameStore((state) => state.flashMessage)
-
-  const { colors } = useTheme() // Still needed for LinearGradient
-  const styles = useStyles(themedStyles)
+  const { colors } = useTheme()
 
   return (
     <LinearGradient
       colors={[colors.background, colors.backgroundLight]}
       style={u.flex}
     >
-      <ScrollView
-        contentContainerStyle={styles.scrollContentContainer}
-        style={u.flex}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      >
-        <View style={styles.headerContainer}>
-          <TitleHeader />
-          <Suspense fallback={null}>
-            <GameDifficultyToggle />
-          </Suspense>
-        </View>
-
+      <GameLayout>
         <Suspense fallback={<LoadingIndicator />}>
           <GameplayContainer />
         </Suspense>
-        <Suspense fallback={null}>
-          <FlashMessages message={flashMessage} />
-          <ConfettiCelebration
-            startConfetti={showConfetti}
-            onConfettiStop={handleConfettiStop}
-          />
-        </Suspense>
-      </ScrollView>
+      </GameLayout>
+      <Suspense fallback={null}>
+        <FlashMessages message={flashMessage} />
+        <ConfettiCelebration
+          startConfetti={showConfetti}
+          onConfettiStop={handleConfettiStop}
+        />
+      </Suspense>
     </LinearGradient>
   )
 }
