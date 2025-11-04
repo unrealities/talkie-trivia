@@ -87,7 +87,6 @@ export const spacing = {
   extraLarge: scale(32),
 }
 
-// FIX: Platform-agnostic shadows to resolve web deprecation warning.
 export const shadows = {
   light: Platform.select({
     ios: {
