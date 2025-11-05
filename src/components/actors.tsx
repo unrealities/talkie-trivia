@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from "react"
+import React, { memo } from "react"
 import {
   Text,
   Pressable,
@@ -8,26 +8,23 @@ import {
   TextStyle,
   ImageStyle,
 } from "react-native"
-import { Actor, Movie } from "../models/movie"
 import { Image } from "expo-image"
 import { API_CONFIG } from "../config/constants"
-import { useIMDbLink } from "../utils/hooks/useIMDbLink"
-import { analyticsService } from "../utils/analyticsService"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
 
 type ImageSource = { uri: string } | number
 
 interface ActorsProps {
-  actors: Actor[]
+  actors: any[]
   maxDisplay?: number
   containerStyle?: StyleProp<ViewStyle>
-  onActorPress: (actor: Actor) => void
+  onActorPress: (actor: any) => void
 }
 
 const defaultActorImage = require("../../assets/actor_default.png")
 
 const ActorContainer = memo(
-  ({ actor, onPress }: { actor: Actor; onPress: (actor: Actor) => void }) => {
+  ({ actor, onPress }: { actor: any; onPress: (actor: any) => void }) => {
     const styles = useStyles(themedStyles)
     const imageURI = API_CONFIG.TMDB_IMAGE_BASE_URL_W185
 
@@ -81,7 +78,7 @@ const ActorContainer = memo(
   }
 )
 
-export const Actors: React.FC<ActorsProps> = memo(
+const Actors: React.FC<ActorsProps> = memo(
   ({ actors, maxDisplay = 3, containerStyle, onActorPress }) => {
     const styles = useStyles(themedStyles)
     if (!actors || actors.length === 0) return null
@@ -164,22 +161,4 @@ const themedStyles = (theme: Theme): ActorsStyles => ({
   },
 })
 
-const ActorsWrapper = ({ movie }: { movie: Movie }) => {
-  const { openLink } = useIMDbLink()
-
-  const handleActorPress = useCallback(
-    (actor: Actor) => {
-      analyticsService.trackActorLinkTapped(actor.name)
-      openLink(actor.imdb_id, "name")
-    },
-    [openLink]
-  )
-
-  if (!movie || !movie.actors) {
-    return null
-  }
-
-  return <Actors actors={movie.actors} onActorPress={handleActorPress} />
-}
-
-export default ActorsWrapper
+export default Actors

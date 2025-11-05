@@ -65,9 +65,9 @@ const GameOverView: React.FC<GameOverViewProps> = ({
             {resultMessage}
           </Typography>
 
-          <Facts movie={playerGame.movie} isScrollEnabled={false} />
+          <Facts item={playerGame.triviaItem} isScrollEnabled={false} />
 
-          <FullPlotSection overview={playerGame.movie.overview} />
+          <FullPlotSection overview={playerGame.triviaItem.description} />
         </ScrollView>
       </Card>
 

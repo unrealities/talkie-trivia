@@ -1,29 +1,23 @@
-import { Movie } from "../models/movie"
 import { PlayerGame } from "../models/game"
 import PlayerStats from "../models/playerStats"
+import { TriviaItem } from "./trivia"
 import { GAME_DEFAULTS } from "../config/constants"
 import { DIFFICULTY_MODES, DEFAULT_DIFFICULTY } from "../config/difficulty"
 
-export const defaultMovie: Movie = {
-  actors: [],
-  director: { id: 0, name: "", popularity: 0, profile_path: "" },
-  genres: [],
+export const defaultTriviaItem: TriviaItem = {
   id: 0,
-  imdb_id: "",
-  overview: "",
-  poster_path: "",
-  popularity: 0,
-  release_date: "",
-  tagline: "",
   title: "",
-  vote_average: 0,
-  vote_count: 0,
+  description: "",
+  posterPath: "",
+  releaseDate: "",
+  metadata: {},
+  hints: [],
 }
 
 export const defaultPlayerGame: PlayerGame = {
   id: "",
   playerID: "",
-  movie: defaultMovie,
+  triviaItem: defaultTriviaItem, // Changed from `movie`
   guessesMax: DIFFICULTY_MODES[DEFAULT_DIFFICULTY].guessesMax,
   difficulty: DEFAULT_DIFFICULTY,
   guesses: [],

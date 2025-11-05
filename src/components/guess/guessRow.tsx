@@ -2,14 +2,14 @@ import React, { memo } from "react"
 import { Text, View, ViewStyle, TextStyle, StyleSheet } from "react-native"
 import Animated from "react-native-reanimated"
 import Ionicons from "@expo/vector-icons/Ionicons"
-import { BasicMovie } from "../../models/movie"
-import { Guess, HintInfo, HintType } from "../../models/game"
+import { BasicTriviaItem } from "../../models/trivia"
+import { Guess, HintInfo } from "../../models/game"
 import { useStyles, Theme, useThemeTokens } from "../../utils/hooks/useStyles"
 import { useGuessAnimation } from "../../utils/hooks/useGuessAnimation"
 import { u } from "../../styles/utils"
 
 type GuessResult = {
-  movieId: number
+  itemId: number | string // Changed
   correct: boolean
   feedback?: string | null
   hintInfo?: HintInfo[] | null
@@ -18,54 +18,55 @@ type GuessResult = {
 interface GuessRowProps {
   index: number
   guess: Guess
-  movies: readonly BasicMovie[]
+  basicItems: readonly BasicTriviaItem[]
   isLastGuess: boolean
   lastGuessResult: GuessResult
-  correctMovieId: number
+  correctItemId: number | string
 }
 
 const GuessRow = memo(
   ({
     index,
     guess,
-    movies,
+    basicItems,
     isLastGuess,
     lastGuessResult,
-    correctMovieId,
+    correctItemId,
   }: GuessRowProps) => {
     const theme = useThemeTokens()
     const styles = useStyles(themedStyles)
 
-    // --- Animation Logic Abstracted to Custom Hook ---
     const { animatedTileStyle, animatedContentStyle, animatedFeedbackStyle } =
       useGuessAnimation({
-        isCorrect: guess.movieId === correctMovieId,
+        isCorrect: guess.itemId === correctItemId,
         isLastGuess,
         lastGuessResult,
         theme,
       })
 
-    // --- Component Data Preparation ---
-    const guessMovie = movies.find((m: BasicMovie) => m.id === guess.movieId)
-    const guessTitle = guessMovie?.title || "Unknown Movie"
-    const releaseYear = guessMovie?.release_date
-      ? ` (${new Date(guessMovie.release_date).getFullYear()})`
+    const guessItem = basicItems.find(
+      (item: BasicTriviaItem) => item.id === guess.itemId
+    )
+    const guessTitle = guessItem?.title || "Unknown Item"
+    const releaseYear = guessItem?.releaseDate
+      ? ` (${new Date(guessItem.releaseDate).getFullYear()})`
       : ""
-    const isCorrect = guess.movieId === correctMovieId
+    const isCorrect = guess.itemId === correctItemId
     const feedbackMessage =
       isLastGuess && !isCorrect ? lastGuessResult?.feedback : null
     const hintInfoList = guess.hintInfo
 
     const getIconNameForHint = (
-      hint: HintType
+      hintType: string
     ): keyof typeof Ionicons.glyphMap => {
-      const iconMap: Record<HintType, keyof typeof Ionicons.glyphMap> = {
+      const iconMap: Record<string, keyof typeof Ionicons.glyphMap> = {
         decade: "calendar-outline",
         director: "film-outline",
+        developer: "game-controller-outline", // For video games
         actor: "person-outline",
         genre: "folder-open-outline",
       }
-      return iconMap[hint]
+      return iconMap[hintType] || "information-circle-outline"
     }
 
     return (

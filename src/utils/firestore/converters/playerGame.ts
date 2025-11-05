@@ -4,15 +4,11 @@ import { DEFAULT_DIFFICULTY } from "../../../config/difficulty"
 import { Timestamp } from "firebase/firestore"
 
 export const playerGameConverter = {
-  /**
-   * Converts a PlayerGame object to a Firestore-compatible object.
-   * The Firestore SDK automatically handles converting JS Date objects to Timestamps.
-   */
   toFirestore: (playerGame: PlayerGame) => {
     return {
       id: playerGame.id,
       playerID: playerGame.playerID,
-      movie: playerGame.movie,
+      triviaItem: playerGame.triviaItem,
       guessesMax: playerGame.guessesMax,
       difficulty: playerGame.difficulty || DEFAULT_DIFFICULTY,
       guesses: playerGame.guesses,
@@ -25,27 +21,34 @@ export const playerGameConverter = {
     }
   },
 
-  /**
-   * Converts a Firestore document snapshot into a PlayerGame object.
-   * This version assumes the data is always in the new, flat format.
-   */
   fromFirestore: (snapshot: any, options: any): PlayerGame => {
     const data = snapshot.data(options)
 
-    // Helper to safely convert Firestore Timestamps back to JS Dates.
     const safeToDate = (field: any): Date => {
       if (field instanceof Timestamp) {
         return field.toDate()
       }
-      return field // Assumes it might already be a Date object
+      if (typeof field === "string") {
+        return new Date(field)
+      }
+      return field
     }
 
-    return {
-      ...defaultPlayerGame,
+    const gameData: Partial<PlayerGame> = {
       ...data,
       difficulty: data.difficulty || DEFAULT_DIFFICULTY,
       startDate: safeToDate(data.startDate),
       endDate: safeToDate(data.endDate),
     }
+
+    if (data.movie && !data.triviaItem) {
+      gameData.triviaItem = data.movie
+      delete (gameData as any).movie
+    }
+
+    return {
+      ...defaultPlayerGame,
+      ...gameData,
+    } as PlayerGame
   },
 }

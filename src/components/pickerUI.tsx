@@ -12,18 +12,18 @@ import {
   FlatListProps,
 } from "react-native"
 import Animated from "react-native-reanimated"
-import { BasicMovie } from "../models/movie"
+import { BasicTriviaItem } from "../models/trivia"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
 
 interface PickerUIProps {
   query: string
   isSearching: boolean
-  results: readonly BasicMovie[]
+  results: readonly BasicTriviaItem[]
   showResults: boolean
   animatedInputStyle: StyleProp<ViewStyle>
   isInteractionsDisabled: boolean
   handleInputChange: (text: string) => void
-  renderItem: ListRenderItem<BasicMovie>
+  renderItem: ListRenderItem<BasicTriviaItem>
 }
 
 export const PickerUI: React.FC<PickerUIProps> = memo(
@@ -39,7 +39,7 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
   }) => {
     const styles = useStyles(themedStyles)
 
-    const listProps: Partial<FlatListProps<BasicMovie>> = {
+    const listProps: Partial<FlatListProps<BasicTriviaItem>> = {
       data: results,
       renderItem: renderItem,
       keyExtractor: (item) => item.id.toString(),

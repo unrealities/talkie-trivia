@@ -1,4 +1,4 @@
-import { Movie } from "./movie"
+import { TriviaItem } from "./trivia"
 import { DifficultyLevel } from "../config/difficulty"
 
 export type Difficulty = DifficultyLevel
@@ -6,19 +6,20 @@ export type Difficulty = DifficultyLevel
 export type HintType = "decade" | "director" | "actor" | "genre"
 
 export interface HintInfo {
-  type: HintType
-  value: string
+  type: string
+  value: any
+  label: string
 }
 
 export interface Guess {
-  movieId: number
+  itemId: number | string
   hintInfo?: HintInfo[] | null
 }
 
 export interface PlayerGame {
-  id: string // Unique ID for this player-game session, e.g., "player1-2025-07-16"
+  id: string
   playerID: string
-  movie: Movie
+  triviaItem: TriviaItem
   guessesMax: number
   difficulty: DifficultyLevel
   guesses: Guess[]
@@ -26,6 +27,6 @@ export interface PlayerGame {
   gaveUp: boolean
   startDate: Date
   endDate: Date
-  hintsUsed?: Partial<Record<HintType, boolean>>
+  hintsUsed?: Partial<Record<string, boolean>>
   statsProcessed?: boolean
 }

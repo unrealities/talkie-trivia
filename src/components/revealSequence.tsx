@@ -1,4 +1,5 @@
 import React, { useEffect } from "react"
+import { StyleSheet } from "react-native"
 import { Image } from "expo-image"
 import Animated, {
   useSharedValue,
@@ -23,7 +24,7 @@ interface RevealSequenceProps {
 const RevealSequence: React.FC<RevealSequenceProps> = ({
   onAnimationComplete,
 }) => {
-  const movie = useGameStore((state) => state.playerGame.movie)
+  const triviaItem = useGameStore((state) => state.playerGame.triviaItem)
   const styles = useStyles(themedStyles)
 
   const containerOpacity = useSharedValue(0)
@@ -64,18 +65,18 @@ const RevealSequence: React.FC<RevealSequenceProps> = ({
     ],
   }))
 
-  const imageSource = movie.poster_path
-    ? { uri: `${API_CONFIG.TMDB_IMAGE_BASE_URL_W500}${movie.poster_path}` }
+  const imageSource = triviaItem?.posterPath
+    ? { uri: `${API_CONFIG.TMDB_IMAGE_BASE_URL_W500}${triviaItem.posterPath}` }
     : defaultMovieImage
+
+  const title = triviaItem?.title || "Correct!"
 
   return (
     <Animated.View style={[styles.container, containerStyle]}>
       <Animated.View style={posterStyle}>
         <Image source={imageSource} style={styles.poster} contentFit="cover" />
       </Animated.View>
-      <Animated.Text style={[styles.title, titleStyle]}>
-        {movie.title}
-      </Animated.Text>
+      <Animated.Text style={[styles.title, titleStyle]}>{title}</Animated.Text>
     </Animated.View>
   )
 }

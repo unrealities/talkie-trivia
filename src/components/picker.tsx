@@ -15,7 +15,7 @@ import {
   withTiming,
 } from "react-native-reanimated"
 import { search } from "fast-fuzzy"
-import { BasicMovie, Movie } from "../models/movie"
+import { BasicTriviaItem, TriviaItem } from "../models/trivia"
 import { PickerUI } from "./pickerUI"
 import PickerSkeleton from "./pickerSkeleton"
 import PickerMovieItem from "./pickerMovieItem"
@@ -35,8 +35,8 @@ if (
 const PickerContainer: FC = memo(() => {
   const {
     isInteractionsDisabled,
-    basicMovies,
-    allFullMovies,
+    basicItems, // Renamed from basicMovies
+    fullItems, // Renamed from allFullMovies
     makeGuess,
     loading,
     tutorialState,
@@ -45,8 +45,8 @@ const PickerContainer: FC = memo(() => {
   } = useGameStore(
     useShallow((state) => ({
       isInteractionsDisabled: state.isInteractionsDisabled,
-      basicMovies: state.basicMovies,
-      allFullMovies: state.movies,
+      basicItems: state.basicItems,
+      fullItems: state.fullItems,
       makeGuess: state.makeGuess,
       loading: state.loading,
       tutorialState: state.tutorialState,
@@ -56,10 +56,12 @@ const PickerContainer: FC = memo(() => {
   )
 
   const [query, setQuery] = useState("")
-  const [results, setResults] = useState<readonly BasicMovie[]>([])
+  const [results, setResults] = useState<readonly BasicTriviaItem[]>([])
   const [isSearching, setIsSearching] = useState(false)
-  const [expandedMovieId, setExpandedMovieId] = useState<number | null>(null)
-  const [detailedMovie, setDetailedMovie] = useState<Movie | null>(null)
+  const [expandedItemId, setExpandedItemId] = useState<number | string | null>(
+    null
+  )
+  const [detailedItem, setDetailedItem] = useState<TriviaItem | null>(null)
 
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const shakeAnimation = useSharedValue(0)
@@ -72,19 +74,19 @@ const PickerContainer: FC = memo(() => {
     )
   }, [shakeAnimation])
 
-  const filterMovies = useCallback(
-    (searchTerm: string): BasicMovie[] => {
+  const filterItems = useCallback(
+    (searchTerm: string): BasicTriviaItem[] => {
       const trimmedTerm = searchTerm.trim()
       if (trimmedTerm.length < 2) return []
 
       const normalizedSearchTerm = normalizeSearchString(trimmedTerm)
 
-      return search(normalizedSearchTerm, [...basicMovies], {
-        keySelector: (movie) => normalizeSearchString(movie.title),
+      return search(normalizedSearchTerm, [...basicItems], {
+        keySelector: (item) => normalizeSearchString(item.title),
         threshold: 0.8,
-      }) as BasicMovie[]
+      }) as BasicTriviaItem[]
     },
-    [basicMovies]
+    [basicItems]
   )
 
   const handleInputChange = useCallback(
@@ -92,8 +94,8 @@ const PickerContainer: FC = memo(() => {
       if (isInteractionsDisabled) return
 
       setQuery(text)
-      setExpandedMovieId(null)
-      setDetailedMovie(null)
+      setExpandedItemId(null)
+      setDetailedItem(null)
 
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current)
@@ -109,7 +111,7 @@ const PickerContainer: FC = memo(() => {
       setIsSearching(true)
 
       searchTimeoutRef.current = setTimeout(() => {
-        const filtered = filterMovies(trimmedText)
+        const filtered = filterItems(trimmedText)
 
         if (filtered.length > 0) {
           hapticsService.light()
@@ -121,7 +123,7 @@ const PickerContainer: FC = memo(() => {
         setIsSearching(false)
       }, 300) // 300ms debounce
     },
-    [isInteractionsDisabled, filterMovies, triggerShake]
+    [isInteractionsDisabled, filterItems, triggerShake]
   )
 
   useEffect(() => {
@@ -136,49 +138,49 @@ const PickerContainer: FC = memo(() => {
     transform: [{ translateX: shakeAnimation.value }],
   }))
 
-  const handleLongPressMovie = useCallback(
-    (movie: BasicMovie) => {
+  const handleLongPressItem = useCallback(
+    (item: BasicTriviaItem) => {
       hapticsService.medium()
-      const newId = expandedMovieId === movie.id ? null : movie.id
-      setExpandedMovieId(newId)
+      const newId = expandedItemId === item.id ? null : item.id
+      setExpandedItemId(newId)
 
       if (newId) {
-        const fullMovie = allFullMovies.find((m) => m.id === newId)
-        setDetailedMovie(fullMovie || null)
+        const fullItem = fullItems.find((m) => m.id === newId)
+        setDetailedItem(fullItem || null)
       } else {
-        setDetailedMovie(null)
+        setDetailedItem(null)
       }
     },
-    [expandedMovieId, allFullMovies]
+    [expandedItemId, fullItems]
   )
 
-  const handleSelectMovie = useCallback(
-    (movie: BasicMovie) => {
-      setExpandedMovieId(null)
-      setDetailedMovie(null)
-      makeGuess(movie)
+  const handleSelectItem = useCallback(
+    (item: BasicTriviaItem) => {
+      setExpandedItemId(null)
+      setDetailedItem(null)
+      makeGuess(item)
       handleInputChange("")
     },
     [makeGuess, handleInputChange]
   )
 
   const renderItem = useCallback(
-    ({ item }: ListRenderItemInfo<BasicMovie>) => (
-      <PickerMovieItem
-        movie={item}
-        detailedMovie={detailedMovie}
+    ({ item }: ListRenderItemInfo<BasicTriviaItem>) => (
+      <PickerMovieItem // Prop types will be updated
+        item={item}
+        detailedItem={detailedItem}
         isDisabled={isInteractionsDisabled}
-        isExpanded={expandedMovieId === item.id}
-        onSelect={handleSelectMovie}
-        onLongPress={handleLongPressMovie}
+        isExpanded={expandedItemId === item.id}
+        onSelect={handleSelectItem}
+        onLongPress={handleLongPressItem}
       />
     ),
     [
       isInteractionsDisabled,
-      expandedMovieId,
-      detailedMovie,
-      handleSelectMovie,
-      handleLongPressMovie,
+      expandedItemId,
+      detailedItem,
+      handleSelectItem,
+      handleLongPressItem,
     ]
   )
 

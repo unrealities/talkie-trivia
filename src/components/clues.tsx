@@ -68,7 +68,7 @@ const CluesContainer = memo(() => {
   const {
     correctAnswer,
     guesses,
-    movieOverview,
+    itemDescription,
     isInteractionsDisabled,
     difficulty,
     loading,
@@ -76,7 +76,7 @@ const CluesContainer = memo(() => {
     useShallow((state) => ({
       correctAnswer: state.playerGame.correctAnswer,
       guesses: state.playerGame.guesses,
-      movieOverview: state.playerGame.movie?.overview,
+      itemDescription: state.playerGame.triviaItem?.description,
       isInteractionsDisabled: state.isInteractionsDisabled,
       difficulty: state.difficulty,
       loading: state.loading,
@@ -84,8 +84,8 @@ const CluesContainer = memo(() => {
   )
 
   const clues = useMemo(
-    () => splitSummary(movieOverview || ""),
-    [movieOverview]
+    () => splitSummary(itemDescription || ""),
+    [itemDescription]
   )
   const [revealedClues, setRevealedClues] = useState<string[]>([])
   const [typewriterText, setTypewriterText] = useState("")

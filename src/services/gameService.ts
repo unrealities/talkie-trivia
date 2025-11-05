@@ -17,172 +17,97 @@ import { gameHistoryEntryConverter } from "../utils/firestore/converters/gameHis
 import Player from "../models/player"
 import PlayerStats from "../models/playerStats"
 import { PlayerGame } from "../models/game"
-import { Movie } from "../models/movie"
-import {
-  defaultPlayerGame,
-  defaultPlayerStats,
-  generateDateId,
-} from "../models/default"
+import { TriviaItem } from "../models/trivia"
 import { FIRESTORE_COLLECTIONS } from "../config/constants"
 import { GameHistoryEntry } from "../models/gameHistory"
-import popularMoviesData from "../../data/popularMovies.json"
-import {
-  DifficultyLevel,
-  DIFFICULTY_MODES,
-  DEFAULT_DIFFICULTY,
-} from "../config/difficulty"
-
-/**
- * Selects the movie for today from a local data file.
- * The selection is deterministic based on the day of the year.
- */
-const _getMovieForToday = (): Movie => {
-  const allMovies = popularMoviesData as Movie[]
-
-  if (!allMovies || allMovies.length === 0) {
-    throw new Error(
-      "Local movie data (popularMovies.json) is missing or empty. Please run the data pipeline script."
-    )
-  }
-
-  const today = new Date()
-  const startOfYear = new Date(today.getFullYear(), 0, 0)
-  const diff = today.getTime() - startOfYear.getTime()
-  const oneDay = 1000 * 60 * 60 * 24
-  const dayOfYear = Math.floor(diff / oneDay)
-
-  const movieIndex = dayOfYear % allMovies.length
-  const selectedMovie = allMovies[movieIndex]
-
-  return selectedMovie
-}
-
-const _fetchOrCreatePlayer = async (
-  playerId: string,
-  playerName: string
-): Promise<Player> => {
-  const playerRef = doc(
-    db,
-    FIRESTORE_COLLECTIONS.PLAYERS,
-    playerId
-  ).withConverter(playerConverter)
-  const playerSnap = await getDoc(playerRef)
-  if (playerSnap.exists()) {
-    return playerSnap.data()
-  } else {
-    const newPlayer = new Player(playerId, playerName)
-    await setDoc(playerRef, newPlayer)
-    return newPlayer
-  }
-}
-
-const _fetchOrCreatePlayerGame = async (
-  playerId: string,
-  dateId: string,
-  today: Date,
-  movieForToday: Movie,
-  guessesMax: number
-): Promise<PlayerGame> => {
-  const playerGameRef = doc(
-    db,
-    FIRESTORE_COLLECTIONS.PLAYER_GAMES,
-    `${playerId}-${dateId}`
-  ).withConverter(playerGameConverter)
-  const gameSnap = await getDoc(playerGameRef)
-
-  if (gameSnap.exists()) {
-    const existingGame = gameSnap.data()
-    existingGame.guessesMax = guessesMax
-    return existingGame
-  } else {
-    const newPlayerGame: PlayerGame = {
-      ...defaultPlayerGame,
-      id: `${playerId}-${dateId}`,
-      playerID: playerId,
-      movie: movieForToday,
-      startDate: today,
-      endDate: today,
-      guessesMax,
-    }
-    await setDoc(playerGameRef, newPlayerGame)
-    return newPlayerGame
-  }
-}
-
-const _fetchOrCreatePlayerStats = async (
-  playerId: string
-): Promise<PlayerStats> => {
-  const statsRef = doc(
-    db,
-    FIRESTORE_COLLECTIONS.PLAYER_STATS,
-    playerId
-  ).withConverter(playerStatsConverter)
-  const statsSnap = await getDoc(statsRef)
-  if (statsSnap.exists()) {
-    return statsSnap.data()
-  } else {
-    const newPlayerStats = { ...defaultPlayerStats, id: playerId }
-    await setDoc(statsRef, newPlayerStats)
-    return newPlayerStats
-  }
-}
+import { defaultPlayerGame } from "../models/default"
+import { DEFAULT_DIFFICULTY } from "../config/difficulty"
 
 export const gameService = {
-  getInitialGameData: async (player: Player, difficulty: DifficultyLevel) => {
-    // Select the movie for today from local data
-    const movieForToday = _getMovieForToday()
-
-    // Use the imported local movie data instead of fetching from Firestore
-    const allMovies = popularMoviesData as Movie[]
-
-    if (allMovies.length === 0) {
-      throw new Error(
-        "No movies found in local data. Please populate Firestore first."
-      )
-    }
-
-    const today = new Date()
-    const dateId = generateDateId(today)
-
-    let difficultyMode = DIFFICULTY_MODES[difficulty]
-
-    if (!difficultyMode) {
-      console.error(
-        `Invalid difficulty key: ${difficulty}. Falling back to default: ${DEFAULT_DIFFICULTY}.`
-      )
-      difficultyMode = DIFFICULTY_MODES[DEFAULT_DIFFICULTY]
-    }
-
-    const guessesMax = difficultyMode.guessesMax
-
-    const [game, stats] = await Promise.all([
-      _fetchOrCreatePlayerGame(
-        player.id,
-        dateId,
-        today,
-        movieForToday,
-        guessesMax
-      ),
-      _fetchOrCreatePlayerStats(player.id),
-    ])
-
-    game.guessesMax = guessesMax
-
-    if (difficultyMode.hintStrategy === "ALL_REVEALED") {
-      game.hintsUsed = {
-        actor: true,
-        decade: true,
-        director: true,
-        genre: true,
-      }
+  /**
+   * Ensures a player document exists in Firestore. Called during the authentication flow.
+   */
+  ensurePlayerExists: async (
+    playerId: string,
+    playerName: string
+  ): Promise<Player> => {
+    const playerRef = doc(
+      db,
+      FIRESTORE_COLLECTIONS.PLAYERS,
+      playerId
+    ).withConverter(playerConverter)
+    const playerSnap = await getDoc(playerRef)
+    if (playerSnap.exists()) {
+      return playerSnap.data()
     } else {
-      game.hintsUsed = game.hintsUsed || {}
+      const newPlayer = new Player(playerId, playerName)
+      await setDoc(playerRef, newPlayer)
+      return newPlayer
     }
+  },
 
-    return {
-      initialPlayerGame: game,
-      initialPlayerStats: stats,
-      allMovies,
+  /**
+   * Fetches or creates the player's game state for a given day.
+   */
+  fetchOrCreatePlayerGame: async (
+    playerId: string,
+    dateId: string,
+    dailyItem: TriviaItem,
+    guessesMax: number
+  ): Promise<PlayerGame> => {
+    const playerGameRef = doc(
+      db,
+      FIRESTORE_COLLECTIONS.PLAYER_GAMES,
+      `${playerId}-${dateId}`
+    ).withConverter(playerGameConverter)
+    const gameSnap = await getDoc(playerGameRef)
+
+    if (gameSnap.exists()) {
+      const existingGame = gameSnap.data()
+      existingGame.guessesMax = guessesMax
+      return existingGame
+    } else {
+      const newPlayerGame: PlayerGame = {
+        ...defaultPlayerGame,
+        id: `${playerId}-${dateId}`,
+        playerID: playerId,
+        triviaItem: dailyItem,
+        startDate: new Date(),
+        endDate: new Date(),
+        guessesMax: guessesMax,
+        difficulty: DEFAULT_DIFFICULTY,
+        hintsUsed: {},
+      }
+      await setDoc(playerGameRef, newPlayerGame)
+      return newPlayerGame
+    }
+  },
+
+  /**
+   * Fetches or creates the player's overall statistics.
+   */
+  fetchOrCreatePlayerStats: async (playerId: string): Promise<PlayerStats> => {
+    const statsRef = doc(
+      db,
+      FIRESTORE_COLLECTIONS.PLAYER_STATS,
+      playerId
+    ).withConverter(playerStatsConverter)
+    const statsSnap = await getDoc(statsRef)
+    if (statsSnap.exists()) {
+      return statsSnap.data()
+    } else {
+      const newPlayerStats: PlayerStats = {
+        id: playerId,
+        currentStreak: 0,
+        games: 0,
+        maxStreak: 0,
+        wins: [0, 0, 0, 0, 0],
+        hintsAvailable: 3,
+        hintsUsedCount: 0,
+        allTimeScore: 0,
+      }
+      await setDoc(statsRef, newPlayerStats)
+      return newPlayerStats
     }
   },
 
@@ -224,48 +149,6 @@ export const gameService = {
     }
 
     await batch.commit()
-  },
-
-  /**
-   * Fetches a full movie object by its ID. Used for the history modal.
-   */
-  fetchMovieById: async (movieId: number): Promise<Movie | null> => {
-    const movieDocRef = doc(
-      db,
-      FIRESTORE_COLLECTIONS.MOVIES,
-      movieId.toString()
-    )
-    const movieSnap = await getDoc(movieDocRef)
-    if (movieSnap.exists()) {
-      return movieSnap.data() as Movie
-    }
-    return null
-  },
-
-  /**
-   * Fetches a specific past player game session. Used for the history modal.
-   */
-  fetchPlayerGameById: async (gameId: string): Promise<PlayerGame | null> => {
-    const gameDocRef = doc(
-      db,
-      FIRESTORE_COLLECTIONS.PLAYER_GAMES,
-      gameId
-    ).withConverter(playerGameConverter)
-    const gameSnap = await getDoc(gameDocRef)
-    if (gameSnap.exists()) {
-      return gameSnap.data()
-    }
-    return null
-  },
-
-  /**
-   * Ensures a player document exists in Firestore. Called during the authentication flow.
-   */
-  ensurePlayerExists: async (
-    playerId: string,
-    playerName: string
-  ): Promise<Player> => {
-    return _fetchOrCreatePlayer(playerId, playerName)
   },
 
   /**

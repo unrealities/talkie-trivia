@@ -11,105 +11,111 @@ import {
 } from "react-native"
 import { Image } from "expo-image"
 import { FontAwesome } from "@expo/vector-icons"
-import ActorsWrapper from "./actors"
-import { Director, Movie } from "../models/movie"
+import { TriviaItem } from "../models/trivia"
 import { analyticsService } from "../utils/analyticsService"
 import { useIMDbLink } from "../utils/hooks/useIMDbLink"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
 import { u } from "../styles/utils"
 import { Typography } from "./ui/typography"
+import Actors from "./actors"
 
 type ImageSource = { uri: string } | number
-const defaultMovieImage = require("../../assets/movie_default.png")
+const defaultItemImage = require("../../assets/movie_default.png")
 
-const MovieHeader = memo(
-  ({
-    title,
-    tagline,
-    onPress,
-  }: {
-    title: string
-    tagline: string
-    onPress: () => void
-  }) => {
+const ItemHeader = memo(
+  ({ title, onPress }: { title: string; onPress: () => void }) => {
     const styles = useStyles(themedStyles)
     return (
-      <>
-        <Pressable
-          onPress={onPress}
-          style={({ pressed }) => [
-            styles.headerPressable,
-            { opacity: pressed ? 0.7 : 1 },
-          ]}
-          accessible={true}
-          accessibilityLabel={`Open IMDb page for ${title}`}
-          role="link"
-        >
-          <View style={styles.headerContainer}>
-            <Typography variant="h1" style={styles.header}>
-              {title}
-            </Typography>
-            <FontAwesome
-              name="imdb"
-              size={styles.imdbIcon.fontSize}
-              color={styles.imdbIcon.color}
-              style={styles.imdbIcon}
-            />
-          </View>
-        </Pressable>
-        {tagline && (
-          <Typography variant="caption" style={styles.tagline}>
-            {tagline}
+      <Pressable
+        onPress={onPress}
+        style={({ pressed }) => [
+          styles.headerPressable,
+          { opacity: pressed ? 0.7 : 1 },
+        ]}
+        accessible={true}
+        accessibilityLabel={`Open external page for ${title}`}
+        role="link"
+      >
+        <View style={styles.headerContainer}>
+          <Typography variant="h1" style={styles.header}>
+            {title}
           </Typography>
-        )}
-      </>
+          <FontAwesome
+            name="imdb"
+            size={styles.imdbIcon.fontSize}
+            color={styles.imdbIcon.color}
+            style={styles.imdbIcon}
+          />
+        </View>
+      </Pressable>
     )
   }
 )
 
-const MoviePoster = memo(({ posterPath }: { posterPath: string }) => {
+const ItemPoster = memo(({ posterPath }: { posterPath: string }) => {
   const styles = useStyles(themedStyles)
   const imageSource: ImageSource = posterPath
     ? { uri: `https://image.tmdb.org/t/p/w500${posterPath}` }
-    : defaultMovieImage
+    : defaultItemImage
 
   return (
     <Image
       source={imageSource}
       style={styles.posterImage}
-      placeholder={defaultMovieImage}
+      placeholder={defaultItemImage}
       contentFit="cover"
     />
   )
 })
 
-const DirectorInfo = memo(({ director }: { director?: Director }) => {
+const HintsRenderer = memo(({ item }: { item: TriviaItem }) => {
+  const { openLink } = useIMDbLink()
   const styles = useStyles(themedStyles)
-  if (!director?.name) return null
+
+  const handleActorPress = useCallback(
+    (actor: any) => {
+      if (actor.imdb_id) {
+        analyticsService.trackActorLinkTapped(actor.name)
+        openLink(actor.imdb_id, "name")
+      }
+    },
+    [openLink]
+  )
+
+  const directorHint = item.hints.find((h) => h.type === "director")
+  const actorsHint = item.hints.find((h) => h.type === "actors")
 
   return (
-    <Typography variant="caption" style={styles.director}>
-      Directed by {director.name}
-    </Typography>
+    <>
+      {directorHint && (
+        <Typography variant="caption" style={styles.director}>
+          Directed by {directorHint.value}
+        </Typography>
+      )}
+      {actorsHint && Array.isArray(actorsHint.value) && (
+        <Actors actors={actorsHint.value} onActorPress={handleActorPress} />
+      )}
+      {/* Future hint types can be rendered here */}
+    </>
   )
 })
 
 interface FactsProps {
-  movie: Movie
+  item: TriviaItem
   isLoading?: boolean
   error?: string
   isScrollEnabled?: boolean
 }
 
 const Facts = memo(
-  ({ movie, isLoading = false, error, isScrollEnabled = true }: FactsProps) => {
+  ({ item, isLoading = false, error, isScrollEnabled = true }: FactsProps) => {
     const styles = useStyles(themedStyles)
     const { openLink } = useIMDbLink()
 
-    const handleMoviePress = useCallback(() => {
-      analyticsService.trackImdbLinkTapped(movie.title)
-      openLink(movie.imdb_id, "title")
-    }, [openLink, movie.imdb_id, movie.title])
+    const handleItemPress = useCallback(() => {
+      analyticsService.trackImdbLinkTapped(item.title)
+      openLink(item.metadata.imdb_id, "title")
+    }, [openLink, item.title, item.metadata.imdb_id])
 
     if (isLoading) {
       return (
@@ -131,20 +137,20 @@ const Facts = memo(
 
     return (
       <View style={styles.container}>
-        <MovieHeader
-          title={movie.title}
-          tagline={movie.tagline}
-          onPress={handleMoviePress}
-        />
+        <ItemHeader title={item.title} onPress={handleItemPress} />
+        {item.metadata.tagline && (
+          <Typography variant="caption" style={styles.tagline}>
+            {item.metadata.tagline}
+          </Typography>
+        )}
         <ScrollView
           scrollEnabled={isScrollEnabled}
           contentContainerStyle={styles.scrollContainer}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <MoviePoster posterPath={movie.poster_path} />
-          <DirectorInfo director={movie.director} />
-          <ActorsWrapper movie={movie} />
+          <ItemPoster posterPath={item.posterPath} />
+          <HintsRenderer item={item} />
         </ScrollView>
       </View>
     )

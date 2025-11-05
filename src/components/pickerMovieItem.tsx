@@ -11,7 +11,7 @@ import {
   ImageStyle,
 } from "react-native"
 import { Image } from "expo-image"
-import { BasicMovie, Movie } from "../models/movie"
+import { BasicTriviaItem, TriviaItem } from "../models/trivia"
 import { API_CONFIG } from "../config/constants"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
 
@@ -22,19 +22,19 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true)
 }
 
-interface MovieItemProps {
-  movie: BasicMovie
-  detailedMovie: Movie | null
+interface ItemProps {
+  item: BasicTriviaItem
+  detailedItem: TriviaItem | null
   isDisabled: boolean
   isExpanded: boolean
-  onSelect: (movie: BasicMovie) => void
-  onLongPress: (movie: BasicMovie) => void
+  onSelect: (item: BasicTriviaItem) => void
+  onLongPress: (item: BasicTriviaItem) => void
 }
 
 const defaultPoster = require("../../assets/movie_default.png")
 
-const PickerMovieItem = memo<MovieItemProps>(
-  ({ movie, detailedMovie, isDisabled, isExpanded, onSelect, onLongPress }) => {
+const PickerMovieItem = memo<ItemProps>(
+  ({ item, detailedItem, isDisabled, isExpanded, onSelect, onLongPress }) => {
     const styles = useStyles(themedStyles)
 
     useEffect(() => {
@@ -43,17 +43,16 @@ const PickerMovieItem = memo<MovieItemProps>(
       }
     }, [isExpanded])
 
-    const releaseYear = movie.release_date
-      ? ` (${movie.release_date.toString().substring(0, 4)})`
+    const releaseYear = item.releaseDate
+      ? ` (${item.releaseDate.toString().substring(0, 4)})`
       : ""
-    const titleWithYear = `${movie.title}${releaseYear}`
+    const titleWithYear = `${item.title}${releaseYear}`
 
-    const imageSource = movie.poster_path
-      ? { uri: `${API_CONFIG.TMDB_IMAGE_BASE_URL_W92}${movie.poster_path}` }
+    const imageSource = item.posterPath
+      ? { uri: `${API_CONFIG.TMDB_IMAGE_BASE_URL_W92}${item.posterPath}` }
       : defaultPoster
-
-    const fullImageSource = movie.poster_path
-      ? { uri: `${API_CONFIG.TMDB_IMAGE_BASE_URL_W500}${movie.poster_path}` }
+    const fullImageSource = item.posterPath
+      ? { uri: `${API_CONFIG.TMDB_IMAGE_BASE_URL_W500}${item.posterPath}` }
       : defaultPoster
 
     return (
@@ -61,9 +60,9 @@ const PickerMovieItem = memo<MovieItemProps>(
         <Pressable
           accessible
           accessibilityRole="button"
-          aria-label={`Select and guess movie: ${movie.title}. Long press to preview.`}
-          onPress={() => onSelect(movie)}
-          onLongPress={() => onLongPress(movie)}
+          aria-label={`Select and guess movie: ${item.title}. Long press to preview.`}
+          onPress={() => onSelect(item)}
+          onLongPress={() => onLongPress(item)}
           delayLongPress={200}
           style={({ pressed }) => [
             styles.resultItem,
@@ -88,7 +87,7 @@ const PickerMovieItem = memo<MovieItemProps>(
             </Text>
           </View>
 
-          {isExpanded && detailedMovie && (
+          {isExpanded && detailedItem && (
             <View style={styles.expandedPreview}>
               <Image
                 source={fullImageSource}
@@ -98,11 +97,11 @@ const PickerMovieItem = memo<MovieItemProps>(
               />
               <View style={styles.expandedInfo}>
                 <Text style={styles.expandedTitle} numberOfLines={3}>
-                  {detailedMovie.title}
+                  {detailedItem.title}
                 </Text>
                 <Text style={styles.expandedYear}>
                   Release Year:{" "}
-                  {new Date(detailedMovie.release_date).getFullYear()}
+                  {new Date(detailedItem.releaseDate).getFullYear()}
                 </Text>
                 <Text style={styles.expandedHint}>
                   Tap this item to select.

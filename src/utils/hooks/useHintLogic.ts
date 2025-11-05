@@ -1,6 +1,5 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from "react"
 import { LayoutAnimation, Platform, UIManager } from "react-native"
-import { HintType } from "../../models/game"
 import { useGameStore } from "../../state/gameStore"
 import { hapticsService } from "../hapticsService"
 import { analyticsService } from "../analyticsService"
@@ -37,16 +36,17 @@ export function useHintLogic() {
   const [displayedHintText, setDisplayedHintText] = useState<string | null>(
     null
   )
-  const [highlightedHint, setHighlightedHint] = useState<HintType | null>(null)
-  const prevHintsUsedRef = useRef<Partial<Record<HintType, boolean>>>()
+  const [highlightedHint, setHighlightedHint] = useState<string | null>(null)
+  const prevHintsUsedRef = useRef<Partial<Record<string, boolean>>>()
 
   const hintsAvailable = playerStats?.hintsAvailable ?? 0
-  const hintTypes: HintType[] = ["decade", "director", "actor", "genre"]
+  const hintTypes: string[] =
+    playerGame.triviaItem?.hints.map((h) => h.type) || []
 
   const currentHintStrategy = DIFFICULTY_MODES[difficulty].hintStrategy
 
   const hintStatuses = useMemo(() => {
-    const statuses: Record<HintType, HintStatus> = {} as any
+    const statuses: Record<string, HintStatus> = {}
     const usedHints = playerGame.hintsUsed || {}
 
     for (const type of hintTypes) {
@@ -70,6 +70,7 @@ export function useHintLogic() {
     isInteractionsDisabled,
     hintsAvailable,
     currentHintStrategy,
+    hintTypes,
   ])
 
   useEffect(() => {
@@ -81,7 +82,7 @@ export function useHintLogic() {
       return
     }
 
-    const newHint = (Object.keys(currentHints) as HintType[]).find(
+    const newHint = (Object.keys(currentHints) as string[]).find(
       (key) => currentHints[key] && !previousHints[key]
     )
 
@@ -98,29 +99,28 @@ export function useHintLogic() {
   }, [playerGame.hintsUsed, currentHintStrategy])
 
   const getHintText = useCallback(
-    (hintType: HintType): string => {
-      if (!playerGame?.movie) return "Hint unavailable"
-      const { movie } = playerGame
-      switch (hintType) {
-        case "decade":
-          return movie.release_date
-            ? `${movie.release_date.substring(0, 3)}0s`
-            : "Decade unavailable"
-        case "director":
-          return movie.director?.name || "Director unavailable"
-        case "actor":
-          return movie.actors?.[0]?.name || "Actor unavailable"
-        case "genre":
-          return movie.genres?.[0]?.name || "Genre unavailable"
-        default:
-          return "Invalid hint type"
+    (hintType: string): string => {
+      if (!playerGame?.triviaItem) return "Hint unavailable"
+
+      const hint = playerGame.triviaItem.hints.find((h) => h.type === hintType)
+      if (!hint) return "Hint unavailable"
+
+      // Handle special formatting for different hint types
+      if (
+        hint.type === "actors" &&
+        Array.isArray(hint.value) &&
+        hint.value.length > 0
+      ) {
+        return hint.value[0]?.name || "Actor unavailable"
       }
+
+      return hint.value?.toString() || `${hint.label} unavailable`
     },
-    [playerGame.movie]
+    [playerGame.triviaItem]
   )
 
   const handleHintSelection = useCallback(
-    (hintType: HintType) => {
+    (hintType: string) => {
       if (currentHintStrategy !== "USER_SPEND") return
 
       hapticsService.medium()
@@ -208,6 +208,8 @@ export function useHintLogic() {
     currentHintStrategy !== "USER_SPEND" ||
     hintsAvailable <= 0
 
+  const allHints = playerGame.triviaItem?.hints || []
+
   return {
     showHintOptions,
     displayedHintText,
@@ -216,6 +218,7 @@ export function useHintLogic() {
     areHintButtonsDisabled,
     hintStatuses,
     highlightedHint,
+    allHints,
     getHintText,
     handleToggleHintOptions,
     handleHintSelection,

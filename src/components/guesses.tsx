@@ -1,7 +1,7 @@
 import React, { memo, useMemo, useCallback } from "react"
 import { View, ViewStyle } from "react-native"
 import { FlashList, ListRenderItemInfo } from "@shopify/flash-list"
-import { BasicMovie } from "../models/movie"
+import { BasicTriviaItem } from "../models/trivia" // Changed
 import { useGameStore } from "../state/gameStore"
 import { HintInfo, PlayerGame, Guess } from "../models/game"
 import { useShallow } from "zustand/react/shallow"
@@ -12,7 +12,7 @@ import { useStyles, Theme } from "../utils/hooks/useStyles"
 import { spacing, responsive } from "../styles/global"
 
 type GuessResult = {
-  movieId: number
+  itemId: number | string
   correct: boolean
   feedback?: string | null
   hintInfo?: HintInfo[] | null
@@ -21,7 +21,7 @@ type GuessResult = {
 interface GuessesContainerProps {
   lastGuessResult: GuessResult
   gameForDisplay?: PlayerGame
-  allMoviesForDisplay?: readonly BasicMovie[]
+  allMoviesForDisplay?: readonly BasicTriviaItem[]
 }
 
 type ListItem =
@@ -29,7 +29,7 @@ type ListItem =
   | { type: "empty"; index: number }
   | { type: "skeleton"; index: number }
 
-const ESTIMATED_ROW_HEIGHT = responsive.scale(44) + spacing.small // minHeight + marginBottom
+const ESTIMATED_ROW_HEIGHT = responsive.scale(44) + spacing.small
 
 const GuessesContainer = memo(
   ({
@@ -37,32 +37,33 @@ const GuessesContainer = memo(
     gameForDisplay,
     allMoviesForDisplay,
   }: GuessesContainerProps) => {
-    const { loading, playerGame, basicMovies } = useGameStore(
+    const { loading, playerGame, basicItems } = useGameStore(
       useShallow((state) => ({
         loading: state.loading,
         playerGame: state.playerGame,
-        basicMovies: state.basicMovies,
+        basicItems: state.basicItems,
       }))
     )
     const styles = useStyles(themedStyles)
 
     const isDataLoading = gameForDisplay ? false : loading
     const currentGame = gameForDisplay || playerGame
-    const movies = allMoviesForDisplay || basicMovies
+    const items = allMoviesForDisplay || basicItems
 
-    const { guesses, guessesMax, movie } = currentGame
-    const correctMovieId = movie.id
+    const { guesses, guessesMax, triviaItem } = currentGame
+    const correctItemId = triviaItem?.id ?? 0 // Fallback to 0 if triviaItem is not yet loaded
 
     const listData: ListItem[] = useMemo(() => {
+      const max = guessesMax || 5 // Fallback for initial render
       if (isDataLoading) {
-        return Array.from({ length: guessesMax }, (_, index) => ({
+        return Array.from({ length: max }, (_, index) => ({
           type: "skeleton",
           index,
         }))
       }
 
       const items: ListItem[] = []
-      for (let i = 0; i < guessesMax; i++) {
+      for (let i = 0; i < max; i++) {
         if (guesses[i]) {
           items.push({ type: "guess", guess: guesses[i], index: i })
         } else {
@@ -83,15 +84,15 @@ const GuessesContainer = memo(
             const isLastGuess =
               !!lastGuessResult &&
               item.index === guesses.length - 1 &&
-              lastGuessResult.movieId === item.guess.movieId
+              lastGuessResult.itemId === item.guess.itemId
             return (
               <GuessRow
                 index={item.index}
                 guess={item.guess}
-                movies={movies}
+                basicItems={items}
                 isLastGuess={isLastGuess}
                 lastGuessResult={lastGuessResult}
-                correctMovieId={correctMovieId}
+                correctItemId={correctItemId}
               />
             )
           }
@@ -99,7 +100,7 @@ const GuessesContainer = memo(
             return null
         }
       },
-      [lastGuessResult, guesses.length, movies, correctMovieId]
+      [lastGuessResult, guesses.length, items, correctItemId]
     )
 
     const keyExtractor = useCallback(
@@ -107,7 +108,7 @@ const GuessesContainer = memo(
       []
     )
 
-    const listContainerHeight = guessesMax * ESTIMATED_ROW_HEIGHT
+    const listContainerHeight = (guessesMax || 5) * ESTIMATED_ROW_HEIGHT
 
     return (
       <View style={[styles.listWrapper, { height: listContainerHeight }]}>
