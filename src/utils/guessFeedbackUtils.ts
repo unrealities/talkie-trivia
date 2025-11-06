@@ -1,19 +1,15 @@
-import { TriviaItem, Hint } from "../models/trivia";
+import { TriviaItem, Hint } from "../models/trivia"
 
 interface ImplicitHintResult {
-  feedback: string | null;
-  revealedHints: Partial<Record<string, boolean>>;
-  hintInfo: Hint[] | null;
+  feedback: string | null
+  revealedHints: Partial<Record<string, boolean>>
+  hintInfo: Hint[] | null
 }
 
 const getHintValue = (type: string, item: TriviaItem): any => {
-  return item.hints.find(h => h.type === type)?.value || null;
+  return item.hints.find((h) => h.type === type)?.value
 }
 
-/**
- * Compares a guessed item with the correct item to generate implicit hints.
- * It finds all matching attributes for display and marks new matches as revealed.
- */
 export function generateImplicitHint(
   guessedItem: TriviaItem,
   correctItem: TriviaItem,
@@ -23,72 +19,74 @@ export function generateImplicitHint(
     feedback: null,
     revealedHints: {},
     hintInfo: [],
-  };
-
-  const hintsFound: Hint[] = [];
-  let newHintRevealed = false;
-  let firstNewMatchMessage: string | null = null;
+  }
 
   if (!guessedItem || !correctItem) {
     return {
-      feedback: "An unexpected error occurred with trivia data.",
+      feedback: "An unexpected error occurred with the trivia data.",
       revealedHints: {},
       hintInfo: null,
-    };
+    }
   }
-  
-  // Generic hint checking
-  for (const correctHint of correctItem.hints) {
-    const guessedHintValue = getHintValue(correctHint.type, guessedItem);
-    let isMatch = false;
 
-    // Different comparison logic based on hint type
-    switch (correctHint.type) {
-      case 'actors':
-        const correctActorIds = new Set((correctHint.value || []).slice(0, 5).map((a: any) => a.id));
-        const guessedActorIds = new Set((guessedHintValue || []).slice(0, 5).map((a: any) => a.id));
-        for (const id of correctActorIds) {
-          if (guessedActorIds.has(id)) {
-            isMatch = true;
-            break;
+  const hintsFound: Hint[] = []
+  let newHintRevealed = false
+  let firstNewMatchMessage: string | null = null
+
+  for (const correctHint of correctItem.hints) {
+    const guessedHintValue = getHintValue(correctHint.type, guessedItem)
+    if (guessedHintValue === null || guessedHintValue === undefined) continue
+
+    let isMatch = false
+
+    if (Array.isArray(correctHint.value)) {
+      const correctIds = new Set(
+        (correctHint.value || []).map((item: any) => item.id)
+      )
+      const guessedIds = new Set(
+        (guessedHintValue || []).map((item: any) => item.id)
+      )
+      if (correctIds.size > 0 && guessedIds.size > 0) {
+        for (const id of correctIds) {
+          if (guessedIds.has(id)) {
+            isMatch = true
+            break
           }
         }
-        break;
-      case 'director':
-      case 'developer':
-        isMatch = (guessedHintValue as any)?.id === (correctHint.value as any)?.id && !!(correctHint.value as any)?.id;
-        break;
-      case 'genre':
-      case 'decade':
-        isMatch = guessedHintValue === correctHint.value && !!correctHint.value;
-        break;
-      default:
-        isMatch = guessedHintValue === correctHint.value;
-        break;
+      }
+    } else if (typeof correctHint.value === "object" && correctHint.value?.id) {
+      isMatch = guessedHintValue?.id === correctHint.value.id
+    } else {
+      isMatch = guessedHintValue === correctHint.value
     }
 
     if (isMatch) {
-      hintsFound.push({ type: correctHint.type, label: correctHint.label, value: getHintValue(correctHint.type, correctItem) });
-      
+      const fullCorrectHint = correctItem.hints.find(
+        (h) => h.type === correctHint.type
+      )
+      if (fullCorrectHint) {
+        hintsFound.push(fullCorrectHint)
+      }
+
       if (!usedHints[correctHint.type]) {
-        result.revealedHints[correctHint.type] = true;
-        newHintRevealed = true;
+        result.revealedHints[correctHint.type] = true
+        newHintRevealed = true
         if (!firstNewMatchMessage) {
-          firstNewMatchMessage = `You're on the right track with the ${correctHint.label}! (Hint Revealed)`;
+          firstNewMatchMessage = `You're on the right track with the ${correctHint.label}! (Hint Revealed)`
         }
       }
     }
   }
 
-  result.hintInfo = hintsFound;
+  result.hintInfo = hintsFound.length > 0 ? hintsFound : null
 
   if (newHintRevealed) {
-    result.feedback = firstNewMatchMessage;
+    result.feedback = firstNewMatchMessage
   } else if (hintsFound.length > 0) {
-    result.feedback = "You're getting warmer! Try another movie.";
+    result.feedback = "You're getting warmer! Keep guessing."
   } else {
-    result.feedback = "Not quite! Try again.";
+    result.feedback = "Not quite! Try again."
   }
 
-  return result;
+  return result
 }

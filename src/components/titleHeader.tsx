@@ -9,7 +9,7 @@ const TitleHeader = memo(() => {
   return (
     <View style={styles.container}>
       <Typography variant="h2" style={styles.header}>
-        Match the plot to the movie!
+        Find the title!
       </Typography>
     </View>
   )

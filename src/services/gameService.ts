@@ -24,9 +24,6 @@ import { defaultPlayerGame } from "../models/default"
 import { DEFAULT_DIFFICULTY } from "../config/difficulty"
 
 export const gameService = {
-  /**
-   * Ensures a player document exists in Firestore. Called during the authentication flow.
-   */
   ensurePlayerExists: async (
     playerId: string,
     playerName: string
@@ -46,9 +43,6 @@ export const gameService = {
     }
   },
 
-  /**
-   * Fetches or creates the player's game state for a given day.
-   */
   fetchOrCreatePlayerGame: async (
     playerId: string,
     dateId: string,
@@ -83,9 +77,18 @@ export const gameService = {
     }
   },
 
-  /**
-   * Fetches or creates the player's overall statistics.
-   */
+  fetchPlayerGameById: async (
+    playerGameId: string
+  ): Promise<PlayerGame | null> => {
+    const playerGameRef = doc(
+      db,
+      FIRESTORE_COLLECTIONS.PLAYER_GAMES,
+      playerGameId
+    ).withConverter(playerGameConverter)
+    const gameSnap = await getDoc(playerGameRef)
+    return gameSnap.exists() ? gameSnap.data() : null
+  },
+
   fetchOrCreatePlayerStats: async (playerId: string): Promise<PlayerStats> => {
     const statsRef = doc(
       db,
@@ -111,9 +114,6 @@ export const gameService = {
     }
   },
 
-  /**
-   * Saves the player's game progress, stats, and optionally a history entry in a single transaction.
-   */
   savePlayerProgress: async (
     playerGame: PlayerGame,
     playerStats: PlayerStats,
@@ -151,9 +151,6 @@ export const gameService = {
     await batch.commit()
   },
 
-  /**
-   * Fetches the game history for a given player.
-   */
   fetchGameHistory: async (playerId: string): Promise<GameHistoryEntry[]> => {
     const historyRef = collection(
       db,

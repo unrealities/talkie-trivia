@@ -6,8 +6,8 @@ export const gameHistoryEntryConverter = {
   toFirestore: (entry: GameHistoryEntry) => {
     return {
       dateId: entry.dateId,
-      movieId: entry.movieId,
-      movieTitle: entry.movieTitle,
+      itemId: entry.itemId,
+      itemTitle: entry.itemTitle,
       posterPath: entry.posterPath,
       wasCorrect: entry.wasCorrect,
       gaveUp: entry.gaveUp,
@@ -15,6 +15,7 @@ export const gameHistoryEntryConverter = {
       guessesMax: entry.guessesMax,
       difficulty: entry.difficulty,
       score: entry.score,
+      gameMode: entry.gameMode || "movies",
       createdAt: Timestamp.now(),
     }
   },
@@ -22,8 +23,8 @@ export const gameHistoryEntryConverter = {
     const data = snapshot.data(options)
     return {
       dateId: data.dateId,
-      movieId: data.movieId,
-      movieTitle: data.movieTitle,
+      itemId: data.itemId || data.movieId,
+      itemTitle: data.itemTitle || data.movieTitle,
       posterPath: data.posterPath,
       wasCorrect: data.wasCorrect,
       gaveUp: data.gaveUp,
@@ -31,6 +32,7 @@ export const gameHistoryEntryConverter = {
       guessesMax: data.guessesMax,
       difficulty: data.difficulty || DEFAULT_DIFFICULTY,
       score: data.score || 0,
+      gameMode: data.gameMode || "movies",
     }
   },
 }

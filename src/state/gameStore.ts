@@ -83,7 +83,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   error: null,
   isInteractionsDisabled: true,
   gameStatus: "playing",
-  gameMode: "movies", // Default game mode
+  gameMode: "movies",
   difficulty: DEFAULT_DIFFICULTY,
   tutorialState: {
     showGuessInputTip: false,
@@ -120,9 +120,6 @@ export const useGameStore = create<GameState>((set, get) => ({
       let difficulty =
         (storedDifficultyResult as DifficultyLevel) || DEFAULT_DIFFICULTY
       if (!DIFFICULTY_MODES[difficulty]) {
-        console.warn(
-          `Invalid difficulty '${difficulty}'. Defaulting to ${DEFAULT_DIFFICULTY}.`
-        )
         difficulty = DEFAULT_DIFFICULTY
       }
 
@@ -183,9 +180,8 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   setGameMode: async (mode: GameMode) => {
     const { gameMode, playerGame } = get()
-    if (mode === gameMode) return // No change
+    if (mode === gameMode) return
 
-    // Prevent changing mode mid-game
     if (
       playerGame.guesses.length > 0 &&
       !playerGame.correctAnswer &&
@@ -197,8 +193,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     }
 
     set({ gameMode: mode })
-    // Re-initialize the game with the new mode
-    const player = { id: get().playerGame.playerID, name: get().playerStats.id } // Reconstruct player object
+    const player = { id: get().playerGame.playerID, name: get().playerStats.id }
     await get().initializeGame(player)
   },
 
@@ -265,7 +260,6 @@ export const useGameStore = create<GameState>((set, get) => ({
       fullGuessedItem &&
       hintStrategy === "IMPLICIT_FEEDBACK"
     ) {
-      // @ts-ignore - This util will be generalized in the next step
       hintResult = generateImplicitHint(
         fullGuessedItem,
         correctItem,
@@ -287,10 +281,11 @@ export const useGameStore = create<GameState>((set, get) => ({
     set(
       produce((state: GameState) => {
         if (canMakeGuess) {
-          state.playerGame.guesses.push({
+          const newGuess: Guess = {
             itemId: selectedItem.id,
             hintInfo: hintResult.hintInfo,
-          })
+          }
+          state.playerGame.guesses.push(newGuess)
           state.playerGame.correctAnswer = isCorrectAnswer
 
           if (Object.keys(hintResult.revealedHints).length > 0) {
@@ -376,7 +371,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   _processGameOver: async () => {
-    const { playerGame, playerStats } = get()
+    const { playerGame, playerStats, gameMode } = get()
     const isGameOver =
       playerGame.correctAnswer ||
       playerGame.gaveUp ||
@@ -408,8 +403,8 @@ export const useGameStore = create<GameState>((set, get) => ({
 
     const historyEntry: GameHistoryEntry = {
       dateId: generateDateId(playerGame.startDate),
-      movieId: playerGame.triviaItem.id as number,
-      movieTitle: playerGame.triviaItem.title,
+      itemId: playerGame.triviaItem.id,
+      itemTitle: playerGame.triviaItem.title,
       posterPath: playerGame.triviaItem.posterPath,
       wasCorrect: playerGame.correctAnswer,
       gaveUp: playerGame.gaveUp,
@@ -417,6 +412,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       guessesMax: playerGame.guessesMax,
       difficulty: playerGame.difficulty,
       score: calculatedScore,
+      gameMode: gameMode,
     }
 
     set(

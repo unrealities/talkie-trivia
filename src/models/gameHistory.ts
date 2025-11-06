@@ -1,9 +1,10 @@
 import { DifficultyLevel } from "../config/difficulty"
+import { GameMode } from "./trivia"
 
 export interface GameHistoryEntry {
   dateId: string // YYYY-MM-DD
-  movieId: number
-  movieTitle: string
+  itemId: number | string
+  itemTitle: string
   posterPath: string
   wasCorrect: boolean
   gaveUp: boolean
@@ -11,4 +12,5 @@ export interface GameHistoryEntry {
   guessesMax: number
   difficulty: DifficultyLevel
   score: number
+  gameMode: GameMode
 }

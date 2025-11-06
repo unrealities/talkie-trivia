@@ -7,15 +7,15 @@ import {
   TextStyle,
 } from "react-native"
 import { GameHistoryEntry } from "../models/gameHistory"
-import { Movie } from "../models/movie"
+import { TriviaItem, BasicTriviaItem } from "../models/trivia"
 import { PlayerGame } from "../models/game"
 import { useAuth } from "../contexts/authContext"
 import { gameService } from "../services/gameService"
-import { useGameStore } from "../state/gameStore"
+import { getGameDataService } from "../services/gameServiceFactory"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
 import { Typography } from "./ui/typography"
 
-const MovieModal = lazy(() => import("./modal"))
+const DetailModal = lazy(() => import("./detailModal"))
 const Facts = lazy(() => import("./facts"))
 const GuessesContainer = lazy(() => import("./guesses"))
 
@@ -29,17 +29,19 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
   onClose,
 }) => {
   const { player } = useAuth()
-  const basicMovies = useGameStore((state) => state.basicMovies)
   const styles = useStyles(themedStyles)
 
-  const [movie, setMovie] = useState<Movie | null>(null)
+  const [item, setItem] = useState<TriviaItem | null>(null)
   const [playerGame, setPlayerGame] = useState<PlayerGame | null>(null)
+  const [allBasicItems, setAllBasicItems] = useState<
+    readonly BasicTriviaItem[]
+  >([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!historyItem || !player) {
-      setMovie(null)
+      setItem(null)
       setPlayerGame(null)
       return
     }
@@ -48,17 +50,22 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
       setIsLoading(true)
       setError(null)
       try {
+        const dataService = getGameDataService(historyItem.gameMode)
         const playerGameId = `${player.id}-${historyItem.dateId}`
-        const [fetchedMovie, fetchedPlayerGame] = await Promise.all([
-          gameService.fetchMovieById(historyItem.movieId),
-          gameService.fetchPlayerGameById(playerGameId),
-        ])
 
-        if (fetchedMovie && fetchedPlayerGame) {
-          setMovie(fetchedMovie)
+        const [fetchedItem, fetchedPlayerGame, { basicItems }] =
+          await Promise.all([
+            dataService.getItemById(historyItem.itemId),
+            gameService.fetchPlayerGameById(playerGameId),
+            dataService.getDailyTriviaItemAndLists(),
+          ])
+
+        if (fetchedItem && fetchedPlayerGame) {
+          setItem(fetchedItem)
           setPlayerGame(fetchedPlayerGame)
+          setAllBasicItems(basicItems)
         } else {
-          throw new Error("Could not find movie or game history details.")
+          throw new Error("Could not find item or game history details.")
         }
       } catch (e: any) {
         console.error("Failed to fetch history details:", e)
@@ -89,10 +96,10 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
         </View>
       )
     }
-    if (movie) {
+    if (item) {
       return (
         <ScrollView showsVerticalScrollIndicator={false}>
-          <Facts movie={movie} isScrollEnabled={false} />
+          <Facts item={item} isScrollEnabled={false} />
           {playerGame && (
             <View>
               <Typography variant="h2" style={styles.guessesTitle}>
@@ -101,7 +108,7 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
               <Suspense fallback={<ActivityIndicator />}>
                 <GuessesContainer
                   gameForDisplay={playerGame}
-                  allMoviesForDisplay={basicMovies}
+                  allMoviesForDisplay={allBasicItems}
                   lastGuessResult={null}
                 />
               </Suspense>
@@ -115,7 +122,7 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
 
   return (
     <Suspense fallback={null}>
-      <MovieModal show={!!historyItem} toggleModal={onClose}>
+      <DetailModal show={!!historyItem} toggleModal={onClose}>
         <Suspense
           fallback={
             <View style={styles.loadingContainer}>
@@ -128,7 +135,7 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
         >
           {renderModalContent()}
         </Suspense>
-      </MovieModal>
+      </DetailModal>
     </Suspense>
   )
 }

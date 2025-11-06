@@ -1,12 +1,5 @@
-import React, { memo, useEffect } from "react"
-import {
-  Modal,
-  Pressable,
-  View,
-  Share,
-  Alert,
-  ViewStyle,
-} from "react-native"
+import React, { memo, useEffect, ReactNode } from "react"
+import { Modal, Pressable, View, Share, Alert, ViewStyle } from "react-native"
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -20,14 +13,14 @@ import { hapticsService } from "../utils/hapticsService"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
 import { Button } from "./ui/button"
 
-interface MovieModalProps {
+interface DetailModalProps {
   playerGame?: PlayerGame | null
   show: boolean
   toggleModal: (show: boolean) => void
-  children: React.ReactNode
+  children: ReactNode
 }
 
-const MovieModal: React.FC<MovieModalProps> = memo(
+const DetailModal: React.FC<DetailModalProps> = memo(
   ({ playerGame, show, toggleModal, children }) => {
     const styles = useStyles(themedStyles)
     const animatedValue = useSharedValue(0)
@@ -144,7 +137,7 @@ const themedStyles = (theme: Theme): ModalStyles => ({
   },
   modalView: {
     width: "90%",
-    maxHeight: "80%", // Increased for better content visibility
+    maxHeight: "80%",
     maxWidth: theme.responsive.scale(500),
     alignSelf: "center",
     backgroundColor: theme.colors.background,
@@ -164,4 +157,4 @@ const themedStyles = (theme: Theme): ModalStyles => ({
   },
 })
 
-export default MovieModal
+export default DetailModal

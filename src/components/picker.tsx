@@ -18,7 +18,7 @@ import { search } from "fast-fuzzy"
 import { BasicTriviaItem, TriviaItem } from "../models/trivia"
 import { PickerUI } from "./pickerUI"
 import PickerSkeleton from "./pickerSkeleton"
-import PickerMovieItem from "./pickerMovieItem"
+import PickerItem from "./pickerItem"
 import { hapticsService } from "../utils/hapticsService"
 import { useGameStore } from "../state/gameStore"
 import TutorialTooltip from "./tutorialTooltip"
@@ -35,8 +35,8 @@ if (
 const PickerContainer: FC = memo(() => {
   const {
     isInteractionsDisabled,
-    basicItems, // Renamed from basicMovies
-    fullItems, // Renamed from allFullMovies
+    basicItems,
+    fullItems,
     makeGuess,
     loading,
     tutorialState,
@@ -121,7 +121,7 @@ const PickerContainer: FC = memo(() => {
 
         setResults(filtered)
         setIsSearching(false)
-      }, 300) // 300ms debounce
+      }, 300)
     },
     [isInteractionsDisabled, filterItems, triggerShake]
   )
@@ -166,7 +166,7 @@ const PickerContainer: FC = memo(() => {
 
   const renderItem = useCallback(
     ({ item }: ListRenderItemInfo<BasicTriviaItem>) => (
-      <PickerMovieItem // Prop types will be updated
+      <PickerItem
         item={item}
         detailedItem={detailedItem}
         isDisabled={isInteractionsDisabled}
@@ -205,7 +205,7 @@ const PickerContainer: FC = memo(() => {
       />
       <TutorialTooltip
         isVisible={tutorialState.showGuessInputTip}
-        text="Type here to search for the movie title you think it is."
+        text="Type here to search for the title you think it is."
         onDismiss={dismissGuessInputTip}
         style={{ top: -75 }}
       />

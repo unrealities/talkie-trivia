@@ -1,6 +1,5 @@
 import React, { useCallback, memo } from "react"
 import {
-  Text,
   Pressable,
   View,
   ActivityIndicator,
@@ -11,19 +10,28 @@ import {
 } from "react-native"
 import { Image } from "expo-image"
 import { FontAwesome } from "@expo/vector-icons"
-import { TriviaItem } from "../models/trivia"
+import { TriviaItem, Hint } from "../models/trivia"
 import { analyticsService } from "../utils/analyticsService"
-import { useIMDbLink } from "../utils/hooks/useIMDbLink"
+import { useExternalLink } from "../utils/hooks/useExternalLink"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
 import { u } from "../styles/utils"
 import { Typography } from "./ui/typography"
 import Actors from "./actors"
+import { API_CONFIG } from "../config/constants"
 
 type ImageSource = { uri: string } | number
 const defaultItemImage = require("../../assets/movie_default.png")
 
 const ItemHeader = memo(
-  ({ title, onPress }: { title: string; onPress: () => void }) => {
+  ({
+    title,
+    onPress,
+    isLinkable,
+  }: {
+    title: string
+    onPress: () => void
+    isLinkable: boolean
+  }) => {
     const styles = useStyles(themedStyles)
     return (
       <Pressable
@@ -32,20 +40,26 @@ const ItemHeader = memo(
           styles.headerPressable,
           { opacity: pressed ? 0.7 : 1 },
         ]}
-        accessible={true}
+        disabled={!isLinkable}
+        accessible={isLinkable}
         accessibilityLabel={`Open external page for ${title}`}
         role="link"
       >
         <View style={styles.headerContainer}>
-          <Typography variant="h1" style={styles.header}>
+          <Typography
+            variant="h1"
+            style={[styles.header, isLinkable && styles.linkText]}
+          >
             {title}
           </Typography>
-          <FontAwesome
-            name="imdb"
-            size={styles.imdbIcon.fontSize}
-            color={styles.imdbIcon.color}
-            style={styles.imdbIcon}
-          />
+          {isLinkable && (
+            <FontAwesome
+              name="external-link-square"
+              size={styles.imdbIcon.fontSize}
+              color={styles.imdbIcon.color}
+              style={styles.imdbIcon}
+            />
+          )}
         </View>
       </Pressable>
     )
@@ -69,35 +83,44 @@ const ItemPoster = memo(({ posterPath }: { posterPath: string }) => {
 })
 
 const HintsRenderer = memo(({ item }: { item: TriviaItem }) => {
-  const { openLink } = useIMDbLink()
+  const { openLink } = useExternalLink()
   const styles = useStyles(themedStyles)
 
   const handleActorPress = useCallback(
     (actor: any) => {
       if (actor.imdb_id) {
         analyticsService.trackActorLinkTapped(actor.name)
-        openLink(actor.imdb_id, "name")
+        openLink(`${API_CONFIG.IMDB_BASE_URL_NAME}${actor.imdb_id}`)
       }
     },
     [openLink]
   )
 
-  const directorHint = item.hints.find((h) => h.type === "director")
-  const actorsHint = item.hints.find((h) => h.type === "actors")
+  const renderHint = (hint: Hint) => {
+    switch (hint.type) {
+      case "director":
+        return (
+          <Typography key={hint.type} variant="caption" style={styles.director}>
+            {hint.label}: {String(hint.value)}
+          </Typography>
+        )
+      case "actors":
+        if (Array.isArray(hint.value)) {
+          return (
+            <Actors
+              key={hint.type}
+              actors={hint.value}
+              onActorPress={handleActorPress}
+            />
+          )
+        }
+        return null
+      default:
+        return null
+    }
+  }
 
-  return (
-    <>
-      {directorHint && (
-        <Typography variant="caption" style={styles.director}>
-          Directed by {directorHint.value}
-        </Typography>
-      )}
-      {actorsHint && Array.isArray(actorsHint.value) && (
-        <Actors actors={actorsHint.value} onActorPress={handleActorPress} />
-      )}
-      {/* Future hint types can be rendered here */}
-    </>
-  )
+  return <>{item.hints.map(renderHint)}</>
 })
 
 interface FactsProps {
@@ -110,11 +133,14 @@ interface FactsProps {
 const Facts = memo(
   ({ item, isLoading = false, error, isScrollEnabled = true }: FactsProps) => {
     const styles = useStyles(themedStyles)
-    const { openLink } = useIMDbLink()
+    const { openLink } = useExternalLink()
 
     const handleItemPress = useCallback(() => {
-      analyticsService.trackImdbLinkTapped(item.title)
-      openLink(item.metadata.imdb_id, "title")
+      const imdbId = item.metadata.imdb_id
+      if (imdbId) {
+        analyticsService.trackImdbLinkTapped(item.title)
+        openLink(`${API_CONFIG.IMDB_BASE_URL_TITLE}${imdbId}`)
+      }
     }, [openLink, item.title, item.metadata.imdb_id])
 
     if (isLoading) {
@@ -137,7 +163,11 @@ const Facts = memo(
 
     return (
       <View style={styles.container}>
-        <ItemHeader title={item.title} onPress={handleItemPress} />
+        <ItemHeader
+          title={item.title}
+          onPress={handleItemPress}
+          isLinkable={!!item.metadata.imdb_id}
+        />
         {item.metadata.tagline && (
           <Typography variant="caption" style={styles.tagline}>
             {item.metadata.tagline}
@@ -168,6 +198,7 @@ interface FactsStyles {
   posterImage: ImageStyle
   headerPressable: ViewStyle
   loadingIndicator: { color: string }
+  linkText: TextStyle
 }
 
 const themedStyles = (theme: Theme): FactsStyles => ({
@@ -187,13 +218,15 @@ const themedStyles = (theme: Theme): FactsStyles => ({
     fontSize: theme.responsive.responsiveFontSize(24),
     paddingBottom: theme.spacing.medium,
     textAlign: "center",
+  },
+  linkText: {
     textDecorationLine: "underline",
   },
   imdbIcon: {
     marginLeft: theme.spacing.small,
     paddingBottom: theme.spacing.small,
-    fontSize: theme.responsive.scale(28),
-    color: "#F5C518",
+    fontSize: theme.responsive.scale(22),
+    color: theme.colors.primary,
   },
   tagline: {
     fontFamily: "Arvo-Italic",

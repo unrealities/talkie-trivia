@@ -33,7 +33,7 @@ interface ItemProps {
 
 const defaultPoster = require("../../assets/movie_default.png")
 
-const PickerMovieItem = memo<ItemProps>(
+const PickerItem = memo<ItemProps>(
   ({ item, detailedItem, isDisabled, isExpanded, onSelect, onLongPress }) => {
     const styles = useStyles(themedStyles)
 
@@ -60,7 +60,7 @@ const PickerMovieItem = memo<ItemProps>(
         <Pressable
           accessible
           accessibilityRole="button"
-          aria-label={`Select and guess movie: ${item.title}. Long press to preview.`}
+          aria-label={`Select and guess: ${item.title}. Long press to preview.`}
           onPress={() => onSelect(item)}
           onLongPress={() => onLongPress(item)}
           delayLongPress={200}
@@ -115,7 +115,7 @@ const PickerMovieItem = memo<ItemProps>(
   }
 )
 
-interface PickerMovieItemStyles {
+interface PickerItemStyles {
   resultItemContainer: ViewStyle
   resultItem: ViewStyle
   pressedItem: ViewStyle
@@ -130,7 +130,7 @@ interface PickerMovieItemStyles {
   expandedHint: TextStyle
 }
 
-const themedStyles = (theme: Theme): PickerMovieItemStyles => ({
+const themedStyles = (theme: Theme): PickerItemStyles => ({
   resultItemContainer: {
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.border,
@@ -197,4 +197,4 @@ const themedStyles = (theme: Theme): PickerMovieItemStyles => ({
   },
 })
 
-export default PickerMovieItem
+export default PickerItem

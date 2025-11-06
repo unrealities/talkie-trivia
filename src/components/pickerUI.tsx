@@ -57,10 +57,10 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
             <TextInput
               accessible
               accessibilityRole="search"
-              aria-label="Search for a movie to make a guess"
+              aria-label="Search for a title to make a guess"
               maxLength={100}
               onChangeText={handleInputChange}
-              placeholder="Search for a movie title..."
+              placeholder="Search for a title..."
               placeholderTextColor={styles.input.placeholderTextColor}
               style={[
                 styles.input,
@@ -94,7 +94,7 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
               </>
             ) : query.length >= 2 ? (
               <Text style={styles.noResultsText}>
-                No movies found for "{query}"
+                No titles found for "{query}"
               </Text>
             ) : null}
           </View>

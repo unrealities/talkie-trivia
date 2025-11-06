@@ -41,11 +41,6 @@ export const playerGameConverter = {
       endDate: safeToDate(data.endDate),
     }
 
-    if (data.movie && !data.triviaItem) {
-      gameData.triviaItem = data.movie
-      delete (gameData as any).movie
-    }
-
     return {
       ...defaultPlayerGame,
       ...gameData,

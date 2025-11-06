@@ -1,7 +1,7 @@
 import React, { memo, useMemo, useCallback } from "react"
 import { View, ViewStyle } from "react-native"
 import { FlashList, ListRenderItemInfo } from "@shopify/flash-list"
-import { BasicTriviaItem } from "../models/trivia" // Changed
+import { BasicTriviaItem } from "../models/trivia"
 import { useGameStore } from "../state/gameStore"
 import { HintInfo, PlayerGame, Guess } from "../models/game"
 import { useShallow } from "zustand/react/shallow"
@@ -51,10 +51,10 @@ const GuessesContainer = memo(
     const items = allMoviesForDisplay || basicItems
 
     const { guesses, guessesMax, triviaItem } = currentGame
-    const correctItemId = triviaItem?.id ?? 0 // Fallback to 0 if triviaItem is not yet loaded
+    const correctItemId = triviaItem?.id ?? 0
 
     const listData: ListItem[] = useMemo(() => {
-      const max = guessesMax || 5 // Fallback for initial render
+      const max = guessesMax || 5
       if (isDataLoading) {
         return Array.from({ length: max }, (_, index) => ({
           type: "skeleton",
@@ -62,15 +62,15 @@ const GuessesContainer = memo(
         }))
       }
 
-      const items: ListItem[] = []
+      const listItems: ListItem[] = []
       for (let i = 0; i < max; i++) {
         if (guesses[i]) {
-          items.push({ type: "guess", guess: guesses[i], index: i })
+          listItems.push({ type: "guess", guess: guesses[i], index: i })
         } else {
-          items.push({ type: "empty", index: i })
+          listItems.push({ type: "empty", index: i })
         }
       }
-      return items
+      return listItems
     }, [isDataLoading, guesses, guessesMax])
 
     const renderListItem = useCallback(

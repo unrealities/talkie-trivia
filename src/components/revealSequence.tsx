@@ -15,7 +15,7 @@ import { API_CONFIG } from "../config/constants"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
 import { ViewStyle, ImageStyle, TextStyle } from "react-native"
 
-const defaultMovieImage = require("../../assets/movie_default.png")
+const defaultItemImage = require("../../assets/movie_default.png")
 
 interface RevealSequenceProps {
   onAnimationComplete: () => void
@@ -67,7 +67,7 @@ const RevealSequence: React.FC<RevealSequenceProps> = ({
 
   const imageSource = triviaItem?.posterPath
     ? { uri: `${API_CONFIG.TMDB_IMAGE_BASE_URL_W500}${triviaItem.posterPath}` }
-    : defaultMovieImage
+    : defaultItemImage
 
   const title = triviaItem?.title || "Correct!"
 
