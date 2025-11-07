@@ -21,7 +21,7 @@ type GuessResult = {
 interface GuessesContainerProps {
   lastGuessResult: GuessResult
   gameForDisplay?: PlayerGame
-  allMoviesForDisplay?: readonly BasicTriviaItem[]
+  allItemsForDisplay?: readonly BasicTriviaItem[]
 }
 
 type ListItem =
@@ -35,7 +35,7 @@ const GuessesContainer = memo(
   ({
     lastGuessResult,
     gameForDisplay,
-    allMoviesForDisplay,
+    allItemsForDisplay,
   }: GuessesContainerProps) => {
     const { loading, playerGame, basicItems } = useGameStore(
       useShallow((state) => ({
@@ -48,7 +48,7 @@ const GuessesContainer = memo(
 
     const isDataLoading = gameForDisplay ? false : loading
     const currentGame = gameForDisplay || playerGame
-    const items = allMoviesForDisplay || basicItems
+    const items = allItemsForDisplay || basicItems
 
     const { guesses, guessesMax, triviaItem } = currentGame
     const correctItemId = triviaItem?.id ?? 0

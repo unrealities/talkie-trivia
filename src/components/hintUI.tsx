@@ -1,3 +1,5 @@
+// src/components/hintUI.tsx
+
 import React, { memo, useEffect } from "react"
 import { View, Pressable, ViewStyle, TextStyle } from "react-native"
 import Ionicons from "@expo/vector-icons/Ionicons"
@@ -10,8 +12,21 @@ import { HintType } from "../models/game"
 import HintButton from "./hintButton"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
 import { Typography } from "./ui/typography"
+import { Hint } from "../models/trivia"
 
 type HintStatus = "available" | "used" | "disabled"
+
+// A map to associate hint types with specific icons.
+// Add new game mode hint types here (e.g., 'developer', 'platform').
+const ICON_MAP: Record<string, keyof typeof Ionicons.glyphMap> = {
+  decade: "calendar-outline",
+  director: "film-outline",
+  actor: "person-outline",
+  genre: "folder-open-outline",
+  developer: "game-controller-outline",
+  platform: "hardware-chip-outline",
+  default: "information-circle-outline",
+}
 
 interface HintUIProps {
   showHintOptions: boolean
@@ -19,10 +34,11 @@ interface HintUIProps {
   hintLabelText: string
   isToggleDisabled: boolean
   hintsAvailable: number
-  hintStatuses: Record<HintType, HintStatus>
-  highlightedHint: HintType | null
+  hintStatuses: Record<string, HintStatus>
+  highlightedHint: string | null
   handleToggleHintOptions: () => void
   handleHintSelection: (type: HintType) => void
+  allHints: Hint[]
 }
 
 const HINT_CONTAINER_HEIGHT = 80 // Adjusted for better spacing
@@ -38,6 +54,7 @@ const HintUI: React.FC<HintUIProps> = memo(
     highlightedHint,
     handleToggleHintOptions,
     handleHintSelection,
+    allHints,
   }) => {
     const styles = useStyles(themedStyles)
     const animatedHeight = useSharedValue(0)
@@ -86,42 +103,18 @@ const HintUI: React.FC<HintUIProps> = memo(
           style={[styles.hintButtonsContainer, animatedContainerStyle]}
         >
           <View style={styles.hintButtonArea}>
-            <HintButton
-              hintType="decade"
-              iconName="calendar-outline"
-              label="Decade"
-              onPress={handleHintSelection}
-              status={hintStatuses.decade}
-              accessibilityHintCount={hintsAvailable}
-              isHighlighted={highlightedHint === "decade"}
-            />
-            <HintButton
-              hintType="director"
-              iconName="film-outline"
-              label="Director"
-              onPress={handleHintSelection}
-              status={hintStatuses.director}
-              accessibilityHintCount={hintsAvailable}
-              isHighlighted={highlightedHint === "director"}
-            />
-            <HintButton
-              hintType="actor"
-              iconName="person-outline"
-              label="Actor"
-              onPress={handleHintSelection}
-              status={hintStatuses.actor}
-              accessibilityHintCount={hintsAvailable}
-              isHighlighted={highlightedHint === "actor"}
-            />
-            <HintButton
-              hintType="genre"
-              iconName="folder-open-outline"
-              label="Genre"
-              onPress={handleHintSelection}
-              status={hintStatuses.genre}
-              accessibilityHintCount={hintsAvailable}
-              isHighlighted={highlightedHint === "genre"}
-            />
+            {allHints.map((hint) => (
+              <HintButton
+                key={hint.type}
+                hintType={hint.type}
+                iconName={ICON_MAP[hint.type] || ICON_MAP.default}
+                label={hint.label}
+                onPress={handleHintSelection}
+                status={hintStatuses[hint.type]}
+                accessibilityHintCount={hintsAvailable}
+                isHighlighted={highlightedHint === hint.type}
+              />
+            ))}
           </View>
         </Animated.View>
 

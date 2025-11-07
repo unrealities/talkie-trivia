@@ -5,6 +5,7 @@ import { hapticsService } from "../hapticsService"
 import { analyticsService } from "../analyticsService"
 import { useShallow } from "zustand/react/shallow"
 import { DIFFICULTY_MODES } from "../../config/difficulty"
+import { Hint } from "../../models/trivia"
 
 if (
   Platform.OS === "android" &&
@@ -40,8 +41,7 @@ export function useHintLogic() {
   const prevHintsUsedRef = useRef<Partial<Record<string, boolean>>>()
 
   const hintsAvailable = playerStats?.hintsAvailable ?? 0
-  const hintTypes: string[] =
-    playerGame.triviaItem?.hints.map((h) => h.type) || []
+  const allHints: Hint[] = playerGame.triviaItem?.hints || []
 
   const currentHintStrategy = DIFFICULTY_MODES[difficulty].hintStrategy
 
@@ -49,7 +49,8 @@ export function useHintLogic() {
     const statuses: Record<string, HintStatus> = {}
     const usedHints = playerGame.hintsUsed || {}
 
-    for (const type of hintTypes) {
+    for (const hint of allHints) {
+      const type = hint.type
       if (usedHints[type]) {
         statuses[type] = "used"
       } else if (
@@ -70,7 +71,7 @@ export function useHintLogic() {
     isInteractionsDisabled,
     hintsAvailable,
     currentHintStrategy,
-    hintTypes,
+    allHints,
   ])
 
   useEffect(() => {
@@ -203,22 +204,14 @@ export function useHintLogic() {
   const isToggleDisabled =
     isInteractionsDisabled || currentHintStrategy !== "USER_SPEND"
 
-  const areHintButtonsDisabled =
-    isInteractionsDisabled ||
-    currentHintStrategy !== "USER_SPEND" ||
-    hintsAvailable <= 0
-
-  const allHints = playerGame.triviaItem?.hints || []
-
   return {
     showHintOptions,
     displayedHintText,
     hintLabelText,
     isToggleDisabled,
-    areHintButtonsDisabled,
     hintStatuses,
     highlightedHint,
-    allHints,
+    allHints: allHints,
     getHintText,
     handleToggleHintOptions,
     handleHintSelection,

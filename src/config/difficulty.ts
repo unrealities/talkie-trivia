@@ -1,3 +1,5 @@
+import { GameMode } from "../models/trivia"
+
 /**
  * Internal, machine-readable identifiers for difficulty levels.
  */
@@ -52,7 +54,7 @@ export const DIFFICULTY_MODES: Record<DifficultyLevel, DifficultyMode> = {
   LEVEL_1: {
     label: "Basic",
     description:
-      "All movie hints (like Director and Decade) are revealed at the start. Clues are revealed gradually.",
+      "All item hints (like Director and Decade) are revealed at the start. Clues are revealed gradually.",
     guessesMax: 5,
     hintStrategy: "HINTS_ONLY_REVEALED",
     scoreMultiplier: 0.4, // Max score: 400
@@ -61,7 +63,7 @@ export const DIFFICULTY_MODES: Record<DifficultyLevel, DifficultyMode> = {
   LEVEL_2: {
     label: "Easy",
     description:
-      "Reveal clues gradually. You can use earned hint points to reveal specific hints like Decade, Director, Actor, or Genre.",
+      "Reveal clues gradually. You can use earned hint points to reveal specific hints.",
     guessesMax: 5,
     hintStrategy: "USER_SPEND",
     scoreMultiplier: 0.55, // Max score: 550
@@ -70,7 +72,7 @@ export const DIFFICULTY_MODES: Record<DifficultyLevel, DifficultyMode> = {
   LEVEL_3: {
     label: "Medium",
     description:
-      "Hints are automatically revealed when you make a guess that shares a category (like actor or decade) with the correct movie.",
+      "Hints are automatically revealed when you make a guess that shares a category (like actor or decade) with the correct item.",
     guessesMax: 5,
     hintStrategy: "IMPLICIT_FEEDBACK",
     scoreMultiplier: 0.7, // Max score: 700
@@ -97,3 +99,47 @@ export const DIFFICULTY_MODES: Record<DifficultyLevel, DifficultyMode> = {
 }
 
 export type Difficulty = DifficultyLevel
+
+/**
+ * Configuration for UI text and settings specific to each game mode.
+ * This allows components to remain generic by pulling mode-specific content from this central location.
+ */
+export const GAME_MODE_CONFIG: Record<
+  GameMode,
+  {
+    title: string
+    searchPlaceholder: string
+    giveUpConfirmation: string
+    fullDescriptionTitle: string
+    shareResultTitle: string
+    shareResultBody: (didWin: boolean) => string
+  }
+> = {
+  movies: {
+    title: "Find the title!",
+    searchPlaceholder: "Search for a movie title...",
+    giveUpConfirmation: "Are you sure you want to give up on this movie?",
+    fullDescriptionTitle: "The Full Plot",
+    shareResultTitle: "Talkie Trivia 🎬",
+    shareResultBody: (didWin) =>
+      didWin ? "I guessed today's movie!" : "I couldn't guess today's movie!",
+  },
+  videoGames: {
+    title: "Name that game!",
+    searchPlaceholder: "Search for a video game title...",
+    giveUpConfirmation: "Are you sure you want to give up on this game?",
+    fullDescriptionTitle: "The Full Description",
+    shareResultTitle: "Talkie Trivia 🎮",
+    shareResultBody: (didWin) =>
+      didWin ? "I guessed today's game!" : "I couldn't guess today's game!",
+  },
+  tvShows: {
+    title: "Find the TV show!",
+    searchPlaceholder: "Search for a TV show title...",
+    giveUpConfirmation: "Are you sure you want to give up on this show?",
+    fullDescriptionTitle: "The Full Synopsis",
+    shareResultTitle: "Talkie Trivia 📺",
+    shareResultBody: (didWin) =>
+      didWin ? "I guessed today's show!" : "I couldn't guess today's show!",
+  },
+}

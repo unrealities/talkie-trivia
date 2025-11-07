@@ -2,18 +2,21 @@ import React from "react"
 import { View, ViewStyle, TextStyle } from "react-native"
 import { useStyles, Theme } from "../../utils/hooks/useStyles"
 import { Typography } from "../ui/typography"
+import { useGameStore } from "../../state/gameStore"
+import { GAME_MODE_CONFIG } from "../../config/difficulty"
 
 interface FullPlotSectionProps {
   overview: string
 }
 
 const FullPlotSection: React.FC<FullPlotSectionProps> = ({ overview }) => {
+  const gameMode = useGameStore((state) => state.gameMode)
   const styles = useStyles(themedStyles)
 
   return (
     <View style={styles.container}>
       <Typography variant="body" style={styles.title}>
-        The Full Plot
+        {GAME_MODE_CONFIG[gameMode].fullDescriptionTitle}
       </Typography>
       <Typography variant="body" style={styles.text}>
         {overview}

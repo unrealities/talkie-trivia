@@ -3,13 +3,17 @@ import { View } from "react-native"
 import { Typography } from "./ui/typography"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
 
-const TitleHeader = memo(() => {
+interface TitleHeaderProps {
+  title: string
+}
+
+const TitleHeader: React.FC<TitleHeaderProps> = memo(({ title }) => {
   const styles = useStyles(themedStyles)
 
   return (
     <View style={styles.container}>
       <Typography variant="h2" style={styles.header}>
-        Find the title!
+        {title}
       </Typography>
     </View>
   )

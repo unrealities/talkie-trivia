@@ -24,6 +24,7 @@ import { useGameStore } from "../state/gameStore"
 import TutorialTooltip from "./tutorialTooltip"
 import { useShallow } from "zustand/react/shallow"
 import { normalizeSearchString } from "../utils/stringUtils"
+import { GAME_MODE_CONFIG } from "../config/difficulty"
 
 if (
   Platform.OS === "android" &&
@@ -42,6 +43,7 @@ const PickerContainer: FC = memo(() => {
     tutorialState,
     dismissGuessInputTip,
     dismissResultsTip,
+    gameMode,
   } = useGameStore(
     useShallow((state) => ({
       isInteractionsDisabled: state.isInteractionsDisabled,
@@ -52,6 +54,7 @@ const PickerContainer: FC = memo(() => {
       tutorialState: state.tutorialState,
       dismissGuessInputTip: state.dismissGuessInputTip,
       dismissResultsTip: state.dismissResultsTip,
+      gameMode: state.gameMode,
     }))
   )
 
@@ -202,6 +205,7 @@ const PickerContainer: FC = memo(() => {
         isInteractionsDisabled={isInteractionsDisabled}
         handleInputChange={handleInputChange}
         renderItem={renderItem}
+        placeholder={GAME_MODE_CONFIG[gameMode].searchPlaceholder}
       />
       <TutorialTooltip
         isVisible={tutorialState.showGuessInputTip}

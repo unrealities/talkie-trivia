@@ -24,6 +24,7 @@ interface PickerUIProps {
   isInteractionsDisabled: boolean
   handleInputChange: (text: string) => void
   renderItem: ListRenderItem<BasicTriviaItem>
+  placeholder: string
 }
 
 export const PickerUI: React.FC<PickerUIProps> = memo(
@@ -36,6 +37,7 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
     isInteractionsDisabled,
     handleInputChange,
     renderItem,
+    placeholder,
   }) => {
     const styles = useStyles(themedStyles)
 
@@ -60,7 +62,7 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
               aria-label="Search for a title to make a guess"
               maxLength={100}
               onChangeText={handleInputChange}
-              placeholder="Search for a title..."
+              placeholder={placeholder}
               placeholderTextColor={styles.input.placeholderTextColor}
               style={[
                 styles.input,

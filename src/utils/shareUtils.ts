@@ -3,6 +3,8 @@ import { PlayerGame } from "../models/game"
 import { analyticsService } from "./analyticsService"
 import { hapticsService } from "./hapticsService"
 import { calculateScore } from "./scoreUtils"
+import { GAME_MODE_CONFIG } from "../config/difficulty"
+import { useGameStore } from "../state/gameStore"
 
 export const generateShareMessage = (playerGame: PlayerGame): string => {
   const appUrl = "https://talkie-trivia.com"
@@ -11,12 +13,16 @@ export const generateShareMessage = (playerGame: PlayerGame): string => {
       ? playerGame.startDate
       : new Date(playerGame.startDate)
 
+  // Get the current game mode to generate a context-aware message.
+  const gameMode = useGameStore.getState().gameMode
+  const config = GAME_MODE_CONFIG[gameMode]
+
   const dateString = gameDate.toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
   })
-  const title = `Talkie Trivia 🎬\n📅 ${dateString}`
+  const title = `${config.shareResultTitle}\n📅 ${dateString}`
 
   let resultLine = ""
   let grid = ""
@@ -31,7 +37,7 @@ export const generateShareMessage = (playerGame: PlayerGame): string => {
     }.`
     grid = "🟥".repeat(guessCount) + "⏹️"
   } else {
-    resultLine = `😢 Didn't guess the movie!`
+    resultLine = `😢 Didn't guess the item!`
     grid = "🟥".repeat(playerGame.guessesMax).trim()
   }
 

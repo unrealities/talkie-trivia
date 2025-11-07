@@ -62,6 +62,7 @@ const MainHintComponent = () => {
     handleToggleHintOptions,
     handleHintSelection,
     displayedHintText,
+    allHints,
   } = useHintLogic()
   const styles = useStyles(themedStyles)
 
@@ -93,6 +94,7 @@ const MainHintComponent = () => {
       highlightedHint={highlightedHint}
       handleToggleHintOptions={handleToggleHintOptions}
       handleHintSelection={handleHintSelection}
+      allHints={allHints}
     />
   )
 }

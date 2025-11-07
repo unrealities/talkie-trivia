@@ -2,8 +2,7 @@ import { TriviaItem } from "./trivia"
 import { DifficultyLevel } from "../config/difficulty"
 
 export type Difficulty = DifficultyLevel
-
-export type HintType = "decade" | "director" | "actor" | "genre"
+export type HintType = string
 
 export interface HintInfo {
   type: string

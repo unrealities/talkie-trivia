@@ -7,6 +7,7 @@ import { useGameStore } from "../../state/gameStore"
 import TitleHeader from "../../components/titleHeader"
 import { useStyles, Theme } from "../../utils/hooks/useStyles"
 import { u } from "../../styles/utils"
+import { GAME_MODE_CONFIG } from "../../config/difficulty"
 
 const GameplayContainer = lazy(
   () => import("../../components/gameplayContainer")
@@ -20,6 +21,7 @@ const GameDifficultyToggle = lazy(
 )
 
 const GameLayout = ({ children }: { children: React.ReactNode }) => {
+  const gameMode = useGameStore((state) => state.gameMode)
   const styles = useStyles(themedStyles)
   return (
     <ScrollView
@@ -29,7 +31,7 @@ const GameLayout = ({ children }: { children: React.ReactNode }) => {
       keyboardShouldPersistTaps="handled"
     >
       <View style={styles.headerContainer}>
-        <TitleHeader />
+        <TitleHeader title={GAME_MODE_CONFIG[gameMode].title} />
         <Suspense fallback={null}>
           <GameDifficultyToggle />
         </Suspense>

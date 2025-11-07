@@ -9,12 +9,14 @@ import { useShallow } from "zustand/react/shallow"
 import { Button } from "./ui/button"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
 import { u } from "../styles/utils"
+import { GAME_MODE_CONFIG } from "../config/difficulty"
 
 const GameplayView: React.FC = () => {
-  const { giveUp, isInteractionsDisabled } = useGameStore(
+  const { giveUp, isInteractionsDisabled, gameMode } = useGameStore(
     useShallow((state) => ({
       giveUp: state.giveUp,
       isInteractionsDisabled: state.isInteractionsDisabled,
+      gameMode: state.gameMode,
     }))
   )
   const styles = useStyles(themedStyles)
@@ -52,7 +54,7 @@ const GameplayView: React.FC = () => {
       <ConfirmationModal
         isVisible={showGiveUpConfirmation}
         title="Give Up?"
-        message="Are you sure you want to give up?"
+        message={GAME_MODE_CONFIG[gameMode].giveUpConfirmation}
         confirmText="Give Up"
         cancelText="Cancel"
         onConfirm={confirmGiveUp}
