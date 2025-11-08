@@ -1,4 +1,4 @@
-import { IGameDataService } from "./IGameDataService"
+import { IGameDataService } from "./iGameDataService"
 import { GameMode, TriviaItem, BasicTriviaItem } from "../models/trivia"
 
 export class VideoGameService implements IGameDataService {

@@ -1,5 +1,3 @@
-// src/components/hintUI.tsx
-
 import React, { memo, useEffect } from "react"
 import { View, Pressable, ViewStyle, TextStyle } from "react-native"
 import Ionicons from "@expo/vector-icons/Ionicons"
@@ -17,7 +15,6 @@ import { Hint } from "../models/trivia"
 type HintStatus = "available" | "used" | "disabled"
 
 // A map to associate hint types with specific icons.
-// Add new game mode hint types here (e.g., 'developer', 'platform').
 const ICON_MAP: Record<string, keyof typeof Ionicons.glyphMap> = {
   decade: "calendar-outline",
   director: "film-outline",

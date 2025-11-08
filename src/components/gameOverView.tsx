@@ -19,7 +19,7 @@ import { Typography } from "./ui/typography"
 
 interface GameOverViewProps {
   playerGame: PlayerGame
-  lastGuessResult: { movieId: number; correct: boolean } | null
+  lastGuessResult: { itemId: number | string; correct: boolean } | null
 }
 
 const GameOverView: React.FC<GameOverViewProps> = ({

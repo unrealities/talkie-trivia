@@ -17,7 +17,7 @@ export const defaultTriviaItem: TriviaItem = {
 export const defaultPlayerGame: PlayerGame = {
   id: "",
   playerID: "",
-  triviaItem: defaultTriviaItem, // Changed from `movie`
+  triviaItem: defaultTriviaItem,
   guessesMax: DIFFICULTY_MODES[DEFAULT_DIFFICULTY].guessesMax,
   difficulty: DEFAULT_DIFFICULTY,
   guesses: [],

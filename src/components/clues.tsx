@@ -248,20 +248,6 @@ const CluesContainer = memo(() => {
   )
 })
 
-interface CluesStyles {
-  container: ViewStyle
-  countContainer: ViewStyle
-  scrollView: ViewStyle
-  scrollViewContent: ViewStyle
-  skeletonContainer: ViewStyle
-  skeletonLine: ViewStyle
-  skeletonLineShort: ViewStyle
-  cluesBox: ViewStyle
-  text: TextStyle
-  wordCountText: TextStyle
-  rawTheme: Theme
-}
-
 const themedStyles = (theme: Theme): CluesStyles => ({
   container: {
     flex: 1,

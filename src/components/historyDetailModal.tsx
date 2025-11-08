@@ -108,7 +108,7 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
               <Suspense fallback={<ActivityIndicator />}>
                 <GuessesContainer
                   gameForDisplay={playerGame}
-                  allMoviesForDisplay={allBasicItems}
+                  allItemsForDisplay={allBasicItems}
                   lastGuessResult={null}
                 />
               </Suspense>
