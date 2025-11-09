@@ -12,7 +12,7 @@ import { Theme } from "./useStyles"
 import { HintInfo } from "../../models/game"
 
 type GuessResult = {
-  movieId: number
+  itemId: number | string
   correct: boolean
   feedback?: string | null
   hintInfo?: HintInfo[] | null

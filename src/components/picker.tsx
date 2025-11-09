@@ -6,7 +6,8 @@ import React, {
   useRef,
   useState,
 } from "react"
-import { ListRenderItemInfo, View, Platform, UIManager } from "react-native"
+import { View, Platform, UIManager } from "react-native"
+import { ListRenderItemInfo } from "@shopify/flash-list"
 import {
   useAnimatedStyle,
   useSharedValue,

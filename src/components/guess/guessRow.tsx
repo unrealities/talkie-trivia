@@ -9,7 +9,7 @@ import { useGuessAnimation } from "../../utils/hooks/useGuessAnimation"
 import { u } from "../../styles/utils"
 
 type GuessResult = {
-  itemId: number | string // Changed
+  itemId: number | string
   correct: boolean
   feedback?: string | null
   hintInfo?: HintInfo[] | null
@@ -24,7 +24,7 @@ interface GuessRowProps {
   correctItemId: number | string
 }
 
-const GuessRow = memo(
+export const GuessRow = memo(
   ({
     index,
     guess,
@@ -62,11 +62,23 @@ const GuessRow = memo(
       const iconMap: Record<string, keyof typeof Ionicons.glyphMap> = {
         decade: "calendar-outline",
         director: "film-outline",
-        developer: "game-controller-outline", // For video games
+        developer: "game-controller-outline",
         actor: "person-outline",
+        actors: "people-outline",
         genre: "folder-open-outline",
       }
       return iconMap[hintType] || "information-circle-outline"
+    }
+
+    const getHintDisplayValue = (hint: HintInfo): string => {
+      if (
+        hint.type === "actors" &&
+        Array.isArray(hint.value) &&
+        hint.value.length > 0
+      ) {
+        return hint.value[0].name
+      }
+      return String(hint.value)
     }
 
     return (
@@ -101,7 +113,7 @@ const GuessRow = memo(
                       style={styles.guessHintIcon}
                     />
                     <Text style={styles.guessHintText} numberOfLines={1}>
-                      {hint.value}
+                      {getHintDisplayValue(hint)}
                     </Text>
                   </View>
                 ))}
@@ -211,5 +223,3 @@ const themedStyles = (theme: Theme): GuessRowStyles => ({
     color: theme.colors.primary,
   },
 })
-
-export default GuessRow

@@ -1,16 +1,14 @@
 import React, { memo } from "react"
 import {
   ActivityIndicator,
-  FlatList,
   Text,
   TextInput,
   View,
-  ListRenderItem,
   StyleProp,
   ViewStyle,
   TextStyle,
-  FlatListProps,
 } from "react-native"
+import { FlashList, ListRenderItem } from "@shopify/flash-list"
 import Animated from "react-native-reanimated"
 import { BasicTriviaItem } from "../models/trivia"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
@@ -40,17 +38,6 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
     placeholder,
   }) => {
     const styles = useStyles(themedStyles)
-
-    const listProps: Partial<FlatListProps<BasicTriviaItem>> = {
-      data: results,
-      renderItem: renderItem,
-      keyExtractor: (item) => item.id.toString(),
-      style: styles.resultsList,
-      keyboardShouldPersistTaps: "handled",
-      initialNumToRender: 10,
-      maxToRenderPerBatch: 10,
-      windowSize: 11,
-    }
 
     return (
       <View style={styles.container}>
@@ -87,7 +74,13 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
               <Text style={styles.noResultsText}>Searching...</Text>
             ) : results.length > 0 ? (
               <>
-                <FlatList {...listProps} />
+                <FlashList
+                  data={results}
+                  renderItem={renderItem}
+                  keyExtractor={(item) => item.id.toString()}
+                  estimatedItemSize={62}
+                  keyboardShouldPersistTaps="handled"
+                />
                 <View style={styles.previewHintContainer}>
                   <Text style={styles.previewHintText}>
                     💡 Hold any result to preview
@@ -110,10 +103,9 @@ interface PickerUIStyles {
   container: ViewStyle
   inputContainer: ViewStyle
   input: TextStyle & { placeholderTextColor: string }
-  disabledInput: ViewStyle
+  disabledInput: TextStyle
   activityIndicator: ViewStyle & { color: string }
   resultsContainer: ViewStyle
-  resultsList: ViewStyle
   noResultsText: TextStyle
   previewHintContainer: ViewStyle
   previewHintText: TextStyle
@@ -166,9 +158,6 @@ const themedStyles = (theme: Theme): PickerUIStyles => ({
     borderRadius: theme.responsive.scale(8),
     ...theme.shadows.medium,
     zIndex: 10,
-  },
-  resultsList: {
-    flex: 1,
   },
   noResultsText: {
     ...theme.typography.bodyText,

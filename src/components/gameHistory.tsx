@@ -1,8 +1,6 @@
 import React, { useState, useEffect, memo, useCallback } from "react"
 import {
   View,
-  Text,
-  FlatList,
   ActivityIndicator,
   Pressable,
   ViewStyle,
@@ -10,14 +8,33 @@ import {
   ImageStyle,
 } from "react-native"
 import { Image } from "expo-image"
+import { FlashList } from "@shopify/flash-list"
+import Animated from "react-native-reanimated"
 import { useAuth } from "../contexts/authContext"
 import { GameHistoryEntry } from "../models/gameHistory"
 import { hapticsService } from "../utils/hapticsService"
 import { API_CONFIG } from "../config/constants"
 import { DIFFICULTY_MODES } from "../config/difficulty"
 import { gameService } from "../services/gameService"
-import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { useStyles, useThemeTokens, Theme } from "../utils/hooks/useStyles"
 import { Typography } from "./ui/typography"
+import { useSkeletonAnimation } from "../utils/hooks/useSkeletonAnimation"
+
+const GameHistorySkeletonItem = memo(() => {
+  const styles = useStyles(themedStyles)
+  const animatedStyle = useSkeletonAnimation()
+
+  return (
+    <Animated.View style={[styles.itemContainer, animatedStyle]}>
+      <View style={styles.skeletonPoster} />
+      <View style={styles.infoContainer}>
+        <View style={[styles.skeletonText, { width: "80%", height: 20 }]} />
+        <View style={[styles.skeletonText, { width: "60%", marginTop: 8 }]} />
+        <View style={[styles.skeletonText, { width: "40%", marginTop: 4 }]} />
+      </View>
+    </Animated.View>
+  )
+})
 
 interface GameHistoryItemProps {
   item: GameHistoryEntry
@@ -66,8 +83,8 @@ const GameHistoryItem = memo(({ item, onPress }: GameHistoryItemProps) => {
     >
       <Image source={{ uri: posterUri }} style={styles.posterImage} />
       <View style={styles.infoContainer}>
-        <Typography style={styles.movieTitle} numberOfLines={2}>
-          {item.movieTitle}
+        <Typography style={styles.itemTitle} numberOfLines={2}>
+          {item.itemTitle}
         </Typography>
         <Typography style={styles.dateText}>{formattedDate}</Typography>
         <Typography style={styles.difficultyText}>
@@ -90,6 +107,7 @@ interface GameHistoryProps {
 const GameHistory = ({ onHistoryItemPress }: GameHistoryProps) => {
   const { player } = useAuth()
   const styles = useStyles(themedStyles)
+  const theme = useThemeTokens()
   const [history, setHistory] = useState<GameHistoryEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -119,9 +137,18 @@ const GameHistory = ({ onHistoryItemPress }: GameHistoryProps) => {
     [onHistoryItemPress]
   )
 
+  const renderSkeletonItem = useCallback(() => <GameHistorySkeletonItem />, [])
+
   if (loading) {
     return (
-      <ActivityIndicator size="large" color={styles.rawTheme.colors.primary} />
+      <View style={styles.container}>
+        <FlashList
+          data={Array(5).fill(0)}
+          renderItem={renderSkeletonItem}
+          keyExtractor={(_, index) => `skeleton-${index}`}
+          estimatedItemSize={107}
+        />
+      </View>
     )
   }
 
@@ -135,11 +162,12 @@ const GameHistory = ({ onHistoryItemPress }: GameHistoryProps) => {
 
   return (
     <View style={styles.container}>
-      <FlatList
+      <FlashList
         data={history}
         renderItem={renderItem}
-        keyExtractor={(item) => `${item.dateId}-${item.movieId}`}
+        keyExtractor={(item) => `${item.dateId}-${item.itemId}`}
         contentContainerStyle={styles.listContainer}
+        estimatedItemSize={107}
         ListEmptyComponent={() => (
           <View style={styles.emptyContainer}>
             <Typography style={styles.emptyText}>
@@ -159,7 +187,7 @@ interface GameHistoryStyles {
   itemPressed: ViewStyle
   posterImage: ImageStyle
   infoContainer: ViewStyle
-  movieTitle: TextStyle
+  itemTitle: TextStyle
   dateText: TextStyle
   difficultyText: TextStyle
   resultText: TextStyle
@@ -170,13 +198,15 @@ interface GameHistoryStyles {
   scoreLabel: TextStyle
   emptyContainer: ViewStyle
   emptyText: TextStyle
-  rawTheme: Theme
+  skeletonPoster: ViewStyle
+  skeletonText: ViewStyle
 }
 
 const themedStyles = (theme: Theme): GameHistoryStyles => ({
   container: {
     flex: 1,
     width: "100%",
+    minHeight: 200,
   },
   listContainer: {
     paddingBottom: theme.spacing.large,
@@ -203,7 +233,7 @@ const themedStyles = (theme: Theme): GameHistoryStyles => ({
     flex: 1,
     marginLeft: theme.spacing.medium,
   },
-  movieTitle: {
+  itemTitle: {
     fontFamily: "Arvo-Bold",
     fontSize: theme.responsive.responsiveFontSize(16),
     color: theme.colors.textPrimary,
@@ -256,7 +286,18 @@ const themedStyles = (theme: Theme): GameHistoryStyles => ({
     color: theme.colors.textSecondary,
     textAlign: "center",
   },
-  rawTheme: theme,
+  skeletonPoster: {
+    width: theme.responsive.scale(60),
+    height: theme.responsive.scale(90),
+    borderRadius: theme.responsive.scale(4),
+    backgroundColor: theme.colors.surface,
+  },
+  skeletonText: {
+    backgroundColor: theme.colors.surface,
+    height: 16,
+    borderRadius: 4,
+    marginBottom: 4,
+  },
 })
 
 export default GameHistory

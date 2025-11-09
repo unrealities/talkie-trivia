@@ -31,7 +31,20 @@ import { ANIMATION_CONSTANTS } from "../config/constants"
 import { useGameStore } from "../state/gameStore"
 import { useShallow } from "zustand/react/shallow"
 import { DIFFICULTY_MODES } from "../config/difficulty"
-import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { useStyles, useThemeTokens, Theme } from "../utils/hooks/useStyles"
+import { useSkeletonAnimation } from "../utils/hooks/useSkeletonAnimation"
+
+const CluesSkeleton = memo(() => {
+  const styles = useStyles(themedStyles)
+  const animatedStyle = useSkeletonAnimation()
+  return (
+    <Animated.View style={[styles.skeletonContainer, animatedStyle]}>
+      <View style={styles.skeletonLine} />
+      <View style={styles.skeletonLine} />
+      <View style={[styles.skeletonLine, styles.skeletonLineShort]} />
+    </Animated.View>
+  )
+})
 
 const splitSummary = (summary: string, splits: number = 5): string[] => {
   if (!summary) return Array(splits).fill("")
@@ -64,6 +77,7 @@ const CountContainer = memo(
 
 const CluesContainer = memo(() => {
   const styles = useStyles(themedStyles)
+  const theme = useThemeTokens()
 
   const {
     correctAnswer,
@@ -180,16 +194,15 @@ const CluesContainer = memo(() => {
   ])
 
   const animatedHighlightStyle = useAnimatedStyle(() => {
-    const { colors } = styles.rawTheme
     const backgroundColor = interpolateColor(
       highlightProgress.value,
       [0, 1],
-      ["transparent", colors.primary]
+      ["transparent", theme.colors.primary]
     )
     const color = interpolateColor(
       highlightProgress.value,
       [0, 1],
-      [colors.textPrimary, colors.background]
+      [theme.colors.textPrimary, theme.colors.background]
     )
     return { backgroundColor, color }
   })
@@ -199,11 +212,7 @@ const CluesContainer = memo(() => {
   return (
     <View style={styles.container}>
       {loading ? (
-        <View style={styles.skeletonContainer}>
-          <View style={styles.skeletonLine} />
-          <View style={styles.skeletonLine} />
-          <View style={[styles.skeletonLine, styles.skeletonLineShort]} />
-        </View>
+        <CluesSkeleton />
       ) : (
         <>
           <ScrollView
@@ -248,6 +257,19 @@ const CluesContainer = memo(() => {
   )
 })
 
+interface CluesStyles {
+  container: ViewStyle
+  countContainer: ViewStyle
+  scrollView: ViewStyle
+  scrollViewContent: ViewStyle
+  skeletonContainer: ViewStyle
+  skeletonLine: ViewStyle
+  skeletonLineShort: ViewStyle
+  cluesBox: ViewStyle
+  text: TextStyle
+  wordCountText: TextStyle
+}
+
 const themedStyles = (theme: Theme): CluesStyles => ({
   container: {
     flex: 1,
@@ -275,12 +297,16 @@ const themedStyles = (theme: Theme): CluesStyles => ({
   skeletonContainer: {
     paddingHorizontal: theme.spacing.small,
     paddingVertical: theme.spacing.small,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
   },
   skeletonLine: {
     backgroundColor: theme.colors.surface,
     borderRadius: theme.responsive.scale(4),
-    height: theme.responsive.responsiveFontSize(14),
-    marginBottom: theme.spacing.small,
+    height: theme.responsive.responsiveFontSize(16),
+    marginBottom: theme.spacing.medium,
+    width: "100%",
   },
   skeletonLineShort: {
     width: "70%",
@@ -302,7 +328,6 @@ const themedStyles = (theme: Theme): CluesStyles => ({
     color: theme.colors.primary,
     textAlign: "right",
   },
-  rawTheme: theme,
 })
 
 export default CluesContainer

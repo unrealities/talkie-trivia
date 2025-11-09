@@ -2,7 +2,7 @@ import React from "react"
 import { View, Text, ViewStyle, TextStyle } from "react-native"
 import { useStyles, Theme } from "../../utils/hooks/useStyles"
 
-const EmptyGuessTile = ({ index }: { index: number }) => {
+export const EmptyGuessTile = ({ index }: { index: number }) => {
   const styles = useStyles(themedStyles)
   return (
     <View style={styles.emptyGuessTile}>
@@ -35,5 +35,3 @@ const themedStyles = (theme: Theme): EmptyGuessTileStyles => ({
     marginRight: theme.spacing.small,
   },
 })
-
-export default EmptyGuessTile

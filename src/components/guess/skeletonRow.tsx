@@ -4,7 +4,7 @@ import Animated from "react-native-reanimated"
 import { useSkeletonAnimation } from "../../utils/hooks/useSkeletonAnimation"
 import { useStyles, Theme } from "../../utils/hooks/useStyles"
 
-const SkeletonRow = memo(({ index }: { index: number }) => {
+export const SkeletonRow = ({ index }: { index: number }) => {
   const styles = useStyles(themedStyles)
   const animatedStyle = useSkeletonAnimation()
 
@@ -16,7 +16,7 @@ const SkeletonRow = memo(({ index }: { index: number }) => {
       </View>
     </Animated.View>
   )
-})
+}
 
 interface SkeletonRowStyles {
   skeletonRow: ViewStyle
@@ -53,5 +53,3 @@ const themedStyles = (theme: Theme): SkeletonRowStyles => ({
     width: "100%",
   },
 })
-
-export default SkeletonRow
