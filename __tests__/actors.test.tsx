@@ -1,131 +1,153 @@
-import React from "react"
-import { render, fireEvent, waitFor } from "@testing-library/react-native"
+import React, { ReactElement } from "react"
+import {
+  render,
+  fireEvent,
+  screen,
+  RenderOptions,
+  within,
+} from "@testing-library/react-native"
 import Actors from "../src/components/actors"
-import { Actor } from "../src/models/movie"
-import * as Linking from "expo-linking"
-import { Alert } from "react-native"
+import { API_CONFIG } from "../src/config/constants"
+import { ThemeProvider } from "../src/contexts/themeContext"
 
-// Mock the Linking module
-jest.mock("expo-linking", () => ({
-  canOpenURL: jest.fn(),
-  openURL: jest.fn(),
-}))
+// Custom Render Helper with ThemeProvider
+const renderWithTheme = (ui: ReactElement, options?: RenderOptions) => {
+  return render(<ThemeProvider>{ui}</ThemeProvider>, options)
+}
 
-// Mock the Alert module
-jest.spyOn(Alert, "alert")
+type Actor = {
+  id: number | string
+  name: string
+  profile_path: string | null
+  imdb_id?: string
+}
 
+// Mock Data
 const mockActors: Actor[] = [
-  {
-    id: 1,
-    name: "Tom Hanks",
-    profile_path: "/tom_hanks.jpg",
-    imdb_id: "nm0000158",
-  },
-  {
-    id: 2,
-    name: "Brad Pitt",
-    profile_path: "/brad_pitt.jpg",
-    imdb_id: "nm0000093",
-  },
-  {
-    id: 3,
-    name: "Leonardo DiCaprio",
-    profile_path: "/leonardo_dicaprio.jpg",
-    imdb_id: "nm0000138",
-  },
+  { id: 1, name: "Tom Hanks", profile_path: "/tom_hanks.jpg" },
+  { id: 2, name: "Meryl Streep", profile_path: "/meryl_streep.jpg" },
+  { id: 3, name: "Denzel Washington", profile_path: "/denzel_washington.jpg" },
+  { id: 4, name: "Cher", profile_path: "/cher.jpg" },
+  { id: 5, name: "Actor Without Image", profile_path: null },
 ]
 
+// Test Suite
 describe("Actors Component", () => {
+  const onActorPressMock = jest.fn()
+
   beforeEach(() => {
-    jest.clearAllMocks()
+    onActorPressMock.mockClear()
   })
 
-  it("renders without actors", () => {
-    const { queryByTestId } = render(<Actors actors={[]} />)
-    expect(queryByTestId("actor-pressable-1")).toBeNull()
-  })
-
-  it("renders with actors", () => {
-    const { getByTestId } = render(<Actors actors={mockActors} />)
-    expect(getByTestId("actor-pressable-1")).toBeTruthy()
-    expect(getByTestId("actor-pressable-2")).toBeTruthy()
-    expect(getByTestId("actor-pressable-3")).toBeTruthy()
-  })
-
-  it("displays the correct number of actors based on maxDisplay", () => {
-    const { getAllByTestId } = render(
-      <Actors actors={mockActors} maxDisplay={2} />
-    )
-    expect(getAllByTestId(/actor-pressable-/).length).toBe(2)
-  })
-
-  it("handles actor names with single and multiple parts", () => {
-    const actors: Actor[] = [
-      { id: 1, name: "Cher", profile_path: "/cher.jpg", imdb_id: "nm0000333" },
-      {
-        id: 2,
-        name: "Robert Downey Jr.",
-        profile_path: "/robert_downey_jr.jpg",
-        imdb_id: "nm0000375",
-      },
-    ]
-    const { getByTestId, getByText } = render(<Actors actors={actors} />)
-    expect(getByText("Cher")).toBeTruthy()
-    expect(getByText("Robert Downey Jr.")).toBeTruthy()
-  })
-
-  it("opens IMDb link when actor is pressed and link is available", async () => {
-    ;(Linking.canOpenURL as jest.Mock).mockResolvedValue(true)
-    const { getByTestId } = render(<Actors actors={mockActors} />)
-    fireEvent.press(getByTestId("actor-pressable-1"))
-    await waitFor(() =>
-      expect(Linking.openURL).toHaveBeenCalledWith(
-        "https://www.imdb.com/name/nm0000158"
+  describe("Rendering Logic", () => {
+    it("should render nothing if the actors prop is null or empty", () => {
+      const { rerender } = renderWithTheme(
+        <Actors actors={[]} onActorPress={onActorPressMock} />
       )
-    )
-  })
+      expect(screen.queryByTestId(/actor-pressable-/)).toBeNull()
 
-  it("shows an alert when IMDb link is unavailable", async () => {
-    const actors: Actor[] = [
-      { id: 1, name: "Unknown Actor", profile_path: null, imdb_id: null },
-    ]
-    const { getByTestId } = render(<Actors actors={actors} />)
-    fireEvent.press(getByTestId("actor-pressable-1"))
-    await waitFor(() =>
-      expect(Alert.alert).toHaveBeenCalledWith(
-        "IMDb link unavailable",
-        "No link found for this actor."
+      rerender(
+        <ThemeProvider>
+          <Actors actors={null as any} onActorPress={onActorPressMock} />
+        </ThemeProvider>
       )
-    )
+      expect(screen.queryByTestId(/actor-pressable-/)).toBeNull()
+    })
+
+    it("should render up to the default maximum of 3 actors", () => {
+      renderWithTheme(
+        <Actors actors={mockActors} onActorPress={onActorPressMock} />
+      )
+      const actorElements = screen.getAllByTestId(/actor-pressable-/)
+      expect(actorElements).toHaveLength(3)
+    })
+
+    it("should respect the `maxDisplay` prop when provided", () => {
+      renderWithTheme(
+        <Actors
+          actors={mockActors}
+          maxDisplay={2}
+          onActorPress={onActorPressMock}
+        />
+      )
+      const actorElements = screen.getAllByTestId(/actor-pressable-/)
+      expect(actorElements).toHaveLength(2)
+    })
+
+    it("should render fewer actors if the array length is less than `maxDisplay`", () => {
+      const fewActors = mockActors.slice(0, 1)
+      renderWithTheme(
+        <Actors
+          actors={fewActors}
+          maxDisplay={3}
+          onActorPress={onActorPressMock}
+        />
+      )
+      const actorElements = screen.getAllByTestId(/actor-pressable-/)
+      expect(actorElements).toHaveLength(1)
+    })
+
+    it("should use the correct image URI when profile_path is available", () => {
+      renderWithTheme(
+        <Actors actors={[mockActors[0]]} onActorPress={onActorPressMock} />
+      )
+      const image = screen.getByTestId("mock-expo-image")
+      expect(image.props["data-source"]).toBe(
+        `${API_CONFIG.TMDB_IMAGE_BASE_URL_W185}${mockActors[0].profile_path}`
+      )
+    })
+
+    it("should use the default fallback image when profile_path is null", () => {
+      renderWithTheme(
+        <Actors actors={[mockActors[4]]} onActorPress={onActorPressMock} />
+      )
+      const image = screen.getByTestId("mock-expo-image")
+      expect(image.props.source).toBe(1)
+    })
+
+    it("should correctly split and display actor names", () => {
+      renderWithTheme(
+        <Actors
+          actors={mockActors}
+          maxDisplay={4}
+          onActorPress={onActorPressMock}
+        />
+      )
+
+      const tomHanksCard = screen.getByTestId("actor-pressable-1")
+      // The text is nested, so we check for the combined text content.
+      expect(within(tomHanksCard).getByText(/Tom\s*Hanks/)).toBeTruthy()
+
+      const cherCard = screen.getByTestId("actor-pressable-4")
+      expect(within(cherCard).getByText("Cher")).toBeTruthy()
+    })
   })
 
-  it("shows an alert when IMDb link cannot be opened", async () => {
-    ;(Linking.canOpenURL as jest.Mock).mockResolvedValue(false)
-    const { getByTestId } = render(<Actors actors={mockActors} />)
-    fireEvent.press(getByTestId("actor-pressable-1"))
-    await waitFor(() =>
-      expect(Alert.alert).toHaveBeenCalledWith("Unable to open IMDb link")
-    )
+  describe("Interaction", () => {
+    it("should call onActorPress with the correct actor object when pressed", () => {
+      renderWithTheme(
+        <Actors
+          actors={mockActors}
+          maxDisplay={3}
+          onActorPress={onActorPressMock}
+        />
+      )
+      const actorToPress = screen.getByTestId("actor-pressable-2") // Meryl Streep
+      fireEvent.press(actorToPress)
+      expect(onActorPressMock).toHaveBeenCalledWith(mockActors[1])
+    })
   })
 
-  it("triggers onActorPress callback when provided", async () => {
-    const onActorPress = jest.fn((actor) => actor)
-    const { getByTestId } = render(
-      <Actors actors={mockActors} onActorPress={onActorPress} maxDisplay={1} />
-    )
-    const pressable = getByTestId("actor-pressable-1")
-    fireEvent.press(pressable)
-    await waitFor(
-      () => expect(onActorPress).toHaveBeenCalledWith(mockActors[0]),
-      { timeout: 1000 }
-    )
-  })
-
-  it("has correct accessibility labels and roles", () => {
-    const { getByTestId } = render(<Actors actors={mockActors} />)
-    expect(getByTestId("actor-pressable-1").props.accessibilityLabel).toBe(
-      "Actor: Tom Hanks. View details"
-    )
-    expect(getByTestId("actor-pressable-1").props.role).toBe("button")
+  describe("Accessibility", () => {
+    it("should have the correct accessibility label and role", () => {
+      renderWithTheme(
+        <Actors actors={[mockActors[0]]} onActorPress={onActorPressMock} />
+      )
+      const pressable = screen.getByTestId("actor-pressable-1")
+      expect(pressable.props.accessibilityLabel).toBe(
+        "Actor: Tom Hanks. View details"
+      )
+      expect(pressable.props.role).toBe("button")
+    })
   })
 })
