@@ -38,7 +38,7 @@ const CluesSkeleton = memo(() => {
   const styles = useStyles(themedStyles)
   const animatedStyle = useSkeletonAnimation()
   return (
-    <Animated.View style={[styles.skeletonContainer, animatedStyle]}>
+    <Animated.View style={[styles.skeletonContainer, animatedStyle]} testID="clues-skeleton">
       <View style={styles.skeletonLine} />
       <View style={styles.skeletonLine} />
       <View style={[styles.skeletonLine, styles.skeletonLineShort]} />
