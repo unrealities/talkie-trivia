@@ -1,10 +1,20 @@
 import { jest } from "@jest/globals";
 
-jest.mock('react-native/Libraries/Utilities/Dimensions', () => ({
+const mockedDimensions = {
   get: jest.fn().mockReturnValue({ width: 375, height: 812 }),
   addEventListener: jest.fn(),
   removeEventListener: jest.fn(),
-}));
+};
+
+jest.mock('react-native', () => {
+  const rn = jest.requireActual('react-native');
+
+  Object.defineProperty(rn, 'Dimensions', {
+    get: () => mockedDimensions,
+  });
+
+  return rn;
+});
 
 global.__DEV__ = true;
 

@@ -38,7 +38,10 @@ const CluesSkeleton = memo(() => {
   const styles = useStyles(themedStyles)
   const animatedStyle = useSkeletonAnimation()
   return (
-    <Animated.View style={[styles.skeletonContainer, animatedStyle]} testID="clues-skeleton">
+    <Animated.View
+      style={[styles.skeletonContainer, animatedStyle]}
+      testID="clues-skeleton"
+    >
       <View style={styles.skeletonLine} />
       <View style={styles.skeletonLine} />
       <View style={[styles.skeletonLine, styles.skeletonLineShort]} />
@@ -224,6 +227,7 @@ const CluesContainer = memo(() => {
             <Pressable
               onPress={isGameOver ? undefined : handleSkipAnimation}
               accessible={!isGameOver}
+              accessibilityRole="button"
               accessibilityLabel={
                 !isGameOver ? "Tap to reveal the full clue immediately" : ""
               }
