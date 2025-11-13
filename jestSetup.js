@@ -1,4 +1,10 @@
+// jestSetup.js
+
 import { jest } from "@jest/globals";
+
+// The complex reanimated mock is now handled automatically by Jest
+// via the file in `__mocks__/react-native-reanimated.js`.
+// No more manual mocking of reanimated is needed here.
 
 const mockedDimensions = {
   get: jest.fn().mockReturnValue({ width: 375, height: 812 }),
