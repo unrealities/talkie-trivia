@@ -1,10 +1,4 @@
-// jestSetup.js
-
 import { jest } from "@jest/globals";
-
-// The complex reanimated mock is now handled automatically by Jest
-// via the file in `__mocks__/react-native-reanimated.js`.
-// No more manual mocking of reanimated is needed here.
 
 const mockedDimensions = {
   get: jest.fn().mockReturnValue({ width: 375, height: 812 }),
@@ -23,6 +17,22 @@ jest.mock('react-native', () => {
 });
 
 global.__DEV__ = true;
+
+// --- CONSOLE LOG SUPPRESSION ---
+// This block suppresses a specific, harmless console.log from Firebase Analytics
+// that appears in test runs because the analytics module isn't fully supported in Jest.
+const originalConsoleLog = console.log;
+const messageToSuppress = "Firebase Analytics not supported in this environment.";
+
+console.log = (...args) => {
+  // Check if the first argument is a string and includes the message to suppress
+  if (typeof args[0] === 'string' && args[0].includes(messageToSuppress)) {
+    // If it matches, do nothing (suppress it)
+    return;
+  }
+  // For all other logs, call the original console.log function
+  originalConsoleLog(...args);
+};
 
 jest.mock("expo-image", () => {
   const React = require('react');
