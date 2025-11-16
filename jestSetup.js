@@ -19,20 +19,38 @@ jest.mock('react-native', () => {
 global.__DEV__ = true;
 
 // --- CONSOLE LOG SUPPRESSION ---
-// This block suppresses a specific, harmless console.log from Firebase Analytics
-// that appears in test runs because the analytics module isn't fully supported in Jest.
 const originalConsoleLog = console.log;
 const messageToSuppress = "Firebase Analytics not supported in this environment.";
 
 console.log = (...args) => {
-  // Check if the first argument is a string and includes the message to suppress
   if (typeof args[0] === 'string' && args[0].includes(messageToSuppress)) {
-    // If it matches, do nothing (suppress it)
     return;
   }
-  // For all other logs, call the original console.log function
   originalConsoleLog(...args);
 };
+
+// --- MOCKS FOR EXPO ASSETS (FONTS & ICONS) ---
+jest.mock('expo-font', () => ({
+  ...jest.requireActual('expo-font'), // Keep original functions if any are needed
+  useFonts: () => [true, null], // Mock the hook to return fonts as loaded.
+  isLoaded: jest.fn().mockReturnValue(true), // Mock the static method.
+  loadAsync: jest.fn().mockResolvedValue(undefined), // Mock the async loader.
+}));
+
+jest.mock('@expo/vector-icons', () => {
+  const React = require('react');
+  const { Text } = require('react-native');
+  const MockIcon = ({ name, ...props }) => (
+    <Text testID={`mock-icon-${name}`} {...props}>
+      {name}
+    </Text>
+  );
+
+  return {
+    FontAwesome: MockIcon,
+    Ionicons: MockIcon,
+  };
+});
 
 jest.mock("expo-image", () => {
   const React = require('react');
@@ -129,6 +147,3 @@ jest.mock("firebase/analytics", () => ({
   setUserId: jest.fn(),
   setUserProperties: jest.fn(),
 }));
-
-jest.mock("@expo/vector-icons/FontAwesome", () => "FontAwesome");
-jest.mock("@expo/vector-icons/Ionicons", () => "Ionicons");
