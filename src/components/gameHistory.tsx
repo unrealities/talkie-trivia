@@ -1,12 +1,5 @@
 import React, { useState, useEffect, memo, useCallback } from "react"
-import {
-  View,
-  ActivityIndicator,
-  Pressable,
-  ViewStyle,
-  TextStyle,
-  ImageStyle,
-} from "react-native"
+import { View, Pressable } from "react-native"
 import { Image } from "expo-image"
 import { FlashList } from "@shopify/flash-list"
 import Animated from "react-native-reanimated"
@@ -16,7 +9,7 @@ import { hapticsService } from "../utils/hapticsService"
 import { API_CONFIG } from "../config/constants"
 import { DIFFICULTY_MODES } from "../config/difficulty"
 import { gameService } from "../services/gameService"
-import { useStyles, useThemeTokens, Theme } from "../utils/hooks/useStyles"
+import { useStyles, Theme } from "../utils/hooks/useStyles"
 import { Typography } from "./ui/typography"
 import { useSkeletonAnimation } from "../utils/hooks/useSkeletonAnimation"
 
@@ -25,7 +18,10 @@ const GameHistorySkeletonItem = memo(() => {
   const animatedStyle = useSkeletonAnimation()
 
   return (
-    <Animated.View style={[styles.itemContainer, animatedStyle]}>
+    <Animated.View
+      style={[styles.itemContainer, animatedStyle]}
+      testID="skeleton-item"
+    >
       <View style={styles.skeletonPoster} />
       <View style={styles.infoContainer}>
         <View style={[styles.skeletonText, { width: "80%", height: 20 }]} />
@@ -107,14 +103,16 @@ interface GameHistoryProps {
 const GameHistory = ({ onHistoryItemPress }: GameHistoryProps) => {
   const { player } = useAuth()
   const styles = useStyles(themedStyles)
-  const theme = useThemeTokens()
   const [history, setHistory] = useState<GameHistoryEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchHistory = async () => {
-      if (!player) return
+      if (!player) {
+        setLoading(false)
+        return
+      }
 
       try {
         const fetchedHistory = await gameService.fetchGameHistory(player.id)
@@ -137,17 +135,14 @@ const GameHistory = ({ onHistoryItemPress }: GameHistoryProps) => {
     [onHistoryItemPress]
   )
 
-  const renderSkeletonItem = useCallback(() => <GameHistorySkeletonItem />, [])
-
   if (loading) {
     return (
       <View style={styles.container}>
-        <FlashList
-          data={Array(5).fill(0)}
-          renderItem={renderSkeletonItem}
-          keyExtractor={(_, index) => `skeleton-${index}`}
-          estimatedItemSize={107}
-        />
+        {Array(5)
+          .fill(0)
+          .map((_, index) => (
+            <GameHistorySkeletonItem key={`skeleton-${index}`} />
+          ))}
       </View>
     )
   }
@@ -180,29 +175,7 @@ const GameHistory = ({ onHistoryItemPress }: GameHistoryProps) => {
   )
 }
 
-interface GameHistoryStyles {
-  container: ViewStyle
-  listContainer: ViewStyle
-  itemContainer: ViewStyle
-  itemPressed: ViewStyle
-  posterImage: ImageStyle
-  infoContainer: ViewStyle
-  itemTitle: TextStyle
-  dateText: TextStyle
-  difficultyText: TextStyle
-  resultText: TextStyle
-  winText: TextStyle
-  lossText: TextStyle
-  scoreContainer: ViewStyle
-  scoreText: TextStyle
-  scoreLabel: TextStyle
-  emptyContainer: ViewStyle
-  emptyText: TextStyle
-  skeletonPoster: ViewStyle
-  skeletonText: ViewStyle
-}
-
-const themedStyles = (theme: Theme): GameHistoryStyles => ({
+const themedStyles = (theme: Theme): any => ({
   container: {
     flex: 1,
     width: "100%",

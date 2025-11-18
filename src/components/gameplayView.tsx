@@ -49,6 +49,7 @@ const GameplayView: React.FC = () => {
         disabled={isInteractionsDisabled}
         variant="error"
         style={[u.wFull, styles.giveUpButton]}
+        testID="give-up-button"
       />
 
       <ConfirmationModal

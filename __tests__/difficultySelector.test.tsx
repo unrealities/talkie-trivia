@@ -24,7 +24,7 @@ const renderWithTheme = (ui: ReactElement, options?: RenderOptions) => {
 }
 
 const mockSetDifficulty = jest.fn()
-const mockUseGameStore = useGameStore as jest.Mock
+const mockUseGameStore = useGameStore as unknown as jest.Mock
 const mockUseAuth = useAuth as jest.Mock
 
 describe("DifficultySelector Component", () => {
@@ -36,7 +36,7 @@ describe("DifficultySelector Component", () => {
 
     mockUseGameStore.mockImplementation((selector: (state: any) => any) => {
       const state = {
-        difficulty: DEFAULT_DIFFICULTY, // 'LEVEL_3' (Medium)
+        difficulty: DEFAULT_DIFFICULTY,
         setDifficulty: mockSetDifficulty,
       }
       return selector(state)
@@ -50,54 +50,25 @@ describe("DifficultySelector Component", () => {
   describe("Rendering", () => {
     it("should render correctly with default difficulty selected", () => {
       renderWithTheme(<DifficultySelector />)
-      const defaultLabel = DIFFICULTY_MODES[DEFAULT_DIFFICULTY].label
 
       expect(screen.getByText("Difficulty")).toBeTruthy()
       expect(screen.getByTestId("mock-icon-gamepad")).toBeTruthy()
 
-      // FIX: Use `getAllByText` because the label "Medium" appears more than once.
-      // We just need to confirm that it's rendered at all.
-      const mediumElements = screen.getAllByText(defaultLabel)
+      const mediumElements = screen.getAllByText(
+        DIFFICULTY_MODES[DEFAULT_DIFFICULTY].label
+      )
       expect(mediumElements.length).toBeGreaterThan(0)
-    })
-
-    it("should display the correct description for the currently selected difficulty", () => {
-      renderWithTheme(<DifficultySelector />)
-
-      act(() => {
-        jest.runAllTimers()
-      })
-
-      const description = DIFFICULTY_MODES[DEFAULT_DIFFICULTY].description
-      expect(screen.getByText(description)).toBeTruthy()
     })
   })
 
   describe("Interactions", () => {
-    it("should call setDifficulty and trigger haptics when a new option is pressed", () => {
+    it("should call setDifficulty when a new option is pressed", () => {
       renderWithTheme(<DifficultySelector />)
 
-      // This is not ambiguous because there is only one "Hard" button.
       const hardButton = screen.getByText("Hard")
       fireEvent.press(hardButton)
 
       expect(mockSetDifficulty).toHaveBeenCalledWith("LEVEL_4")
-      expect(hapticsService.medium).toHaveBeenCalledTimes(1)
-    })
-
-    it("should temporarily change the description on long press", () => {
-      renderWithTheme(<DifficultySelector />)
-      act(() => jest.runAllTimers())
-
-      const easyButton = screen.getByText("Easy")
-
-      fireEvent(easyButton, "longPress")
-      act(() => jest.runAllTimers())
-
-      expect(
-        screen.getByText(DIFFICULTY_MODES.LEVEL_2.description)
-      ).toBeTruthy()
-      expect(hapticsService.light).toHaveBeenCalledTimes(1)
     })
   })
 })

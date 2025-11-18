@@ -52,6 +52,8 @@ export const Button: React.FC<ButtonProps> = ({
         style,
       ]}
       disabled={isDisabled}
+      accessibilityRole="button"
+      accessibilityLabel={title}
       {...props}
     >
       {isLoading ? (

@@ -95,12 +95,8 @@ export const shadows = {
       shadowOpacity: 0.23,
       shadowRadius: 2.62,
     },
-    android: {
-      elevation: 4,
-    },
-    web: {
-      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-    },
+    android: { elevation: 4 },
+    web: { boxShadow: "0 2px 4px rgba(0,0,0,0.1)" },
   }),
   medium: Platform.select({
     ios: {
@@ -109,12 +105,8 @@ export const shadows = {
       shadowOpacity: 0.3,
       shadowRadius: 4.65,
     },
-    android: {
-      elevation: 8,
-    },
-    web: {
-      boxShadow: "0 4px 8px rgba(0,0,0,0.15)",
-    },
+    android: { elevation: 8 },
+    web: { boxShadow: "0 4px 8px rgba(0,0,0,0.15)" },
   }),
 }
 
@@ -123,14 +115,14 @@ export const getButtonStyles = (colors: ThemeColors) => ({
     borderRadius: responsive.scale(8),
     paddingVertical: spacing.small,
     paddingHorizontal: spacing.medium,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "center" as const,
+    alignItems: "center" as const,
     ...shadows.light,
   },
   text: {
     fontFamily: "Arvo-Bold",
     fontSize: responsive.responsiveFontSize(16),
-    textAlign: "center",
+    textAlign: "center" as const,
   },
   pressed: {
     transform: [{ translateY: 2 }],
