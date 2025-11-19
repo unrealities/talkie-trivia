@@ -57,7 +57,10 @@ export const Button: React.FC<ButtonProps> = ({
       {...props}
     >
       {isLoading ? (
-        <ActivityIndicator color={variantStyles.text.color as string} />
+        <ActivityIndicator
+          testID="activity-indicator"
+          color={variantStyles.text.color as string}
+        />
       ) : (
         <Text style={[baseStyles.text, sizeStyles.text, variantStyles.text]}>
           {title}

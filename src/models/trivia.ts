@@ -3,6 +3,11 @@
  */
 export type GameMode = "movies" | "videoGames" | "tvShows"
 
+export interface Genre {
+  id: number
+  name: string
+}
+
 /**
  * Represents a generic hint for any trivia item.
  */

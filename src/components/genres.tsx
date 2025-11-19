@@ -1,6 +1,6 @@
 import React, { memo } from "react"
 import { View, ViewStyle, TextStyle } from "react-native"
-import { Genre } from "../models/movie"
+import { Genre } from "../models/trivia"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
 import { Typography } from "./ui/typography"
 
@@ -24,23 +24,28 @@ const GenreContainer = memo(({ genre }: GenreProps) => {
 })
 
 interface GenresProps {
-  genres: Genre[]
+  genres: Genre[] | null
   maxGenres?: number
 }
 
 const Genres = memo(({ genres, maxGenres = 5 }: GenresProps) => {
   const styles = useStyles(themedStyles)
+
+  if (!genres || genres.length === 0) {
+    return (
+      <View style={styles.genresContainer}>
+        <Typography style={styles.noGenresText}>No genres available</Typography>
+      </View>
+    )
+  }
+
   const displayedGenres = genres.slice(0, maxGenres)
 
   return (
     <View style={styles.genresContainer}>
-      {displayedGenres.length > 0 ? (
-        displayedGenres.map((genre) => (
-          <GenreContainer key={genre.id} genre={genre} />
-        ))
-      ) : (
-        <Typography style={styles.noGenresText}>No genres available</Typography>
-      )}
+      {displayedGenres.map((genre) => (
+        <GenreContainer key={genre.id} genre={genre} />
+      ))}
       {genres.length > maxGenres && (
         <Typography style={styles.noGenresText}>
           +{genres.length - maxGenres} more
