@@ -2,10 +2,15 @@ import React from "react"
 import { View, Text, ViewStyle, TextStyle } from "react-native"
 import { useStyles, Theme } from "../../utils/hooks/useStyles"
 
-export const EmptyGuessTile = ({ index }: { index: number }) => {
+interface EmptyGuessTileProps {
+  index: number
+  testID?: string
+}
+
+export const EmptyGuessTile = ({ index, testID }: EmptyGuessTileProps) => {
   const styles = useStyles(themedStyles)
   return (
-    <View style={styles.emptyGuessTile}>
+    <View style={styles.emptyGuessTile} testID={testID}>
       <Text style={styles.guessNumber}>{index + 1}</Text>
     </View>
   )

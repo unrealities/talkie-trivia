@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Guess Component: SkeletonRow should render the skeleton text container 1`] = `
+<View
+  style={
+    [
+      {
+        "alignItems": "center",
+        "backgroundColor": "#E0E0E0",
+        "borderRadius": 8,
+        "flexDirection": "row",
+        "marginBottom": 8,
+        "minHeight": 44,
+        "paddingHorizontal": 16,
+        "paddingVertical": 8,
+      },
+      {
+        "opacity": 0.5,
+      },
+    ]
+  }
+>
+  <Text
+    style={
+      {
+        "color": "#757575",
+        "fontFamily": "Arvo-Bold",
+        "fontSize": 14,
+        "marginRight": 8,
+      }
+    }
+  >
+    1
+  </Text>
+  <View
+    style={
+      {
+        "backgroundColor": "#BDBDBD",
+        "borderRadius": 4,
+        "flex": 1,
+        "overflow": "hidden",
+      }
+    }
+  >
+    <View
+      style={
+        {
+          "height": 16,
+          "width": "100%",
+        }
+      }
+    />
+  </View>
+</View>
+`;

@@ -8,4 +8,30 @@ module.exports = {
   moduleNameMapper: {
     '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': '<rootDir>/__mocks__/fileMock.js'
   },
+  collectCoverage: true,
+  collectCoverageFrom: [
+    "src/**/*.{js,jsx,ts,tsx}",
+    "!src/**/*.d.ts",
+    "!src/styles/**/*",
+    "!src/models/**/*",
+    "!src/config/**/*",
+    "!src/**/index.{js,ts,tsx}"
+  ],
+  coveragePathIgnorePatterns: [
+    "/node_modules/",
+    "/__tests__/",
+    "/__mocks__/"
+  ],
+  coverageReporters: ["text", "lcov", "html"], // 'text' for console, 'html' for visual report
+  // Optional: Enforce minimum thresholds (Fail CI if coverage drops below these %)
+  /* 
+  coverageThreshold: {
+    global: {
+      branches: 50,
+      functions: 50,
+      lines: 50,
+      statements: 50
+    }
+  } 
+  */
 };
