@@ -1,120 +1,173 @@
-# Talkie Trivia
+# Talkie Trivia 🎬
 
-A React Native mobile game that challenges you to name the movie from its plot summary, powered by data from The Movie Database (TMDB) and Firebase.
+Talkie Trivia is an engaging daily trivia game built with **React Native** and **Expo**. The goal is simple yet challenging: guess the movie based on a progressively revealing plot summary.
 
-## Data Retrieval and Backend Setup
+Players can earn points, maintain streaks, use hints (like Director, Actors, and Genre), and compete on different difficulty levels. The app leverages a robust backend using **Firebase** for authentication and data storage, with a custom data pipeline written in **Go**.
 
-The game relies on a curated list of movies stored in Firebase Firestore. A daily Cloud Function selects a new movie for players. The following steps detail how to fetch movie data from TMDB, process it, and generate the necessary JSON files for your Firebase backend and application client.
+## ✨ Features
 
-The data processing scripts are located in the `utils/` directory and are written in Go.
+* **Daily Challenges:** A new movie to guess every day, synced globally.
+* **Progressive Clues:** Plot summaries are revealed word-by-word or chunk-by-chunk.
+* **Multiple Difficulty Levels:**
+  * **Basic:** All meta-hints (Cast, Year, etc.) are revealed at the start.
+  * **Easy:** Use hint points to reveal specific meta-data.
+  * **Medium (Default):** "Implicit Feedback" - incorrect guesses reveal matching categories (e.g., guessing a movie with the same director reveals the director).
+  * **Hard:** No hints allowed.
+  * **Extreme:** Fewer guesses allowed, slower reveals.
+* **Smart Search:** Fuzzy search to easily find and select movie titles.
+* **Player Statistics:** Tracks current streaks, max streaks, win distribution, and all-time scores.
+* **Game History:** Review past games and results.
+* **Authentication:** Anonymous login and Google Sign-In support to save progress across devices.
+* **Theming:** Full support for Light, Dark, and System themes.
+* **Animations:** Smooth UI transitions using `react-native-reanimated`.
+
+## 🛠 Tech Stack
+
+### Frontend
+
+* **Framework:** React Native (Expo Managed Workflow)
+* **Language:** TypeScript
+* **State Management:** Zustand (w/ Immer)
+* **Navigation:** Expo Router (File-based routing)
+* **Styling:** Custom hook-based theming system (`useStyles`)
+* **Animations:** React Native Reanimated
+* **Lists:** Shopify FlashList
+
+### Backend & Data
+
+* **Database:** Google Firestore
+* **Auth:** Firebase Authentication
+* **Analytics:** Firebase Analytics
+* **Data Pipeline:** Go (Golang) scripts for fetching/processing TMDB data
+* **Scheduling:** Google Cloud Functions / Go scripts
+
+### Testing
+
+* **Unit/Integration:** Jest & React Native Testing Library
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-Before you begin, ensure you have the following installed and configured:
+* Node.js (LTS)
+* npm or yarn
+* Expo CLI
+* Go (optional, only for running data pipelines)
 
-1. **Go:** [Installation Guide](https://golang.org/doc/install)
-2. **Node.js & npm:** Required for Firebase Functions.
-3. **Firebase CLI:** Run `npm install -g firebase-tools` to install. Log in with `firebase login`.
-4. **TMDB API Key:** Get a free API key from [themoviedb.org](https://www.themoviedb.org/documentation/api).
-5. **Firebase Project:** A Firebase project with Firestore and Cloud Functions enabled.
+### Installation
 
-### Configuration
-
-You need to provide credentials for the TMDB API. This file is listed in `.gitignore` and **should never be committed to version control.**
-
-1. **TMDB API Key:**
-    * In the `utils/` directory, create a file named `secrets.json` based on `secrets.example.json`.
-    * Add your TMDB API key to it:
-
-        ```json
-        // utils/secrets.json
-        {
-            "TMDBKey": "YOUR_TMDB_API_KEY_HERE"
-        }
-        ```
-
-2. **Firebase Admin Credentials (For Uploading):**
-    * To upload the generated data to Firestore or run the Cloud Functions, you will need Firebase Admin credentials.
-    * In your Firebase Console, navigate to **Project Settings > Service accounts**.
-    * Click **"Generate new private key"** and save the downloaded JSON file.
-    * The Cloud Functions are configured to use these credentials automatically when deployed. For local upload scripts, you might place this file at the root of your functions directory.
-    * **Note:** The Go data-generation scripts below do *not* require this key, as they only create local files.
-
----
-
-### Alternate (Recommended) Process: Unified Data Generation Script
-
-#### Step 1: Run the Unified Script
-
-Run the script from the new directory. It will handle fetching popular movie IDs, their details, and their credits, then process and filter everything before writing the final files.
-
-```bash
-cd utils/generateAllData && go run .
-```
-
-The script will log its progress as it fetches pages and processes movies.
-
-#### Step 2: Review the Output
-
-This single command performs all necessary API calls and generates the final data files directly in the correct location.
-
-* **Output Location:** `src/data/`
-
-* **Generated Files:**
- * `popularMovies.json`: A complete list of movie objects, including details, genres, actors, and directors. This file is ready to be uploaded to Firestore and replaces the need for the old `movies.json`, `movieActors.json`, and `movieDirectors.json`.
- * `basicMovies.json`: A lightweight list containing only movie ID, title, and release year. This is bundled with the mobile app to power the search picker.
-
-After running this script, you can proceed with uploading `popularMovies.json` to your Firebase Firestore database.
-
----
-
-### Original Multi-Step Process (Legacy)
-
-The following is the original, multi-step process for generating the data. It is recommended to use the new, unified script above.
-
-Run these scripts sequentially from the root of the repository. Each script builds upon the output of the previous one.
-
-1. **Fetch Popular Movies**
-    This script queries the TMDB API for the top 500 pages of popular English-language movies and saves their raw data.
+1. **Clone the repository:**
 
     ```bash
-    cd utils/fetchPopularMovies && go run .
+    git clone https://github.com/unrealities/talkie-trivia.git
+    cd talkie-trivia
     ```
 
-    * **Output:** Creates `utils/fetchPopularMovies/popular_movies_raw.json`.
-
-2. **Fetch Detailed Movie Info**
-    This script reads the raw popular movies file and fetches detailed information for each one.
+2. **Install dependencies:**
 
     ```bash
-    cd ../fetchMovies && go run .
+    npm install
     ```
 
-    * **Output:** Creates `utils/fetchMovies/movies.txt`, which is then processed into `data/movies.json`.
+3. **Environment Configuration:**
 
-3. **Fetch Movie Credits**
-    This script fetches the cast and crew (specifically directors) for every movie in `data/movies.json`.
+    Create a `.env` file in the root directory. You will need credentials for Firebase, TMDB, and Google OAuth.
+
+    ```env
+    # Firebase Config
+    FIREBASE_APIKEY=your_api_key
+    FIREBASE_APPID=your_app_id
+    FIREBASE_MEASUREMENTID=your_measurement_id
+    FIREBASE_MESSAGING_SENDERID=your_sender_id
+    FIREBASE_PROJECTID=your_project_id
+
+    # Google Auth Client IDs
+    CLIENTID_EXPO=your_expo_client_id
+    CLIENTID_IOS=your_ios_client_id
+    CLIENTID_ANDROID=your_android_client_id
+    CLIENTID_WEB=your_web_client_id
+
+    # Data Source
+    THEMOVIEDB_APIKEY=your_tmdb_api_key
+    ```
+
+4. **Run the App:**
 
     ```bash
-    cd ../fetchMoviesCredits && go run .
+    npm start
     ```
 
-    * **Output:** Creates `utils/fetchMoviesCredits/credits.txt`, which is processed into `data/credits.json`.
+    Use the Expo Go app on your device or an emulator to scan the QR code.
 
-4. **Process Credits Data**
-    This script aggregates the raw credits data into structured files for actors and directors.
+## 🧪 Testing
+
+The project maintains a high level of code coverage using Jest.
+
+* **Run Tests:** `npm test`
+* **Run with Coverage:** `npm run test:coverage`
+
+## 📂 Project Structure
+
+src/
+├── app/ # Expo Router screens and layout
+├── components/ # Reusable UI components
+│ ├── game/ # Gameplay specific components (Board, Input)
+│ ├── gameOver/ # Results screen components
+│ └── ui/ # Generic atoms (Button, Card, Typography)
+├── config/ # Constants, difficulty settings, Firebase init
+├── contexts/ # React Contexts (Auth, Theme, Network)
+├── data/ # Local JSON fallbacks (basicMovies.json)
+├── models/ # TypeScript interfaces/types
+├── services/ # API and Firebase service layers
+├── state/ # Zustand global store
+├── styles/ # Global theme tokens and utility styles
+└── utils/ # Helper functions, hooks, and analytics
+
+## ⚙️ Data Pipeline (Go)
+
+The `utils/` folder contains Go modules used to populate and schedule the game data.
+
+1. **Data Generation:**
+    Navigate to `utils/data-pipeline` to fetch data from TMDB and process it into `popularMovies.json`.
 
     ```bash
-    cd ../credits && go run .
+    cd utils/data-pipeline
+    go run main.go
     ```
 
-    * **Output:** Creates `data/movieActors.json` and `data/movieDirectors.json`.
-
-5. **Generate Client-Side Search List**
-    This script creates a lightweight JSON file containing only the ID, title, and release year for movies. This is bundled with the app to power the search picker.
+2. **Populate Firestore:**
+    Uploads the processed JSON to the `movies` collection.
 
     ```bash
-    cd ../basicMovies && go run .
+    cd utils/populate-firestore
+    go run main.go
     ```
 
-    * **Output:** Creates `data/basicMovies.json`.
+3. **Schedule Games:**
+    Randomizes movies and assigns them to specific dates in the `dailyGames` collection.
+
+    ```bash
+    cd utils/schedule-games
+    go run main.go
+    ```
+
+*Note: You will need a `serviceAccountKey.json` in the `utils/` folder to allow the Go scripts to write to Firestore.*
+
+## 🤝 Contributing
+
+Contributions are welcome! Please read the code of conduct and follow the standard pull request process:
+
+1. Fork the repository.
+2. Create a feature branch (`git checkout -b feature/amazing-feature`).
+3. Commit your changes.
+4. Push to the branch.
+5. Open a Pull Request.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🎬 Credits
+
+* Movie data provided by [The Movie Database (TMDB)](https://www.themoviedb.org/).
+* Built with [Expo](https://expo.dev/).

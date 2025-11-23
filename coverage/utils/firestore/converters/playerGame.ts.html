@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">9.09% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>1/11</span>
+                <span class='fraction'>11/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">91.66% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/12</span>
+                <span class='fraction'>11/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/3</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">9.09% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1/11</span>
+                <span class='fraction'>11/11</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -117,11 +117,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -136,26 +134,28 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -167,8 +167,8 @@ import { DEFAULT_DIFFICULTY } from "../../../config/difficulty"
 import { Timestamp } from "firebase/firestore"
 &nbsp;
 export const playerGameConverter = {
-  toFirestore: <span class="fstat-no" title="function not covered" >(p</span>layerGame: PlayerGame) =&gt; {
-<span class="cstat-no" title="statement not covered" >    return {</span>
+  toFirestore: (playerGame: PlayerGame) =&gt; {
+    return {
       id: playerGame.id,
       playerID: playerGame.playerID,
       triviaItem: playerGame.triviaItem,
@@ -179,32 +179,32 @@ export const playerGameConverter = {
       gaveUp: playerGame.gaveUp,
       startDate: playerGame.startDate,
       endDate: playerGame.endDate,
-      hintsUsed: playerGame.hintsUsed || {},
+      hintsUsed: playerGame.hintsUsed || <span class="branch-1 cbranch-no" title="branch not covered" >{},</span>
       statsProcessed: playerGame.statsProcessed || false,
     }
   },
 &nbsp;
-  fromFirestore: <span class="fstat-no" title="function not covered" >(s</span>napshot: any, options: any): PlayerGame =&gt; {
-    const data = <span class="cstat-no" title="statement not covered" >snapshot.data(options)</span>
+  fromFirestore: (snapshot: any, options: any): PlayerGame =&gt; {
+    const data = snapshot.data(options)
 &nbsp;
-    const safeToDate = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(f</span>ield: any): Date =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      if (field instanceof Timestamp) {</span>
-<span class="cstat-no" title="statement not covered" >        return field.toDate()</span>
+    const safeToDate = (field: any): Date =&gt; {
+      if (field instanceof Timestamp) {
+        return field.toDate()
       }
-<span class="cstat-no" title="statement not covered" >      if (typeof field === "string") {</span>
-<span class="cstat-no" title="statement not covered" >        return new Date(field)</span>
+      if (typeof field === "string") {
+        return new Date(field)
       }
-<span class="cstat-no" title="statement not covered" >      return field</span>
+      return field
     }
 &nbsp;
-    const gameData: Partial&lt;PlayerGame&gt; = <span class="cstat-no" title="statement not covered" >{</span>
+    const gameData: Partial&lt;PlayerGame&gt; = {
       ...data,
       difficulty: data.difficulty || DEFAULT_DIFFICULTY,
       startDate: safeToDate(data.startDate),
       endDate: safeToDate(data.endDate),
     }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    return {</span>
+    return {
       ...defaultPlayerGame,
       ...gameData,
     } as PlayerGame
@@ -217,7 +217,7 @@ export const playerGameConverter = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-22T17:14:42.826Z
+                at 2025-11-23T16:07:47.595Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
