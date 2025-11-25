@@ -80,7 +80,8 @@ module.exports = ({ config }) => ({
       expoClientId: process.env.CLIENTID_EXPO,
       iosClientId: process.env.CLIENTID_IOS,
       webClientId: process.env.CLIENTID_WEB,
-      androidClientId: process.env.CLIENTID_ANDROID
+      androidClientId: process.env.CLIENTID_ANDROID,
+      isE2E: process.env.IS_E2E === 'true',
     },
   },
 });

@@ -62,6 +62,17 @@ export function useGoogleAuth(onAuthStateChange: (user: User | null) => void) {
   }, [response])
 
   const handleSignIn = useCallback(async () => {
+    // Short-circuit for E2E
+    if (Constants.expoConfig?.extra?.isE2E) {
+      onAuthStateChange({
+        uid: "e2e-test-user",
+        displayName: "E2E User",
+        email: "e2e@example.com",
+        isAnonymous: false,
+      } as any)
+      return
+    }
+
     setIsLoading(true)
     setAuthError(null)
     analyticsService.trackGoogleSignInStart()

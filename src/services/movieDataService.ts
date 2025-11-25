@@ -1,5 +1,6 @@
 import { IGameDataService } from "./iGameDataService"
 import { GameMode, TriviaItem, BasicTriviaItem, Hint } from "../models/trivia"
+import Constants from "expo-constants"
 
 // We import the raw JSON data directly
 import popularMoviesData from "../../data/popularMovies.json"
@@ -81,6 +82,15 @@ export class MovieDataService implements IGameDataService {
     fullItems: readonly TriviaItem[]
     basicItems: readonly BasicTriviaItem[]
   }> {
+    if (Constants.expoConfig?.extra?.isE2E) {
+      // Short-circuit for E2E
+      const inception = this.allMovies.find(m => m.title === "Inception");
+      return {
+        dailyItem: this._transformMovieToTriviaItem(inception!),
+        fullItems: this.allMovies.map(this._transformMovieToTriviaItem),
+        basicItems: this.allMovies.map(m => ({...})),
+      }
+    }
     if (!this.allMovies || this.allMovies.length === 0) {
       throw new Error("Local movie data is missing or empty.")
     }
