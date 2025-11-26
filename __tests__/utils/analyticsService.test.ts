@@ -1,13 +1,7 @@
-import { analyticsService } from "../../src/utils/analyticsService"
-import {
-  logEvent,
-  setUserId,
-  setUserProperties,
-} from "firebase/analytics"
+import { logEvent, setUserId, setUserProperties } from "firebase/analytics"
 
-// Mock Firebase config to allow us to toggle 'analytics' existence
 jest.mock("../../src/config/firebase", () => ({
-  analytics: {}, // Default to initialized
+  analytics: {},
 }))
 
 jest.mock("firebase/analytics", () => ({
@@ -17,6 +11,8 @@ jest.mock("firebase/analytics", () => ({
   setUserProperties: jest.fn(),
 }))
 
+import { analyticsService } from "../../src/utils/analyticsService"
+
 describe("Utils: analyticsService", () => {
   const mockConsoleLog = jest.spyOn(console, "log").mockImplementation(() => {})
   const mockConsoleError = jest
@@ -25,28 +21,56 @@ describe("Utils: analyticsService", () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-    // @ts-ignore - reset analytics mock to be defined
-    require("../../src/config/firebase").analytics = {}
+  })
+
+  afterAll(() => {
+    jest.restoreAllMocks()
   })
 
   describe("Safety Checks", () => {
     it("should fail gracefully if analytics is not initialized", async () => {
-      // @ts-ignore
-      require("../../src/config/firebase").analytics = undefined
+      jest.isolateModules(() => {
+        jest.doMock("../../src/config/firebase", () => ({
+          __esModule: true,
+          analytics: null,
+        }))
 
-      await analyticsService.trackGameStart(1, "Test Movie")
+        const mockLogEvent = jest.fn()
+        jest.doMock("firebase/analytics", () => ({
+          getAnalytics: jest.fn(),
+          logEvent: mockLogEvent,
+        }))
 
-      expect(logEvent).not.toHaveBeenCalled()
-      // Should log a dev warning (mocked in jestSetup or source)
-      // We check that it didn't crash
+        const {
+          analyticsService: freshService,
+        } = require("../../src/utils/analyticsService")
+
+        freshService.trackGameStart(1, "Test Movie")
+
+        expect(mockLogEvent).not.toHaveBeenCalled()
+      })
     })
 
     it("should catch and log errors from Firebase", async () => {
-      ;(logEvent as jest.Mock).mockRejectedValueOnce(
-        new Error("Firebase Error")
-      )
+      jest.resetModules()
 
-      await analyticsService.trackGameStart(1, "Test Movie")
+      jest.doMock("../../src/config/firebase", () => ({ analytics: {} }))
+
+      const mockLogEvent = jest
+        .fn()
+        .mockRejectedValue(new Error("Firebase Error"))
+      jest.doMock("firebase/analytics", () => ({
+        logEvent: mockLogEvent,
+        getAnalytics: jest.fn(),
+        setUserId: jest.fn(),
+        setUserProperties: jest.fn(),
+      }))
+
+      const {
+        analyticsService: freshService,
+      } = require("../../src/utils/analyticsService")
+
+      await freshService.trackGameStart(1, "Test Movie")
 
       expect(mockConsoleError).toHaveBeenCalledWith(
         expect.stringContaining("Error logging event"),

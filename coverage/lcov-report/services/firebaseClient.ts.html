@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.71% </span>
+                <span class="strong">76.92% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>6/7</span>
+                <span class='fraction'>10/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/4</span>
+                <span class='fraction'>3/6</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.71% </span>
+                <span class="strong">76.92% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>6/7</span>
+                <span class='fraction'>10/13</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -104,7 +104,29 @@
 <a name='L39'></a><a href='#L39'>39</a>
 <a name='L40'></a><a href='#L40'>40</a>
 <a name='L41'></a><a href='#L41'>41</a>
-<a name='L42'></a><a href='#L42'>42</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -130,10 +152,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">40x</span>
-<span class="cline-any cline-yes">40x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -144,17 +170,34 @@
 <span class="cline-any cline-yes">40x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app"
 import {
   initializeFirestore,
   getFirestore,
-  CACHE_SIZE_UNLIMITED,
-  persistentLocalCache,
-  persistentMultipleTabManager,
   Firestore,
 } from "firebase/firestore"
+import { initializeAuth, getAuth, Auth } from "firebase/auth"
+import * as FirebaseAuth from "firebase/auth"
+import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage"
 import Constants from "expo-constants"
+import { Platform } from "react-native"
 &nbsp;
 const firebaseConfig = {
   apiKey: Constants?.expoConfig?.extra?.firebaseApiKey,
@@ -169,23 +212,43 @@ const firebaseConfig = {
 const app: FirebaseApp = getApps().length
   ? <span class="branch-0 cbranch-no" title="branch not covered" >getApp()</span>
   : initializeApp(firebaseConfig)
-let db: Firestore
 &nbsp;
+let db: Firestore
+let auth: Auth
+&nbsp;
+// 1. Initialize Firestore
 try {
-  db = initializeFirestore(app, {
-    localCache: persistentLocalCache({
-      cacheSizeBytes: CACHE_SIZE_UNLIMITED,
-      tabManager: persistentMultipleTabManager(),
-    }),
-  })
+  // Pass empty settings object to avoid web-specific cache warnings on native
+  db = initializeFirestore(app, {})
 } catch (e: any) {
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (e.code === "failed-precondition") {
-<span class="cstat-no" title="statement not covered" >    console.warn("Firestore already initialized. Re-using existing instance.")</span>
-  }
   db = getFirestore(app)
 }
 &nbsp;
-export { app, db }
+// 2. Initialize Auth with Platform-Specific Persistence
+// We check Platform.OS to avoid crashing on Web (where AsyncStorage isn't needed/supported this way)
+<span class="missing-if-branch" title="if path not taken" >I</span>if (Platform.OS === "web") {
+<span class="cstat-no" title="statement not covered" >  auth = getAuth(app)</span>
+} else {
+  try {
+    // We cast FirebaseAuth to 'any' to access getReactNativePersistence
+    // This bypasses the TypeScript error if the environment resolves to Web types
+    const { getReactNativePersistence } = FirebaseAuth as any
+&nbsp;
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (getReactNativePersistence) {
+<span class="cstat-no" title="statement not covered" >      auth = initializeAuth(app, {</span>
+        persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+      })
+    } else {
+      // Fallback if the import fails for some reason
+      auth = getAuth(app)
+    }
+  } catch (e: any) {
+    // If auth is already initialized (hot reload), use existing instance
+<span class="cstat-no" title="statement not covered" >    auth = getAuth(app)</span>
+  }
+}
+&nbsp;
+export { app, db, auth }
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -193,7 +256,7 @@ export { app, db }
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-25T14:57:14.683Z
+                at 2025-11-26T15:36:01.006Z
             </div>
         <script src="../prettify.js"></script>
         <script>

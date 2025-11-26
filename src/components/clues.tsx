@@ -106,7 +106,8 @@ const CluesContainer = memo(() => {
   )
   const [revealedClues, setRevealedClues] = useState<string[]>([])
   const [typewriterText, setTypewriterText] = useState("")
-  const lastClueRef = useRef<string>("")
+  const fullClueShared = useSharedValue("")
+
   const highlightProgress = useSharedValue(0)
   const typewriterProgress = useSharedValue(0)
   const scrollViewRef = useRef<ScrollView>(null)
@@ -114,20 +115,19 @@ const CluesContainer = memo(() => {
 
   const handleSkipAnimation = useCallback(() => {
     cancelAnimation(typewriterProgress)
-    setTypewriterText(lastClueRef.current)
+    setTypewriterText(fullClueShared.value)
     hapticsService.light()
-  }, [typewriterProgress])
+  }, [typewriterProgress, fullClueShared])
 
   useAnimatedReaction(
     () => Math.floor(typewriterProgress.value),
     (currentValue, previousValue) => {
       if (currentValue !== previousValue) {
-        runOnJS(setTypewriterText)(
-          lastClueRef.current.substring(0, currentValue)
-        )
+        const text = fullClueShared.value.substring(0, currentValue)
+        runOnJS(setTypewriterText)(text)
       }
     },
-    [typewriterProgress]
+    [typewriterProgress, fullClueShared]
   )
 
   useEffect(() => {
@@ -152,7 +152,8 @@ const CluesContainer = memo(() => {
       hapticsService.light()
       const newRevealedClues = clues.slice(0, numCluesToReveal)
       const lastClue = newRevealedClues[newRevealedClues.length - 1] || ""
-      lastClueRef.current = lastClue
+
+      fullClueShared.value = lastClue
 
       highlightProgress.value = 0
       typewriterProgress.value = 0
@@ -180,7 +181,7 @@ const CluesContainer = memo(() => {
       setRevealedClues(clues.slice(0, numCluesToReveal))
       const lastClue = clues[numCluesToReveal - 1] || ""
       setTypewriterText(lastClue)
-      lastClueRef.current = lastClue
+      fullClueShared.value = lastClue
     }
 
     return () => {
@@ -194,6 +195,7 @@ const CluesContainer = memo(() => {
     guesses.length,
     clues,
     difficulty,
+    fullClueShared,
   ])
 
   const animatedHighlightStyle = useAnimatedStyle(() => {

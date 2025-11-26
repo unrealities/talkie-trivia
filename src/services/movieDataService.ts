@@ -2,10 +2,8 @@ import { IGameDataService } from "./iGameDataService"
 import { GameMode, TriviaItem, BasicTriviaItem, Hint } from "../models/trivia"
 import Constants from "expo-constants"
 
-// We import the raw JSON data directly
 import popularMoviesData from "../../data/popularMovies.json"
 
-// Define the shape of the raw movie data from the JSON file for type safety
 interface RawMovie {
   id: number
   title: string
@@ -58,7 +56,7 @@ export class MovieDataService implements IGameDataService {
         {
           type: "actors",
           label: "Actors",
-          value: sanitizedActors, // Use sanitized actor list
+          value: sanitizedActors,
           isLinkable: true,
         },
         {
@@ -82,15 +80,26 @@ export class MovieDataService implements IGameDataService {
     fullItems: readonly TriviaItem[]
     basicItems: readonly BasicTriviaItem[]
   }> {
+    // --- E2E TESTING OVERRIDE ---
+    // In E2E mode, we force a specific movie (Inception) to ensure tests are deterministic.
     if (Constants.expoConfig?.extra?.isE2E) {
-      // Short-circuit for E2E
-      const inception = this.allMovies.find(m => m.title === "Inception");
+      const inception = this.allMovies.find((m) => m.title === "Inception")
+      const selectedMovie = inception || this.allMovies[0]
+
       return {
-        dailyItem: this._transformMovieToTriviaItem(inception!),
-        fullItems: this.allMovies.map(this._transformMovieToTriviaItem),
-        basicItems: this.allMovies.map(m => ({...})),
+        dailyItem: this._transformMovieToTriviaItem(selectedMovie),
+        fullItems: this.allMovies.map((m) =>
+          this._transformMovieToTriviaItem(m)
+        ),
+        basicItems: this.allMovies.map((movie) => ({
+          id: movie.id,
+          title: movie.title,
+          releaseDate: movie.release_date,
+          posterPath: movie.poster_path,
+        })),
       }
     }
+
     if (!this.allMovies || this.allMovies.length === 0) {
       throw new Error("Local movie data is missing or empty.")
     }
@@ -104,7 +113,9 @@ export class MovieDataService implements IGameDataService {
     const movieIndex = dayOfYear % this.allMovies.length
     const selectedMovie = this.allMovies[movieIndex]
 
-    const fullItems = this.allMovies.map(this._transformMovieToTriviaItem)
+    const fullItems = this.allMovies.map((m) =>
+      this._transformMovieToTriviaItem(m)
+    )
     const basicItems = this.allMovies.map((movie) => ({
       id: movie.id,
       title: movie.title,

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { Text, ViewStyle, TextStyle } from "react-native"
+import { Text, View, ViewStyle, TextStyle } from "react-native"
 import Animated, {
   useSharedValue,
   withTiming,
@@ -35,15 +35,19 @@ const FlashMessages: React.FC<FlashMessageProps> = ({
   }))
 
   if (!message) return null
+
   return (
     <Animated.View style={[styles.container, animatedStyle]}>
-      <Text style={styles.messageText}>{message}</Text>
+      <View style={styles.shadowWrapper}>
+        <Text style={styles.messageText}>{message}</Text>
+      </View>
     </Animated.View>
   )
 }
 
 interface FlashMessageStyles {
   container: ViewStyle
+  shadowWrapper: ViewStyle
   messageText: TextStyle
 }
 
@@ -58,17 +62,18 @@ const themedStyles = (theme: Theme): FlashMessageStyles => ({
     justifyContent: "center",
     paddingHorizontal: theme.spacing.large,
   },
-  messageText: {
+  shadowWrapper: {
     backgroundColor: theme.colors.tertiary,
+    borderRadius: theme.responsive.scale(8),
+    ...theme.shadows.medium,
+  },
+  messageText: {
     color: theme.colors.background,
     fontSize: theme.responsive.responsiveFontSize(16),
     fontFamily: "Arvo-Bold",
     textAlign: "center",
     paddingVertical: theme.spacing.small,
     paddingHorizontal: theme.spacing.medium,
-    borderRadius: theme.responsive.scale(8),
-    ...theme.shadows.medium,
-    overflow: "hidden", // Ensures text respects border radius on android
   },
 })
 

@@ -4,9 +4,11 @@ const myValue = "talkie-trivia";
 
 module.exports = ({ config }) => ({
   ...config,
+  scheme: "talkie-trivia",
   expo: {
     name: myValue,
     slug: "talkie-trivia",
+    scheme: "talkie-trivia",
     version: process.env.MY_CUSTOM_PROJECT_VERSION || "1.0.0",
     orientation: "portrait",
     icon: "./assets/icon.png",
@@ -39,11 +41,11 @@ module.exports = ({ config }) => ({
             "podfileProperties": {
               "use_modular_headers!": "true"
             },
-            "newArchEnabled": false
+            "newArchEnabled": true
           },
           "android": {
             "flipper": true,
-            "newArchEnabled": false 
+            "newArchEnabled": true 
           }
         }
       ]
@@ -71,6 +73,7 @@ module.exports = ({ config }) => ({
         "origin": false,
         "root": "src/app"
       },
+      isE2E: process.env.IS_E2E === "true",
       firebaseApiKey: process.env.FIREBASE_APIKEY,
       firebaseAppId: process.env.FIREBASE_APPID,
       firebaseMeasurementId: process.env.FIREBASE_MEASUREMENTID,
@@ -80,8 +83,7 @@ module.exports = ({ config }) => ({
       expoClientId: process.env.CLIENTID_EXPO,
       iosClientId: process.env.CLIENTID_IOS,
       webClientId: process.env.CLIENTID_WEB,
-      androidClientId: process.env.CLIENTID_ANDROID,
-      isE2E: process.env.IS_E2E === 'true',
+      androidClientId: process.env.CLIENTID_ANDROID
     },
   },
 });

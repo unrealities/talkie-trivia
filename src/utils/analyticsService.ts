@@ -10,11 +10,6 @@ import { analytics } from "../config/firebase"
 const logEvent = async (eventName: string, params?: { [key: string]: any }) => {
   // Ensure analytics is initialized before logging
   if (!analytics) {
-    if (__DEV__) {
-      console.log(
-        `[ANALYTICS - Skipped] Event: ${eventName} (Analytics not initialized)`
-      )
-    }
     return
   }
 
@@ -102,7 +97,7 @@ export const analyticsService = {
   trackGoogleSignInFailure: (error: string) =>
     logEvent("google_signin_failure", {
       error_message: error.substring(0, 100),
-    }), // Firebase limits param length
+    }),
   trackAnonymousSignIn: (userId: string) => {
     logEvent("login", { method: "anonymous" })
     analyticsService.identifyUser(userId, { sign_in_method: "anonymous" })

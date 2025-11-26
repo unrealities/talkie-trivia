@@ -3,34 +3,42 @@ appId: com.unrealities.talkietrivia
 - launchApp:
     clearState: true
 
-# 1. Handle Onboarding / Login
-- tapOn: "Sign In with Google"
-# Because of our Mock in Step 2, this instantly logs us in as "E2E User"
-- assertVisible: "Welcome, E2E User!"
-- tapOn: "Game" # Switch to Game tab
+# 1. Wait for app
+- extendedWaitUntil:
+    visible: "Find the title!"
+    timeout: 10000
 
-# 2. Search for a wrong movie
+# 2. Try tapping by relative position if text fails (last resort),
+# OR use a regex to catch "Profile, tab, 2 of 2"
+- tapOn:
+    text: "Profile.*" # Regex match
+    retryTapIfNoChange: false 
+- tapOn: "Sign In with Google" 
+- assertVisible: "Welcome, E2E User!"
+- tapOn: "Game.*" # Regex match for Game tab
+
+# 3. Search for a wrong movie
 - tapOn: "search-input"
 - inputText: "Titanic"
-- tapOn: "result-item-Titanic" # Select Titanic from list
+- tapOn: "result-item-Titanic"
 # Verify feedback
 - assertVisible: "Not quite! Try again."
 
-# 3. Use a Hint (Assuming Inception is the forced movie)
+# 4. Use a Hint (Inception is the forced movie)
 - tapOn: "Need a Hint?"
 - tapOn: "Director"
 - assertVisible: "Christopher Nolan"
 
-# 4. Win the Game
+# 5. Win the Game
 - tapOn: "search-input"
 - inputText: "Inception"
 - tapOn: "result-item-Inception"
 
-# 5. Verify Win State
+# 6. Verify Win State
 - assertVisible: "You Got It!"
 - assertVisible: "Share Your Result"
 
-# 6. Verify Persistence (Go to profile)
+# 7. Verify Persistence (Go to profile)
 - tapOn: "Profile"
 - assertVisible: "Games Played: 1"
 - assertVisible: "Current Streak: 1"
