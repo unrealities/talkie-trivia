@@ -13,6 +13,7 @@ module.exports = ({ config }) => ({
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "automatic",
+    newArchEnabled: true,
     splash: {
       image: "./assets/splash.png",
       resizeMode: "contain",
@@ -73,7 +74,7 @@ module.exports = ({ config }) => ({
         "origin": false,
         "root": "src/app"
       },
-      isE2E: process.env.IS_E2E === "true",
+      isE2E: process.env.IS_E2E === "true" || process.env.EXPO_PUBLIC_IS_E2E === "true",
       firebaseApiKey: process.env.FIREBASE_APIKEY,
       firebaseAppId: process.env.FIREBASE_APPID,
       firebaseMeasurementId: process.env.FIREBASE_MEASUREMENTID,

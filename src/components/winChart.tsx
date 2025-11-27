@@ -122,6 +122,7 @@ const themedStyles = (theme: Theme): WinChartStyles => ({
     flexDirection: "column",
     padding: theme.responsive.scale(15),
     width: "100%",
+    backgroundColor: theme.colors.background,
   },
   emptyContainer: {
     padding: theme.spacing.large,

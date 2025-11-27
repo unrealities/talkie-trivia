@@ -16,11 +16,6 @@ export function useGoogleAuth(onAuthStateChange: (user: User | null) => void) {
 
   const authConfig = useMemo(
     () => ({
-      // NOTE for developers: If you encounter a '400: malformed_request' error on web,
-      // ensure your Google Cloud Console OAuth 2.0 Web Client ID has the correct
-      // "Authorized JavaScript origins". For local development with Expo, this is typically
-      // your local server address (e.g., http://localhost:8081). For production, it's your
-      // deployed site's URL.
       androidClientId: Constants.expoConfig?.extra?.androidClientId,
       expoClientId: Constants.expoConfig?.extra?.expoClientId,
       iosClientId: Constants.expoConfig?.extra?.iosClientId,
@@ -62,22 +57,49 @@ export function useGoogleAuth(onAuthStateChange: (user: User | null) => void) {
   }, [response])
 
   const handleSignIn = useCallback(async () => {
-    // Short-circuit for E2E
-    if (Constants.expoConfig?.extra?.isE2E) {
+    // CHECK BOTH SOURCES FOR E2E FLAG
+    // 1. Constants (from app.config.js)
+    // 2. Direct process.env (standard Expo behavior)
+    const isE2E =
+      Constants.expoConfig?.extra?.isE2E === true ||
+      process.env.EXPO_PUBLIC_IS_E2E === "true"
+
+    console.log("[Auth] Sign In attempted. E2E Mode Detected:", isE2E)
+
+    if (isE2E) {
+      console.log("[Auth] SKIPPING GOOGLE PROMPT. Using Mock.")
       onAuthStateChange({
         uid: "e2e-test-user",
         displayName: "E2E User",
         email: "e2e@example.com",
         isAnonymous: false,
-      } as any)
+        emailVerified: true,
+        phoneNumber: null,
+        photoURL: null,
+        providerId: "google.com",
+        metadata: {},
+        providerData: [],
+        refreshToken: "mock-token",
+        tenantId: null,
+        delete: async () => {},
+        getIdToken: async () => "mock-token",
+        getIdTokenResult: async () => ({} as any),
+        reload: async () => {},
+        toJSON: () => ({}),
+      } as unknown as User)
       return
     }
 
     setIsLoading(true)
     setAuthError(null)
     analyticsService.trackGoogleSignInStart()
-    await promptAsync()
-  }, [promptAsync])
+    try {
+      await promptAsync()
+    } catch (e: any) {
+      console.error("Google prompt error:", e)
+      setIsLoading(false)
+    }
+  }, [promptAsync, onAuthStateChange])
 
   const handleSignOut = useCallback(async () => {
     setIsLoading(true)

@@ -25,7 +25,6 @@ export class MovieDataService implements IGameDataService {
   private allMovies: readonly RawMovie[] = popularMoviesData as RawMovie[]
 
   private _transformMovieToTriviaItem(movie: RawMovie): TriviaItem {
-    // Sanitize actors to ensure imdb_id is null, not undefined
     const sanitizedActors = (movie.actors || []).map((actor) => ({
       ...actor,
       imdb_id: actor.imdb_id || null,
@@ -81,8 +80,11 @@ export class MovieDataService implements IGameDataService {
     basicItems: readonly BasicTriviaItem[]
   }> {
     // --- E2E TESTING OVERRIDE ---
-    // In E2E mode, we force a specific movie (Inception) to ensure tests are deterministic.
-    if (Constants.expoConfig?.extra?.isE2E) {
+    const isE2E =
+      Constants.expoConfig?.extra?.isE2E === true ||
+      process.env.EXPO_PUBLIC_IS_E2E === "true"
+
+    if (isE2E) {
       const inception = this.allMovies.find((m) => m.title === "Inception")
       const selectedMovie = inception || this.allMovies[0]
 

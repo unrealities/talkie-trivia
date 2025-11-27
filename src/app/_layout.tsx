@@ -10,10 +10,15 @@ import ErrorMessage from "../components/errorMessage"
 import { useGameStore } from "../state/gameStore"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
 
+// --- LOGBOX SUPPRESSION ---
+// We ignore specific warnings to prevent the Yellow Box from blocking
+// E2E test interactions (like the bottom tab bar).
 LogBox.ignoreLogs([
   "Warning: VictoryPie",
   "Warning: Slice",
   "Warning: VictoryLabel",
+  "Linking requires a build-time setting",
+  "(ADVICE) View #",
 ])
 
 function RootLayoutNav() {
