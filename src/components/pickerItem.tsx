@@ -58,6 +58,7 @@ const PickerItem = memo<ItemProps>(
     return (
       <View style={styles.resultItemContainer}>
         <Pressable
+          testID={`result-item-${item.title}`}
           accessible
           accessibilityRole="button"
           aria-label={`Select and guess: ${item.title}. Long press to preview.`}

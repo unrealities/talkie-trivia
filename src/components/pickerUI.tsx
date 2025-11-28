@@ -44,6 +44,7 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
         <Animated.View style={animatedInputStyle}>
           <View style={styles.inputContainer}>
             <TextInput
+              testID="search-input"
               accessible
               accessibilityRole="search"
               aria-label="Search for a title to make a guess"
