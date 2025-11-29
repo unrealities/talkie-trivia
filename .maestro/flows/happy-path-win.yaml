@@ -3,27 +3,31 @@ appId: com.unrealities.talkietrivia
 - launchApp:
     clearState: true
 
-# 0. WAIT FOR DATA LOAD
+# 0. WAIT FOR DATA LOAD & DISMISS TOOLTIP
 - extendedWaitUntil:
     visible: "Search for a movie title..."
-    timeout: 45000
+    timeout: 15000
+
+# If the tooltip exists, tap the button to dismiss it. 
+# The text "Got it" is usually on that button.
+- tapOn: 
+    text: "Got it"
+    optional: true # In case it doesn't appear
 
 # 1. Handle Onboarding / Login
 - tapOn: "Profile.*" 
 
-# Debug wait
 - extendedWaitUntil:
     visible: "Sign In with Google"
     timeout: 5000
 
 - tapOn: "Sign In with Google" 
 
-# Assert on the BUTTON changing, which confirms auth state
 - extendedWaitUntil:
     visible: "Sign Out E2E User"
     timeout: 8000
 
-# 2. Go back to Game to play
+# 2. Go back to Game
 - tapOn: "Game.*"
 - extendedWaitUntil:
     visible: "Search for a movie title..."
@@ -32,9 +36,12 @@ appId: com.unrealities.talkietrivia
 # 3. Search for a wrong movie
 - tapOn: "Search for a movie title..."
 - inputText: "Titanic"
+
+# Wait for results list to appear (might take a moment after typing)
 - extendedWaitUntil:
     visible: "Titanic (1997)"
     timeout: 5000
+
 - tapOn: "Titanic (1997)"
 
 # Verify feedback
@@ -67,5 +74,5 @@ appId: com.unrealities.talkietrivia
 - tapOn: "Profile.*"
 - extendedWaitUntil:
     visible: "Games Played: 1"
-    timeout: 5000
+    timeout: 3000
 - assertVisible: "Current Streak: 1"
