@@ -3,16 +3,15 @@ appId: com.unrealities.talkietrivia
 - launchApp:
     clearState: true
 
-# 0. WAIT FOR DATA LOAD & DISMISS TOOLTIP
+# 0. WAIT FOR DATA LOAD
 - extendedWaitUntil:
     visible: "Search for a movie title..."
     timeout: 15000
 
-# If the tooltip exists, tap the button to dismiss it. 
-# The text "Got it" is usually on that button.
+# DISMISS TOOLTIP 1
 - tapOn: 
     text: "Got it"
-    optional: true # In case it doesn't appear
+    optional: true
 
 # 1. Handle Onboarding / Login
 - tapOn: "Profile.*" 
@@ -37,12 +36,22 @@ appId: com.unrealities.talkietrivia
 - tapOn: "Search for a movie title..."
 - inputText: "Titanic"
 
-# Wait for results list to appear (might take a moment after typing)
+# DISMISS TOOLTIP 2 (Results Tip)
 - extendedWaitUntil:
-    visible: "Titanic (1997)"
+    visible: "Got it"
+    timeout: 5000 # Increased timeout
+- tapOn: 
+    text: "Got it"
+    optional: true
+
+# Now check for results using ID, which is safer
+- extendedWaitUntil:
+    visible: 
+        id: "result-item-Titanic" # Use the testID we added
     timeout: 5000
 
-- tapOn: "Titanic (1997)"
+- tapOn: 
+    id: "result-item-Titanic"
 
 # Verify feedback
 - extendedWaitUntil:
@@ -60,9 +69,11 @@ appId: com.unrealities.talkietrivia
 - tapOn: "Search for a movie title..."
 - inputText: "Inception"
 - extendedWaitUntil:
-    visible: "Inception (2010)"
+    visible: 
+        id: "result-item-Inception"
     timeout: 3000
-- tapOn: "Inception (2010)"
+- tapOn: 
+    id: "result-item-Inception"
 
 # 6. Verify Win State
 - extendedWaitUntil:

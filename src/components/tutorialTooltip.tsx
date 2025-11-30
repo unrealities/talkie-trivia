@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { View, Pressable, ViewStyle, TextStyle } from "react-native"
+import { View, ViewStyle, TextStyle } from "react-native"
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -55,9 +55,8 @@ const TutorialTooltip: React.FC<TutorialTooltipProps> = ({
           title="Got it"
           onPress={handleDismiss}
           size="sm"
-          style={styles.button}
-          // Customizing text color via style prop is not a feature of our Button yet,
-          // so we will handle this with a specific style for now.
+          variant="secondary"
+          style={{alignSelf: 'center', backgroundColor: 'white'}} 
         />
       </View>
       <View style={styles.pointer} />
@@ -69,7 +68,6 @@ interface TutorialTooltipStyles {
   container: ViewStyle
   tooltipBox: ViewStyle
   text: TextStyle
-  button: ViewStyle
   pointer: ViewStyle
 }
 
@@ -95,13 +93,6 @@ const themedStyles = (theme: Theme): TutorialTooltipStyles => ({
     lineHeight: theme.responsive.responsiveFontSize(21),
     textAlign: "center",
     marginBottom: theme.spacing.medium,
-  },
-  button: {
-    backgroundColor: theme.colors.background,
-    alignSelf: "center",
-    paddingHorizontal: theme.spacing.large,
-    // Since our button doesn't support textColor via props, we can't easily change it here.
-    // For now, this is acceptable. A future improvement would be to enhance the Button component.
   },
   pointer: {
     width: 0,
