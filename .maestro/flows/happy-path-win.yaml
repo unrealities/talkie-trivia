@@ -35,45 +35,36 @@ appId: com.unrealities.talkietrivia
 # 3. Search for a wrong movie
 - tapOn: "Search for a movie title..."
 - inputText: "Titanic"
+- pressKey: Enter
 
 # DISMISS TOOLTIP 2 (Results Tip)
 - extendedWaitUntil:
     visible: "Got it"
-    timeout: 5000 # Increased timeout
+    timeout: 5000 
 - tapOn: 
     text: "Got it"
     optional: true
 
-# Now check for results using ID, which is safer
+# Select Titanic
 - extendedWaitUntil:
-    visible: 
-        id: "result-item-Titanic" # Use the testID we added
+    visible: "Select and guess: Titanic.*"
     timeout: 5000
+- tapOn: "Select and guess: Titanic.*"
 
-- tapOn: 
-    id: "result-item-Titanic"
-
-# Verify feedback
+# Verify IMPLICIT FEEDBACK (Shared Actor: DiCaprio)
 - extendedWaitUntil:
-    visible: "Not quite! Try again."
-    timeout: 3000
-
-# 4. Use a Hint
-- tapOn: "Need a Hint?.*" 
-- tapOn: "Director"
-- extendedWaitUntil:
-    visible: "Christopher Nolan"
-    timeout: 3000
+    visible: "You're on the right track with the Actors.*" 
+    timeout: 5000
 
 # 5. Win the Game
 - tapOn: "Search for a movie title..."
 - inputText: "Inception"
+- pressKey: Enter
+
 - extendedWaitUntil:
-    visible: 
-        id: "result-item-Inception"
+    visible: "Select and guess: Inception.*"
     timeout: 3000
-- tapOn: 
-    id: "result-item-Inception"
+- tapOn: "Select and guess: Inception.*"
 
 # 6. Verify Win State
 - extendedWaitUntil:

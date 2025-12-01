@@ -4,7 +4,6 @@ import {
   VictoryBar,
   VictoryChart,
   VictoryAxis,
-  VictoryLabel,
 } from "./victory-charts"
 import { Typography } from "./ui/typography"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
@@ -15,7 +14,7 @@ export interface WinChartProps {
 
 const WinChart = memo(({ wins }: WinChartProps) => {
   const styles = useStyles(themedStyles)
-  const { colors, responsive, typography } = styles.rawTheme
+  const { colors, responsive } = styles.rawTheme
   const totalWins = wins.reduce((a, b) => a + b, 0)
 
   const accessibilityLabel = useMemo(() => {
@@ -50,6 +49,12 @@ const WinChart = memo(({ wins }: WinChartProps) => {
     y: winCount,
   }))
 
+  // Safety check for Victory components
+  if (!VictoryBar || !VictoryChart || !VictoryAxis) {
+     console.warn("Victory Native components failed to load.");
+     return null;
+  }
+
   return (
     <View style={styles.container} accessibilityLabel={accessibilityLabel}>
       <VictoryChart
@@ -80,8 +85,7 @@ const WinChart = memo(({ wins }: WinChartProps) => {
               fontSize: responsive.responsiveFontSize(12),
             },
           }}
-          labelComponent={<VictoryLabel dy={-10} />}
-          labels={({ datum }) => (datum.y > 0 ? datum.y : "")}
+          labels={({ datum }) => (datum.y > 0 ? datum.y.toString() : "")}
         />
         <VictoryAxis
           dependentAxis
