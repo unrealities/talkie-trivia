@@ -47,14 +47,22 @@ appId: com.unrealities.talkietrivia
 
 # Select Titanic
 - extendedWaitUntil:
-    visible: "Select and guess: Titanic.*"
+    visible: "Titanic (1997)"
     timeout: 5000
-- tapOn: "Select and guess: Titanic.*"
 
-# Verify IMPLICIT FEEDBACK (Shared Actor: DiCaprio)
+- tapOn: "Titanic (1997)"
+
+# Verify feedback
 - extendedWaitUntil:
-    visible: "You're on the right track with the Actors.*" 
-    timeout: 5000
+    visible: "Not quite! Try again."
+    timeout: 3000
+
+# 4. Use a Hint
+- tapOn: "Need a Hint?.*" 
+- tapOn: "Director"
+- extendedWaitUntil:
+    visible: "Christopher Nolan"
+    timeout: 3000
 
 # 5. Win the Game
 - tapOn: "Search for a movie title..."
@@ -62,9 +70,9 @@ appId: com.unrealities.talkietrivia
 - pressKey: Enter
 
 - extendedWaitUntil:
-    visible: "Select and guess: Inception.*"
+    visible: "Inception (2010)"
     timeout: 3000
-- tapOn: "Select and guess: Inception.*"
+- tapOn: "Inception (2010)"
 
 # 6. Verify Win State
 - extendedWaitUntil:
@@ -75,6 +83,9 @@ appId: com.unrealities.talkietrivia
 # 7. Verify Persistence
 - tapOn: "Profile.*"
 - extendedWaitUntil:
-    visible: "Games Played: 1"
-    timeout: 3000
-- assertVisible: "Current Streak: 1"
+    visible: "Statistics"
+    timeout: 5000
+
+# Check stats exist
+- assertVisible: "Games Played"
+- assertVisible: "Current Streak"

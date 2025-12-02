@@ -38,7 +38,7 @@ module.exports = ({ config }) => ({
         {
           "ios": {
             "flipper": true,
-            "useFrameworks": "static", 
+            "useFrameworks": "static",
             "podfileProperties": {
               "use_modular_headers!": "true"
             },
@@ -46,7 +46,7 @@ module.exports = ({ config }) => ({
           },
           "android": {
             "flipper": true,
-            "newArchEnabled": true 
+            "newArchEnabled": true
           }
         }
       ]

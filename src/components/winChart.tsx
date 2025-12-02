@@ -49,10 +49,9 @@ const WinChart = memo(({ wins }: WinChartProps) => {
     y: winCount,
   }))
 
-  // Safety check for Victory components
   if (!VictoryBar || !VictoryChart || !VictoryAxis) {
-     console.warn("Victory Native components failed to load.");
-     return null;
+    console.warn("Victory Native components failed to load. Skipping chart.")
+    return null
   }
 
   return (

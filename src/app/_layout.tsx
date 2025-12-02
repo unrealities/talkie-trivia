@@ -18,7 +18,9 @@ LogBox.ignoreLogs([
   "Warning: Slice",
   "Warning: VictoryLabel",
   "Linking requires a build-time setting",
-  "(ADVICE) View #",
+  "(ADVICE)",
+  "shadow set but cannot calculate",
+  "Victory Native components failed to load",
 ])
 
 function RootLayoutNav() {

@@ -61,7 +61,7 @@ const PickerItem = memo<ItemProps>(
           testID={`result-item-${item.title}`}
           accessible
           accessibilityRole="button"
-          aria-label={`Select and guess: ${item.title}. Long press to preview.`}
+          accessibilityLabel={`Select and guess: ${item.title}. Long press to preview.`}
           onPress={() => onSelect(item)}
           onLongPress={() => onLongPress(item)}
           delayLongPress={200}
@@ -73,12 +73,14 @@ const PickerItem = memo<ItemProps>(
           disabled={isDisabled}
         >
           <View style={styles.resultItemContent}>
-            <Image
-              source={imageSource}
-              placeholder={defaultPoster}
-              style={styles.resultImage}
-              contentFit="cover"
-            />
+            <View style={styles.imageWrapper}>
+              <Image
+                source={imageSource}
+                placeholder={defaultPoster}
+                style={styles.resultImage}
+                contentFit="cover"
+              />
+            </View>
             <Text
               style={styles.unselected}
               numberOfLines={2}
@@ -90,12 +92,14 @@ const PickerItem = memo<ItemProps>(
 
           {isExpanded && detailedItem && (
             <View style={styles.expandedPreview}>
-              <Image
-                source={fullImageSource}
-                placeholder={defaultPoster}
-                style={styles.expandedImage}
-                contentFit="cover"
-              />
+              <View style={styles.expandedImageWrapper}>
+                <Image
+                  source={fullImageSource}
+                  placeholder={defaultPoster}
+                  style={styles.expandedImage}
+                  contentFit="cover"
+                />
+              </View>
               <View style={styles.expandedInfo}>
                 <Text style={styles.expandedTitle} numberOfLines={3}>
                   {detailedItem.title}
@@ -121,9 +125,11 @@ interface PickerItemStyles {
   resultItem: ViewStyle
   pressedItem: ViewStyle
   resultItemContent: ViewStyle
+  imageWrapper: ViewStyle
   resultImage: ImageStyle
   unselected: TextStyle
   expandedPreview: ViewStyle
+  expandedImageWrapper: ViewStyle
   expandedImage: ImageStyle
   expandedInfo: ViewStyle
   expandedTitle: TextStyle
@@ -148,12 +154,17 @@ const themedStyles = (theme: Theme): PickerItemStyles => ({
     flexDirection: "row",
     alignItems: "center",
   },
-  resultImage: {
+  imageWrapper: {
     width: theme.responsive.scale(30),
     height: theme.responsive.scale(45),
     borderRadius: theme.responsive.scale(4),
     marginRight: theme.spacing.medium,
     backgroundColor: theme.colors.surface,
+    overflow: "hidden",
+  },
+  resultImage: {
+    width: "100%",
+    height: "100%",
   },
   unselected: {
     ...theme.typography.bodyText,
@@ -168,11 +179,17 @@ const themedStyles = (theme: Theme): PickerItemStyles => ({
     backgroundColor: theme.colors.surface,
     borderRadius: theme.responsive.scale(8),
   },
-  expandedImage: {
+  expandedImageWrapper: {
     width: theme.responsive.scale(80),
     height: theme.responsive.scale(120),
     borderRadius: theme.responsive.scale(6),
     marginRight: theme.spacing.medium,
+    backgroundColor: theme.colors.surface,
+    overflow: "hidden",
+  },
+  expandedImage: {
+    width: "100%",
+    height: "100%",
   },
   expandedInfo: {
     flex: 1,

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { StyleSheet } from "react-native"
+import { StyleSheet, View } from "react-native"
 import { Image } from "expo-image"
 import Animated, {
   useSharedValue,
@@ -31,6 +31,12 @@ const RevealSequence: React.FC<RevealSequenceProps> = ({
   const posterRotate = useSharedValue(0)
   const titleOpacity = useSharedValue(0)
 
+  const handleComplete = () => {
+    setTimeout(() => {
+      onAnimationComplete()
+    }, 1000)
+  }
+
   useEffect(() => {
     containerOpacity.value = withTiming(1, { duration: 300 })
     posterRotate.value = withDelay(
@@ -39,10 +45,10 @@ const RevealSequence: React.FC<RevealSequenceProps> = ({
     )
     titleOpacity.value = withDelay(
       1200,
-      withTiming(1, { duration: 500 }, () => {
-        setTimeout(() => {
-          runOnJS(onAnimationComplete)()
-        }, 1000)
+      withTiming(1, { duration: 500 }, (finished) => {
+        if (finished) {
+          runOnJS(handleComplete)()
+        }
       })
     )
   }, [containerOpacity, posterRotate, titleOpacity, onAnimationComplete])
@@ -74,7 +80,13 @@ const RevealSequence: React.FC<RevealSequenceProps> = ({
   return (
     <Animated.View style={[styles.container, containerStyle]}>
       <Animated.View style={posterStyle}>
-        <Image source={imageSource} style={styles.poster} contentFit="cover" />
+        <View style={styles.posterShadowWrapper}>
+          <Image
+            source={imageSource}
+            style={styles.poster}
+            contentFit="cover"
+          />
+        </View>
       </Animated.View>
       <Animated.Text style={[styles.title, titleStyle]}>{title}</Animated.Text>
     </Animated.View>
@@ -83,6 +95,7 @@ const RevealSequence: React.FC<RevealSequenceProps> = ({
 
 interface RevealSequenceStyles {
   container: ViewStyle
+  posterShadowWrapper: ViewStyle
   poster: ImageStyle
   title: TextStyle
 }
@@ -95,11 +108,17 @@ const themedStyles = (theme: Theme): RevealSequenceStyles => ({
     alignItems: "center",
     zIndex: 100,
   },
-  poster: {
+  posterShadowWrapper: {
     width: theme.responsive.scale(180),
     height: theme.responsive.scale(270),
     borderRadius: theme.responsive.scale(10),
+    backgroundColor: theme.colors.background,
     ...theme.shadows.medium,
+  },
+  poster: {
+    width: "100%",
+    height: "100%",
+    borderRadius: theme.responsive.scale(10),
   },
   title: {
     fontFamily: "Arvo-Bold",
