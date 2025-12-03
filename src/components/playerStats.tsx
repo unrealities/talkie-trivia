@@ -29,8 +29,7 @@ const PlayerStatsContainer = memo(
       <View
         style={styles.container}
         key={player.id}
-        accessible={true}
-        accessibilityLabel="Player Statistics"
+        testID="player-stats-container" 
       >
         <WinChart wins={playerStats.wins} />
         <View style={styles.statsContainer}>

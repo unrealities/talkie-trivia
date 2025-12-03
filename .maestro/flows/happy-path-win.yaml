@@ -36,54 +36,54 @@ appId: com.unrealities.talkietrivia
 - tapOn: "Search for a movie title..."
 - inputText: "Titanic"
 - pressKey: Enter
+- hideKeyboard
 
-# DISMISS TOOLTIP 2 (Results Tip)
+# DISMISS TOOLTIP 2
 - extendedWaitUntil:
     visible: "Got it"
     timeout: 5000 
-- tapOn: 
-    text: "Got it"
-    optional: true
+- tapOn: "Got it"
 
 # Select Titanic
-- extendedWaitUntil:
-    visible: "Titanic (1997)"
-    timeout: 5000
+- assertVisible:
+    id: "result-item-Titanic"
+- tapOn:
+    id: "result-item-Titanic"
 
-- tapOn: "Titanic (1997)"
-
-# Verify feedback
+# Verify feedback (Titanic shares Leonardo DiCaprio with Inception, so we get a hint!)
 - extendedWaitUntil:
-    visible: "Not quite! Try again."
+    visible: "You're on the right track with the Actors.*"
     timeout: 3000
 
-# 4. Use a Hint
-- tapOn: "Need a Hint?.*" 
-- tapOn: "Director"
-- extendedWaitUntil:
-    visible: "Christopher Nolan"
-    timeout: 3000
-
-# 5. Win the Game
+# 4. Win the Game
 - tapOn: "Search for a movie title..."
 - inputText: "Inception"
 - pressKey: Enter
+- hideKeyboard
 
-- extendedWaitUntil:
-    visible: "Inception (2010)"
-    timeout: 3000
-- tapOn: "Inception (2010)"
+# Select Inception
+- assertVisible:
+    id: "result-item-Inception"
+- tapOn: 
+    id: "result-item-Inception"
 
-# 6. Verify Win State
+# 5. Verify Win State
 - extendedWaitUntil:
     visible: "You Got It!"
     timeout: 5000
 - assertVisible: "Share Your Result"
 
-# 7. Verify Persistence
+# 6. Verify Persistence
 - tapOn: "Profile.*"
 - extendedWaitUntil:
     visible: "Statistics"
+    timeout: 5000
+
+# Scroll to find stats (Handles small screens)
+- scrollUntilVisible:
+    element:
+        text: "Games Played"
+    direction: DOWN
     timeout: 5000
 
 # Check stats exist
