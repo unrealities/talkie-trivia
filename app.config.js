@@ -37,7 +37,6 @@ module.exports = ({ config }) => ({
         "expo-build-properties",
         {
           "ios": {
-            "flipper": true,
             "useFrameworks": "static",
             "podfileProperties": {
               "use_modular_headers!": "true"
@@ -45,7 +44,6 @@ module.exports = ({ config }) => ({
             "newArchEnabled": true
           },
           "android": {
-            "flipper": true,
             "newArchEnabled": true
           }
         }
