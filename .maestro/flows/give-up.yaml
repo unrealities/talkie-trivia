@@ -1,0 +1,36 @@
+appId: com.unrealities.talkietrivia
+---
+- launchApp:
+    clearState: true
+
+# 0. Wait for Load
+- extendedWaitUntil:
+    visible: "Search for a movie title..."
+    timeout: 45000
+- tapOn: 
+    text: "Got it"
+    optional: true
+
+# 1. Test Cancel Logic
+- scrollUntilVisible:
+    element:
+        id: "give-up-button"
+    direction: DOWN
+- tapOn: 
+    id: "give-up-button"
+
+- assertVisible: "Are you sure you want to give up on this movie?"
+- tapOn: "Cancel"
+# Ensure we are back in the game
+- assertVisible: "Search for a movie title..."
+
+# 2. Test Confirm Logic
+- tapOn: 
+    id: "give-up-button"
+- tapOn: "Give Up"
+
+# 3. Verify Game Over State
+- extendedWaitUntil:
+    visible: "So Close!"
+    timeout: 5000
+- assertVisible: "fold 'em" # Part of "Sometimes you just know when to fold 'em"

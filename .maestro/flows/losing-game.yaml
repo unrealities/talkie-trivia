@@ -1,0 +1,88 @@
+appId: com.unrealities.talkietrivia
+---
+- launchApp:
+    clearState: true
+
+# 0. Wait for Load
+- extendedWaitUntil:
+    visible: "Search for a movie title..."
+    timeout: 45000
+
+# Dismiss Tooltip
+- tapOn: 
+    text: "Got it"
+    optional: true
+
+# 1. Make 5 Incorrect Guesses
+# We use a loop concept by repeating commands, selecting 5 different movies
+- runFlow:
+    commands:
+        - tapOn: "Search for a movie title..."
+        - inputText: "Titanic"
+        - pressKey: Enter
+        - hideKeyboard
+        - extendedWaitUntil:
+            visible: "result-item-Titanic (1997)"
+            timeout: 5000
+        - tapOn: "result-item-Titanic (1997)"
+        - waitForAnimationToEnd
+
+        - tapOn: "Search for a movie title..."
+        - inputText: "Avatar"
+        - pressKey: Enter
+        - hideKeyboard
+        - extendedWaitUntil:
+            visible: "result-item-Avatar"
+            timeout: 5000
+        - tapOn: "result-item-Avatar"
+        - waitForAnimationToEnd
+
+        - tapOn: "Search for a movie title..."
+        - inputText: "Matrix"
+        - pressKey: Enter
+        - hideKeyboard
+        - extendedWaitUntil:
+            visible: "result-item-The Matrix"
+            timeout: 5000
+        - tapOn: "result-item-The Matrix"
+        - waitForAnimationToEnd
+
+        - tapOn: "Search for a movie title..."
+        - inputText: "Shrek"
+        - pressKey: Enter
+        - hideKeyboard
+        - extendedWaitUntil:
+            visible: "result-item-Shrek"
+            timeout: 5000
+        - tapOn: "result-item-Shrek"
+        - waitForAnimationToEnd
+
+        # Final Guess (Game Over)
+        - tapOn: "Search for a movie title..."
+        - inputText: "Jaws"
+        - pressKey: Enter
+        - hideKeyboard
+        - extendedWaitUntil:
+            visible: "result-item-Jaws"
+            timeout: 5000
+        - tapOn: "result-item-Jaws"
+
+# 2. Verify Loss State
+- extendedWaitUntil:
+    visible: "So Close!"
+    timeout: 5000
+- assertVisible: "Better luck next time."
+
+# 3. Verify Correct Answer is Revealed
+# Assuming Inception is the daily movie based on mocks
+- assertVisible: "Inception" 
+- assertVisible: "The Full Plot"
+
+# 4. Verify Stats Reset
+- tapOn: "Profile"
+- scrollUntilVisible:
+    element:
+        text: "Current Streak"
+    direction: DOWN
+- assertVisible: "Current Streak" 
+# Note: We can't easily assert "0" without ID, but presence of the block confirms navigation.

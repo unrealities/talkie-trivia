@@ -1,0 +1,65 @@
+appId: com.unrealities.talkietrivia
+---
+- launchApp:
+    clearState: true
+
+# 0. Init
+- extendedWaitUntil:
+    visible: "Search for a movie title..."
+    timeout: 45000
+# DISMISS TOOLTIP 1
+- tapOn: 
+    text: "Got it"
+    optional: true
+
+# 1. Change Difficulty
+- tapOn: "Profile.*"
+- scrollUntilVisible:
+    element:
+        text: "Hard"
+    direction: DOWN
+- tapOn: "Hard"
+
+# 2. Verify Difficulty Impact (Go back to game)
+- tapOn: "Game"
+# In Hard mode, the hint section usually disappears or changes state. 
+# We can check if the Difficulty selector at the top of the game screen updated.
+- assertVisible: "Hard" 
+
+# 3. Complete a quick game (Win)
+- tapOn: "Search for a movie title..."
+- inputText: "Inception"
+- pressKey: Enter
+- hideKeyboard
+- extendedWaitUntil:
+    visible: "result-item-Inception"
+    timeout: 5000
+- tapOn: "result-item-Inception"
+- extendedWaitUntil:
+    visible: "You Got It!"
+    timeout: 5000
+
+# 4. Check History
+- tapOn: "Profile"
+- scrollUntilVisible:
+    element:
+        text: "Game History"
+    direction: DOWN
+    timeout: 5000
+
+# Verify the history item exists (Inception)
+# Note: You might need to remove accessible={true} from GameHistoryItem in `src/components/gameHistory.tsx` 
+# just like we did for PlayerStats for this to work reliably.
+- scrollUntilVisible:
+    element:
+        text: "Inception"
+    direction: DOWN
+    timeout: 5000
+- tapOn: "Inception"
+
+# 5. Verify History Detail Modal
+- extendedWaitUntil:
+    visible: "Your Guesses"
+    timeout: 3000
+- assertVisible: "Inception (2010)"
+- tapOn: "Close"

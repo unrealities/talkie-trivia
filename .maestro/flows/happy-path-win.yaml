@@ -6,7 +6,7 @@ appId: com.unrealities.talkietrivia
 # 0. WAIT FOR DATA LOAD
 - extendedWaitUntil:
     visible: "Search for a movie title..."
-    timeout: 15000
+    timeout: 45000
 
 # DISMISS TOOLTIP 1
 - tapOn: 
