@@ -20,11 +20,11 @@ describe("Firestore Converter: PlayerStats", () => {
       expect(result).toEqual(mockStats)
     })
 
-    it("should handle null lastStreakMessageDate", () => {
+    it("should handle null/undefined lastStreakMessageDate", () => {
       const stats = { ...mockStats, lastStreakMessageDate: undefined }
       // @ts-ignore
       const result = playerStatsConverter.toFirestore(stats)
-      expect(result.lastStreakMessageDate).toBeNull()
+      expect(result.lastStreakMessageDate).toBeUndefined()
     })
 
     it("should default allTimeScore to 0 if missing", () => {
@@ -62,7 +62,7 @@ describe("Firestore Converter: PlayerStats", () => {
       expect(result.hintsAvailable).toBe(3) // Default
       expect(result.hintsUsedCount).toBe(0) // Default
       expect(result.allTimeScore).toBe(0) // Default
-      expect(result.lastStreakMessageDate).toBeNull()
+      expect(result.lastStreakMessageDate).toBeUndefined()
     })
   })
 })
