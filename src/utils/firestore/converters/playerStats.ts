@@ -11,7 +11,7 @@ export const playerStatsConverter = {
       wins: playerStats.wins,
       hintsAvailable: playerStats.hintsAvailable,
       hintsUsedCount: playerStats.hintsUsedCount,
-      lastStreakMessageDate: playerStats.lastStreakMessageDate ?? null,
+      lastStreakMessageDate: playerStats.lastStreakMessageDate ?? undefined,
       allTimeScore: playerStats.allTimeScore || 0,
     }
     return ps
@@ -29,7 +29,7 @@ export const playerStatsConverter = {
       wins: data.wins,
       hintsAvailable: data.hintsAvailable || 3,
       hintsUsedCount: data.hintsUsedCount || 0,
-      lastStreakMessageDate: data.lastStreakMessageDate ?? null,
+      lastStreakMessageDate: data.lastStreakMessageDate ?? undefined,
       allTimeScore: data.allTimeScore || 0,
     }
     return ps
