@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react"
-import { View, ViewStyle } from "react-native"
+import { View, ViewStyle, StyleProp } from "react-native"
 import PickerContainer from "./picker"
 import HintContainer from "./hint"
 import ConfirmationModal from "./confirmationModal"
@@ -48,7 +48,7 @@ const GameplayView: React.FC = () => {
         isLoading={isGivingUp}
         disabled={isInteractionsDisabled}
         variant="error"
-        style={[u.wFull, styles.giveUpButton] as ViewStyle}
+        style={[u.wFull, styles.giveUpButton] as StyleProp<ViewStyle>}
         testID="give-up-button"
       />
 

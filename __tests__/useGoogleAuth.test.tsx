@@ -69,8 +69,7 @@ describe("Hook: useGoogleAuth", () => {
       { type: "success", params: { id_token: "valid-token" } },
       mockPromptAsync,
     ])
-
-    rerender()
+    rerender({})
 
     await waitFor(() => {
       expect(GoogleAuthProvider.credential).toHaveBeenCalledWith("valid-token")
@@ -98,7 +97,7 @@ describe("Hook: useGoogleAuth", () => {
       mockPromptAsync,
     ])
 
-    rerender()
+    rerender({})
 
     await waitFor(() => {
       expect(result.current.authError).toContain(
@@ -122,7 +121,7 @@ describe("Hook: useGoogleAuth", () => {
       mockPromptAsync,
     ])
 
-    rerender()
+    rerender({})
 
     await waitFor(() => {
       expect(result.current.authError).toContain(

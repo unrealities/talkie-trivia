@@ -7,6 +7,7 @@ import {
   ViewStyle,
   TextStyle,
   ActivityIndicator,
+  StyleProp,
 } from "react-native"
 import { useTheme } from "../../contexts/themeContext"
 import { getButtonStyles } from "../../styles/global"
@@ -19,7 +20,7 @@ interface ButtonProps extends PressableProps {
   variant?: ButtonVariant
   size?: ButtonSize
   isLoading?: boolean
-  style?: ViewStyle
+  style?: StyleProp<ViewStyle>
 }
 
 export const Button: React.FC<ButtonProps> = ({
