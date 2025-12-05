@@ -5,9 +5,7 @@ import WinChart from "../src/components/winChart"
 
 // --- Mocks ---
 
-// Mock Victory components to avoid complex SVG rendering in tests
-// We inspect the props passed to VictoryBar to ensure data is correct.
-jest.mock("../src/components/victory-charts", () => {
+jest.mock("victory-native", () => {
   const { View } = require("react-native")
   return {
     VictoryBar: (props: any) => (
@@ -22,6 +20,17 @@ jest.mock("../src/components/victory-charts", () => {
     VictoryAxis: () => <View testID="mock-victory-axis" />,
     VictoryLabel: () => <View testID="mock-victory-label" />,
   }
+})
+
+jest.mock("../src/components/statItem", () => {
+  const { Text, View } = require("react-native")
+  return (props: any) => (
+    <View testID={`stat-item-${props.label}`}>
+      <Text>
+        {props.label}: {props.value}
+      </Text>
+    </View>
+  )
 })
 
 // --- Test Setup ---
@@ -72,15 +81,9 @@ describe("WinChart Component", () => {
       const testWins = [1, 0, 2, 0, 0]
       renderWithTheme(<WinChart wins={testWins} />)
 
-      // The container view has the accessibility label
-      // We can find the root view of the component.
-      // Since `render` returns the root, we can inspect it, or query by label.
-
       const label = screen.getByLabelText(/Bar chart showing win distribution/)
       expect(label).toBeTruthy()
 
-      // Verify content of label string logic
-      // "1 win with 1 guess. 2 wins with 3 guesses."
       expect(label.props.accessibilityLabel).toContain("1 win with 1 guess")
       expect(label.props.accessibilityLabel).toContain("2 wins with 3 guesses")
     })

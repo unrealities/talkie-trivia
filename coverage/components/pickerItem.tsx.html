@@ -263,7 +263,25 @@
 <a name='L198'></a><a href='#L198'>198</a>
 <a name='L199'></a><a href='#L199'>199</a>
 <a name='L200'></a><a href='#L200'>200</a>
-<a name='L201'></a><a href='#L201'>201</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L201'></a><a href='#L201'>201</a>
+<a name='L202'></a><a href='#L202'>202</a>
+<a name='L203'></a><a href='#L203'>203</a>
+<a name='L204'></a><a href='#L204'>204</a>
+<a name='L205'></a><a href='#L205'>205</a>
+<a name='L206'></a><a href='#L206'>206</a>
+<a name='L207'></a><a href='#L207'>207</a>
+<a name='L208'></a><a href='#L208'>208</a>
+<a name='L209'></a><a href='#L209'>209</a>
+<a name='L210'></a><a href='#L210'>210</a>
+<a name='L211'></a><a href='#L211'>211</a>
+<a name='L212'></a><a href='#L212'>212</a>
+<a name='L213'></a><a href='#L213'>213</a>
+<a name='L214'></a><a href='#L214'>214</a>
+<a name='L215'></a><a href='#L215'>215</a>
+<a name='L216'></a><a href='#L216'>216</a>
+<a name='L217'></a><a href='#L217'>217</a>
+<a name='L218'></a><a href='#L218'>218</a>
+<a name='L219'></a><a href='#L219'>219</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -326,6 +344,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -395,7 +414,24 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -523,9 +559,10 @@ const PickerItem = memo&lt;ItemProps&gt;(
     return (
       &lt;View style={styles.resultItemContainer}&gt;
         &lt;Pressable
+          testID={`result-item-${item.title}`}
           accessible
           accessibilityRole="button"
-          aria-label={`Select and guess: ${item.title}. Long press to preview.`}
+          accessibilityLabel={`Select and guess: ${item.title}. Long press to preview.`}
           onPress={() =&gt; onSelect(item)}
           onLongPress={() =&gt; onLongPress(item)}
           delayLongPress={200}
@@ -537,12 +574,14 @@ const PickerItem = memo&lt;ItemProps&gt;(
           disabled={isDisabled}
         &gt;
           &lt;View style={styles.resultItemContent}&gt;
-            &lt;Image
-              source={imageSource}
-              placeholder={defaultPoster}
-              style={styles.resultImage}
-              contentFit="cover"
-            /&gt;
+            &lt;View style={styles.imageWrapper}&gt;
+              &lt;Image
+                source={imageSource}
+                placeholder={defaultPoster}
+                style={styles.resultImage}
+                contentFit="cover"
+              /&gt;
+            &lt;/View&gt;
             &lt;Text
               style={styles.unselected}
               numberOfLines={2}
@@ -554,12 +593,14 @@ const PickerItem = memo&lt;ItemProps&gt;(
 &nbsp;
           {isExpanded &amp;&amp; detailedItem &amp;&amp; (
             &lt;View style={styles.expandedPreview}&gt;
-              &lt;Image
-                source={fullImageSource}
-                placeholder={defaultPoster}
-                style={styles.expandedImage}
-                contentFit="cover"
-              /&gt;
+              &lt;View style={styles.expandedImageWrapper}&gt;
+                &lt;Image
+                  source={fullImageSource}
+                  placeholder={defaultPoster}
+                  style={styles.expandedImage}
+                  contentFit="cover"
+                /&gt;
+              &lt;/View&gt;
               &lt;View style={styles.expandedInfo}&gt;
                 &lt;Text style={styles.expandedTitle} numberOfLines={3}&gt;
                   {detailedItem.title}
@@ -585,9 +626,11 @@ interface PickerItemStyles {
   resultItem: ViewStyle
   pressedItem: ViewStyle
   resultItemContent: ViewStyle
+  imageWrapper: ViewStyle
   resultImage: ImageStyle
   unselected: TextStyle
   expandedPreview: ViewStyle
+  expandedImageWrapper: ViewStyle
   expandedImage: ImageStyle
   expandedInfo: ViewStyle
   expandedTitle: TextStyle
@@ -612,12 +655,17 @@ const themedStyles = (theme: Theme): PickerItemStyles =&gt; ({
     flexDirection: "row",
     alignItems: "center",
   },
-  resultImage: {
+  imageWrapper: {
     width: theme.responsive.scale(30),
     height: theme.responsive.scale(45),
     borderRadius: theme.responsive.scale(4),
     marginRight: theme.spacing.medium,
     backgroundColor: theme.colors.surface,
+    overflow: "hidden",
+  },
+  resultImage: {
+    width: "100%",
+    height: "100%",
   },
   unselected: {
     ...theme.typography.bodyText,
@@ -632,11 +680,17 @@ const themedStyles = (theme: Theme): PickerItemStyles =&gt; ({
     backgroundColor: theme.colors.surface,
     borderRadius: theme.responsive.scale(8),
   },
-  expandedImage: {
+  expandedImageWrapper: {
     width: theme.responsive.scale(80),
     height: theme.responsive.scale(120),
     borderRadius: theme.responsive.scale(6),
     marginRight: theme.spacing.medium,
+    backgroundColor: theme.colors.surface,
+    overflow: "hidden",
+  },
+  expandedImage: {
+    width: "100%",
+    height: "100%",
   },
   expandedInfo: {
     flex: 1,
@@ -670,7 +724,7 @@ export default PickerItem
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-28T14:57:36.684Z
+                at 2025-12-05T16:57:23.820Z
             </div>
         <script src="../prettify.js"></script>
         <script>

@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.29% </span>
+                <span class="strong">97.36% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>36/37</span>
+                <span class='fraction'>37/38</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>31/31</span>
+                <span class='fraction'>32/32</span>
             </div>
         
             
@@ -251,8 +251,7 @@
 <a name='L186'></a><a href='#L186'>186</a>
 <a name='L187'></a><a href='#L187'>187</a>
 <a name='L188'></a><a href='#L188'>188</a>
-<a name='L189'></a><a href='#L189'>189</a>
-<a name='L190'></a><a href='#L190'>190</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L189'></a><a href='#L189'>189</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -276,6 +275,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -384,7 +384,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -440,8 +439,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { useCallback, useMemo, useState, useEffect } from "react"
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { useCallback, useState, useEffect } from "react"
 import { View, Text, Pressable, ViewStyle, TextStyle } from "react-native"
 import Animated, {
   useSharedValue,
@@ -453,7 +451,7 @@ import { FontAwesome } from "@expo/vector-icons"
 import { hapticsService } from "../utils/hapticsService"
 import { useGameStore } from "../state/gameStore"
 import { DifficultyLevel, DIFFICULTY_MODES } from "../config/difficulty"
-import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { useStyles, Theme, useThemeTokens } from "../utils/hooks/useStyles"
 &nbsp;
 const options = (Object.keys(DIFFICULTY_MODES) as DifficultyLevel[]).map(
   (key) =&gt; ({
@@ -466,7 +464,8 @@ const DROPDOWN_HEIGHT = options.length * 44
 &nbsp;
 const GameDifficultyToggle = () =&gt; {
   const styles = useStyles(themedStyles)
-  const { colors } = styles.rawTheme
+  const theme = useThemeTokens()
+  const { colors } = theme
 &nbsp;
   const difficulty = useGameStore((state) =&gt; state.difficulty)
   const setDifficulty = useGameStore((state) =&gt; state.setDifficulty)
@@ -516,8 +515,8 @@ const GameDifficultyToggle = () =&gt; {
         onPress={handleToggle}
         style={styles.toggleButton}
         disabled={isInteractionsDisabled}
-        accessibilityRole="button" // &lt;-- ADDED FOR TESTING &amp; ACCESSIBILITY
-        accessibilityLabel={currentLabel} // &lt;-- ADDED FOR TESTING &amp; ACCESSIBILITY
+        accessibilityRole="button"
+        accessibilityLabel={currentLabel}
         accessibilityState={{
           disabled: isInteractionsDisabled,
           expanded: isExpanded,
@@ -541,7 +540,7 @@ const GameDifficultyToggle = () =&gt; {
               onPress={() =&gt; handleSelect(option.value)}
               style={[styles.optionButton, isDisabled &amp;&amp; styles.disabledOption]}
               disabled={isDisabled}
-              accessibilityRole="button" // &lt;-- ADDED FOR TESTING &amp; ACCESSIBILITY
+              accessibilityRole="button"
               accessibilityState={{ disabled: isDisabled }}
             &gt;
               &lt;Text
@@ -571,7 +570,6 @@ interface GameDifficultyToggleStyles {
   selectedOptionText: TextStyle
   disabledOption: ViewStyle
   disabledText: TextStyle
-  rawTheme: Theme
 }
 &nbsp;
 const themedStyles = (theme: Theme): GameDifficultyToggleStyles =&gt; ({
@@ -626,7 +624,6 @@ const themedStyles = (theme: Theme): GameDifficultyToggleStyles =&gt; ({
   disabledText: {
     color: theme.colors.textDisabled,
   },
-  rawTheme: theme,
 })
 &nbsp;
 export default GameDifficultyToggle
@@ -637,7 +634,7 @@ export default GameDifficultyToggle
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-28T14:57:36.684Z
+                at 2025-12-05T16:57:23.820Z
             </div>
         <script src="../prettify.js"></script>
         <script>
