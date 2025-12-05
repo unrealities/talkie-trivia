@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useEffect } from "react"
+import React, { useCallback, useState, useEffect } from "react"
 import { View, Text, Pressable, ViewStyle, TextStyle } from "react-native"
 import Animated, {
   useSharedValue,
@@ -10,7 +10,7 @@ import { FontAwesome } from "@expo/vector-icons"
 import { hapticsService } from "../utils/hapticsService"
 import { useGameStore } from "../state/gameStore"
 import { DifficultyLevel, DIFFICULTY_MODES } from "../config/difficulty"
-import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { useStyles, Theme, useThemeTokens } from "../utils/hooks/useStyles"
 
 const options = (Object.keys(DIFFICULTY_MODES) as DifficultyLevel[]).map(
   (key) => ({
@@ -23,7 +23,8 @@ const DROPDOWN_HEIGHT = options.length * 44
 
 const GameDifficultyToggle = () => {
   const styles = useStyles(themedStyles)
-  const { colors } = styles.rawTheme
+  const theme = useThemeTokens()
+  const { colors } = theme
 
   const difficulty = useGameStore((state) => state.difficulty)
   const setDifficulty = useGameStore((state) => state.setDifficulty)
@@ -73,8 +74,8 @@ const GameDifficultyToggle = () => {
         onPress={handleToggle}
         style={styles.toggleButton}
         disabled={isInteractionsDisabled}
-        accessibilityRole="button" // <-- ADDED FOR TESTING & ACCESSIBILITY
-        accessibilityLabel={currentLabel} // <-- ADDED FOR TESTING & ACCESSIBILITY
+        accessibilityRole="button"
+        accessibilityLabel={currentLabel}
         accessibilityState={{
           disabled: isInteractionsDisabled,
           expanded: isExpanded,
@@ -98,7 +99,7 @@ const GameDifficultyToggle = () => {
               onPress={() => handleSelect(option.value)}
               style={[styles.optionButton, isDisabled && styles.disabledOption]}
               disabled={isDisabled}
-              accessibilityRole="button" // <-- ADDED FOR TESTING & ACCESSIBILITY
+              accessibilityRole="button"
               accessibilityState={{ disabled: isDisabled }}
             >
               <Text
@@ -128,7 +129,6 @@ interface GameDifficultyToggleStyles {
   selectedOptionText: TextStyle
   disabledOption: ViewStyle
   disabledText: TextStyle
-  rawTheme: Theme
 }
 
 const themedStyles = (theme: Theme): GameDifficultyToggleStyles => ({
@@ -183,7 +183,6 @@ const themedStyles = (theme: Theme): GameDifficultyToggleStyles => ({
   disabledText: {
     color: theme.colors.textDisabled,
   },
-  rawTheme: theme,
 })
 
 export default GameDifficultyToggle

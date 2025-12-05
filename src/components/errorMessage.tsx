@@ -1,5 +1,5 @@
 import React, { memo } from "react"
-import { View, ViewStyle } from "react-native"
+import { View, ViewStyle, TextStyle } from "react-native"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
 import { Button } from "./ui/button"
 import { Typography } from "./ui/typography"
@@ -35,7 +35,7 @@ const ErrorMessage: React.FC<ErrorMessageProps> = memo(
 
 interface ErrorMessageStyles {
   errorContainer: ViewStyle
-  errorText: ViewStyle
+  errorText: TextStyle
 }
 
 const themedStyles = (theme: Theme): ErrorMessageStyles => ({

@@ -1,8 +1,8 @@
 import React, { memo, useMemo } from "react"
 import { View, ViewStyle, TextStyle } from "react-native"
-import { VictoryBar, VictoryChart, VictoryAxis } from "./victory-charts"
+import { VictoryBar, VictoryChart, VictoryAxis } from "victory-native"
 import { Typography } from "./ui/typography"
-import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { useStyles, Theme, useThemeTokens } from "../utils/hooks/useStyles"
 
 export interface WinChartProps {
   wins: number[]
@@ -10,7 +10,8 @@ export interface WinChartProps {
 
 const WinChart = memo(({ wins }: WinChartProps) => {
   const styles = useStyles(themedStyles)
-  const { colors, responsive } = styles.rawTheme
+  const theme = useThemeTokens()
+  const { colors, responsive } = theme
   const totalWins = wins.reduce((a, b) => a + b, 0)
 
   const accessibilityLabel = useMemo(() => {
@@ -112,7 +113,6 @@ interface WinChartStyles {
   container: ViewStyle
   emptyContainer: ViewStyle
   emptyText: TextStyle
-  rawTheme: Theme
 }
 
 const themedStyles = (theme: Theme): WinChartStyles => ({
@@ -135,7 +135,6 @@ const themedStyles = (theme: Theme): WinChartStyles => ({
     textAlign: "center",
     color: theme.colors.textSecondary,
   },
-  rawTheme: theme,
 })
 
 export default WinChart

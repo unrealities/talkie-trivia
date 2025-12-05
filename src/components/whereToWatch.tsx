@@ -1,11 +1,12 @@
 import React from "react"
 import { View, ViewStyle, TextStyle } from "react-native"
 import { FontAwesome5 } from "@expo/vector-icons"
-import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { useStyles, Theme, useThemeTokens } from "../utils/hooks/useStyles"
 import { Typography } from "./ui/typography"
 
 const WhereToWatch: React.FC = () => {
   const styles = useStyles(themedStyles)
+  const theme = useThemeTokens()
 
   const mockProviders = [
     { name: "Netflix", icon: "netflix", color: "#E50914" },
@@ -14,7 +15,7 @@ const WhereToWatch: React.FC = () => {
     {
       name: "Rent",
       icon: "ticket-alt",
-      color: styles.rawTheme.colors.tertiary,
+      color: theme.colors.tertiary,
     },
   ]
 
@@ -47,7 +48,6 @@ interface WhereToWatchStyles {
   provider: ViewStyle
   providerText: TextStyle
   disclaimer: TextStyle
-  rawTheme: Theme
 }
 
 const themedStyles = (theme: Theme): WhereToWatchStyles => ({
@@ -89,7 +89,6 @@ const themedStyles = (theme: Theme): WhereToWatchStyles => ({
     textAlign: "center",
     marginTop: theme.spacing.small,
   },
-  rawTheme: theme,
 })
 
 export default WhereToWatch
