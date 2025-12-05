@@ -43,7 +43,7 @@ describe("Hook: useHintLogic (Comprehensive)", () => {
         difficulty: difficulty as any,
         isInteractionsDisabled: false,
         loading: false,
-      },
+      } as any,
       true
     )
   }

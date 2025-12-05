@@ -39,7 +39,7 @@ describe("Utils: scoreUtils", () => {
       const game: PlayerGame = {
         ...baseGame,
         difficulty: "LEVEL_3",
-        guesses: [{}, {}, {}], // 3 guesses
+        guesses: [{ itemId: 1 }, { itemId: 2 }, { itemId: 3 }], // 3 guesses
         guessesMax: 5,
       }
       expect(calculateScore(game)).toBe(490)
@@ -50,7 +50,13 @@ describe("Utils: scoreUtils", () => {
       const game: PlayerGame = {
         ...baseGame,
         difficulty: "LEVEL_3",
-        guesses: [{}, {}, {}, {}, {}], // 5 guesses (max)
+        guesses: [
+          { itemId: 1 },
+          { itemId: 2 },
+          { itemId: 3 },
+          { itemId: 4 },
+          { itemId: 5 },
+        ], // 5 guesses (max)
         guessesMax: 5,
       }
       expect(calculateScore(game)).toBe(280)
@@ -77,7 +83,13 @@ describe("Utils: scoreUtils", () => {
       const game: PlayerGame = {
         ...baseGame,
         difficulty: "LEVEL_2", // Easy
-        guesses: [{}, {}, {}, {}, {}], // Last guess (low base score)
+        guesses: [
+          { itemId: 1 },
+          { itemId: 2 },
+          { itemId: 3 },
+          { itemId: 4 },
+          { itemId: 5 },
+        ], // Last guess (low base score)
         // Excessive hints to drive score negative
         hintsUsed: { a: true, b: true, c: true, d: true, e: true, f: true },
         guessesMax: 5,

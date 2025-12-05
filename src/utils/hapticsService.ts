@@ -2,10 +2,10 @@ import { Platform } from "react-native"
 import * as Haptics from "expo-haptics"
 
 // Wrapper for type-safe haptic feedback; silent on web.
-const trigger = (feedbackType) => {
+const trigger = (feedbackType: any) => {
   if (Platform.OS !== "web") Haptics.impactAsync(feedbackType)
 }
-const notify = (notificationType) => {
+const notify = (notificationType: any) => {
   if (Platform.OS !== "web") Haptics.notificationAsync(notificationType)
 }
 

@@ -33,10 +33,3 @@ export const darkColors = {
 }
 
 export type ThemeColors = typeof lightColors
-
-interface ThemeContextType {
-  theme: Theme
-  setTheme: (theme: Theme) => void
-  colors: ThemeColors
-  colorScheme: AppColorScheme
-}

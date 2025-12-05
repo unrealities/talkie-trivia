@@ -9,25 +9,31 @@ import ConfettiCelebration from "../src/components/confettiCelebration"
 const mockStart = jest.fn()
 
 jest.mock("react-native-confetti-cannon", () => {
-  // CORRECTED: Import/require dependencies *inside* the factory function.
   const React = require("react")
   const { forwardRef, useImperativeHandle } = React
   const { View } = require("react-native")
 
-  const MockConfettiCannon = forwardRef(({ onAnimationEnd, ...props }, ref) => {
-    useImperativeHandle(ref, () => ({
-      start: mockStart, // Accessing mockStart is allowed due to the 'mock' prefix.
-    }))
+  const MockConfettiCannon = forwardRef(
+    (
+      {
+        onAnimationEnd,
+        ...props
+      }: { onAnimationEnd?: () => void; [key: string]: any },
+      ref: any
+    ) => {
+      useImperativeHandle(ref, () => ({
+        start: mockStart,
+      }))
 
-    return (
-      <View
-        testID="confetti-cannon"
-        // @ts-ignore - a custom prop for testing
-        onAnimationEnd={onAnimationEnd}
-        {...props}
-      />
-    )
-  })
+      return (
+        <View
+          testID="confetti-cannon"
+          onAnimationEnd={onAnimationEnd}
+          {...props}
+        />
+      )
+    }
+  )
   MockConfettiCannon.displayName = "MockConfettiCannon"
   return MockConfettiCannon
 })

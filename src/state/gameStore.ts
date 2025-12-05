@@ -272,7 +272,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     analyticsService.trackGuessMade(
       playerGame.guesses.length + 1,
       isCorrectAnswer,
-      selectedItem.id,
+      Number(selectedItem.id),
       selectedItem.title
     )
 

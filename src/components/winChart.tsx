@@ -1,10 +1,6 @@
 import React, { memo, useMemo } from "react"
 import { View, ViewStyle, TextStyle } from "react-native"
-import {
-  VictoryBar,
-  VictoryChart,
-  VictoryAxis,
-} from "./victory-charts"
+import { VictoryBar, VictoryChart, VictoryAxis } from "./victory-charts"
 import { Typography } from "./ui/typography"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
 
@@ -84,7 +80,9 @@ const WinChart = memo(({ wins }: WinChartProps) => {
               fontSize: responsive.responsiveFontSize(12),
             },
           }}
-          labels={({ datum }) => (datum.y > 0 ? datum.y.toString() : "")}
+          labels={({ datum }: { datum: any }) =>
+            datum.y > 0 ? datum.y.toString() : ""
+          }
         />
         <VictoryAxis
           dependentAxis

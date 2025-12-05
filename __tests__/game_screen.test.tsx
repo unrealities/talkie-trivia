@@ -13,7 +13,7 @@ jest.mock("react", () => {
         return <actualReact.Fragment>{props.children}</actualReact.Fragment>
       }
     },
-    Suspense: ({ children }: any) => children,
+    Suspense: ({ children }: { children: React.ReactNode }) => children,
   }
 })
 
@@ -63,9 +63,9 @@ jest.mock("react", () => {
     ...actual,
     lazy: jest.fn().mockImplementation(() => {
       const { View } = require("react-native")
-      return (props) => <View testID="lazy-component" {...props} />
+      return (props: any) => <View testID="lazy-component" {...props} />
     }),
-    Suspense: ({ children }) => children,
+    Suspense: ({ children }: { children: React.ReactNode }) => children,
   }
 })
 

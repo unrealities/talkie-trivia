@@ -82,8 +82,8 @@ const ConfirmationModal = memo(
 const themedStyles = (theme: Theme) => ({
   centeredView: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "center" as const,
+    alignItems: "center" as const,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalView: {
@@ -97,15 +97,15 @@ const themedStyles = (theme: Theme) => ({
   title: {
     fontSize: theme.responsive.responsiveFontSize(20),
     marginBottom: theme.spacing.small,
-    textAlign: "center",
+    textAlign: "center" as const,
   },
   message: {
     marginBottom: theme.spacing.large,
-    textAlign: "center",
+    textAlign: "center" as const,
   },
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
+    flexDirection: "row" as const,
+    justifyContent: "space-around" as const,
   },
   button: {
     flex: 1,

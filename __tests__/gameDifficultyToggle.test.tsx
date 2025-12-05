@@ -23,7 +23,7 @@ const renderWithTheme = (ui: ReactElement, options?: RenderOptions) => {
 }
 
 const mockSetDifficulty = jest.fn()
-const mockUseGameStore = useGameStore as jest.Mock
+const mockUseGameStore = useGameStore as unknown as jest.Mock
 
 describe("GameDifficultyToggle Component", () => {
   const setMockStoreState = (overrides: Partial<GameState> = {}) => {
@@ -125,7 +125,11 @@ describe("GameDifficultyToggle Component", () => {
     })
 
     it("should disable options that have fewer max guesses than current guesses", () => {
-      setMockStoreState({ playerGame: { guesses: [{}, {}, {}, {}] } })
+      setMockStoreState({
+        playerGame: {
+          guesses: [{ itemId: 1 }, { itemId: 2 }, { itemId: 3 }, { itemId: 4 }],
+        } as any,
+      })
       renderWithTheme(<GameDifficultyToggle />)
 
       fireEvent.press(getToggleButton("Medium"))

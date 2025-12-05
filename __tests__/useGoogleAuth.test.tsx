@@ -104,7 +104,9 @@ describe("Hook: useGoogleAuth", () => {
       expect(result.current.authError).toContain(
         "Firebase sign-in error: Firebase Error"
       )
-      expect(analyticsService.trackGoogleSignInFailure).toHaveBeenCalled()
+      expect(analyticsService.trackGoogleSignInFailure).toHaveBeenCalledWith(
+        expect.any(String)
+      )
       expect(result.current.isLoading).toBe(false)
     })
   })
@@ -126,7 +128,9 @@ describe("Hook: useGoogleAuth", () => {
       expect(result.current.authError).toContain(
         "Google sign-in error: Google Auth Failed"
       )
-      expect(analyticsService.trackGoogleSignInFailure).toHaveBeenCalled()
+      expect(analyticsService.trackGoogleSignInFailure).toHaveBeenCalledWith(
+        expect.any(String)
+      )
       expect(result.current.isLoading).toBe(false)
     })
   })

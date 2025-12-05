@@ -1,7 +1,8 @@
 import PlayerStats from "../../../models/playerStats"
+import { QueryDocumentSnapshot, SnapshotOptions } from "firebase/firestore"
 
 export const playerStatsConverter = {
-  toFirestore: (playerStats) => {
+  toFirestore: (playerStats: PlayerStats) => {
     let ps: PlayerStats = {
       id: playerStats.id,
       currentStreak: playerStats.currentStreak,
@@ -15,7 +16,10 @@ export const playerStatsConverter = {
     }
     return ps
   },
-  fromFirestore: (snapshot, options) => {
+  fromFirestore: (
+    snapshot: QueryDocumentSnapshot,
+    options: SnapshotOptions
+  ): PlayerStats => {
     const data = snapshot.data(options)
     let ps: PlayerStats = {
       id: data.id,
