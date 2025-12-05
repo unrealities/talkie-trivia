@@ -44,12 +44,13 @@ Players can earn points, maintain streaks, use hints (like Director, Actors, and
 ### Testing
 
 * **Unit/Integration:** Jest & React Native Testing Library
+* **End-to-End:** Maestro
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-* Node.js (LTS)
+* Node.js (LTS v18 or newer - Recommended v22)
 * npm or yarn
 * Expo CLI
 * Go (optional, only for running data pipelines)
@@ -101,10 +102,63 @@ Players can earn points, maintain streaks, use hints (like Director, Actors, and
 
 ## 🧪 Testing
 
-The project maintains a high level of code coverage using Jest.
+The project uses a two-tiered testing strategy: **Jest** for unit/integration logic and **Maestro** for full end-to-end user flows.
 
-* **Run Tests:** `npm test`
-* **Run with Coverage:** `npm run test:coverage`
+### Unit Tests (Jest)
+
+These run automatically on every Pull Request via GitHub Actions.
+
+* **Run all tests:**
+
+    ```bash
+    npm test
+    ```
+
+* **Run tests in watch mode (during development):**
+
+    ```bash
+    npm run test:watch
+    ```
+
+* **Generate Coverage Report:**
+
+    ```bash
+    npm run test:coverage
+    ```
+
+    *This generates an HTML report in `coverage/lcov-report/index.html`.*
+
+### End-to-End Tests (Maestro)
+
+Maestro tests run against a built version of your app (on Simulator/Emulator). They are located in `.maestro/flows/`.
+
+1. **Install Maestro:**
+
+    ```bash
+    curl -Ls "https://get.maestro.mobile.dev" | bash
+    ```
+
+2. **Start your app:**
+    Ensure your iOS Simulator or Android Emulator is running with the app installed and the development server started (`npm start`).
+
+3. **Run a specific flow:**
+
+    ```bash
+    maestro test .maestro/flows/happy-path-win.yaml
+    ```
+
+4. **Run all flows:**
+
+    ```bash
+    maestro test .maestro/flows/
+    ```
+
+5. **Interactive Debugging (Maestro Studio):**
+    If a test is failing, use Maestro Studio to inspect the UI hierarchy and find element IDs.
+
+    ```bash
+    maestro studio
+    ```
 
 ## 📂 Project Structure
 
