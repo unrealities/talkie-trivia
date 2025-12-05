@@ -1,5 +1,5 @@
 import React, { memo } from "react"
-import { Modal, View } from "react-native"
+import { Modal, View, ViewStyle, TextStyle } from "react-native"
 import { hapticsService } from "../utils/hapticsService"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
 import { Button } from "./ui/button"
@@ -79,11 +79,20 @@ const ConfirmationModal = memo(
   }
 )
 
-const themedStyles = (theme: Theme) => ({
+interface ModalStyles {
+  centeredView: ViewStyle
+  modalView: ViewStyle
+  title: TextStyle
+  message: TextStyle
+  buttonContainer: ViewStyle
+  button: ViewStyle
+}
+
+const themedStyles = (theme: Theme): ModalStyles => ({
   centeredView: {
     flex: 1,
-    justifyContent: "center" as const,
-    alignItems: "center" as const,
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalView: {
@@ -97,15 +106,15 @@ const themedStyles = (theme: Theme) => ({
   title: {
     fontSize: theme.responsive.responsiveFontSize(20),
     marginBottom: theme.spacing.small,
-    textAlign: "center" as const,
+    textAlign: "center",
   },
   message: {
     marginBottom: theme.spacing.large,
-    textAlign: "center" as const,
+    textAlign: "center",
   },
   buttonContainer: {
-    flexDirection: "row" as const,
-    justifyContent: "space-around" as const,
+    flexDirection: "row",
+    justifyContent: "space-around",
   },
   button: {
     flex: 1,
