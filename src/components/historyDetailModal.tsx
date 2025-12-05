@@ -12,7 +12,7 @@ import { PlayerGame } from "../models/game"
 import { useAuth } from "../contexts/authContext"
 import { gameService } from "../services/gameService"
 import { getGameDataService } from "../services/gameServiceFactory"
-import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { useStyles, Theme, useThemeTokens } from "../utils/hooks/useStyles"
 import { Typography } from "./ui/typography"
 
 const DetailModal = lazy(() => import("./detailModal"))
@@ -30,6 +30,7 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
 }) => {
   const { player } = useAuth()
   const styles = useStyles(themedStyles)
+  const theme = useThemeTokens() // Use hook directly
 
   const [item, setItem] = useState<TriviaItem | null>(null)
   const [playerGame, setPlayerGame] = useState<PlayerGame | null>(null)
@@ -82,10 +83,7 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
     if (isLoading) {
       return (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator
-            size="large"
-            color={styles.rawTheme.colors.primary}
-          />
+          <ActivityIndicator size="large" color={theme.colors.primary} />
         </View>
       )
     }
@@ -126,10 +124,7 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
         <Suspense
           fallback={
             <View style={styles.loadingContainer}>
-              <ActivityIndicator
-                size="large"
-                color={styles.rawTheme.colors.primary}
-              />
+              <ActivityIndicator size="large" color={theme.colors.primary} />
             </View>
           }
         >
@@ -144,7 +139,6 @@ interface HistoryDetailModalStyles {
   loadingContainer: ViewStyle
   errorContainer: ViewStyle
   guessesTitle: TextStyle
-  rawTheme: Theme
 }
 
 const themedStyles = (theme: Theme): HistoryDetailModalStyles => ({
@@ -167,7 +161,6 @@ const themedStyles = (theme: Theme): HistoryDetailModalStyles => ({
     marginTop: theme.spacing.large,
     marginBottom: theme.spacing.medium,
   },
-  rawTheme: theme,
 })
 
 export default HistoryDetailModal

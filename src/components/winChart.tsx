@@ -1,8 +1,8 @@
 import React, { memo, useMemo } from "react"
 import { View, ViewStyle, TextStyle } from "react-native"
-import { VictoryBar, VictoryChart, VictoryAxis } from "victory-native"
 import { Typography } from "./ui/typography"
 import { useStyles, Theme, useThemeTokens } from "../utils/hooks/useStyles"
+const { VictoryBar, VictoryChart, VictoryAxis } = require("victory-native")
 
 export interface WinChartProps {
   wins: number[]

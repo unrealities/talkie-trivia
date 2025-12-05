@@ -1,5 +1,5 @@
 import React, { memo } from "react"
-import { View } from "react-native"
+import { View, ViewStyle, TextStyle } from "react-native"
 import { useAuth } from "../contexts/authContext"
 import { hapticsService } from "../utils/hapticsService"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
@@ -55,7 +55,13 @@ const GoogleLogin: React.FC = memo(() => {
   )
 })
 
-const themedStyles = (theme: Theme) => ({
+interface GoogleLoginStyles {
+  container: ViewStyle
+  button: ViewStyle
+  errorText: TextStyle
+}
+
+const themedStyles = (theme: Theme): GoogleLoginStyles => ({
   container: {
     alignItems: "center",
     justifyContent: "center",

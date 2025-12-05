@@ -48,7 +48,7 @@ const GameplayView: React.FC = () => {
         isLoading={isGivingUp}
         disabled={isInteractionsDisabled}
         variant="error"
-        style={[u.wFull, styles.giveUpButton]}
+        style={[u.wFull, styles.giveUpButton] as ViewStyle}
         testID="give-up-button"
       />
 

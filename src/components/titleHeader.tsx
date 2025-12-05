@@ -1,5 +1,5 @@
 import React, { memo } from "react"
-import { View } from "react-native"
+import { View, ViewStyle, TextStyle } from "react-native"
 import { Typography } from "./ui/typography"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
 
@@ -19,7 +19,12 @@ const TitleHeader: React.FC<TitleHeaderProps> = memo(({ title }) => {
   )
 })
 
-const themedStyles = (theme: Theme) => ({
+interface TitleHeaderStyles {
+  container: ViewStyle
+  header: TextStyle
+}
+
+const themedStyles = (theme: Theme): TitleHeaderStyles => ({
   container: {
     justifyContent: "center",
     alignItems: "flex-start",

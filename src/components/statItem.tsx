@@ -1,5 +1,5 @@
 import React from "react"
-import { View, StyleProp, TextStyle } from "react-native"
+import { View, StyleProp, TextStyle, ViewStyle } from "react-native"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
 import { Typography } from "./ui/typography"
 import { u } from "../styles/utils"
@@ -15,7 +15,14 @@ const StatItem: React.FC<StatItemProps> = ({ label, value, valueStyle }) => {
 
   return (
     <View
-      style={[u.flexRow, u.justifyBetween, u.alignCenter, styles.container]}
+      style={
+        [
+          u.flexRow,
+          u.justifyBetween,
+          u.alignCenter,
+          styles.container,
+        ] as ViewStyle[]
+      }
     >
       <Typography style={styles.label}>{label}</Typography>
       <Typography style={[styles.value, valueStyle]}>{value}</Typography>
