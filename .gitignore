@@ -23,4 +23,4 @@ GoogleService-Info.plist
 google-services.json
 
 # third-party
-repomix*
+repomix-output.xml

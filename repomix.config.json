@@ -1,0 +1,11 @@
+{
+  "ignore": {
+    "customPatterns": [
+      "data/**",
+      "utils/fetchPopularMovies/popular_movies_raw.json",
+      "utils/basicMovies/basicMovies.json",
+      "android/**",
+      "ios/**"
+    ]
+  }
+}
