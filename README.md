@@ -46,6 +46,8 @@ Players can earn points, maintain streaks, use hints (like Director, Actors, and
 * **Unit/Integration:** Jest & React Native Testing Library
 * **End-to-End:** Maestro
 
+[![codecov](https://codecov.io/github/unrealities/talkie-trivia/graph/badge.svg?token=GFK4VS5NWS)](https://codecov.io/github/unrealities/talkie-trivia)
+
 ## 🚀 Getting Started
 
 ### Prerequisites
