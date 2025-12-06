@@ -40,5 +40,6 @@ jobs:
       - name: Upload to Codecov
         uses: codecov/codecov-action@v3
         with:
-            directory: ./coverage/
-            fail_ci_if_error: true
+          directory: ./coverage/
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
