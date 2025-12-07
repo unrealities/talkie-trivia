@@ -3,7 +3,7 @@ import { QueryDocumentSnapshot, SnapshotOptions } from "firebase/firestore"
 
 export const playerStatsConverter = {
   toFirestore: (playerStats: PlayerStats) => {
-    let ps: PlayerStats = {
+    let ps = {
       id: playerStats.id,
       currentStreak: playerStats.currentStreak,
       games: playerStats.games,
@@ -11,7 +11,7 @@ export const playerStatsConverter = {
       wins: playerStats.wins,
       hintsAvailable: playerStats.hintsAvailable,
       hintsUsedCount: playerStats.hintsUsedCount,
-      lastStreakMessageDate: playerStats.lastStreakMessageDate ?? undefined,
+      lastStreakMessageDate: playerStats.lastStreakMessageDate ?? null,
       allTimeScore: playerStats.allTimeScore || 0,
     }
     return ps

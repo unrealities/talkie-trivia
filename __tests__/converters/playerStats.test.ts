@@ -20,11 +20,12 @@ describe("Firestore Converter: PlayerStats", () => {
       expect(result).toEqual(mockStats)
     })
 
-    it("should handle null/undefined lastStreakMessageDate", () => {
+    it("should handle null/undefined lastStreakMessageDate by setting null", () => {
       const stats = { ...mockStats, lastStreakMessageDate: undefined }
       // @ts-ignore
       const result = playerStatsConverter.toFirestore(stats)
-      expect(result.lastStreakMessageDate).toBeUndefined()
+      // Firestore requires null, not undefined
+      expect(result.lastStreakMessageDate).toBeNull()
     })
 
     it("should default allTimeScore to 0 if missing", () => {
