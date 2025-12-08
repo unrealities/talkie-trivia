@@ -2,14 +2,14 @@ import {
   doc,
   getDoc,
   setDoc,
-  writeBatch,
   collection,
   query,
   orderBy,
   limit,
   getDocs,
 } from "firebase/firestore"
-import { db } from "./firebaseClient"
+import { getFunctions, httpsCallable } from "firebase/functions"
+import { db, app } from "./firebaseClient"
 import { playerConverter } from "../utils/firestore/converters/player"
 import { playerGameConverter } from "../utils/firestore/converters/playerGame"
 import { playerStatsConverter } from "../utils/firestore/converters/playerStats"
@@ -114,41 +114,28 @@ export const gameService = {
     }
   },
 
-  savePlayerProgress: async (
-    playerGame: PlayerGame,
-    playerStats: PlayerStats,
-    gameHistoryEntry: GameHistoryEntry | null = null
-  ) => {
-    if (!playerGame.playerID) {
-      throw new Error("Player ID is missing. Cannot save game progress.")
+  /**
+   * Securely submits the game result to Firebase Cloud Functions.
+   * Server calculates score, updates stats, and verifies integrity.
+   */
+  submitGameResult: async (playerGame: PlayerGame): Promise<void> => {
+    const functions = getFunctions(app)
+    const submitFunction = httpsCallable(functions, "submitGameResult")
+
+    // Serialize dates to ISO strings for transport
+    const payload = {
+      ...playerGame,
+      startDate:
+        playerGame.startDate instanceof Date
+          ? playerGame.startDate.toISOString()
+          : playerGame.startDate,
+      endDate:
+        playerGame.endDate instanceof Date
+          ? playerGame.endDate.toISOString()
+          : playerGame.endDate,
     }
 
-    const batch = writeBatch(db)
-
-    const statsDocRef = doc(
-      db,
-      FIRESTORE_COLLECTIONS.PLAYER_STATS,
-      playerGame.playerID
-    ).withConverter(playerStatsConverter)
-    batch.set(statsDocRef, playerStats, { merge: true })
-
-    const gameDocRef = doc(
-      db,
-      FIRESTORE_COLLECTIONS.PLAYER_GAMES,
-      playerGame.id
-    ).withConverter(playerGameConverter)
-    batch.set(gameDocRef, playerGame, { merge: true })
-
-    if (gameHistoryEntry) {
-      const historyDocRef = doc(
-        db,
-        `${FIRESTORE_COLLECTIONS.PLAYERS}/${playerGame.playerID}/${FIRESTORE_COLLECTIONS.GAME_HISTORY}`,
-        gameHistoryEntry.dateId
-      ).withConverter(gameHistoryEntryConverter)
-      batch.set(historyDocRef, gameHistoryEntry)
-    }
-
-    await batch.commit()
+    await submitFunction({ playerGame: payload })
   },
 
   fetchGameHistory: async (playerId: string): Promise<GameHistoryEntry[]> => {

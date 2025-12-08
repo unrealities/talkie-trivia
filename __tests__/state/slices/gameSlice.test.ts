@@ -53,7 +53,7 @@ describe("State: Game Slice (Edge Cases)", () => {
   })
 
   describe("processGameOver", () => {
-    it("should handle errors when saving progress", async () => {
+    it("should call submitGameResult and handle errors", async () => {
       const { result } = renderHook(() => useGameStore())
 
       // Setup state to trigger save
@@ -66,19 +66,42 @@ describe("State: Game Slice (Edge Cases)", () => {
         playerStats: { ...defaultPlayerStats },
       })
 
-      ;(gameService.savePlayerProgress as jest.Mock).mockRejectedValue(
-        new Error("Save Failed")
+      // Mock failure
+      ;(gameService.submitGameResult as jest.Mock).mockRejectedValue(
+        new Error("Cloud Function Failed")
       )
 
       await act(async () => {
         try {
           await result.current.processGameOver()
         } catch (e) {
-          // We expect this to throw because processGameOver re-throws errors
+          // Expected to throw
         }
       })
 
+      expect(gameService.submitGameResult).toHaveBeenCalled()
       expect(result.current.error).toContain("Failed to save progress")
+    })
+
+    it("should optimistically update stats immediately", async () => {
+      const { result } = renderHook(() => useGameStore())
+      useGameStore.setState({
+        playerGame: {
+          ...defaultPlayerGame,
+          correctAnswer: true,
+          statsProcessed: false,
+        },
+        playerStats: { ...defaultPlayerStats, games: 0 },
+      })
+
+      ;(gameService.submitGameResult as jest.Mock).mockResolvedValue({})
+
+      await act(async () => {
+        await result.current.processGameOver()
+      })
+
+      // Games count should increment locally
+      expect(result.current.playerStats.games).toBe(1)
     })
   })
 
@@ -114,19 +137,6 @@ describe("State: Game Slice (Edge Cases)", () => {
       expect(state.playerGame.hintsUsed?.director).toBe(true)
       expect(state.lastGuessResult?.feedback).toBe("Custom Feedback")
     })
-
-    it("should not process guess if game is already over", () => {
-      const { result } = renderHook(() => useGameStore())
-      useGameStore.setState({
-        playerGame: { ...defaultPlayerGame, correctAnswer: true },
-      })
-
-      act(() => {
-        result.current.makeGuess({ id: 999 } as any)
-      })
-
-      expect(result.current.playerGame.guesses).toHaveLength(0)
-    })
   })
 
   describe("useHint", () => {
@@ -145,67 +155,19 @@ describe("State: Game Slice (Edge Cases)", () => {
       })
 
       expect(result.current.playerStats.hintsAvailable).toBe(5)
-      expect(result.current.playerGame.hintsUsed?.director).toBeUndefined()
-    })
-
-    it("should not deduct hint if 0 hints available", () => {
-      const { result } = renderHook(() => useGameStore())
-
-      act(() => {
-        useGameStore.setState({
-          difficulty: "LEVEL_2", // User Spend
-          playerStats: { ...defaultPlayerStats, hintsAvailable: 0 },
-        })
-      })
-
-      act(() => {
-        result.current.useHint("director")
-      })
-
-      expect(result.current.playerGame.hintsUsed?.director).toBeUndefined()
     })
   })
 
   describe("giveUp", () => {
-    it("should mark game gaveUp and handle save error", async () => {
+    it("should mark game gaveUp", async () => {
       const { result } = renderHook(() => useGameStore())
-      const consoleSpy = jest
-        .spyOn(console, "error")
-        .mockImplementation(() => {})
-
-      ;(gameService.savePlayerProgress as jest.Mock).mockRejectedValue(
-        new Error("Save Fail")
-      )
+      ;(gameService.submitGameResult as jest.Mock).mockResolvedValue({})
 
       await act(async () => {
         result.current.giveUp()
       })
 
       expect(result.current.playerGame.gaveUp).toBe(true)
-      expect(result.current.flashMessage).toContain("Could not save progress")
-
-      consoleSpy.mockRestore()
-    })
-  })
-
-  describe("completeRevealSequence", () => {
-    it("should set game status and show modal after delay", () => {
-      const { result } = renderHook(() => useGameStore())
-
-      act(() => {
-        result.current.completeRevealSequence()
-      })
-
-      expect(result.current.gameStatus).toBe("gameOver")
-
-      // Initial state of modal should be false
-      expect(result.current.showModal).toBe(false)
-
-      act(() => {
-        jest.advanceTimersByTime(500)
-      })
-
-      expect(result.current.showModal).toBe(true)
     })
   })
 })

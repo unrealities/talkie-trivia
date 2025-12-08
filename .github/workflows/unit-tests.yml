@@ -10,7 +10,7 @@ jobs:
   test:
     name: Run Tests & Coverage
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -19,27 +19,44 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'npm'
+          cache: "npm"
 
-      - name: Install Dependencies
-        run: npm install
+      - name: Install App Dependencies
+        run: npm ci
 
-      - name: Type Check
+      - name: Install Functions Dependencies
+        run: |
+          cd functions
+          npm ci
+
+      - name: Type Check (App)
         run: npx tsc --noEmit
 
-      - name: Run Tests with Coverage
+      - name: Run App Tests
         run: npm test -- --watchAll=false --ci --maxWorkers=2 --coverage
 
-      - name: Upload Coverage Report
+      - name: Run Functions Tests
+        run: |
+          cd functions
+          npm test -- --coverage
+
+      - name: Upload App Coverage Report
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report-html
+          name: coverage-report-app
           path: coverage/lcov-report/
           retention-days: 5
-    
+
+      - name: Upload Functions Coverage Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-functions
+          path: functions/coverage/lcov-report/
+          retention-days: 5
+
       - name: Upload to Codecov
         uses: codecov/codecov-action@v3
         with:
-          directory: ./coverage/
+          files: ./coverage/lcov.info,./functions/coverage/lcov.info
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true

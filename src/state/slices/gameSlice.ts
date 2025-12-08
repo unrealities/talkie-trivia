@@ -7,7 +7,6 @@ import {
   defaultPlayerStats,
   generateDateId,
 } from "../../models/default"
-import { GameHistoryEntry } from "../../models/gameHistory"
 import { gameService } from "../../services/gameService"
 import { getGameDataService } from "../../services/gameServiceFactory"
 import { ASYNC_STORAGE_KEYS } from "../../config/constants"
@@ -45,7 +44,6 @@ export const createGameSlice: StateCreator<
       const { gameMode } = get()
       const dataService = getGameDataService(gameMode)
 
-      // Fetch all necessary data in parallel
       const [
         { dailyItem, fullItems, basicItems },
         storedDifficultyResult,
@@ -58,15 +56,12 @@ export const createGameSlice: StateCreator<
         AsyncStorage.getItem(ASYNC_STORAGE_KEYS.TUTORIAL_RESULTS_SEEN),
       ])
 
-      // Set Data
       set({ fullItems, basicItems })
 
-      // Handle Difficulty
       let difficulty =
         (storedDifficultyResult as DifficultyLevel) || DEFAULT_DIFFICULTY
       if (!DIFFICULTY_MODES[difficulty]) difficulty = DEFAULT_DIFFICULTY
 
-      // Handle Tutorial State
       set(
         produce((state: GameStoreState) => {
           if (hasSeenGuessInputTip === null) {
@@ -79,7 +74,6 @@ export const createGameSlice: StateCreator<
         })
       )
 
-      // Initialize Player Data
       const dateId = generateDateId(new Date())
       const guessesMax = DIFFICULTY_MODES[difficulty].guessesMax
 
@@ -135,7 +129,6 @@ export const createGameSlice: StateCreator<
       hintInfo: null as any,
     }
 
-    // Implicit Hint Logic
     if (
       !isCorrectAnswer &&
       fullGuessedItem &&
@@ -250,7 +243,7 @@ export const createGameSlice: StateCreator<
   },
 
   processGameOver: async () => {
-    const { playerGame, playerStats, gameMode } = get()
+    const { playerGame, playerStats } = get()
     const isGameOver =
       playerGame.correctAnswer ||
       playerGame.gaveUp ||
@@ -259,15 +252,12 @@ export const createGameSlice: StateCreator<
     if (!isGameOver || playerGame.statsProcessed) return
 
     set({ isInteractionsDisabled: true })
-
-    // Slight delay for animation timing
     setTimeout(() => {
       set({ gameStatus: "revealing" })
     }, 1200)
 
+    // OPTIMISTIC UI UPDATE
     const calculatedScore = calculateScore(playerGame)
-
-    // Update Stats locally (Optimistic update)
     const updatedStats = produce(playerStats, (draft) => {
       draft.games = (draft.games || 0) + 1
       draft.allTimeScore = (draft.allTimeScore || 0) + calculatedScore
@@ -275,7 +265,7 @@ export const createGameSlice: StateCreator<
         draft.currentStreak = (draft.currentStreak || 0) + 1
         draft.maxStreak = Math.max(draft.currentStreak, draft.maxStreak || 0)
         const guessCount = playerGame.guesses.length
-        if (guessCount > 0 && guessCount <= draft.wins.length) {
+        if (guessCount > 0 && guessCount <= 5) {
           draft.wins[guessCount - 1] = (draft.wins[guessCount - 1] || 0) + 1
         }
       } else {
@@ -283,34 +273,17 @@ export const createGameSlice: StateCreator<
       }
     })
 
-    const historyEntry: GameHistoryEntry = {
-      dateId: generateDateId(playerGame.startDate),
-      itemId: playerGame.triviaItem.id,
-      itemTitle: playerGame.triviaItem.title,
-      posterPath: playerGame.triviaItem.posterPath,
-      wasCorrect: playerGame.correctAnswer,
-      gaveUp: playerGame.gaveUp,
-      guessCount: playerGame.guesses.length,
-      guessesMax: playerGame.guessesMax,
-      difficulty: playerGame.difficulty,
-      score: calculatedScore,
-      gameMode: gameMode,
-    }
-
     set(
       produce((state: GameStoreState) => {
         state.playerGame.statsProcessed = true
+        state.playerStats = updatedStats
       })
     )
 
     try {
-      await gameService.savePlayerProgress(
-        playerGame,
-        updatedStats,
-        historyEntry
-      )
-      set({ playerStats: updatedStats })
+      await gameService.submitGameResult(playerGame)
     } catch (e: any) {
+      console.error("Cloud function submission failed", e)
       set({ error: `Failed to save progress: ${e.message}` })
       throw e
     }
