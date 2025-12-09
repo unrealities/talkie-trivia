@@ -22,12 +22,12 @@ jobs:
           cache: "npm"
 
       - name: Install App Dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Install Functions Dependencies
         run: |
           cd functions
-          npm ci
+          npm ci --legacy-peer-deps
 
       - name: Type Check (App)
         run: npx tsc --noEmit
