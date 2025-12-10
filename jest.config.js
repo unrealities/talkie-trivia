@@ -1,7 +1,7 @@
 module.exports = {
   preset: 'jest-expo',
   transformIgnorePatterns: [
-    "node_modules/(?!(jest-)?react-native|@react-native|expo(nent)?|@expo(nent)?/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg|@react-navigation/.*|expo-modules-core|immer|zustand/.*)"
+    "node_modules/(?!(jest-)?react-native|@react-native|expo(nent)?|@expo(nent)?/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg|@react-navigation/.*|expo-modules-core|immer|zustand/.*|firebase)"
   ],
   setupFiles: ["./jestSetup.js"],
   setupFilesAfterEnv: ["@testing-library/jest-native/extend-expect"],
