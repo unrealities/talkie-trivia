@@ -1,6 +1,11 @@
 import { jest } from '@jest/globals';
 import 'react-native-gesture-handler/jestSetup';
 
+// --- GLOBAL POLYFILLS (Must be first) ---
+global.self = global;
+global.window = global;
+global.XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+
 // --- GLOBAL MOCKS ---
 
 // Reanimated setup
@@ -203,6 +208,11 @@ jest.mock("firebase/app", () => ({
 
 jest.mock("firebase/performance", () => ({
   getPerformance: jest.fn(),
+}));
+
+jest.mock("firebase/functions", () => ({
+  getFunctions: jest.fn(),
+  httpsCallable: jest.fn(),
 }));
 
 jest.mock("firebase/analytics", () => ({
