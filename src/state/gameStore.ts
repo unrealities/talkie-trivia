@@ -6,6 +6,7 @@ import { createDataSlice } from "./slices/dataSlice"
 import { GameStoreState } from "./storeTypes"
 
 export * from "./storeTypes"
+export type GameState = GameStoreState
 
 export const useGameStore = create<GameStoreState>((...a) => ({
   ...createGameSlice(...a),
