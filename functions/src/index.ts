@@ -1,100 +1,162 @@
-import { onCall, HttpsError } from "firebase-functions/v2/https"
-import * as admin from "firebase-admin"
-import { calculateScore } from "./utils/scoreUtils"
+import * as fft from "firebase-functions-test"
 
-admin.initializeApp()
-const db = admin.firestore()
+// --- HOISTED MOCKS SETUP ---
+const mockTransaction = {
+  get: jest.fn(),
+  set: jest.fn(),
+  update: jest.fn(),
+}
 
-export const submitGameResult = onCall(async (request) => {
-  // 1. Authentication Check
-  if (!request.auth) {
-    throw new HttpsError(
-      "unauthenticated",
+const mockFirestoreInstance = {
+  collection: jest.fn().mockReturnThis(),
+  doc: jest.fn().mockReturnThis(),
+  runTransaction: jest.fn(async (callback) => {
+    return callback(mockTransaction)
+  }),
+}
+
+jest.mock("firebase-admin", () => {
+  return {
+    initializeApp: jest.fn(),
+    firestore: Object.assign(
+      jest.fn(() => mockFirestoreInstance),
+      {
+        FieldValue: {
+          serverTimestamp: jest.fn(() => "MOCK_TIMESTAMP"),
+        },
+      }
+    ),
+  }
+})
+
+import { submitGameResult } from "./index"
+
+const test = fft()
+
+describe("Cloud Function: submitGameResult", () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
+  afterAll(() => {
+    test.cleanup()
+  })
+
+  const mockAuth = {
+    uid: "user-123",
+    token: "mock-token",
+  }
+
+  const mockGame = {
+    id: "game-1",
+    playerID: "user-123",
+    correctAnswer: true,
+    difficulty: "LEVEL_3",
+    guesses: [{}, {}],
+    guessesMax: 5,
+    startDate: "2023-01-01",
+    triviaItem: {
+      id: 101,
+      title: "Test Movie",
+      posterPath: "/path.jpg",
+    },
+  }
+
+  it("should throw error if user is unauthenticated", async () => {
+    const wrapped = test.wrap(submitGameResult)
+    // Gen 2 wrapper invocation with missing auth
+    // @ts-ignore
+    await expect(wrapped({ data: { playerGame: mockGame } })).rejects.toThrow(
       "The function must be called while authenticated."
     )
-  }
+  })
 
-  const { playerGame } = request.data
-  const userId = request.auth.uid
+  it("should throw error if playerID does not match auth uid", async () => {
+    const wrapped = test.wrap(submitGameResult)
+    const badGame = { ...mockGame, playerID: "other-user" }
+    // @ts-ignore
+    await expect(
+      wrapped({ data: { playerGame: badGame }, auth: mockAuth })
+    ).rejects.toThrow("Invalid game data ownership.")
+  })
 
-  if (!playerGame || playerGame.playerID !== userId) {
-    throw new HttpsError("permission-denied", "Invalid game data ownership.")
-  }
+  it("should successfully process a win and update stats", async () => {
+    const wrapped = test.wrap(submitGameResult)
 
-  // 2. Validate the Game
-  const score = calculateScore(playerGame)
-  const isWin = playerGame.correctAnswer
-
-  // 3. Transactional Update of Stats
-  const playerStatsRef = db.collection("playerStats").doc(userId)
-  const playerGameRef = db.collection("playerGames").doc(playerGame.id)
-  const historyRef = db
-    .collection("players")
-    .doc(userId)
-    .collection("gameHistory")
-    .doc(playerGame.startDate.split("T")[0])
-
-  try {
-    await db.runTransaction(async (transaction) => {
-      const statsDoc = await transaction.get(playerStatsRef)
-      let stats = statsDoc.exists ? statsDoc.data() : null
-
-      if (!stats) {
-        stats = {
-          id: userId,
-          currentStreak: 0,
-          games: 0,
-          maxStreak: 0,
-          wins: [0, 0, 0, 0, 0],
-          hintsAvailable: 3,
-          hintsUsedCount: 0,
-          allTimeScore: 0,
-        }
-      }
-
-      // Update Stats
-      stats!.games = (stats!.games || 0) + 1
-      stats!.allTimeScore = (stats!.allTimeScore || 0) + score
-
-      if (isWin) {
-        stats!.currentStreak = (stats!.currentStreak || 0) + 1
-        stats!.maxStreak = Math.max(stats!.currentStreak, stats!.maxStreak || 0)
-
-        const guessCount = playerGame.guesses.length
-        if (!stats!.wins) stats!.wins = [0, 0, 0, 0, 0]
-
-        if (guessCount > 0 && guessCount <= 5) {
-          stats!.wins[guessCount - 1] = (stats!.wins[guessCount - 1] || 0) + 1
-        }
-      } else {
-        stats!.currentStreak = 0
-      }
-
-      transaction.set(
-        playerGameRef,
-        { ...playerGame, statsProcessed: true, score },
-        { merge: true }
-      )
-      transaction.set(playerStatsRef, stats!)
-      transaction.set(historyRef, {
-        dateId: playerGame.startDate.split("T")[0],
-        itemId: playerGame.triviaItem.id,
-        itemTitle: playerGame.triviaItem.title,
-        posterPath: playerGame.triviaItem.posterPath,
-        wasCorrect: isWin,
-        gaveUp: playerGame.gaveUp,
-        guessCount: playerGame.guesses.length,
-        guessesMax: playerGame.guessesMax,
-        difficulty: playerGame.difficulty,
-        score: score,
-        gameMode: "movies",
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      })
+    mockTransaction.get.mockResolvedValue({
+      exists: true,
+      data: () => ({
+        id: "user-123",
+        currentStreak: 2,
+        maxStreak: 5,
+        games: 10,
+        wins: [0, 0, 0, 0, 0],
+        allTimeScore: 5000,
+      }),
     })
 
-    return { success: true, score }
-  } catch (error: any) {
-    console.error("Transaction failure:", error)
-    throw new HttpsError("internal", "Could not submit game result.")
-  }
+    // @ts-ignore
+    const result = await wrapped({
+      data: { playerGame: mockGame },
+      auth: mockAuth,
+    })
+
+    expect(result.success).toBe(true)
+    expect(result.score).toBeGreaterThan(0)
+
+    expect(mockFirestoreInstance.runTransaction).toHaveBeenCalled()
+
+    const statsUpdateCall = mockTransaction.set.mock.calls.find(
+      (call: any) => call[1].id === "user-123"
+    )
+    const updatedStats = statsUpdateCall[1]
+
+    expect(updatedStats.games).toBe(11)
+    expect(updatedStats.currentStreak).toBe(3)
+    expect(updatedStats.allTimeScore).toBe(5000 + result.score)
+  })
+
+  it("should reset streak on loss", async () => {
+    const wrapped = test.wrap(submitGameResult)
+    const lossGame = { ...mockGame, correctAnswer: false }
+
+    mockTransaction.get.mockResolvedValue({
+      exists: true,
+      data: () => ({
+        id: "user-123",
+        currentStreak: 5,
+        games: 10,
+        allTimeScore: 5000,
+      }),
+    })
+
+    // @ts-ignore
+    await wrapped({ data: { playerGame: lossGame }, auth: mockAuth })
+
+    const statsUpdateCall = mockTransaction.set.mock.calls.find(
+      (call: any) => call[1].id === "user-123"
+    )
+    const updatedStats = statsUpdateCall[1]
+
+    expect(updatedStats.currentStreak).toBe(0)
+    expect(updatedStats.games).toBe(11)
+  })
+
+  it("should create default stats if they do not exist", async () => {
+    const wrapped = test.wrap(submitGameResult)
+
+    mockTransaction.get.mockResolvedValue({ exists: false })
+
+    // @ts-ignore
+    await wrapped({ data: { playerGame: mockGame }, auth: mockAuth })
+
+    const statsUpdateCall = mockTransaction.set.mock.calls.find(
+      (call: any) => call[1].id === "user-123"
+    )
+    const updatedStats = statsUpdateCall[1]
+
+    expect(updatedStats).toBeDefined()
+    expect(updatedStats.games).toBe(1)
+    expect(updatedStats.currentStreak).toBe(1)
+  })
 })

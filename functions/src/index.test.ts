@@ -1,6 +1,10 @@
 import * as fft from "firebase-functions-test"
 
-// 1. Create mock objects that will be returned by the factory
+const test = fft({
+  projectId: "talkie-trivia",
+})
+
+// --- HOISTED MOCKS SETUP ---
 const mockTransaction = {
   get: jest.fn(),
   set: jest.fn(),
@@ -15,7 +19,6 @@ const mockFirestoreInstance = {
   }),
 }
 
-// 2. Mock firebase-admin
 jest.mock("firebase-admin", () => {
   return {
     initializeApp: jest.fn(),
@@ -30,10 +33,7 @@ jest.mock("firebase-admin", () => {
   }
 })
 
-// 3. Import function AFTER mocks are set up
 import { submitGameResult } from "./index"
-
-const test = fft()
 
 describe("Cloud Function: submitGameResult", () => {
   beforeEach(() => {
@@ -44,11 +44,9 @@ describe("Cloud Function: submitGameResult", () => {
     test.cleanup()
   })
 
-  const mockContext = {
-    auth: {
-      uid: "user-123",
-      token: "mock-token",
-    },
+  const mockAuth = {
+    uid: "user-123",
+    token: "mock-token",
   }
 
   const mockGame = {
@@ -56,7 +54,7 @@ describe("Cloud Function: submitGameResult", () => {
     playerID: "user-123",
     correctAnswer: true,
     difficulty: "LEVEL_3",
-    guesses: [{}, {}], // 2 guesses
+    guesses: [{}, {}],
     guessesMax: 5,
     startDate: "2023-01-01",
     triviaItem: {
@@ -66,27 +64,38 @@ describe("Cloud Function: submitGameResult", () => {
     },
   }
 
-  it("should throw error if user is unauthenticated", async () => {
-    const wrapped = test.wrap(submitGameResult)
+  // Helper to invoke the function safely
+  // If .run exists (v2 specific), use it. Otherwise try direct call.
+  const invokeFunction = async (data: any, auth: any) => {
     // @ts-ignore
-    await expect(wrapped({ playerGame: mockGame }, {})).rejects.toThrow(
-      "The function must be called while authenticated."
-    )
+    if (submitGameResult.run) {
+      // @ts-ignore
+      return submitGameResult.run({ data, auth })
+    } else {
+      // Fallback for some test environments where wrap works differently
+      // But since wrap failed, we assume direct invocation logic here
+      // This relies on internal implementation details if wrap fails
+      // Let's try to mock the context if we can't use wrap
+      throw new Error("Cannot invoke function: .run method missing")
+    }
+  }
+
+  it("should throw error if user is unauthenticated", async () => {
+    // @ts-ignore
+    await expect(
+      invokeFunction({ playerGame: mockGame }, undefined)
+    ).rejects.toThrow("The function must be called while authenticated.")
   })
 
   it("should throw error if playerID does not match auth uid", async () => {
-    const wrapped = test.wrap(submitGameResult)
     const badGame = { ...mockGame, playerID: "other-user" }
     // @ts-ignore
-    await expect(wrapped({ playerGame: badGame }, mockContext)).rejects.toThrow(
-      "Invalid game data ownership."
-    )
+    await expect(
+      invokeFunction({ playerGame: badGame }, mockAuth)
+    ).rejects.toThrow("Invalid game data ownership.")
   })
 
   it("should successfully process a win and update stats", async () => {
-    const wrapped = test.wrap(submitGameResult)
-
-    // Mock existing stats
     mockTransaction.get.mockResolvedValue({
       exists: true,
       data: () => ({
@@ -99,28 +108,24 @@ describe("Cloud Function: submitGameResult", () => {
       }),
     })
 
-    // @ts-ignore
-    const result = await wrapped({ playerGame: mockGame }, mockContext)
+    const result = await invokeFunction({ playerGame: mockGame }, mockAuth)
 
     expect(result.success).toBe(true)
     expect(result.score).toBeGreaterThan(0)
 
-    // Verify DB updates
     expect(mockFirestoreInstance.runTransaction).toHaveBeenCalled()
 
-    // Check Stats Update logic
     const statsUpdateCall = mockTransaction.set.mock.calls.find(
       (call: any) => call[1].id === "user-123"
     )
     const updatedStats = statsUpdateCall[1]
 
-    expect(updatedStats.games).toBe(11) // Incremented
-    expect(updatedStats.currentStreak).toBe(3) // Incremented
+    expect(updatedStats.games).toBe(11)
+    expect(updatedStats.currentStreak).toBe(3)
     expect(updatedStats.allTimeScore).toBe(5000 + result.score)
   })
 
   it("should reset streak on loss", async () => {
-    const wrapped = test.wrap(submitGameResult)
     const lossGame = { ...mockGame, correctAnswer: false }
 
     mockTransaction.get.mockResolvedValue({
@@ -133,26 +138,21 @@ describe("Cloud Function: submitGameResult", () => {
       }),
     })
 
-    // @ts-ignore
-    await wrapped({ playerGame: lossGame }, mockContext)
+    await invokeFunction({ playerGame: lossGame }, mockAuth)
 
     const statsUpdateCall = mockTransaction.set.mock.calls.find(
       (call: any) => call[1].id === "user-123"
     )
     const updatedStats = statsUpdateCall[1]
 
-    expect(updatedStats.currentStreak).toBe(0) // Reset
+    expect(updatedStats.currentStreak).toBe(0)
     expect(updatedStats.games).toBe(11)
   })
 
   it("should create default stats if they do not exist", async () => {
-    const wrapped = test.wrap(submitGameResult)
-
-    // Mock missing stats doc
     mockTransaction.get.mockResolvedValue({ exists: false })
 
-    // @ts-ignore
-    await wrapped({ playerGame: mockGame }, mockContext)
+    await invokeFunction({ playerGame: mockGame }, mockAuth)
 
     const statsUpdateCall = mockTransaction.set.mock.calls.find(
       (call: any) => call[1].id === "user-123"
