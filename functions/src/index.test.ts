@@ -1,9 +1,3 @@
-import * as fft from "firebase-functions-test"
-
-const test = fft({
-  projectId: "talkie-trivia",
-})
-
 // --- HOISTED MOCKS SETUP ---
 const mockTransaction = {
   get: jest.fn(),
@@ -19,6 +13,7 @@ const mockFirestoreInstance = {
   }),
 }
 
+// Mock firebase-admin
 jest.mock("firebase-admin", () => {
   return {
     initializeApp: jest.fn(),
@@ -33,15 +28,29 @@ jest.mock("firebase-admin", () => {
   }
 })
 
+// Mock firebase-functions/v2/https
+jest.mock("firebase-functions/v2/https", () => ({
+  onCall: jest.fn((optionsOrHandler: any, maybeHandler?: any) => {
+    // onCall can be called as onCall(handler) or onCall(options, handler)
+    // Return the handler function in either case
+    const handler = maybeHandler || optionsOrHandler
+    return handler
+  }),
+  HttpsError: class extends Error {
+    code: string
+    constructor(code: string, message: string) {
+      super(message)
+      this.code = code
+    }
+  },
+}))
+
+// Import AFTER all mocks are set up
 import { submitGameResult } from "./index"
 
 describe("Cloud Function: submitGameResult", () => {
   beforeEach(() => {
     jest.clearAllMocks()
-  })
-
-  afterAll(() => {
-    test.cleanup()
   })
 
   const mockAuth = {
@@ -64,26 +73,10 @@ describe("Cloud Function: submitGameResult", () => {
     },
   }
 
-  // Helper to invoke the function safely
-  // If .run exists (v2 specific), use it. Otherwise try direct call.
-  const invokeFunction = async (data: any, auth: any) => {
-    // @ts-ignore
-    if (submitGameResult.run) {
-      // @ts-ignore
-      return submitGameResult.run({ data, auth })
-    } else {
-      // Fallback for some test environments where wrap works differently
-      // But since wrap failed, we assume direct invocation logic here
-      // This relies on internal implementation details if wrap fails
-      // Let's try to mock the context if we can't use wrap
-      throw new Error("Cannot invoke function: .run method missing")
-    }
-  }
-
   it("should throw error if user is unauthenticated", async () => {
     // @ts-ignore
     await expect(
-      invokeFunction({ playerGame: mockGame }, undefined)
+      submitGameResult({ data: { playerGame: mockGame }, auth: undefined })
     ).rejects.toThrow("The function must be called while authenticated.")
   })
 
@@ -91,7 +84,7 @@ describe("Cloud Function: submitGameResult", () => {
     const badGame = { ...mockGame, playerID: "other-user" }
     // @ts-ignore
     await expect(
-      invokeFunction({ playerGame: badGame }, mockAuth)
+      submitGameResult({ data: { playerGame: badGame }, auth: mockAuth })
     ).rejects.toThrow("Invalid game data ownership.")
   })
 
@@ -108,7 +101,11 @@ describe("Cloud Function: submitGameResult", () => {
       }),
     })
 
-    const result = await invokeFunction({ playerGame: mockGame }, mockAuth)
+    // @ts-ignore
+    const result = await submitGameResult({
+      data: { playerGame: mockGame },
+      auth: mockAuth,
+    })
 
     expect(result.success).toBe(true)
     expect(result.score).toBeGreaterThan(0)
@@ -138,7 +135,8 @@ describe("Cloud Function: submitGameResult", () => {
       }),
     })
 
-    await invokeFunction({ playerGame: lossGame }, mockAuth)
+    // @ts-ignore
+    await submitGameResult({ data: { playerGame: lossGame }, auth: mockAuth })
 
     const statsUpdateCall = mockTransaction.set.mock.calls.find(
       (call: any) => call[1].id === "user-123"
@@ -152,7 +150,8 @@ describe("Cloud Function: submitGameResult", () => {
   it("should create default stats if they do not exist", async () => {
     mockTransaction.get.mockResolvedValue({ exists: false })
 
-    await invokeFunction({ playerGame: mockGame }, mockAuth)
+    // @ts-ignore
+    await submitGameResult({ data: { playerGame: mockGame }, auth: mockAuth })
 
     const statsUpdateCall = mockTransaction.set.mock.calls.find(
       (call: any) => call[1].id === "user-123"
