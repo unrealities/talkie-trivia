@@ -10,6 +10,7 @@ import {
 } from "firebase/firestore"
 import { getFunctions, httpsCallable } from "firebase/functions"
 import { db, app } from "./firebaseClient"
+import Constants from "expo-constants"
 import { playerConverter } from "../utils/firestore/converters/player"
 import { playerGameConverter } from "../utils/firestore/converters/playerGame"
 import { playerStatsConverter } from "../utils/firestore/converters/playerStats"
@@ -116,13 +117,23 @@ export const gameService = {
 
   /**
    * Securely submits the game result to Firebase Cloud Functions.
-   * Server calculates score, updates stats, and verifies integrity.
    */
   submitGameResult: async (playerGame: PlayerGame): Promise<void> => {
+    // --- CHECK FOR E2E MODE ---
+    const isE2E =
+      Constants.expoConfig?.extra?.isE2E === true ||
+      process.env.EXPO_PUBLIC_IS_E2E === "true"
+
+    if (isE2E) {
+      console.log("[E2E] Intercepting submitGameResult. Simulating success.")
+      // In E2E, we assume the optimistic UI update in the Store is enough.
+      // We return immediately so we don't hit the real backend with a fake user.
+      return
+    }
+
     const functions = getFunctions(app)
     const submitFunction = httpsCallable(functions, "submitGameResult")
 
-    // Serialize dates to ISO strings for transport
     const payload = {
       ...playerGame,
       startDate:
@@ -136,6 +147,14 @@ export const gameService = {
     }
 
     await submitFunction({ playerGame: payload })
+  },
+
+  savePlayerProgress: async (
+    playerGame: PlayerGame,
+    playerStats: PlayerStats,
+    gameHistoryEntry: GameHistoryEntry | null = null
+  ) => {
+    throw new Error("Client-side save is deprecated. Use submitGameResult.")
   },
 
   fetchGameHistory: async (playerId: string): Promise<GameHistoryEntry[]> => {
