@@ -3,6 +3,7 @@ import { doc, getDoc, setDoc, collection, getDocs } from "firebase/firestore"
 import { getFunctions, httpsCallable } from "firebase/functions"
 import { defaultPlayerGame, defaultPlayerStats } from "../../src/models/default"
 import Player from "../../src/models/player"
+import Constants from "expo-constants"
 
 // Mocks
 jest.mock("firebase/firestore", () => ({
@@ -174,6 +175,29 @@ describe("Service: gameService", () => {
           startDate: "2023-01-01T00:00:00.000Z",
         }),
       })
+    })
+
+    it("should skip network call in E2E mode", async () => {
+      if (Constants.expoConfig && Constants.expoConfig.extra) {
+        Constants.expoConfig.extra.isE2E = true
+      } else {
+        // @ts-ignore
+        Constants.expoConfig = { extra: { isE2E: true } }
+      }
+
+      await gameService.submitGameResult({
+        ...defaultPlayerGame,
+        startDate: new Date(),
+        endDate: new Date(),
+      })
+
+      // Verify httpsCallable was NOT called
+      expect(httpsCallable).not.toHaveBeenCalled()
+
+      // Reset
+      if (Constants.expoConfig && Constants.expoConfig.extra) {
+        Constants.expoConfig.extra.isE2E = false
+      }
     })
   })
 

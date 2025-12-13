@@ -50,6 +50,41 @@ describe("State: Game Slice (Edge Cases)", () => {
       expect(result.current.loading).toBe(false)
       consoleSpy.mockRestore()
     })
+
+    it("should successfully initialize game (Happy Path)", async () => {
+      const mockDailyItem = { id: 100, title: "Daily Movie" }
+      const mockFullItems = [mockDailyItem]
+      const mockBasicItems = [{ id: 100, title: "Daily Movie" }]
+
+      ;(getGameDataService as jest.Mock).mockReturnValue({
+        getDailyTriviaItemAndLists: jest.fn().mockResolvedValue({
+          dailyItem: mockDailyItem,
+          fullItems: mockFullItems,
+          basicItems: mockBasicItems,
+        }),
+      })
+
+      ;(gameService.fetchOrCreatePlayerGame as jest.Mock).mockResolvedValue({
+        ...defaultPlayerGame,
+        id: "new-game",
+        triviaItem: mockDailyItem,
+      })
+
+      ;(gameService.fetchOrCreatePlayerStats as jest.Mock).mockResolvedValue(
+        defaultPlayerStats
+      )
+
+      const { result } = renderHook(() => useGameStore())
+
+      await act(async () => {
+        await result.current.initializeGame(mockPlayer)
+      })
+
+      expect(result.current.loading).toBe(false)
+      expect(result.current.fullItems).toEqual(mockFullItems)
+      expect(result.current.playerGame.id).toBe("new-game")
+      expect(result.current.gameStatus).toBe("playing")
+    })
   })
 
   describe("processGameOver", () => {
@@ -93,7 +128,6 @@ describe("State: Game Slice (Edge Cases)", () => {
         },
         playerStats: { ...defaultPlayerStats, games: 0 },
       })
-
       ;(gameService.submitGameResult as jest.Mock).mockResolvedValue({})
 
       await act(async () => {
@@ -122,7 +156,6 @@ describe("State: Game Slice (Edge Cases)", () => {
         fullItems: [correctItem, wrongItemFull],
         difficulty: "LEVEL_3", // Implicit Feedback
       })
-
       ;(generateImplicitHint as jest.Mock).mockReturnValue({
         feedback: "Custom Feedback",
         revealedHints: { director: true },
