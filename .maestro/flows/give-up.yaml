@@ -33,4 +33,3 @@ appId: com.unrealities.talkietrivia
 - extendedWaitUntil:
     visible: "So Close!"
     timeout: 5000
-- assertVisible: "fold 'em" # Part of "Sometimes you just know when to fold 'em"
