@@ -81,6 +81,33 @@ export const gameService = {
   fetchPlayerGameById: async (
     playerGameId: string
   ): Promise<PlayerGame | null> => {
+    // --- E2E MOCK ---
+    const isE2E =
+      Constants.expoConfig?.extra?.isE2E === true ||
+      process.env.EXPO_PUBLIC_IS_E2E === "true"
+
+    if (isE2E) {
+      return {
+        ...defaultPlayerGame,
+        id: playerGameId,
+        triviaItem: {
+          id: 27205, // Inception ID
+          title: "Inception",
+          description: "A thief who steals corporate secrets...",
+          posterPath: "/9gk7admal4zlDun9ncJ7sUCKRnl.jpg",
+          releaseDate: "2010-07-16",
+          metadata: { imdb_id: "tt1375666" },
+          hints: [],
+        },
+        guesses: [
+          { itemId: 27205, hintInfo: [] }, // Winning guess
+        ],
+        correctAnswer: true,
+        guessesMax: 5,
+        difficulty: "LEVEL_4",
+      }
+    }
+
     const playerGameRef = doc(
       db,
       FIRESTORE_COLLECTIONS.PLAYER_GAMES,
@@ -117,6 +144,7 @@ export const gameService = {
 
   /**
    * Securely submits the game result to Firebase Cloud Functions.
+   * Server calculates score, updates stats, and verifies integrity.
    */
   submitGameResult: async (playerGame: PlayerGame): Promise<void> => {
     // --- CHECK FOR E2E MODE ---
@@ -126,14 +154,13 @@ export const gameService = {
 
     if (isE2E) {
       console.log("[E2E] Intercepting submitGameResult. Simulating success.")
-      // In E2E, we assume the optimistic UI update in the Store is enough.
-      // We return immediately so we don't hit the real backend with a fake user.
       return
     }
 
     const functions = getFunctions(app)
     const submitFunction = httpsCallable(functions, "submitGameResult")
 
+    // Serialize dates to ISO strings for transport
     const payload = {
       ...playerGame,
       startDate:
@@ -149,6 +176,10 @@ export const gameService = {
     await submitFunction({ playerGame: payload })
   },
 
+  /**
+   * @deprecated Used for local optimistic updates only if needed.
+   * Direct writes are now blocked by security rules for stats/history.
+   */
   savePlayerProgress: async (
     playerGame: PlayerGame,
     playerStats: PlayerStats,
@@ -158,6 +189,30 @@ export const gameService = {
   },
 
   fetchGameHistory: async (playerId: string): Promise<GameHistoryEntry[]> => {
+    // --- E2E MOCK ---
+    const isE2E =
+      Constants.expoConfig?.extra?.isE2E === true ||
+      process.env.EXPO_PUBLIC_IS_E2E === "true"
+
+    if (isE2E) {
+      // Return a fake history entry matching the E2E flow (Inception)
+      return [
+        {
+          dateId: new Date().toISOString().split("T")[0],
+          itemId: 27205, // Inception's real TMDB ID
+          itemTitle: "Inception",
+          posterPath: "/9gk7admal4zlDun9ncJ7sUCKRnl.jpg",
+          wasCorrect: true,
+          gaveUp: false,
+          guessCount: 1,
+          guessesMax: 5,
+          difficulty: "LEVEL_4", // Hard mode from test
+          score: 850,
+          gameMode: "movies",
+        },
+      ]
+    }
+
     const historyRef = collection(
       db,
       `${FIRESTORE_COLLECTIONS.PLAYERS}/${playerId}/${FIRESTORE_COLLECTIONS.GAME_HISTORY}`

@@ -71,6 +71,7 @@ const GameHistoryItem = memo(({ item, onPress }: GameHistoryItemProps) => {
 
   return (
     <Pressable
+      testID={`history-item-${item.itemTitle}`}
       onPress={handlePress}
       style={({ pressed }) => [
         styles.itemContainer,

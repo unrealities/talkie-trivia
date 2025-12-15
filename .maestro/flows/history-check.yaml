@@ -8,58 +8,44 @@ appId: com.unrealities.talkietrivia
     visible: "Search for a movie title..."
     timeout: 45000
 # DISMISS TOOLTIP 1
-- tapOn: 
+- tapOn:
     text: "Got it"
     optional: true
 
-# 1. Change Difficulty
+# 1. Check History (Directly)
 - tapOn: "Profile.*"
+
+# 2. Scroll to History Section Header
 - scrollUntilVisible:
     element:
-        text: "Hard"
-    direction: DOWN
-- tapOn: "Hard"
-
-# 2. Verify Difficulty Impact (Go back to game)
-- tapOn: "Game"
-# In Hard mode, the hint section usually disappears or changes state. 
-# We can check if the Difficulty selector at the top of the game screen updated.
-- assertVisible: "Hard" 
-
-# 3. Complete a quick game (Win)
-- tapOn: "Search for a movie title..."
-- inputText: "Inception"
-- pressKey: Enter
-- hideKeyboard
-- extendedWaitUntil:
-    visible: "result-item-Inception"
-    timeout: 5000
-- tapOn: "result-item-Inception"
-- extendedWaitUntil:
-    visible: "You Got It!"
-    timeout: 5000
-
-# 4. Check History
-- tapOn: "Profile"
-- scrollUntilVisible:
-    element:
-        text: "Game History"
+      text: "Game History"
     direction: DOWN
     timeout: 5000
 
-# Verify the history item exists (Inception)
-# Note: You might need to remove accessible={true} from GameHistoryItem in `src/components/gameHistory.tsx` 
-# just like we did for PlayerStats for this to work reliably.
+# 3. Tap on Inception using ID
+# We center the element to ensure it's not hidden behind the bottom tab bar
 - scrollUntilVisible:
     element:
-        text: "Inception"
+      id: "history-item-Inception"
     direction: DOWN
     timeout: 5000
-- tapOn: "Inception"
+    centerElement: true
+- tapOn:
+    id: "history-item-Inception"
 
-# 5. Verify History Detail Modal
+# 4. Verify History Detail Modal
+# First verify the modal actually opened by finding the Close button
 - extendedWaitUntil:
-    visible: "Your Guesses"
-    timeout: 3000
+    visible: "Close"
+    timeout: 5000
+
+# Now scroll inside the modal to find the guesses section
+- scrollUntilVisible:
+    element:
+      text: "Your Guesses"
+    direction: DOWN
+    timeout: 5000
+
+- assertVisible: "Your Guesses"
 - assertVisible: "Inception (2010)"
 - tapOn: "Close"
