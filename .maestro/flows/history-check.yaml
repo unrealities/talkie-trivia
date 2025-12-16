@@ -23,7 +23,6 @@ appId: com.unrealities.talkietrivia
     timeout: 5000
 
 # 3. Tap on Inception using ID
-# We center the element to ensure it's not hidden behind the bottom tab bar
 - scrollUntilVisible:
     element:
       id: "history-item-Inception"
@@ -34,12 +33,11 @@ appId: com.unrealities.talkietrivia
     id: "history-item-Inception"
 
 # 4. Verify History Detail Modal
-# First verify the modal actually opened by finding the Close button
 - extendedWaitUntil:
     visible: "Close"
     timeout: 5000
 
-# Now scroll inside the modal to find the guesses section
+# Scroll down inside the modal to reveal guesses
 - scrollUntilVisible:
     element:
       text: "Your Guesses"
