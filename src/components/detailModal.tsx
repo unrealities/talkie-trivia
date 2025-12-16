@@ -59,7 +59,7 @@ const DetailModal: React.FC<DetailModalProps> = memo(
             title: "Talkie Trivia Results",
           },
           {
-            dialogTitle: "Share your Talkie Trivia results!", // Android only
+            dialogTitle: "Share your Talkie Trivia results!",
           }
         )
       } catch (error: any) {
@@ -111,7 +111,6 @@ const DetailModal: React.FC<DetailModalProps> = memo(
           accessible={true}
           accessibilityLabel="Close modal by tapping outside"
         >
-          {/* Prevent touch events from propagating to the background Pressable */}
           <Pressable onPress={(e) => e.stopPropagation()} accessible={false}>
             {renderContent()}
           </Pressable>
@@ -137,13 +136,15 @@ const themedStyles = (theme: Theme): ModalStyles => ({
   },
   modalView: {
     width: "90%",
-    maxHeight: "80%",
+    maxHeight: "85%",
     maxWidth: theme.responsive.scale(500),
     alignSelf: "center",
     backgroundColor: theme.colors.background,
     borderRadius: theme.responsive.scale(15),
     padding: theme.spacing.large,
     ...theme.shadows.medium,
+    display: "flex",
+    flexDirection: "column",
   },
   buttonContainer: {
     flexDirection: "row",

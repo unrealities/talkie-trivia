@@ -14,9 +14,9 @@ import { gameService } from "../services/gameService"
 import { getGameDataService } from "../services/gameServiceFactory"
 import { useStyles, Theme, useThemeTokens } from "../utils/hooks/useStyles"
 import { Typography } from "./ui/typography"
+import DetailModal from "./detailModal" // Direct import
+import Facts from "./facts" // Direct import if not lazy
 
-const DetailModal = lazy(() => import("./detailModal"))
-const Facts = lazy(() => import("./facts"))
 const GuessesContainer = lazy(() => import("./guesses"))
 
 interface HistoryDetailModalProps {
@@ -30,7 +30,7 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
 }) => {
   const { player } = useAuth()
   const styles = useStyles(themedStyles)
-  const theme = useThemeTokens() // Use hook directly
+  const theme = useThemeTokens()
 
   const [item, setItem] = useState<TriviaItem | null>(null)
   const [playerGame, setPlayerGame] = useState<PlayerGame | null>(null)
@@ -96,23 +96,36 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
     }
     if (item) {
       return (
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <Facts item={item} isScrollEnabled={false} />
-          {playerGame && (
-            <View>
-              <Typography variant="h2" style={styles.guessesTitle}>
-                Your Guesses
-              </Typography>
-              <Suspense fallback={<ActivityIndicator />}>
-                <GuessesContainer
-                  gameForDisplay={playerGame}
-                  allItemsForDisplay={allBasicItems}
-                  lastGuessResult={null}
-                />
-              </Suspense>
-            </View>
-          )}
-        </ScrollView>
+        <View style={{ flex: 1 }}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 20 }}
+          >
+            <Facts item={item} isScrollEnabled={false} compact={true} />
+            {playerGame && (
+              <View style={styles.guessesSection}>
+                <View style={styles.divider} />
+                <Typography variant="h2" style={styles.guessesTitle}>
+                  Your Guesses
+                </Typography>
+                <Suspense
+                  fallback={
+                    <ActivityIndicator
+                      size="small"
+                      color={theme.colors.primary}
+                    />
+                  }
+                >
+                  <GuessesContainer
+                    gameForDisplay={playerGame}
+                    allItemsForDisplay={allBasicItems}
+                    lastGuessResult={null}
+                  />
+                </Suspense>
+              </View>
+            )}
+          </ScrollView>
+        </View>
       )
     }
     return null
@@ -121,15 +134,7 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
   return (
     <Suspense fallback={null}>
       <DetailModal show={!!historyItem} toggleModal={onClose}>
-        <Suspense
-          fallback={
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color={theme.colors.primary} />
-            </View>
-          }
-        >
-          {renderModalContent()}
-        </Suspense>
+        {renderModalContent()}
       </DetailModal>
     </Suspense>
   )
@@ -138,6 +143,8 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
 interface HistoryDetailModalStyles {
   loadingContainer: ViewStyle
   errorContainer: ViewStyle
+  guessesSection: ViewStyle
+  divider: ViewStyle
   guessesTitle: TextStyle
 }
 
@@ -155,11 +162,23 @@ const themedStyles = (theme: Theme): HistoryDetailModalStyles => ({
     padding: theme.spacing.large,
     minHeight: theme.responsive.scale(300),
   },
+  guessesSection: {
+    marginTop: theme.spacing.small,
+    width: "100%",
+  },
+  divider: {
+    height: 1,
+    backgroundColor: theme.colors.border,
+    marginVertical: theme.spacing.small,
+    width: "80%",
+    alignSelf: "center",
+  },
   guessesTitle: {
-    fontSize: theme.responsive.responsiveFontSize(20),
+    fontSize: theme.responsive.responsiveFontSize(18),
     textAlign: "center",
-    marginTop: theme.spacing.large,
-    marginBottom: theme.spacing.medium,
+    marginBottom: theme.spacing.small,
+    color: theme.colors.textPrimary,
+    fontFamily: "Arvo-Bold",
   },
 })
 

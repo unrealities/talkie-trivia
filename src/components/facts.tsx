@@ -66,21 +66,23 @@ const ItemHeader = memo(
   }
 )
 
-const ItemPoster = memo(({ posterPath }: { posterPath: string }) => {
-  const styles = useStyles(themedStyles)
-  const imageSource: ImageSource = posterPath
-    ? { uri: `https://image.tmdb.org/t/p/w500${posterPath}` }
-    : defaultItemImage
+const ItemPoster = memo(
+  ({ posterPath, compact }: { posterPath: string; compact: boolean }) => {
+    const styles = useStyles(themedStyles)
+    const imageSource: ImageSource = posterPath
+      ? { uri: `https://image.tmdb.org/t/p/w500${posterPath}` }
+      : defaultItemImage
 
-  return (
-    <Image
-      source={imageSource}
-      style={styles.posterImage}
-      placeholder={defaultItemImage}
-      contentFit="cover"
-    />
-  )
-})
+    return (
+      <Image
+        source={imageSource}
+        style={[styles.posterImage, compact && styles.posterImageCompact]}
+        placeholder={defaultItemImage}
+        contentFit="contain"
+      />
+    )
+  }
+)
 
 const HintsRenderer = memo(({ item }: { item: TriviaItem }) => {
   const { openLink } = useExternalLink()
@@ -128,10 +130,17 @@ interface FactsProps {
   isLoading?: boolean
   error?: string
   isScrollEnabled?: boolean
+  compact?: boolean
 }
 
 const Facts = memo(
-  ({ item, isLoading = false, error, isScrollEnabled = true }: FactsProps) => {
+  ({
+    item,
+    isLoading = false,
+    error,
+    isScrollEnabled = true,
+    compact = false,
+  }: FactsProps) => {
     const styles = useStyles(themedStyles)
     const { openLink } = useExternalLink()
 
@@ -173,15 +182,22 @@ const Facts = memo(
             {item.metadata.tagline}
           </Typography>
         )}
-        <ScrollView
-          scrollEnabled={isScrollEnabled}
-          contentContainerStyle={styles.scrollContainer}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          <ItemPoster posterPath={item.posterPath} />
-          <HintsRenderer item={item} />
-        </ScrollView>
+
+        {isScrollEnabled ? (
+          <ScrollView
+            contentContainerStyle={styles.scrollContainer}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <ItemPoster posterPath={item.posterPath} compact={compact} />
+            <HintsRenderer item={item} />
+          </ScrollView>
+        ) : (
+          <View style={styles.staticContent}>
+            <ItemPoster posterPath={item.posterPath} compact={compact} />
+            <HintsRenderer item={item} />
+          </View>
+        )}
       </View>
     )
   }
@@ -196,16 +212,18 @@ interface FactsStyles {
   director: TextStyle
   scrollContainer: ViewStyle
   posterImage: ImageStyle
+  posterImageCompact: ImageStyle
   headerPressable: ViewStyle
   loadingIndicator: { color: string }
   linkText: TextStyle
+  staticContent: ViewStyle
 }
 
 const themedStyles = (theme: Theme): FactsStyles => ({
   container: {
     alignItems: "center",
-    flex: 1,
     width: "100%",
+    // Removed flex: 1 to prevent layout issues in nested ScrollViews
   },
   headerContainer: {
     flexDirection: "row",
@@ -254,12 +272,23 @@ const themedStyles = (theme: Theme): FactsStyles => ({
     paddingBottom: theme.spacing.large,
     width: "100%",
   },
+  staticContent: {
+    width: "100%",
+    alignItems: "center",
+    paddingBottom: theme.spacing.small,
+  },
   posterImage: {
     width: "100%",
     height: undefined,
     aspectRatio: 2 / 3,
     marginBottom: theme.spacing.medium,
     borderRadius: theme.responsive.scale(8),
+  },
+  posterImageCompact: {
+    height: theme.responsive.scale(150),
+    width: "auto",
+    aspectRatio: 2 / 3,
+    marginBottom: theme.spacing.small,
   },
   headerPressable: {
     width: "100%",
