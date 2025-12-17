@@ -22,15 +22,31 @@ import { API_CONFIG } from "../config/constants"
 type ImageSource = { uri: string } | number
 const defaultItemImage = require("../../assets/movie_default.png")
 
+const InlineActors = ({ actors }: { actors: any[] }) => {
+  const styles = useStyles(themedStyles)
+  // Take top 3
+  const topActors = actors
+    .slice(0, 3)
+    .map((a) => a.name)
+    .join(", ")
+  return (
+    <Typography variant="caption" style={styles.inlineActors} numberOfLines={3}>
+      Starring: {topActors}
+    </Typography>
+  )
+}
+
 const ItemHeader = memo(
   ({
     title,
     onPress,
     isLinkable,
+    compact = false,
   }: {
     title: string
     onPress: () => void
     isLinkable: boolean
+    compact?: boolean
   }) => {
     const styles = useStyles(themedStyles)
     return (
@@ -38,6 +54,7 @@ const ItemHeader = memo(
         onPress={onPress}
         style={({ pressed }) => [
           styles.headerPressable,
+          compact && styles.headerPressableCompact,
           { opacity: pressed ? 0.7 : 1 },
         ]}
         disabled={!isLinkable}
@@ -45,19 +62,29 @@ const ItemHeader = memo(
         accessibilityLabel={`Open external page for ${title}`}
         role="link"
       >
-        <View style={styles.headerContainer}>
+        <View
+          style={[
+            styles.headerContainer,
+            compact && styles.headerContainerCompact,
+          ]}
+        >
           <Typography
             variant="h1"
-            style={[styles.header, isLinkable && styles.linkText]}
+            style={[
+              styles.header,
+              isLinkable && styles.linkText,
+              compact && styles.headerCompact,
+            ]}
+            numberOfLines={compact ? 2 : undefined}
           >
             {title}
           </Typography>
           {isLinkable && (
             <FontAwesome
               name="external-link-square"
-              size={styles.imdbIcon.fontSize}
+              size={compact ? 16 : styles.imdbIcon.fontSize}
               color={styles.imdbIcon.color}
-              style={styles.imdbIcon}
+              style={[styles.imdbIcon, compact && styles.imdbIconCompact]}
             />
           )}
         </View>
@@ -65,65 +92,6 @@ const ItemHeader = memo(
     )
   }
 )
-
-const ItemPoster = memo(
-  ({ posterPath, compact }: { posterPath: string; compact: boolean }) => {
-    const styles = useStyles(themedStyles)
-    const imageSource: ImageSource = posterPath
-      ? { uri: `https://image.tmdb.org/t/p/w500${posterPath}` }
-      : defaultItemImage
-
-    return (
-      <Image
-        source={imageSource}
-        style={[styles.posterImage, compact && styles.posterImageCompact]}
-        placeholder={defaultItemImage}
-        contentFit="contain"
-      />
-    )
-  }
-)
-
-const HintsRenderer = memo(({ item }: { item: TriviaItem }) => {
-  const { openLink } = useExternalLink()
-  const styles = useStyles(themedStyles)
-
-  const handleActorPress = useCallback(
-    (actor: any) => {
-      if (actor.imdb_id) {
-        analyticsService.trackActorLinkTapped(actor.name)
-        openLink(`${API_CONFIG.IMDB_BASE_URL_NAME}${actor.imdb_id}`)
-      }
-    },
-    [openLink]
-  )
-
-  const renderHint = (hint: Hint) => {
-    switch (hint.type) {
-      case "director":
-        return (
-          <Typography key={hint.type} variant="caption" style={styles.director}>
-            {hint.label}: {String(hint.value)}
-          </Typography>
-        )
-      case "actors":
-        if (Array.isArray(hint.value)) {
-          return (
-            <Actors
-              key={hint.type}
-              actors={hint.value}
-              onActorPress={handleActorPress}
-            />
-          )
-        }
-        return null
-      default:
-        return null
-    }
-  }
-
-  return <>{item.hints.map(renderHint)}</>
-})
 
 interface FactsProps {
   item: TriviaItem
@@ -152,26 +120,127 @@ const Facts = memo(
       }
     }, [openLink, item.title, item.metadata.imdb_id])
 
-    if (isLoading) {
-      return (
-        <ActivityIndicator
-          testID="activity-indicator"
-          size="large"
-          color={styles.loadingIndicator.color}
-        />
-      )
-    }
+    const handleActorPress = useCallback(
+      (actor: any) => {
+        if (actor.imdb_id) {
+          analyticsService.trackActorLinkTapped(actor.name)
+          openLink(`${API_CONFIG.IMDB_BASE_URL_NAME}${actor.imdb_id}`)
+        }
+      },
+      [openLink]
+    )
 
-    if (error) {
+    if (isLoading)
       return (
-        <View style={[u.flex, u.justifyCenter, u.alignCenter, u.pMd]}>
+        <ActivityIndicator size="large" color={styles.loadingIndicator.color} />
+      )
+    if (error)
+      return (
+        <View style={u.pMd}>
           <Typography variant="error">{error}</Typography>
         </View>
       )
-    }
 
-    return (
-      <View style={styles.container}>
+    const imageSource = item.posterPath
+      ? { uri: `https://image.tmdb.org/t/p/w500${item.posterPath}` }
+      : defaultItemImage
+
+    const renderCompactLayout = () => (
+      <View style={styles.compactContainer}>
+        <View style={styles.compactTopRow}>
+          {/* LEFT COLUMN: POSTER */}
+          <Image
+            source={imageSource}
+            style={styles.posterImageCompact}
+            contentFit="contain"
+            placeholder={defaultItemImage}
+          />
+
+          {/* RIGHT COLUMN: DETAILS */}
+          <View style={styles.compactInfo}>
+            <ItemHeader
+              title={item.title}
+              onPress={handleItemPress}
+              isLinkable={!!item.metadata.imdb_id}
+              compact
+            />
+
+            {/* Tagline */}
+            {item.metadata.tagline && (
+              <Typography
+                variant="caption"
+                style={styles.taglineCompact}
+                numberOfLines={3}
+              >
+                "{item.metadata.tagline}"
+              </Typography>
+            )}
+
+            {/* Metadata Block */}
+            <View style={styles.metadataBlock}>
+              {/* Director */}
+              {item.hints.map((h) => {
+                if (h.type === "director") {
+                  return (
+                    <Typography
+                      key="dir"
+                      variant="caption"
+                      style={styles.metadataText}
+                    >
+                      Dir: {String(h.value)}
+                    </Typography>
+                  )
+                }
+                return null
+              })}
+
+              {/* Year/Decade */}
+              {item.hints.map((h) => {
+                if (h.type === "decade") {
+                  return (
+                    <Typography
+                      key="dec"
+                      variant="caption"
+                      style={styles.metadataText}
+                    >
+                      Released: {String(h.value)}
+                    </Typography>
+                  )
+                }
+                return null
+              })}
+
+              {/* Genre */}
+              {item.hints.map((h) => {
+                if (h.type === "genre") {
+                  return (
+                    <Typography
+                      key="gen"
+                      variant="caption"
+                      style={styles.metadataText}
+                    >
+                      Genre: {String(h.value)}
+                    </Typography>
+                  )
+                }
+                return null
+              })}
+            </View>
+
+            {/* Actors (Inline Text) */}
+            {item.hints.map((h) => {
+              if (h.type === "actors" && Array.isArray(h.value)) {
+                return <InlineActors key="actors" actors={h.value} />
+              }
+              return null
+            })}
+          </View>
+        </View>
+      </View>
+    )
+
+    const renderStandardLayout = () => (
+      <>
         <ItemHeader
           title={item.title}
           onPress={handleItemPress}
@@ -182,21 +251,50 @@ const Facts = memo(
             {item.metadata.tagline}
           </Typography>
         )}
+        <Image
+          source={imageSource}
+          style={styles.posterImage}
+          contentFit="cover"
+        />
+        {item.hints.map((hint) => {
+          if (hint.type === "actors" && Array.isArray(hint.value)) {
+            return (
+              <Actors
+                key={hint.type}
+                actors={hint.value}
+                onActorPress={handleActorPress}
+              />
+            )
+          }
+          if (["director", "genre", "decade"].includes(hint.type)) {
+            return (
+              <Typography
+                key={hint.type}
+                variant="caption"
+                style={styles.director}
+              >
+                {hint.label}: {String(hint.value)}
+              </Typography>
+            )
+          }
+          return null
+        })}
+      </>
+    )
 
-        {isScrollEnabled ? (
+    return (
+      <View style={styles.container}>
+        {compact ? (
+          renderCompactLayout()
+        ) : isScrollEnabled ? (
           <ScrollView
             contentContainerStyle={styles.scrollContainer}
-            keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
-            <ItemPoster posterPath={item.posterPath} compact={compact} />
-            <HintsRenderer item={item} />
+            {renderStandardLayout()}
           </ScrollView>
         ) : (
-          <View style={styles.staticContent}>
-            <ItemPoster posterPath={item.posterPath} compact={compact} />
-            <HintsRenderer item={item} />
-          </View>
+          <View style={styles.staticContent}>{renderStandardLayout()}</View>
         )}
       </View>
     )
@@ -206,24 +304,33 @@ const Facts = memo(
 interface FactsStyles {
   container: ViewStyle
   headerContainer: ViewStyle
+  headerContainerCompact: ViewStyle
   header: TextStyle
+  headerCompact: TextStyle
   imdbIcon: TextStyle & { fontSize: number }
+  imdbIconCompact: TextStyle
+  inlineActors: TextStyle & { fontSize: number }
+  linkText: TextStyle
   tagline: TextStyle
+  taglineCompact: TextStyle
   director: TextStyle
   scrollContainer: ViewStyle
+  staticContent: ViewStyle
   posterImage: ImageStyle
   posterImageCompact: ImageStyle
   headerPressable: ViewStyle
+  headerPressableCompact: ViewStyle
   loadingIndicator: { color: string }
-  linkText: TextStyle
-  staticContent: ViewStyle
+  metadataBlock: ViewStyle
+  metadataText: TextStyle & { fontSize: number }
+  compactContainer: ViewStyle
+  compactTopRow: ViewStyle
+  compactInfo: ViewStyle
 }
 
 const themedStyles = (theme: Theme): FactsStyles => ({
   container: {
-    alignItems: "center",
     width: "100%",
-    // Removed flex: 1 to prevent layout issues in nested ScrollViews
   },
   headerContainer: {
     flexDirection: "row",
@@ -231,11 +338,20 @@ const themedStyles = (theme: Theme): FactsStyles => ({
     justifyContent: "center",
     flexWrap: "wrap",
   },
+  headerContainerCompact: {
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+  },
   header: {
     ...theme.typography.heading1,
     fontSize: theme.responsive.responsiveFontSize(24),
     paddingBottom: theme.spacing.medium,
     textAlign: "center",
+  },
+  headerCompact: {
+    fontSize: theme.responsive.responsiveFontSize(20),
+    paddingBottom: theme.spacing.extraSmall,
+    textAlign: "left",
   },
   linkText: {
     textDecorationLine: "underline",
@@ -246,6 +362,10 @@ const themedStyles = (theme: Theme): FactsStyles => ({
     fontSize: theme.responsive.scale(22),
     color: theme.colors.primary,
   },
+  imdbIconCompact: {
+    paddingBottom: 0,
+    marginLeft: theme.spacing.extraSmall,
+  },
   tagline: {
     fontFamily: "Arvo-Italic",
     fontSize: theme.responsive.responsiveFontSize(14),
@@ -254,7 +374,6 @@ const themedStyles = (theme: Theme): FactsStyles => ({
     marginBottom: theme.spacing.small,
     color: theme.colors.primary,
     fontStyle: "italic",
-    lineHeight: theme.responsive.responsiveFontSize(16),
   },
   director: {
     fontFamily: "Arvo-Italic",
@@ -270,7 +389,6 @@ const themedStyles = (theme: Theme): FactsStyles => ({
     alignItems: "center",
     paddingVertical: theme.spacing.medium,
     paddingBottom: theme.spacing.large,
-    width: "100%",
   },
   staticContent: {
     width: "100%",
@@ -284,20 +402,64 @@ const themedStyles = (theme: Theme): FactsStyles => ({
     marginBottom: theme.spacing.medium,
     borderRadius: theme.responsive.scale(8),
   },
-  posterImageCompact: {
-    height: theme.responsive.scale(150),
-    width: "auto",
-    aspectRatio: 2 / 3,
-    marginBottom: theme.spacing.small,
-  },
   headerPressable: {
     width: "100%",
     alignItems: "center",
     paddingVertical: theme.spacing.small,
-    backgroundColor: "transparent",
+  },
+  headerPressableCompact: {
+    alignItems: "flex-start",
+    paddingVertical: 0,
   },
   loadingIndicator: {
     color: theme.colors.primary,
+  },
+
+  // Compact Layout
+  compactContainer: {
+    width: "100%",
+    flexDirection: "column",
+  },
+  compactTopRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: theme.spacing.small,
+  },
+  posterImageCompact: {
+    width: theme.responsive.scale(100),
+    height: theme.responsive.scale(150),
+    borderRadius: theme.responsive.scale(8),
+    marginRight: theme.spacing.medium,
+    backgroundColor: theme.colors.surface,
+  },
+  compactInfo: {
+    flex: 1,
+    justifyContent: "flex-start",
+    paddingTop: theme.spacing.extraSmall,
+  },
+  taglineCompact: {
+    fontFamily: "Arvo-Italic",
+    fontSize: theme.responsive.responsiveFontSize(11),
+    color:
+      theme.colorScheme === "dark" ? "#E0E0E0" : theme.colors.textSecondary,
+    marginBottom: theme.spacing.small,
+  },
+  metadataBlock: {
+    flexDirection: "column",
+    marginBottom: theme.spacing.small,
+  },
+  metadataText: {
+    fontFamily: "Arvo-Bold",
+    fontSize: theme.responsive.responsiveFontSize(12),
+    color: theme.colors.textPrimary,
+    marginBottom: 2,
+  },
+  inlineActors: {
+    fontFamily: "Arvo-Regular",
+    fontSize: theme.responsive.responsiveFontSize(11),
+    color:
+      theme.colorScheme === "dark" ? "#CCCCCC" : theme.colors.textSecondary,
+    marginTop: theme.spacing.extraSmall,
   },
 })
 

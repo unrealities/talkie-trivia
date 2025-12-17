@@ -69,7 +69,6 @@ const PickerItem = memo<ItemProps>(
             styles.resultItem,
             pressed && styles.pressedItem,
           ]}
-          android_ripple={{ color: styles.pressedItem.backgroundColor }}
           disabled={isDisabled}
         >
           <View style={styles.resultItemContent}>

@@ -1,11 +1,13 @@
-import React, { memo, useEffect, ReactNode } from "react"
-import { Modal, Pressable, View, Share, Alert, ViewStyle } from "react-native"
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  Easing,
-} from "react-native-reanimated"
+import React, { ReactNode } from "react"
+import {
+  Modal,
+  Pressable,
+  View,
+  Share,
+  Alert,
+  ViewStyle,
+  StyleSheet,
+} from "react-native"
 import { PlayerGame } from "../models/game"
 import { generateShareMessage } from "../utils/shareUtils"
 import { analyticsService } from "../utils/analyticsService"
@@ -20,62 +22,63 @@ interface DetailModalProps {
   children: ReactNode
 }
 
-const DetailModal: React.FC<DetailModalProps> = memo(
-  ({ playerGame, show, toggleModal, children }) => {
-    const styles = useStyles(themedStyles)
-    const animatedValue = useSharedValue(0)
+const DetailModal: React.FC<DetailModalProps> = ({
+  playerGame,
+  show,
+  toggleModal,
+  children,
+}) => {
+  const styles = useStyles(themedStyles)
 
-    const animatedModalContentStyle = useAnimatedStyle(() => {
-      return {
-        opacity: animatedValue.value,
-        transform: [{ scale: animatedValue.value }],
+  const handleShare = async () => {
+    if (!playerGame) return
+    hapticsService.medium()
+    try {
+      let outcome: "win" | "lose" | "give_up" = "lose"
+      if (playerGame.correctAnswer) {
+        outcome = "win"
+      } else if (playerGame.gaveUp) {
+        outcome = "give_up"
       }
-    })
 
-    useEffect(() => {
-      animatedValue.value = withTiming(show ? 1 : 0, {
-        duration: 300,
-        easing: Easing.out(Easing.exp),
-      })
-    }, [show, animatedValue])
+      analyticsService.trackShareResults(outcome)
 
-    const handleShare = async () => {
-      if (!playerGame) return
-      hapticsService.medium()
-      try {
-        let outcome: "win" | "lose" | "give_up" = "lose"
-        if (playerGame.correctAnswer) {
-          outcome = "win"
-        } else if (playerGame.gaveUp) {
-          outcome = "give_up"
+      const message = generateShareMessage(playerGame)
+      await Share.share(
+        {
+          message,
+          title: "Talkie Trivia Results",
+        },
+        {
+          dialogTitle: "Share your Talkie Trivia results!",
         }
-
-        analyticsService.trackShareResults(outcome)
-
-        const message = generateShareMessage(playerGame)
-        await Share.share(
-          {
-            message,
-            title: "Talkie Trivia Results",
-          },
-          {
-            dialogTitle: "Share your Talkie Trivia results!",
-          }
-        )
-      } catch (error: any) {
-        Alert.alert("Share Error", error.message)
-      }
+      )
+    } catch (error: any) {
+      Alert.alert("Share Error", error.message)
     }
+  }
 
-    const handleClose = () => {
-      hapticsService.light()
-      toggleModal(false)
-    }
+  const handleClose = () => {
+    hapticsService.light()
+    toggleModal(false)
+  }
 
-    const renderContent = () => {
-      return (
-        <Animated.View style={[styles.modalView, animatedModalContentStyle]}>
-          {children}
+  return (
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={show}
+      onRequestClose={handleClose}
+      statusBarTranslucent
+    >
+      <View style={styles.centeredView}>
+        {/* Backdrop Tap Layer */}
+        <Pressable style={styles.backdrop} onPress={handleClose} />
+
+        {/* Modal Content Card */}
+        <View style={styles.modalView}>
+          <View style={styles.contentContainer}>{children}</View>
+
           <View style={styles.buttonContainer}>
             <Button
               title="Close"
@@ -92,37 +95,17 @@ const DetailModal: React.FC<DetailModalProps> = memo(
               />
             )}
           </View>
-        </Animated.View>
-      )
-    }
-
-    return (
-      <Modal
-        animationType="none"
-        transparent={true}
-        visible={show}
-        onRequestClose={handleClose}
-        hardwareAccelerated
-        statusBarTranslucent
-      >
-        <Pressable
-          style={styles.centeredView}
-          onPress={handleClose}
-          accessible={true}
-          accessibilityLabel="Close modal by tapping outside"
-        >
-          <Pressable onPress={(e) => e.stopPropagation()} accessible={false}>
-            {renderContent()}
-          </Pressable>
-        </Pressable>
-      </Modal>
-    )
-  }
-)
+        </View>
+      </View>
+    </Modal>
+  )
+}
 
 interface ModalStyles {
   centeredView: ViewStyle
+  backdrop: ViewStyle
   modalView: ViewStyle
+  contentContainer: ViewStyle
   buttonContainer: ViewStyle
   button: ViewStyle
 }
@@ -132,25 +115,34 @@ const themedStyles = (theme: Theme): ModalStyles => ({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0, 0, 0, 0.7)",
   },
   modalView: {
     width: "90%",
     maxHeight: "85%",
     maxWidth: theme.responsive.scale(500),
-    alignSelf: "center",
-    backgroundColor: theme.colors.background,
+    backgroundColor: theme.colors.surface,
     borderRadius: theme.responsive.scale(15),
     padding: theme.spacing.large,
     ...theme.shadows.medium,
     display: "flex",
     flexDirection: "column",
+    justifyContent: "space-between",
+  },
+  contentContainer: {
+    flexShrink: 1,
+    width: "100%",
   },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-evenly",
     width: "100%",
     marginTop: theme.spacing.medium,
+    flexGrow: 0,
+    flexShrink: 0,
   },
   button: {
     flex: 1,

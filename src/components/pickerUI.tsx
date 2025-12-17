@@ -11,7 +11,7 @@ import {
 import { FlashList, ListRenderItem } from "@shopify/flash-list"
 import Animated from "react-native-reanimated"
 import { BasicTriviaItem } from "../models/trivia"
-import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { useStyles, Theme, useThemeTokens } from "../utils/hooks/useStyles"
 
 interface PickerUIProps {
   query: string
@@ -38,6 +38,16 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
     placeholder,
   }) => {
     const styles = useStyles(themedStyles)
+    const theme = useThemeTokens()
+
+    // Calculate height to enforce scrolling when list is long
+    const ITEM_HEIGHT = theme.responsive.scale(62)
+    const MAX_CONTAINER_HEIGHT = theme.responsive.scale(250)
+
+    // Add buffer for hint text (approx 30) + list items
+    const calculatedHeight =
+      results.length * ITEM_HEIGHT + theme.responsive.scale(30)
+    const containerHeight = Math.min(calculatedHeight, MAX_CONTAINER_HEIGHT)
 
     return (
       <View style={styles.container}>
@@ -70,18 +80,25 @@ export const PickerUI: React.FC<PickerUIProps> = memo(
         </Animated.View>
 
         {showResults && (
-          <View style={styles.resultsContainer}>
+          <View
+            style={[
+              styles.resultsContainer,
+              results.length > 0 && { height: containerHeight },
+            ]}
+          >
             {isSearching ? (
               <Text style={styles.noResultsText}>Searching...</Text>
             ) : results.length > 0 ? (
               <>
-                <FlashList
-                  data={results}
-                  renderItem={renderItem}
-                  keyExtractor={(item) => item.id.toString()}
-                  estimatedItemSize={62}
-                  keyboardShouldPersistTaps="handled"
-                />
+                <View style={{ flex: 1, width: "100%" }}>
+                  <FlashList
+                    data={results}
+                    renderItem={renderItem}
+                    keyExtractor={(item, index) => `${item.id}-${index}`}
+                    estimatedItemSize={62}
+                    keyboardShouldPersistTaps="handled"
+                  />
+                </View>
                 <View style={styles.previewHintContainer}>
                   <Text style={styles.previewHintText}>
                     💡 Hold any result to preview
@@ -117,6 +134,7 @@ const themedStyles = (theme: Theme): PickerUIStyles => ({
     width: "100%",
     marginTop: theme.spacing.medium,
     marginBottom: theme.spacing.medium,
+    zIndex: 20,
   },
   inputContainer: {
     flexDirection: "row",
@@ -152,13 +170,16 @@ const themedStyles = (theme: Theme): PickerUIStyles => ({
     top: theme.responsive.scale(55),
     left: 0,
     right: 0,
-    maxHeight: theme.responsive.scale(200),
+    // Max height fallback if dynamic calc fails
+    maxHeight: theme.responsive.scale(250),
     backgroundColor: theme.colors.backgroundLight,
     borderColor: theme.colors.border,
     borderWidth: 1,
     borderRadius: theme.responsive.scale(8),
     ...theme.shadows.medium,
-    zIndex: 10,
+    zIndex: 100,
+    overflow: "hidden",
+    flexDirection: "column",
   },
   noResultsText: {
     ...theme.typography.bodyText,
@@ -167,15 +188,12 @@ const themedStyles = (theme: Theme): PickerUIStyles => ({
     textAlign: "center",
   },
   previewHintContainer: {
-    position: "absolute",
-    bottom: theme.spacing.small,
-    right: theme.spacing.small,
     backgroundColor: theme.colors.tertiary,
-    borderRadius: theme.responsive.scale(12),
     paddingVertical: theme.responsive.scale(4),
     paddingHorizontal: theme.spacing.small,
-    zIndex: 1,
-    elevation: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
   },
   previewHintText: {
     fontFamily: "Arvo-Italic",

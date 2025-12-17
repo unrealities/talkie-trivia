@@ -151,12 +151,10 @@ export class MovieDataService implements IGameDataService {
       process.env.EXPO_PUBLIC_IS_E2E === "true"
 
     if (isE2E && String(id) === "27205") {
-      // Explicitly mock the return for the history check to avoid JSON dependency
       return {
         id: 27205,
         title: "Inception",
-        description:
-          "A thief who steals corporate secrets through the use of dream-sharing technology.",
+        description: "A thief who steals corporate secrets...",
         posterPath: "/9gk7admal4zlDun9ncJ7sUCKRnl.jpg",
         releaseDate: "2010-07-16",
         metadata: {
@@ -165,6 +163,18 @@ export class MovieDataService implements IGameDataService {
         },
         hints: [
           { type: "director", label: "Director", value: "Christopher Nolan" },
+          { type: "decade", label: "Decade", value: "2010s" },
+          { type: "genre", label: "Genre", value: "Sci-Fi" },
+          // Add Actors Hint
+          {
+            type: "actors",
+            label: "Actors",
+            value: [
+              { name: "Leonardo DiCaprio", imdb_id: "nm0000138" },
+              { name: "Joseph Gordon-Levitt", imdb_id: "nm0330687" },
+              { name: "Elliot Page", imdb_id: "nm0680983" },
+            ],
+          },
         ],
       }
     }

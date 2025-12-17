@@ -21,6 +21,10 @@ LogBox.ignoreLogs([
   "(ADVICE)",
   "shadow set but cannot calculate",
   "Victory Native components failed to load",
+  "Possible stableId collision",
+  "VirtualizedList:",
+  "ExpoBlurView",
+  "Reanimated] Property"
 ])
 
 function RootLayoutNav() {

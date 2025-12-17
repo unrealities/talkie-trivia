@@ -14,8 +14,8 @@ import { gameService } from "../services/gameService"
 import { getGameDataService } from "../services/gameServiceFactory"
 import { useStyles, Theme, useThemeTokens } from "../utils/hooks/useStyles"
 import { Typography } from "./ui/typography"
-import DetailModal from "./detailModal" // Direct import
-import Facts from "./facts" // Direct import if not lazy
+import DetailModal from "./detailModal"
+import Facts from "./facts"
 
 const GuessesContainer = lazy(() => import("./guesses"))
 
@@ -96,36 +96,35 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
     }
     if (item) {
       return (
-        <View style={{ flex: 1 }}>
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: 20 }}
-          >
-            <Facts item={item} isScrollEnabled={false} compact={true} />
-            {playerGame && (
-              <View style={styles.guessesSection}>
-                <View style={styles.divider} />
-                <Typography variant="h2" style={styles.guessesTitle}>
-                  Your Guesses
-                </Typography>
-                <Suspense
-                  fallback={
-                    <ActivityIndicator
-                      size="small"
-                      color={theme.colors.primary}
-                    />
-                  }
-                >
-                  <GuessesContainer
-                    gameForDisplay={playerGame}
-                    allItemsForDisplay={allBasicItems}
-                    lastGuessResult={null}
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <Facts item={item} isScrollEnabled={false} compact={true} />
+          {playerGame && (
+            <View style={styles.guessesSection}>
+              <View style={styles.divider} />
+              <Typography variant="h2" style={styles.guessesTitle}>
+                Your Guesses
+              </Typography>
+              <Suspense
+                fallback={
+                  <ActivityIndicator
+                    size="small"
+                    color={theme.colors.primary}
                   />
-                </Suspense>
-              </View>
-            )}
-          </ScrollView>
-        </View>
+                }
+              >
+                <GuessesContainer
+                  gameForDisplay={playerGame}
+                  allItemsForDisplay={allBasicItems}
+                  lastGuessResult={null}
+                />
+              </Suspense>
+            </View>
+          )}
+        </ScrollView>
       )
     }
     return null
@@ -143,6 +142,8 @@ const HistoryDetailModal: React.FC<HistoryDetailModalProps> = ({
 interface HistoryDetailModalStyles {
   loadingContainer: ViewStyle
   errorContainer: ViewStyle
+  scrollView: ViewStyle
+  scrollContent: ViewStyle
   guessesSection: ViewStyle
   divider: ViewStyle
   guessesTitle: TextStyle
@@ -161,6 +162,13 @@ const themedStyles = (theme: Theme): HistoryDetailModalStyles => ({
     alignItems: "center",
     padding: theme.spacing.large,
     minHeight: theme.responsive.scale(300),
+  },
+  scrollView: {
+    width: "100%",
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: theme.spacing.medium,
   },
   guessesSection: {
     marginTop: theme.spacing.small,
