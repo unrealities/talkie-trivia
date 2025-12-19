@@ -1,0 +1,55 @@
+name: Data Pipeline & Scheduling
+
+on:
+  schedule:
+    # Run every Sunday at midnight UTC
+    - cron: "0 0 * * 0"
+  workflow_dispatch: # Allows manual triggering from GitHub UI
+
+jobs:
+  update-game-data:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: utils
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23" # Matches your go.mod
+
+      # 1. Create Credential Files from Secrets
+      # The Go scripts expect these files to exist in the 'utils/' directory
+      - name: Create Secrets Files
+        run: |
+          echo '${{ secrets.TMDB_API_KEY_JSON }}' > secrets.json
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}' > serviceAccountKey.json
+
+      # 2. Run Data Pipeline (Fetch Movies from TMDB)
+      # This generates src/data/popularMovies.json and src/data/basicMovies.json
+      - name: Run Data Generation Pipeline
+        working-directory: utils/data-pipeline
+        run: go run main.go
+
+      # 3. Populate Firestore (Upload Movies)
+      # Reads the JSON generated in step 2 and uploads to 'movies' collection
+      - name: Populate Firestore Movies
+        working-directory: utils/populate-firestore
+        run: go run main.go
+
+      # 4. Schedule Games (Assign Dates)
+      # Assigns daily games in 'dailyGames' collection
+      - name: Schedule Daily Games
+        working-directory: utils/schedule-games
+        run: go run main.go
+
+      # 5. Clean up credentials (Good practice, though runner destroys them anyway)
+      - name: Cleanup Secrets
+        if: always()
+        run: |
+          rm secrets.json
+          rm serviceAccountKey.json
