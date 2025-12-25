@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.33% </span>
+                <span class="strong">90.9% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>5/6</span>
+                <span class='fraction'>10/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>12/12</span>
+                <span class='fraction'>14/14</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80% </span>
+                <span class="strong">90% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>4/5</span>
+                <span class='fraction'>9/10</span>
             </div>
         
             
@@ -248,7 +248,25 @@
 <a name='L183'></a><a href='#L183'>183</a>
 <a name='L184'></a><a href='#L184'>184</a>
 <a name='L185'></a><a href='#L185'>185</a>
-<a name='L186'></a><a href='#L186'>186</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L186'></a><a href='#L186'>186</a>
+<a name='L187'></a><a href='#L187'>187</a>
+<a name='L188'></a><a href='#L188'>188</a>
+<a name='L189'></a><a href='#L189'>189</a>
+<a name='L190'></a><a href='#L190'>190</a>
+<a name='L191'></a><a href='#L191'>191</a>
+<a name='L192'></a><a href='#L192'>192</a>
+<a name='L193'></a><a href='#L193'>193</a>
+<a name='L194'></a><a href='#L194'>194</a>
+<a name='L195'></a><a href='#L195'>195</a>
+<a name='L196'></a><a href='#L196'>196</a>
+<a name='L197'></a><a href='#L197'>197</a>
+<a name='L198'></a><a href='#L198'>198</a>
+<a name='L199'></a><a href='#L199'>199</a>
+<a name='L200'></a><a href='#L200'>200</a>
+<a name='L201'></a><a href='#L201'>201</a>
+<a name='L202'></a><a href='#L202'>202</a>
+<a name='L203'></a><a href='#L203'>203</a>
+<a name='L204'></a><a href='#L204'>204</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -288,8 +306,24 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -362,7 +396,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -446,7 +482,7 @@ import {
 import { FlashList, ListRenderItem } from "@shopify/flash-list"
 import Animated from "react-native-reanimated"
 import { BasicTriviaItem } from "../models/trivia"
-import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { useStyles, Theme, useThemeTokens } from "../utils/hooks/useStyles"
 &nbsp;
 interface PickerUIProps {
   query: string
@@ -473,6 +509,16 @@ export const PickerUI: React.FC&lt;PickerUIProps&gt; = memo(
     placeholder,
   }) =&gt; {
     const styles = useStyles(themedStyles)
+    const theme = useThemeTokens()
+&nbsp;
+    // Calculate height to enforce scrolling when list is long
+    const ITEM_HEIGHT = theme.responsive.scale(62)
+    const MAX_CONTAINER_HEIGHT = theme.responsive.scale(250)
+&nbsp;
+    // Add buffer for hint text (approx 30) + list items
+    const calculatedHeight =
+      results.length * ITEM_HEIGHT + theme.responsive.scale(30)
+    const containerHeight = Math.min(calculatedHeight, MAX_CONTAINER_HEIGHT)
 &nbsp;
     return (
       &lt;View style={styles.container}&gt;
@@ -505,18 +551,25 @@ export const PickerUI: React.FC&lt;PickerUIProps&gt; = memo(
         &lt;/Animated.View&gt;
 &nbsp;
         {showResults &amp;&amp; (
-          &lt;View style={styles.resultsContainer}&gt;
+          &lt;View
+            style={[
+              styles.resultsContainer,
+              results.length &gt; 0 &amp;&amp; { height: containerHeight },
+            ]}
+          &gt;
             {isSearching ? (
               &lt;Text style={styles.noResultsText}&gt;Searching...&lt;/Text&gt;
             ) : results.length &gt; 0 ? (
               &lt;&gt;
-                &lt;FlashList
-                  data={results}
-                  renderItem={renderItem}
-                  keyExtractor={<span class="fstat-no" title="function not covered" >(i</span>tem) =&gt; <span class="cstat-no" title="statement not covered" >item.id.toString()}</span>
-                  estimatedItemSize={62}
-                  keyboardShouldPersistTaps="handled"
-                /&gt;
+                &lt;View style={{ flex: 1, width: "100%" }}&gt;
+                  &lt;FlashList
+                    data={results}
+                    renderItem={renderItem}
+                    keyExtractor={<span class="fstat-no" title="function not covered" >(i</span>tem, index) =&gt; <span class="cstat-no" title="statement not covered" >`${item.id}-${index}`}</span>
+                    estimatedItemSize={62}
+                    keyboardShouldPersistTaps="handled"
+                  /&gt;
+                &lt;/View&gt;
                 &lt;View style={styles.previewHintContainer}&gt;
                   &lt;Text style={styles.previewHintText}&gt;
                     💡 Hold any result to preview
@@ -552,6 +605,7 @@ const themedStyles = (theme: Theme): PickerUIStyles =&gt; ({
     width: "100%",
     marginTop: theme.spacing.medium,
     marginBottom: theme.spacing.medium,
+    zIndex: 20,
   },
   inputContainer: {
     flexDirection: "row",
@@ -587,13 +641,16 @@ const themedStyles = (theme: Theme): PickerUIStyles =&gt; ({
     top: theme.responsive.scale(55),
     left: 0,
     right: 0,
-    maxHeight: theme.responsive.scale(200),
+    // Max height fallback if dynamic calc fails
+    maxHeight: theme.responsive.scale(250),
     backgroundColor: theme.colors.backgroundLight,
     borderColor: theme.colors.border,
     borderWidth: 1,
     borderRadius: theme.responsive.scale(8),
     ...theme.shadows.medium,
-    zIndex: 10,
+    zIndex: 100,
+    overflow: "hidden",
+    flexDirection: "column",
   },
   noResultsText: {
     ...theme.typography.bodyText,
@@ -602,15 +659,12 @@ const themedStyles = (theme: Theme): PickerUIStyles =&gt; ({
     textAlign: "center",
   },
   previewHintContainer: {
-    position: "absolute",
-    bottom: theme.spacing.small,
-    right: theme.spacing.small,
     backgroundColor: theme.colors.tertiary,
-    borderRadius: theme.responsive.scale(12),
     paddingVertical: theme.responsive.scale(4),
     paddingHorizontal: theme.spacing.small,
-    zIndex: 1,
-    elevation: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
   },
   previewHintText: {
     fontFamily: "Arvo-Italic",
@@ -625,7 +679,7 @@ const themedStyles = (theme: Theme): PickerUIStyles =&gt; ({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-13T15:19:40.041Z
+                at 2025-12-25T14:07:18.601Z
             </div>
         <script src="../prettify.js"></script>
         <script>

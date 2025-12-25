@@ -132,7 +132,11 @@ const Facts = memo(
 
     if (isLoading)
       return (
-        <ActivityIndicator size="large" color={styles.loadingIndicator.color} />
+        <ActivityIndicator
+          testID="activity-indicator"
+          size="large"
+          color={styles.loadingIndicator.color}
+        />
       )
     if (error)
       return (

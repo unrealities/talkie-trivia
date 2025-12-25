@@ -73,7 +73,12 @@ const DetailModal: React.FC<DetailModalProps> = ({
     >
       <View style={styles.centeredView}>
         {/* Backdrop Tap Layer */}
-        <Pressable style={styles.backdrop} onPress={handleClose} />
+        <Pressable
+          style={styles.backdrop}
+          onPress={handleClose}
+          accessible={true}
+          accessibilityLabel="Close modal by tapping outside"
+        />
 
         {/* Modal Content Card */}
         <View style={styles.modalView}>

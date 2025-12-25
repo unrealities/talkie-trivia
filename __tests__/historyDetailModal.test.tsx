@@ -22,38 +22,40 @@ import { TriviaItem } from "../src/models/trivia"
 jest.mock("../src/contexts/authContext")
 jest.mock("../src/services/gameService")
 jest.mock("../src/services/gameServiceFactory")
+jest.mock("../src/components/facts", () => {
+  const { View, Text } = require("react-native")
+  return (props: any) => (
+    <View testID="mock-facts" data-title={props.item.title}>
+      <Text>Facts: {props.item.title}</Text>
+    </View>
+  )
+})
 
-// 2. Mock React.lazy
-// We override lazy to bypass the dynamic import and just render the component.
-// Crucially, we define the mock logic entirely inside the factory.
+// 2. Mock Child Components
+// DetailModal is now imported directly, so we mock the module.
+jest.mock("../src/components/detailModal", () => {
+  const { View, Pressable, Text } = require("react-native")
+  return ({ show, toggleModal, children }: any) => {
+    if (!show) return null
+    return (
+      <View testID="mock-detail-modal">
+        <Pressable onPress={() => toggleModal(false)}>
+          <Text>Close</Text>
+        </Pressable>
+        {children}
+      </View>
+    )
+  }
+})
+
+// 3. Mock React.lazy for other components (Guesses)
 jest.mock("react", () => {
   const React = jest.requireActual("react")
   return {
     ...React,
     lazy: (factory: any) => {
-      // We return a functional component that renders a placeholder View.
-      // We can determine WHICH component this is by checking the props passed to it
-      // during render. This is a workaround for not being able to see the factory URL.
       const LazyComponent = (props: any) => {
-        // Need to require react-native here because we are inside the factory scope
-        const { View, Text, Pressable } = require("react-native")
-
-        // Heuristic to identify DetailModal
-        if (props.toggleModal) {
-          return props.show ? (
-            <View testID="mock-detail-modal">
-              <Pressable onPress={() => props.toggleModal(false)}>
-                <Text>Close</Text>
-              </Pressable>
-              {props.children}
-            </View>
-          ) : null
-        }
-
-        // Heuristic to identify Facts
-        if (props.item && props.item.title) {
-          return <View testID="mock-facts" data-title={props.item.title} />
-        }
+        const { View } = require("react-native")
 
         // Heuristic to identify GuessesContainer
         if (props.gameForDisplay || props.lastGuessResult !== undefined) {
@@ -222,7 +224,7 @@ describe("HistoryDetailModal Component", () => {
 
       // @ts-ignore
       expect(facts.props["data-title"]).toBe("Mock Movie Full")
-      // @ts-ignore - we mocked guesses length is 2 in mockPlayerGame
+      // @ts-ignore
       expect(guesses.props["data-guesses-count"]).toBe(2)
     })
   })
