@@ -5,9 +5,9 @@ import {
   fireEvent,
   RenderOptions,
 } from "@testing-library/react-native"
-import { ThemeProvider } from "../src/contexts/themeContext"
-import { Button } from "../src/components/ui/button"
-import { lightColors } from "../src/styles/themes"
+import { ThemeProvider } from "../../../src/contexts/themeContext"
+import { Button } from "../../../src/components/ui/button"
+import { lightColors } from "../../../src/styles/themes"
 
 // Custom Render Helper
 const renderWithTheme = (ui: ReactElement, options?: RenderOptions) => {

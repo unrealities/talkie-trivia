@@ -1,9 +1,9 @@
 import React, { ReactElement } from "react"
 import { Text } from "react-native"
 import { render, screen, RenderOptions } from "@testing-library/react-native"
-import { ThemeProvider } from "../src/contexts/themeContext"
-import { Card } from "../src/components/ui/card"
-import { lightColors } from "../src/styles/themes"
+import { ThemeProvider } from "../../../src/contexts/themeContext"
+import { Card } from "../../../src/components/ui/card"
+import { lightColors } from "../../../src/styles/themes"
 
 const renderWithTheme = (ui: ReactElement, options?: RenderOptions) => {
   return render(<ThemeProvider>{ui}</ThemeProvider>, options)

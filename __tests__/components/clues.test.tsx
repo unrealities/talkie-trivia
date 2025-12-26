@@ -6,17 +6,17 @@ import {
   act,
   RenderOptions,
 } from "@testing-library/react-native";
-import { ThemeProvider } from "../src/contexts/themeContext";
-import CluesContainer from "../src/components/clues";
-import { GameState, useGameStore } from "../src/state/gameStore";
-import { hapticsService } from "../src/utils/hapticsService";
+import { ThemeProvider } from "../../src/contexts/themeContext";
+import CluesContainer from "../../src/components/clues";
+import { GameState, useGameStore } from "../../src/state/gameStore";
+import { hapticsService } from "../../src/utils/hapticsService";
 import { ScrollView } from "react-native";
-import { defaultPlayerGame, defaultTriviaItem } from "../src/models/default";
-import { PlayerGame } from "../src/models/game";
-import { DEFAULT_DIFFICULTY } from "../src/config/difficulty";
+import { defaultPlayerGame, defaultTriviaItem } from "../../src/models/default";
+import { PlayerGame } from "../../src/models/game";
+import { DEFAULT_DIFFICULTY } from "../../src/config/difficulty";
 
-jest.mock("../src/state/gameStore");
-jest.mock("../src/utils/hapticsService");
+jest.mock("../../src/state/gameStore");
+jest.mock("../../src/utils/hapticsService");
 
 const renderWithTheme = (ui: ReactElement, options?: RenderOptions) => {
   return render(<ThemeProvider>{ui}</ThemeProvider>, options);

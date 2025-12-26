@@ -5,14 +5,14 @@ import {
   fireEvent,
   RenderOptions,
 } from "@testing-library/react-native"
-import { ThemeProvider } from "../src/contexts/themeContext"
-import ConfirmationModal from "../src/components/confirmationModal"
-import { hapticsService } from "../src/utils/hapticsService"
+import { ThemeProvider } from "../../src/contexts/themeContext"
+import ConfirmationModal from "../../src/components/confirmationModal"
+import { hapticsService } from "../../src/utils/hapticsService"
 
 // --- Mocking Dependencies ---
 
 // We mock the haptics service to verify that the correct feedback is triggered.
-jest.mock("../src/utils/hapticsService", () => ({
+jest.mock("../../src/utils/hapticsService", () => ({
   hapticsService: {
     light: jest.fn(),
     heavy: jest.fn(),

@@ -6,9 +6,9 @@ import {
   RenderOptions,
   within,
 } from "@testing-library/react-native"
-import Actors from "../src/components/actors"
-import { API_CONFIG } from "../src/config/constants"
-import { ThemeProvider } from "../src/contexts/themeContext"
+import Actors from "../../src/components/actors"
+import { API_CONFIG } from "../../src/config/constants"
+import { ThemeProvider } from "../../src/contexts/themeContext"
 
 // Custom Render Helper with ThemeProvider
 const renderWithTheme = (ui: ReactElement, options?: RenderOptions) => {

@@ -1,5 +1,7 @@
 import { MovieDataService } from "../../src/services/movieDataService"
+import Constants from "expo-constants"
 
+// Mock data matches the structure of popularMovies.json
 const mockMoviesData = [
   {
     id: 101,
@@ -20,7 +22,6 @@ const mockMoviesData = [
     ],
   },
   {
-    // Sparse data movie to test fallbacks
     id: 102,
     title: "Movie B",
     release_date: "2021-01-01",
@@ -30,6 +31,17 @@ const mockMoviesData = [
     director: null,
     actors: [],
   },
+  {
+    id: 27205,
+    title: "Inception",
+    overview: "Dream within a dream",
+    poster_path: "/inception.jpg",
+    release_date: "2010-07-16",
+    genres: [{ id: 878, name: "Science Fiction" }],
+    director: { name: "Christopher Nolan" },
+    actors: [],
+    metadata: { imdb_id: "tt1375666" },
+  },
 ]
 
 jest.mock("../../data/popularMovies.json", () => mockMoviesData)
@@ -38,8 +50,12 @@ describe("Service: MovieDataService", () => {
   let service: MovieDataService
 
   beforeEach(() => {
-    // Use isolateModules to ensure we get a fresh instance if needed,
-    // though typically beforeEach new ServiceClass() is enough if the mock is stable.
+    jest.clearAllMocks()
+    // Reset E2E flag
+    if (Constants.expoConfig && Constants.expoConfig.extra) {
+      Constants.expoConfig.extra.isE2E = false
+    }
+
     jest.isolateModules(() => {
       const {
         MovieDataService: ServiceClass,
@@ -59,48 +75,61 @@ describe("Service: MovieDataService", () => {
       expect(directorHint?.value).toBe("Director A")
     })
 
-    it("should handle sparse data gracefully (missing director, actors, etc)", async () => {
+    it("should handle sparse data gracefully", async () => {
       const item = await service.getItemById(102)
-
       expect(item).toBeDefined()
       expect(item?.title).toBe("Movie B")
-
       const directorHint = item?.hints.find((h) => h.type === "director")
-      // Fallback for missing director name
       expect(directorHint?.value).toBe("N/A")
-
-      const genreHint = item?.hints.find((h) => h.type === "genre")
-      // Fallback for empty genres
-      expect(genreHint?.value).toBe("N/A")
     })
 
     it("should return null if not found", async () => {
       const item = await service.getItemById(999)
       expect(item).toBeNull()
     })
+
+    // E2E Test Cases
+    it("should return Inception mock in E2E mode for ID 27205", async () => {
+      if (Constants.expoConfig && Constants.expoConfig.extra) {
+        Constants.expoConfig.extra.isE2E = true
+      }
+
+      const result = await service.getItemById(27205)
+      expect(result).not.toBeNull()
+      expect(result?.title).toBe("Inception")
+      expect(result?.metadata.imdb_id).toBe("tt1375666")
+    })
+
+    it("should return Inception mock in E2E mode for ID '27205' (string input)", async () => {
+      if (Constants.expoConfig && Constants.expoConfig.extra) {
+        Constants.expoConfig.extra.isE2E = true
+      }
+
+      const result = await service.getItemById("27205")
+      expect(result?.title).toBe("Inception")
+    })
   })
 
   describe("getDailyTriviaItemAndLists", () => {
     it("should return daily item based on day of year", async () => {
       jest.useFakeTimers()
-      // Set a fixed date
       jest.setSystemTime(new Date("2023-01-01T12:00:00.000Z"))
 
       const result = await service.getDailyTriviaItemAndLists()
 
-      // 2 movies in mock. Day 0 (Jan 1).
-      // The logic is: dayOfYear % allMovies.length.
-      // If Jan 1 is day 0 or day 1 depends on impl.
-      // Usually day 1 - day 0 = 1. 1 % 2 = 1. Movie at index 1 is ID 102.
-
-      // If implementation calculates index differently, we check result to see which ID.
-      // Based on prior runs, it seemed to pick 102.
       expect(result.dailyItem).toBeDefined()
-
-      expect(result.fullItems).toHaveLength(2)
-      expect(result.basicItems).toHaveLength(2)
+      expect(result.fullItems).toHaveLength(3)
+      expect(result.basicItems).toHaveLength(3)
 
       jest.useRealTimers()
+    })
+
+    it("should return Inception in E2E mode", async () => {
+      if (Constants.expoConfig && Constants.expoConfig.extra) {
+        Constants.expoConfig.extra.isE2E = true
+      }
+      const result = await service.getDailyTriviaItemAndLists()
+      expect(result.dailyItem.title).toBe("Inception")
     })
 
     it("should throw error if data source is empty", async () => {

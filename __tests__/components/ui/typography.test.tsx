@@ -1,8 +1,8 @@
 import React, { ReactElement } from "react"
 import { render, screen, RenderOptions } from "@testing-library/react-native"
-import { ThemeProvider } from "../src/contexts/themeContext"
-import { Typography } from "../src/components/ui/typography"
-import { lightColors } from "../src/styles/themes"
+import { ThemeProvider } from "../../../src/contexts/themeContext"
+import { Typography } from ",./../../src/components/ui/typography"
+import { lightColors } from "../../../src/styles/themes"
 
 const renderWithTheme = (ui: ReactElement, options?: RenderOptions) => {
   return render(<ThemeProvider>{ui}</ThemeProvider>, options)

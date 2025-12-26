@@ -44,6 +44,8 @@ describe("Service: gameService", () => {
   beforeEach(() => {
     jest.clearAllMocks()
     ;(doc as jest.Mock).mockReturnValue(mockDocRef)
+    // Ensure E2E is false by default for standard tests
+    Constants.expoConfig!.extra!.isE2E = false
   })
 
   describe("ensurePlayerExists", () => {
@@ -129,6 +131,14 @@ describe("Service: gameService", () => {
       const result = await gameService.fetchPlayerGameById("game-1")
       expect(result).toEqual({ id: "game-1" })
     })
+
+    it("should return mocked game in E2E mode", async () => {
+      Constants.expoConfig!.extra!.isE2E = true
+      const result = await gameService.fetchPlayerGameById("any-id")
+      expect(result).not.toBeNull()
+      expect(result?.triviaItem.title).toBe("Inception")
+      expect(result?.id).toBe("any-id")
+    })
   })
 
   describe("fetchOrCreatePlayerStats", () => {
@@ -150,7 +160,7 @@ describe("Service: gameService", () => {
   })
 
   describe("submitGameResult", () => {
-    it("should call the cloud function with formatted payload", async () => {
+    it("should call the cloud function with correctly formatted payload", async () => {
       const mockCallable = jest
         .fn()
         .mockResolvedValue({ data: { success: true } })
@@ -168,41 +178,28 @@ describe("Service: gameService", () => {
       await gameService.submitGameResult(mockGame)
 
       expect(httpsCallable).toHaveBeenCalledWith({}, "submitGameResult")
-      // Check date serialization
       expect(mockCallable).toHaveBeenCalledWith({
         playerGame: expect.objectContaining({
           id: "g1",
           startDate: "2023-01-01T00:00:00.000Z",
+          endDate: "2023-01-01T00:00:00.000Z",
         }),
       })
     })
 
-    it("should skip network call in E2E mode", async () => {
-      if (Constants.expoConfig && Constants.expoConfig.extra) {
-        Constants.expoConfig.extra.isE2E = true
-      } else {
-        // @ts-ignore
-        Constants.expoConfig = { extra: { isE2E: true } }
-      }
+    it("should skip network call and return in E2E mode", async () => {
+      Constants.expoConfig!.extra!.isE2E = true
+      const mockCallable = jest.fn()
+      ;(httpsCallable as jest.Mock).mockReturnValue(mockCallable)
 
-      await gameService.submitGameResult({
-        ...defaultPlayerGame,
-        startDate: new Date(),
-        endDate: new Date(),
-      })
+      await gameService.submitGameResult(defaultPlayerGame)
 
-      // Verify httpsCallable was NOT called
-      expect(httpsCallable).not.toHaveBeenCalled()
-
-      // Reset
-      if (Constants.expoConfig && Constants.expoConfig.extra) {
-        Constants.expoConfig.extra.isE2E = false
-      }
+      expect(mockCallable).not.toHaveBeenCalled()
     })
   })
 
   describe("fetchGameHistory", () => {
-    it("should return mapped data", async () => {
+    it("should return mapped data from Firestore", async () => {
       ;(collection as jest.Mock).mockReturnValue(mockDocRef)
       const mockData = [{ id: 1 }, { id: 2 }]
       ;(getDocs as jest.Mock).mockResolvedValue({
@@ -211,6 +208,22 @@ describe("Service: gameService", () => {
 
       const result = await gameService.fetchGameHistory(mockPlayerId)
       expect(result).toHaveLength(2)
+    })
+
+    it("should return mocked history in E2E mode", async () => {
+      Constants.expoConfig!.extra!.isE2E = true
+
+      const result = await gameService.fetchGameHistory("player-id")
+      expect(result).toHaveLength(1)
+      expect(result[0].itemTitle).toBe("Inception")
+    })
+  })
+
+  describe("savePlayerProgress (Deprecated)", () => {
+    it("should throw an error indicating deprecation", async () => {
+      await expect(
+        gameService.savePlayerProgress(defaultPlayerGame, defaultPlayerStats)
+      ).rejects.toThrow("Client-side save is deprecated")
     })
   })
 })
