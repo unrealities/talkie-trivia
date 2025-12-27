@@ -1,6 +1,6 @@
 import { renderHook } from "@testing-library/react-native"
-import { useGuessAnimation } from "../src/utils/hooks/useGuessAnimation"
-import { useThemeTokens } from "../src/utils/hooks/useStyles"
+import { useGuessAnimation } from "../../../src/utils/hooks/useGuessAnimation"
+import { useThemeTokens } from "../../../src/utils/hooks/useStyles"
 
 // Mock Reanimated
 // We need a semi-functional mock to verify values change
@@ -22,7 +22,7 @@ jest.mock("react-native-reanimated", () => {
 })
 
 // Mock Theme
-jest.mock("../src/utils/hooks/useStyles")
+jest.mock("../../../src/utils/hooks/useStyles")
 const mockTheme = {
   colors: {
     surface: "#surface",

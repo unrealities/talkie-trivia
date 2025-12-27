@@ -1,10 +1,10 @@
 import { renderHook, act } from "@testing-library/react-native"
-import { useHintLogic } from "../src/utils/hooks/useHintLogic"
-import { useGameStore } from "../src/state/gameStore"
-import { defaultPlayerGame } from "../src/models/default"
+import { useHintLogic } from "../../../src/utils/hooks/useHintLogic"
+import { useGameStore } from "../../../src/state/gameStore"
+import { defaultPlayerGame } from "../../../src/models/default"
 
 // Mock dependencies
-jest.mock("../src/utils/hapticsService", () => ({
+jest.mock("../../../src/utils/hapticsService", () => ({
   hapticsService: { light: jest.fn(), medium: jest.fn() },
 }))
 jest.mock("react-native/Libraries/LayoutAnimation/LayoutAnimation", () => ({

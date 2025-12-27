@@ -1,7 +1,7 @@
 import { renderHook, act } from "@testing-library/react-native"
 import { Alert } from "react-native"
 import * as Linking from "expo-linking"
-import { useExternalLink } from "../src/utils/hooks/useExternalLink"
+import { useExternalLink } from "../../../src/utils/hooks/useExternalLink"
 
 // Mocks
 jest.mock("expo-linking", () => ({

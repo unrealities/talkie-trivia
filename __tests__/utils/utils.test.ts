@@ -1,4 +1,4 @@
-import { u } from "../src/styles/utils"
+import { u } from "../../src/styles/utils"
 
 describe("Utils: Global Styles (u)", () => {
   it("should define flexbox utilities", () => {

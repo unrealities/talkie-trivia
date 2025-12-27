@@ -1,10 +1,10 @@
 import { renderHook } from "@testing-library/react-native"
-import { useStyles, useThemeTokens } from "../src/utils/hooks/useStyles"
-import * as ThemeContext from "../src/contexts/themeContext"
-import { lightColors, darkColors } from "../src/styles/themes"
+import { useStyles, useThemeTokens } from "../../../src/utils/hooks/useStyles"
+import * as ThemeContext from "../../../src/contexts/themeContext"
+import { lightColors, darkColors } from "../../../src/styles/themes"
 
 // Mock context
-jest.mock("../src/contexts/themeContext")
+jest.mock("../../../src/contexts/themeContext")
 
 describe("Hooks: useStyles", () => {
   const mockSetTheme = jest.fn()

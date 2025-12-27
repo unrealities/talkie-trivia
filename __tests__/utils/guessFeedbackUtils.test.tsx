@@ -1,5 +1,5 @@
-import { generateImplicitHint } from "../src/utils/guessFeedbackUtils"
-import { TriviaItem } from "../src/models/trivia"
+import { generateImplicitHint } from "../../src/utils/guessFeedbackUtils"
+import { TriviaItem } from "../../src/models/trivia"
 
 // Mock Data Helper
 const createItem = (id: number, hints: any[]): TriviaItem => ({

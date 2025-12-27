@@ -1,6 +1,6 @@
-import { calculateScore } from "../src/utils/scoreUtils"
-import { defaultPlayerGame } from "../src/models/default"
-import { PlayerGame } from "../src/models/game"
+import { calculateScore } from "../../src/utils/scoreUtils"
+import { defaultPlayerGame } from "../../src/models/default"
+import { PlayerGame } from "../../src/models/game"
 
 describe("Utils: scoreUtils", () => {
   const baseGame: PlayerGame = {

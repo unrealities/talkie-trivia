@@ -1,5 +1,5 @@
 import { renderHook, act, waitFor } from "@testing-library/react-native"
-import { useGoogleAuth } from "../src/utils/hooks/useGoogleAuth"
+import { useGoogleAuth } from "../../../src/utils/hooks/useGoogleAuth"
 import { useIdTokenAuthRequest } from "expo-auth-session/providers/google"
 import {
   getAuth,
@@ -7,11 +7,11 @@ import {
   signOut,
   GoogleAuthProvider,
 } from "firebase/auth"
-import { analyticsService } from "../src/utils/analyticsService"
+import { analyticsService } from "../../../src/utils/analyticsService"
 
 // Mocks
 jest.mock("firebase/auth")
-jest.mock("../src/utils/analyticsService")
+jest.mock("../../../src/utils/analyticsService")
 
 // Mock expo-constants
 jest.mock("expo-constants", () => ({

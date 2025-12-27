@@ -1,4 +1,4 @@
-import { normalizeSearchString } from "../src/utils/stringUtils"
+import { normalizeSearchString } from "../../src/utils/stringUtils"
 
 describe("Utils: stringUtils", () => {
   describe("normalizeSearchString", () => {
