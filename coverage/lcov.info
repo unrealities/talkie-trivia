@@ -1,5 +1,5 @@
 TN:
-SF:src/app/_layout.tsx
+SF:src\app\_layout.tsx
 FN:30,RootLayoutNav
 FN:37,(anonymous_1)
 FN:38,(anonymous_2)
@@ -75,7 +75,7 @@ BRF:19
 BRH:0
 end_of_record
 TN:
-SF:src/app/(tabs)/_layout.tsx
+SF:src\app\(tabs)\_layout.tsx
 FN:9,(anonymous_0)
 FNF:1
 FNH:1
@@ -98,7 +98,7 @@ BRF:4
 BRH:4
 end_of_record
 TN:
-SF:src/app/(tabs)/game.tsx
+SF:src\app\(tabs)\game.tsx
 FN:13,(anonymous_0)
 FN:16,(anonymous_1)
 FN:18,(anonymous_2)
@@ -147,7 +147,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src/app/(tabs)/profile.tsx
+SF:src\app\(tabs)\profile.tsx
 FN:14,(anonymous_0)
 FN:15,(anonymous_1)
 FN:16,(anonymous_2)
@@ -223,7 +223,7 @@ BRF:17
 BRH:16
 end_of_record
 TN:
-SF:src/components/actors.tsx
+SF:src\components\actors.tsx
 FN:27,(anonymous_0)
 FN:35,(anonymous_1)
 FN:48,(anonymous_2)
@@ -277,7 +277,7 @@ BRF:13
 BRH:12
 end_of_record
 TN:
-SF:src/components/clues.tsx
+SF:src\components\clues.tsx
 FN:37,(anonymous_0)
 FN:52,(anonymous_1)
 FN:57,(anonymous_2)
@@ -433,7 +433,7 @@ BRF:39
 BRH:29
 end_of_record
 TN:
-SF:src/components/confettiCelebration.tsx
+SF:src\components\confettiCelebration.tsx
 FN:9,(anonymous_0)
 FN:16,(anonymous_1)
 FN:17,(anonymous_2)
@@ -466,7 +466,7 @@ BRF:4
 BRH:4
 end_of_record
 TN:
-SF:src/components/confirmationModal.tsx
+SF:src\components\confirmationModal.tsx
 FN:19,(anonymous_0)
 FN:30,(anonymous_1)
 FN:34,(anonymous_2)
@@ -495,7 +495,7 @@ BRF:2
 BRH:2
 end_of_record
 TN:
-SF:src/components/countdownTimer.tsx
+SF:src\components\countdownTimer.tsx
 FN:6,(anonymous_0)
 FN:9,(anonymous_1)
 FN:24,(anonymous_2)
@@ -540,7 +540,7 @@ BRF:2
 BRH:1
 end_of_record
 TN:
-SF:src/components/customLoadingIndicator.tsx
+SF:src\components\customLoadingIndicator.tsx
 FN:17,(anonymous_0)
 FN:41,(anonymous_1)
 FN:49,(anonymous_2)
@@ -549,7 +549,7 @@ FNF:4
 FNH:4
 FNDA:10,(anonymous_0)
 FNDA:7,(anonymous_1)
-FNDA:20,(anonymous_2)
+FNDA:21,(anonymous_2)
 FNDA:10,(anonymous_3)
 DA:17,5
 DA:20,10
@@ -566,7 +566,7 @@ DA:39,7
 DA:41,7
 DA:42,7
 DA:49,7
-DA:50,20
+DA:50,21
 DA:55,7
 DA:96,10
 LF:18
@@ -580,7 +580,7 @@ BRF:5
 BRH:5
 end_of_record
 TN:
-SF:src/components/detailModal.tsx
+SF:src\components\detailModal.tsx
 FN:25,(anonymous_0)
 FN:33,(anonymous_1)
 FN:61,(anonymous_2)
@@ -625,7 +625,7 @@ BRF:8
 BRH:7
 end_of_record
 TN:
-SF:src/components/difficultySelector.tsx
+SF:src\components\difficultySelector.tsx
 FN:26,(anonymous_0)
 FN:31,(anonymous_1)
 FN:33,(anonymous_2)
@@ -723,7 +723,7 @@ BRF:16
 BRH:10
 end_of_record
 TN:
-SF:src/components/errorBoundary.tsx
+SF:src\components\errorBoundary.tsx
 FN:36,(anonymous_0)
 FN:83,(anonymous_1)
 FN:91,(anonymous_2)
@@ -774,7 +774,7 @@ BRF:10
 BRH:7
 end_of_record
 TN:
-SF:src/components/errorMessage.tsx
+SF:src\components\errorMessage.tsx
 FN:14,(anonymous_0)
 FN:41,(anonymous_1)
 FNF:2
@@ -793,7 +793,7 @@ BRF:2
 BRH:2
 end_of_record
 TN:
-SF:src/components/facts.tsx
+SF:src\components\facts.tsx
 FN:25,(anonymous_0)
 FN:30,(anonymous_1)
 FN:40,(anonymous_2)
@@ -942,7 +942,7 @@ BRF:60
 BRH:34
 end_of_record
 TN:
-SF:src/components/flashMessages.tsx
+SF:src\components\flashMessages.tsx
 FN:16,(anonymous_0)
 FN:23,(anonymous_1)
 FN:26,(anonymous_2)
@@ -981,7 +981,7 @@ BRF:5
 BRH:5
 end_of_record
 TN:
-SF:src/components/gameDifficultyToggle.tsx
+SF:src\components\gameDifficultyToggle.tsx
 FN:16,(anonymous_0)
 FN:24,(anonymous_1)
 FN:29,(anonymous_2)
@@ -1064,7 +1064,7 @@ BRF:14
 BRH:12
 end_of_record
 TN:
-SF:src/components/gameHistory.tsx
+SF:src\components\gameHistory.tsx
 FN:16,(anonymous_0)
 FN:40,(anonymous_1)
 FN:52,(anonymous_2)
@@ -1161,7 +1161,7 @@ BRF:14
 BRH:9
 end_of_record
 TN:
-SF:src/components/gameOverView.tsx
+SF:src\components\gameOverView.tsx
 FN:25,(anonymous_0)
 FN:32,(anonymous_1)
 FN:39,(anonymous_2)
@@ -1197,7 +1197,7 @@ BRF:8
 BRH:7
 end_of_record
 TN:
-SF:src/components/gameplayContainer.tsx
+SF:src\components\gameplayContainer.tsx
 FN:11,(anonymous_0)
 FN:12,(anonymous_1)
 FN:13,(anonymous_2)
@@ -1232,7 +1232,7 @@ BRF:4
 BRH:4
 end_of_record
 TN:
-SF:src/components/gameplayView.tsx
+SF:src\components\gameplayView.tsx
 FN:14,(anonymous_0)
 FN:16,(anonymous_1)
 FN:27,(anonymous_2)
@@ -1269,7 +1269,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src/components/genres.tsx
+SF:src\components\genres.tsx
 FN:11,(anonymous_0)
 FN:31,(anonymous_1)
 FN:46,(anonymous_2)
@@ -1304,7 +1304,7 @@ BRF:7
 BRH:7
 end_of_record
 TN:
-SF:src/components/googleLogin.tsx
+SF:src\components\googleLogin.tsx
 FN:9,(anonymous_0)
 FN:27,(anonymous_1)
 FN:64,(anonymous_2)
@@ -1349,7 +1349,7 @@ BRF:15
 BRH:15
 end_of_record
 TN:
-SF:src/components/guesses.tsx
+SF:src\components\guesses.tsx
 FN:35,(anonymous_0)
 FN:41,(anonymous_1)
 FN:56,(anonymous_2)
@@ -1427,7 +1427,7 @@ BRF:23
 BRH:19
 end_of_record
 TN:
-SF:src/components/hint.tsx
+SF:src\components\hint.tsx
 FN:14,(anonymous_0)
 FN:24,(anonymous_1)
 FN:35,(anonymous_2)
@@ -1502,7 +1502,7 @@ BRF:19
 BRH:19
 end_of_record
 TN:
-SF:src/components/hintButton.tsx
+SF:src\components\hintButton.tsx
 FN:26,(anonymous_0)
 FN:38,(anonymous_1)
 FN:53,(anonymous_2)
@@ -1569,7 +1569,7 @@ BRF:14
 BRH:11
 end_of_record
 TN:
-SF:src/components/hintUI.tsx
+SF:src\components\hintUI.tsx
 FN:44,(anonymous_0)
 FN:59,(anonymous_1)
 FN:68,(anonymous_2)
@@ -1596,8 +1596,8 @@ DA:104,10
 DA:146,5
 LF:12
 LH:12
-BRDA:62,0,0,0
-BRDA:62,0,1,16
+BRDA:62,0,0,1
+BRDA:62,0,1,15
 BRDA:70,1,0,1
 BRDA:70,1,1,4
 BRDA:86,2,0,1
@@ -1609,10 +1609,10 @@ BRDA:107,4,1,0
 BRDA:118,5,0,5
 BRDA:118,5,1,1
 BRF:12
-BRH:10
+BRH:11
 end_of_record
 TN:
-SF:src/components/historyDetailModal.tsx
+SF:src\components\historyDetailModal.tsx
 FN:20,(anonymous_0)
 FN:27,(anonymous_1)
 FN:43,(anonymous_2)
@@ -1692,7 +1692,7 @@ BRF:18
 BRH:16
 end_of_record
 TN:
-SF:src/components/loadingIndicator.tsx
+SF:src\components\loadingIndicator.tsx
 FN:13,(anonymous_0)
 FN:14,(anonymous_1)
 FN:29,(anonymous_2)
@@ -1731,7 +1731,7 @@ BRF:8
 BRH:8
 end_of_record
 TN:
-SF:src/components/network.tsx
+SF:src\components\network.tsx
 FN:10,(anonymous_0)
 FN:31,(anonymous_1)
 FNF:2
@@ -1754,7 +1754,7 @@ BRF:4
 BRH:3
 end_of_record
 TN:
-SF:src/components/personalizedStatsMessage.tsx
+SF:src\components\personalizedStatsMessage.tsx
 FN:12,(anonymous_0)
 FN:14,(anonymous_1)
 FN:15,(anonymous_2)
@@ -1839,7 +1839,7 @@ BRF:25
 BRH:23
 end_of_record
 TN:
-SF:src/components/picker.tsx
+SF:src\components\picker.tsx
 FN:37,(anonymous_0)
 FN:49,(anonymous_1)
 FN:73,(anonymous_2)
@@ -1972,7 +1972,7 @@ BRF:30
 BRH:23
 end_of_record
 TN:
-SF:src/components/pickerItem.tsx
+SF:src\components\pickerItem.tsx
 FN:37,(anonymous_0)
 FN:40,(anonymous_1)
 FN:65,(anonymous_2)
@@ -2027,7 +2027,7 @@ BRF:17
 BRH:12
 end_of_record
 TN:
-SF:src/components/pickerSkeleton.tsx
+SF:src\components\pickerSkeleton.tsx
 FN:7,(anonymous_0)
 FN:26,(anonymous_1)
 FNF:2
@@ -2045,7 +2045,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src/components/pickerUI.tsx
+SF:src\components\pickerUI.tsx
 FN:29,(anonymous_0)
 FN:97,(anonymous_1)
 FN:132,(anonymous_2)
@@ -2084,7 +2084,7 @@ BRF:14
 BRH:14
 end_of_record
 TN:
-SF:src/components/playerStats.tsx
+SF:src\components\playerStats.tsx
 FN:17,(anonymous_0)
 FN:69,(anonymous_1)
 FNF:2
@@ -2107,7 +2107,7 @@ BRF:4
 BRH:4
 end_of_record
 TN:
-SF:src/components/profileSection.tsx
+SF:src\components\profileSection.tsx
 FN:14,(anonymous_0)
 FN:46,(anonymous_1)
 FNF:2
@@ -2126,7 +2126,7 @@ BRF:2
 BRH:1
 end_of_record
 TN:
-SF:src/components/revealSequence.tsx
+SF:src\components\revealSequence.tsx
 FN:24,(anonymous_0)
 FN:27,(anonymous_1)
 FN:34,(anonymous_2)
@@ -2186,7 +2186,7 @@ BRF:6
 BRH:4
 end_of_record
 TN:
-SF:src/components/statItem.tsx
+SF:src\components\statItem.tsx
 FN:13,(anonymous_0)
 FN:39,(anonymous_1)
 FNF:2
@@ -2203,7 +2203,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src/components/themeSelector.tsx
+SF:src\components\themeSelector.tsx
 FN:8,(anonymous_0)
 FN:29,(anonymous_1)
 FN:32,(anonymous_2)
@@ -2232,7 +2232,7 @@ BRF:4
 BRH:4
 end_of_record
 TN:
-SF:src/components/titleHeader.tsx
+SF:src\components\titleHeader.tsx
 FN:10,(anonymous_0)
 FN:27,(anonymous_1)
 FNF:2
@@ -2249,7 +2249,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src/components/tutorialTooltip.tsx
+SF:src\components\tutorialTooltip.tsx
 FN:22,(anonymous_0)
 FN:31,(anonymous_1)
 FN:38,(anonymous_2)
@@ -2284,7 +2284,7 @@ BRF:4
 BRH:4
 end_of_record
 TN:
-SF:src/components/utils.ts
+SF:src\components\utils.ts
 FNF:0
 FNH:0
 DA:17,0
@@ -2294,7 +2294,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src/components/victory-charts.ts
+SF:src\components\victory-charts.ts
 FNF:0
 FNH:0
 LF:0
@@ -2303,7 +2303,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src/components/victory-charts.web.ts
+SF:src\components\victory-charts.web.ts
 FNF:0
 FNH:0
 LF:0
@@ -2312,7 +2312,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src/components/whereToWatch.tsx
+SF:src\components\whereToWatch.tsx
 FN:7,(anonymous_0)
 FN:26,(anonymous_1)
 FN:53,(anonymous_2)
@@ -2334,7 +2334,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src/components/winChart.tsx
+SF:src\components\winChart.tsx
 FN:11,(anonymous_0)
 FN:15,(anonymous_1)
 FN:17,(anonymous_2)
@@ -2395,7 +2395,7 @@ BRF:17
 BRH:14
 end_of_record
 TN:
-SF:src/components/gameOver/fullPlotSection.tsx
+SF:src\components\gameOver\fullPlotSection.tsx
 FN:12,(anonymous_0)
 FN:13,(anonymous_1)
 FN:34,(anonymous_2)
@@ -2415,7 +2415,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src/components/gameOver/shareResultButton.tsx
+SF:src\components\gameOver\shareResultButton.tsx
 FN:13,(anonymous_0)
 FN:19,(anonymous_1)
 FN:53,(anonymous_2)
@@ -2445,7 +2445,7 @@ BRF:2
 BRH:1
 end_of_record
 TN:
-SF:src/components/guess/emptyGuessTile.tsx
+SF:src\components\guess\emptyGuessTile.tsx
 FN:10,(anonymous_0)
 FN:24,(anonymous_1)
 FNF:2
@@ -2462,7 +2462,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src/components/guess/guessRow.tsx
+SF:src\components\guess\guessRow.tsx
 FN:28,(anonymous_0)
 FN:48,(anonymous_1)
 FN:59,(anonymous_2)
@@ -2528,7 +2528,7 @@ BRF:24
 BRH:18
 end_of_record
 TN:
-SF:src/components/guess/skeletonRow.tsx
+SF:src\components\guess\skeletonRow.tsx
 FN:7,(anonymous_0)
 FN:28,(anonymous_1)
 FNF:2
@@ -2546,7 +2546,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src/components/ui/button.tsx
+SF:src\components\ui\button.tsx
 FN:26,(anonymous_0)
 FN:36,(anonymous_1)
 FN:38,(anonymous_2)
@@ -2610,7 +2610,7 @@ BRF:21
 BRH:18
 end_of_record
 TN:
-SF:src/components/ui/card.tsx
+SF:src\components\ui\card.tsx
 FN:8,(anonymous_0)
 FN:11,(anonymous_1)
 FNF:2
@@ -2628,7 +2628,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src/components/ui/scalePressable.tsx
+SF:src\components\ui\scalePressable.tsx
 FN:17,(anonymous_0)
 FN:24,(anonymous_1)
 FN:28,(anonymous_2)
@@ -2659,7 +2659,7 @@ BRF:2
 BRH:1
 end_of_record
 TN:
-SF:src/components/ui/typography.tsx
+SF:src\components\ui\typography.tsx
 FN:12,(anonymous_0)
 FN:18,(anonymous_1)
 FN:20,(anonymous_2)
@@ -2695,7 +2695,7 @@ BRF:8
 BRH:7
 end_of_record
 TN:
-SF:src/contexts/authContext.tsx
+SF:src\contexts\authContext.tsx
 FN:32,(anonymous_0)
 FN:40,(anonymous_1)
 FN:51,(anonymous_2)
@@ -2767,7 +2767,7 @@ BRF:10
 BRH:8
 end_of_record
 TN:
-SF:src/contexts/networkContext.tsx
+SF:src\contexts\networkContext.tsx
 FN:17,(anonymous_0)
 FN:24,(anonymous_1)
 FN:27,(anonymous_2)
@@ -2837,7 +2837,7 @@ BRF:14
 BRH:8
 end_of_record
 TN:
-SF:src/contexts/themeContext.tsx
+SF:src\contexts\themeContext.tsx
 FN:34,(anonymous_0)
 FN:41,(anonymous_1)
 FN:42,(anonymous_2)
@@ -2900,7 +2900,7 @@ BRF:14
 BRH:5
 end_of_record
 TN:
-SF:src/services/firebaseClient.ts
+SF:src\services\firebaseClient.ts
 FNF:0
 FNH:0
 DA:13,44
@@ -2928,7 +2928,7 @@ BRF:6
 BRH:3
 end_of_record
 TN:
-SF:src/services/gameService.ts
+SF:src\services\gameService.ts
 FN:28,(anonymous_0)
 FN:47,(anonymous_1)
 FN:81,(anonymous_2)
@@ -3024,7 +3024,7 @@ BRF:25
 BRH:23
 end_of_record
 TN:
-SF:src/services/gameServiceFactory.ts
+SF:src\services\gameServiceFactory.ts
 FN:13,getGameDataService
 FNF:1
 FNH:1
@@ -3042,7 +3042,7 @@ BRF:2
 BRH:2
 end_of_record
 TN:
-SF:src/services/iGameDataService.ts
+SF:src\services\iGameDataService.ts
 FNF:0
 FNH:0
 LF:0
@@ -3051,7 +3051,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src/services/movieDataService.ts
+SF:src\services\movieDataService.ts
 FN:27,(anonymous_0)
 FN:28,(anonymous_1)
 FN:77,(anonymous_2)
@@ -3152,7 +3152,7 @@ BRF:43
 BRH:37
 end_of_record
 TN:
-SF:src/services/videoGameService.ts
+SF:src\services\videoGameService.ts
 FN:7,(anonymous_0)
 FN:25,(anonymous_1)
 FNF:2
@@ -3169,7 +3169,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src/state/gameStore.ts
+SF:src\state\gameStore.ts
 FN:11,(anonymous_0)
 FNF:1
 FNH:1
@@ -3181,7 +3181,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src/state/storeTypes.ts
+SF:src\state\storeTypes.ts
 FNF:0
 FNH:0
 LF:0
@@ -3190,7 +3190,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src/state/slices/dataSlice.ts
+SF:src\state\slices\dataSlice.ts
 FN:9,(anonymous_0)
 FN:13,(anonymous_1)
 FNF:2
@@ -3205,7 +3205,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src/state/slices/gameSlice.ts
+SF:src\state\slices\gameSlice.ts
 FN:28,(anonymous_0)
 FN:35,(anonymous_1)
 FN:66,(anonymous_2)
@@ -3410,7 +3410,7 @@ BRF:66
 BRH:58
 end_of_record
 TN:
-SF:src/state/slices/settingsSlice.ts
+SF:src\state\slices\settingsSlice.ts
 FN:17,(anonymous_0)
 FN:21,(anonymous_1)
 FN:32,(anonymous_2)
@@ -3457,7 +3457,7 @@ BRF:9
 BRH:8
 end_of_record
 TN:
-SF:src/state/slices/uiSlice.ts
+SF:src\state\slices\uiSlice.ts
 FN:8,(anonymous_0)
 FN:21,(anonymous_1)
 FN:22,(anonymous_2)
@@ -3500,7 +3500,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src/utils/analyticsService.ts
+SF:src\utils\analyticsService.ts
 FN:10,(anonymous_0)
 FN:31,(anonymous_1)
 FN:40,(anonymous_2)
@@ -3597,7 +3597,7 @@ BRF:10
 BRH:8
 end_of_record
 TN:
-SF:src/utils/guessFeedbackUtils.ts
+SF:src\utils\guessFeedbackUtils.ts
 FN:9,(anonymous_0)
 FN:10,(anonymous_1)
 FN:13,generateImplicitHint
@@ -3699,7 +3699,7 @@ BRF:39
 BRH:30
 end_of_record
 TN:
-SF:src/utils/hapticsService.ts
+SF:src\utils\hapticsService.ts
 FN:5,(anonymous_0)
 FN:8,(anonymous_1)
 FN:14,(anonymous_2)
@@ -3739,7 +3739,7 @@ BRF:4
 BRH:4
 end_of_record
 TN:
-SF:src/utils/scoreUtils.ts
+SF:src\utils\scoreUtils.ts
 FN:7,calculateScore
 FNF:1
 FNH:1
@@ -3781,7 +3781,7 @@ BRF:10
 BRH:9
 end_of_record
 TN:
-SF:src/utils/shareUtils.ts
+SF:src\utils\shareUtils.ts
 FN:9,(anonymous_0)
 FN:50,(anonymous_1)
 FNF:2
@@ -3842,7 +3842,7 @@ BRF:16
 BRH:13
 end_of_record
 TN:
-SF:src/utils/stringUtils.ts
+SF:src\utils\stringUtils.ts
 FN:8,(anonymous_0)
 FNF:1
 FNH:1
@@ -3858,7 +3858,7 @@ BRF:2
 BRH:2
 end_of_record
 TN:
-SF:src/utils/firestore/converters/gameHistoryEntry.ts
+SF:src\utils\firestore\converters\gameHistoryEntry.ts
 FN:6,(anonymous_0)
 FN:22,(anonymous_1)
 FNF:2
@@ -3887,7 +3887,7 @@ BRF:12
 BRH:12
 end_of_record
 TN:
-SF:src/utils/firestore/converters/player.ts
+SF:src\utils\firestore\converters\player.ts
 FN:5,(anonymous_0)
 FN:12,(anonymous_1)
 FNF:2
@@ -3906,7 +3906,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src/utils/firestore/converters/playerGame.ts
+SF:src\utils\firestore\converters\playerGame.ts
 FN:7,(anonymous_0)
 FN:24,(anonymous_1)
 FN:27,(anonymous_2)
@@ -3944,7 +3944,7 @@ BRF:12
 BRH:11
 end_of_record
 TN:
-SF:src/utils/firestore/converters/playerStats.ts
+SF:src\utils\firestore\converters\playerStats.ts
 FN:5,(anonymous_0)
 FN:19,(anonymous_1)
 FNF:2
@@ -3975,7 +3975,7 @@ BRF:12
 BRH:12
 end_of_record
 TN:
-SF:src/utils/hooks/useExternalLink.ts
+SF:src\utils\hooks\useExternalLink.ts
 FN:11,useExternalLink
 FN:12,(anonymous_1)
 FNF:2
@@ -4004,7 +4004,7 @@ BRF:4
 BRH:4
 end_of_record
 TN:
-SF:src/utils/hooks/useGoogleAuth.ts
+SF:src\utils\hooks\useGoogleAuth.ts
 FN:13,useGoogleAuth
 FN:18,(anonymous_1)
 FN:32,(anonymous_2)
@@ -4095,7 +4095,7 @@ BRF:10
 BRH:8
 end_of_record
 TN:
-SF:src/utils/hooks/useGuessAnimation.ts
+SF:src\utils\hooks\useGuessAnimation.ts
 FN:35,(anonymous_0)
 FN:50,(anonymous_1)
 FN:94,(anonymous_2)
@@ -4140,7 +4140,7 @@ BRF:6
 BRH:6
 end_of_record
 TN:
-SF:src/utils/hooks/useHintLogic.ts
+SF:src\utils\hooks\useHintLogic.ts
 FN:19,useHintLogic
 FN:27,(anonymous_1)
 FN:48,(anonymous_2)
@@ -4335,7 +4335,7 @@ BRF:75
 BRH:54
 end_of_record
 TN:
-SF:src/utils/hooks/useSkeletonAnimation.ts
+SF:src\utils\hooks\useSkeletonAnimation.ts
 FN:10,(anonymous_0)
 FN:17,(anonymous_1)
 FN:28,(anonymous_2)
@@ -4343,13 +4343,13 @@ FNF:3
 FNH:3
 FNDA:31,(anonymous_0)
 FNDA:31,(anonymous_1)
-FNDA:96,(anonymous_2)
+FNDA:102,(anonymous_2)
 DA:10,3
 DA:15,31
 DA:17,31
 DA:18,31
 DA:28,31
-DA:29,96
+DA:29,102
 DA:34,31
 LF:7
 LH:7
@@ -4360,7 +4360,7 @@ BRF:3
 BRH:3
 end_of_record
 TN:
-SF:src/utils/hooks/useStyles.ts
+SF:src\utils\hooks\useStyles.ts
 FN:15,(anonymous_0)
 FN:45,(anonymous_1)
 FN:52,(anonymous_2)
