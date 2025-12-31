@@ -9,6 +9,29 @@ import LoadingIndicator from "../components/loadingIndicator"
 import ErrorMessage from "../components/errorMessage"
 import { useGameStore } from "../state/gameStore"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
+import * as Sentry from "@sentry/react-native"
+
+Sentry.init({
+  dsn: "https://c7d927fefd9e0c239fcfef81c1df5def@o4510630361300992.ingest.us.sentry.io/4510630399901696",
+
+  // Adds more context data to events (IP address, cookies, user, etc.)
+  // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
+  sendDefaultPii: true,
+
+  // Enable Logs
+  enableLogs: true,
+
+  // Configure Session Replay
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1,
+  integrations: [
+    Sentry.mobileReplayIntegration(),
+    Sentry.feedbackIntegration(),
+  ],
+
+  // uncomment the line below to enable Spotlight (https://spotlightjs.com)
+  spotlight: __DEV__,
+})
 
 // --- LOGBOX SUPPRESSION ---
 // We ignore specific warnings to prevent the Yellow Box from blocking
@@ -24,7 +47,7 @@ LogBox.ignoreLogs([
   "Possible stableId collision",
   "VirtualizedList:",
   "ExpoBlurView",
-  "Reanimated] Property"
+  "Reanimated] Property",
 ])
 
 function RootLayoutNav() {
@@ -90,7 +113,7 @@ function RootLayoutNav() {
   return <Slot key={retryKey} />
 }
 
-export default function RootLayout() {
+function RootLayout() {
   return (
     <ErrorBoundary>
       <ThemeProvider>
@@ -103,6 +126,8 @@ export default function RootLayout() {
     </ErrorBoundary>
   )
 }
+
+export default Sentry.wrap(RootLayout)
 
 interface RootLayoutStyles {
   container: ViewStyle

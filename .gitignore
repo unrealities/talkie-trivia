@@ -28,3 +28,5 @@ repomix-output.xml
 
 # todo
 todo.txt
+
+.env.local

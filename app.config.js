@@ -1,6 +1,6 @@
-require("dotenv").config();
+require("dotenv").config()
 
-const myValue = "talkie-trivia";
+const myValue = "talkie-trivia"
 
 module.exports = ({ config }) => ({
   ...config,
@@ -25,7 +25,7 @@ module.exports = ({ config }) => ({
       },
     },
     updates: {
-      fallbackToCacheTimeout: 0
+      fallbackToCacheTimeout: 0,
     },
     assetBundlePatterns: ["**/*"],
     plugins: [
@@ -36,43 +36,51 @@ module.exports = ({ config }) => ({
       [
         "expo-build-properties",
         {
-          "ios": {
-            "useFrameworks": "static",
-            "podfileProperties": {
-              "use_modular_headers!": "true"
+          ios: {
+            useFrameworks: "static",
+            podfileProperties: {
+              "use_modular_headers!": "true",
             },
-            "newArchEnabled": true
+            newArchEnabled: true,
           },
-          "android": {
-            "newArchEnabled": true
-          }
-        }
-      ]
+          android: {
+            newArchEnabled: true,
+          },
+        },
+      ],
+      "@sentry/react-native/expo",
+      {
+        url: "https://sentry.io/",
+        project: "talkie-trivia",
+        organization: "tom-szymanski",
+      },
     ],
     ios: {
       bundleIdentifier: "com.unrealities.talkietrivia",
       googleServicesFile: "./GoogleService-Info.plist",
       supportsTablet: true,
-      userInterfaceStyle: "automatic"
+      userInterfaceStyle: "automatic",
     },
     android: {
       googleServicesFile: "./google-services.json",
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
-        backgroundColor: "#FFFFFF"
+        backgroundColor: "#FFFFFF",
       },
       package: "com.unrealities.talkietrivia",
-      userInterfaceStyle: "automatic"
+      userInterfaceStyle: "automatic",
     },
     web: {
-      favicon: "./assets/favicon.png"
+      favicon: "./assets/favicon.png",
     },
     extra: {
-      "router": {
-        "origin": false,
-        "root": "src/app"
+      router: {
+        origin: false,
+        root: "src/app",
       },
-      isE2E: process.env.IS_E2E === "true" || process.env.EXPO_PUBLIC_IS_E2E === "true",
+      isE2E:
+        process.env.IS_E2E === "true" ||
+        process.env.EXPO_PUBLIC_IS_E2E === "true",
       firebaseApiKey: process.env.FIREBASE_APIKEY,
       firebaseAppId: process.env.FIREBASE_APPID,
       firebaseMeasurementId: process.env.FIREBASE_MEASUREMENTID,
@@ -82,7 +90,7 @@ module.exports = ({ config }) => ({
       expoClientId: process.env.CLIENTID_EXPO,
       iosClientId: process.env.CLIENTID_IOS,
       webClientId: process.env.CLIENTID_WEB,
-      androidClientId: process.env.CLIENTID_ANDROID
+      androidClientId: process.env.CLIENTID_ANDROID,
     },
   },
-});
+})
