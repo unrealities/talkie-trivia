@@ -48,12 +48,13 @@ module.exports = ({ config }) => ({
           },
         },
       ],
-      "@sentry/react-native/expo",
-      {
-        url: "https://sentry.io/",
-        project: "talkie-trivia",
-        organization: "tom-szymanski",
-      },
+      ["@sentry/react-native/expo",
+        {
+          url: "https://sentry.io/",
+          project: "talkie-trivia",
+          organization: "tom-szymanski",
+        },
+      ]
     ],
     ios: {
       bundleIdentifier: "com.unrealities.talkietrivia",
