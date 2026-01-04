@@ -36,6 +36,7 @@ jest.mock("../../../src/components/historyDetailModal", () => () => <></>)
 jest.mock("../../../src/contexts/authContext")
 jest.mock("../../../src/state/gameStore")
 
+// Import after mocks
 import ProfileScreen from "../../../src/app/(tabs)/profile"
 
 const mockUseAuth = useAuth as jest.Mock
@@ -57,7 +58,7 @@ describe("App: ProfileScreen", () => {
   })
 
   it("should show loading indicator if authentication is loading", () => {
-    mockUseAuth.mockReturnValue({ player: null, user: null })
+    mockUseAuth.mockReturnValue({ player: null, user: null, loading: false })
     mockUseGameStore.mockImplementation((selector: any) =>
       selector({ loading: true })
     )
@@ -92,6 +93,20 @@ describe("App: ProfileScreen", () => {
     await waitFor(() => {
       expect(screen.getByText("Welcome, Test User!")).toBeTruthy()
       expect(screen.queryByText("Save Your Progress")).toBeNull()
+    })
+  })
+
+  it("should render legal footer and version info", async () => {
+    mockUseAuth.mockReturnValue({
+      player: { name: "User" },
+      user: { isAnonymous: true },
+    })
+
+    renderWithTheme(<ProfileScreen />)
+
+    await waitFor(() => {
+      expect(screen.getByText(/Version/)).toBeTruthy()
+      expect(screen.getByText(/uses the TMDB API/)).toBeTruthy()
     })
   })
 })

@@ -9,6 +9,7 @@ import LoadingIndicator from "../components/loadingIndicator"
 import ErrorMessage from "../components/errorMessage"
 import { useGameStore } from "../state/gameStore"
 import { useStyles, Theme } from "../utils/hooks/useStyles"
+import { useNotifications } from "../utils/hooks/useNotifications"
 import * as Sentry from "@sentry/react-native"
 
 Sentry.init({
@@ -44,6 +45,8 @@ LogBox.ignoreLogs([
 ])
 
 function RootLayoutNav() {
+  useNotifications()
+
   const { isNetworkConnected } = useNetwork()
   const styles = useStyles(themedStyles)
   const [retryKey, setRetryKey] = useState(0)

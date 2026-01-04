@@ -10,6 +10,7 @@ import ProfileSection from "../../components/profileSection"
 import { useStyles, Theme } from "../../utils/hooks/useStyles"
 import { useTheme } from "../../contexts/themeContext"
 import { u } from "../../styles/utils"
+import Constants from "expo-constants"
 
 const GoogleLogin = lazy(() => import("../../components/googleLogin"))
 const PlayerStatsContainer = lazy(() => import("../../components/playerStats"))
@@ -21,6 +22,20 @@ const DifficultySelector = lazy(
 const HistoryDetailModal = lazy(
   () => import("../../components/historyDetailModal")
 )
+
+const Footer = () => {
+  const styles = useStyles(themedStyles)
+  const version = Constants.expoConfig?.version || "1.0.0"
+
+  return (
+    <View style={styles.footer}>
+      <Text style={styles.footerText}>Version {version}</Text>
+      <Text style={styles.footerText}>
+        This product uses the TMDB API but is not endorsed or certified by TMDB.
+      </Text>
+    </View>
+  )
+}
 
 const ProfileScreen: React.FC = () => {
   const { player, user } = useAuth()
@@ -113,6 +128,8 @@ const ProfileScreen: React.FC = () => {
               <ProfileSection title="Game History" icon="history">
                 <GameHistory onHistoryItemPress={handleHistoryItemPress} />
               </ProfileSection>
+
+              <Footer />
             </View>
           </Suspense>
         </ScrollView>
@@ -137,6 +154,8 @@ interface ProfileScreenStyles {
   signInPromptIcon: TextStyle
   signInPromptTitle: TextStyle
   signInPromptText: TextStyle
+  footer: ViewStyle
+  footerText: TextStyle
 }
 
 const themedStyles = (theme: Theme): ProfileScreenStyles => ({
@@ -147,7 +166,7 @@ const themedStyles = (theme: Theme): ProfileScreenStyles => ({
         ? theme.responsive.scale(60)
         : theme.responsive.scale(30),
     alignItems: "center",
-    paddingBottom: theme.spacing.extraLarge,
+    paddingBottom: theme.responsive.scale(100),
   },
   contentArea: {
     width: "100%",
@@ -196,6 +215,18 @@ const themedStyles = (theme: Theme): ProfileScreenStyles => ({
     ...theme.typography.bodyText,
     textAlign: "center",
     marginBottom: theme.spacing.small,
+  },
+  footer: {
+    padding: theme.spacing.medium,
+    alignItems: "center",
+    marginTop: theme.spacing.large,
+    opacity: 0.6,
+  },
+  footerText: {
+    ...theme.typography.caption,
+    textAlign: "center",
+    marginBottom: theme.spacing.small,
+    color: theme.colors.textSecondary,
   },
 })
 
