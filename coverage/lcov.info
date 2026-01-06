@@ -1606,8 +1606,8 @@ DA:104,10
 DA:146,5
 LF:12
 LH:12
-BRDA:62,0,0,0
-BRDA:62,0,1,16
+BRDA:62,0,0,1
+BRDA:62,0,1,15
 BRDA:70,1,0,1
 BRDA:70,1,1,4
 BRDA:86,2,0,1
@@ -1619,7 +1619,7 @@ BRDA:107,4,1,0
 BRDA:118,5,0,5
 BRDA:118,5,1,1
 BRF:12
-BRH:10
+BRH:11
 end_of_record
 TN:
 SF:src/components/historyDetailModal.tsx
