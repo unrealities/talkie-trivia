@@ -1,5 +1,14 @@
 import React, { lazy, Suspense, useState, useCallback } from "react"
-import { ScrollView, View, Text, ViewStyle, TextStyle } from "react-native"
+import {
+  ScrollView,
+  View,
+  Text,
+  ViewStyle,
+  TextStyle,
+  ImageStyle,
+  Pressable,
+} from "react-native"
+import { Image } from "expo-image"
 import { LinearGradient } from "expo-linear-gradient"
 import LoadingIndicator from "../../components/loadingIndicator"
 import { useAuth } from "../../contexts/authContext"
@@ -9,6 +18,7 @@ import { FontAwesome } from "@expo/vector-icons"
 import ProfileSection from "../../components/profileSection"
 import { useStyles, Theme } from "../../utils/hooks/useStyles"
 import { useTheme } from "../../contexts/themeContext"
+import { useExternalLink } from "../../utils/hooks/useExternalLink"
 import { u } from "../../styles/utils"
 import Constants from "expo-constants"
 
@@ -17,22 +27,33 @@ const PlayerStatsContainer = lazy(() => import("../../components/playerStats"))
 const GameHistory = lazy(() => import("../../components/gameHistory"))
 const ThemeSelector = lazy(() => import("../../components/themeSelector"))
 const DifficultySelector = lazy(
-  () => import("../../components/difficultySelector")
+  () => import("../../components/difficultySelector"),
 )
 const HistoryDetailModal = lazy(
-  () => import("../../components/historyDetailModal")
+  () => import("../../components/historyDetailModal"),
 )
 
 const Footer = () => {
   const styles = useStyles(themedStyles)
+  const { openLink } = useExternalLink()
   const version = Constants.expoConfig?.version || "1.0.0"
+  const tmdbLogo = require("../../../assets/tmdb_blue_square.svg")
 
   return (
     <View style={styles.footer}>
       <Text style={styles.footerText}>Version {version}</Text>
+
+      <Image source={tmdbLogo} style={styles.tmdbLogo} contentFit="contain" />
       <Text style={styles.footerText}>
         This product uses the TMDB API but is not endorsed or certified by TMDB.
       </Text>
+
+      <Pressable
+        onPress={() => openLink("https://your-privacy-policy-url.com")}
+        style={u.mtSm}
+      >
+        <Text style={[styles.footerText, styles.linkText]}>Privacy Policy</Text>
+      </Pressable>
     </View>
   )
 }
@@ -156,6 +177,8 @@ interface ProfileScreenStyles {
   signInPromptText: TextStyle
   footer: ViewStyle
   footerText: TextStyle
+  tmdbLogo: ImageStyle
+  linkText: TextStyle
 }
 
 const themedStyles = (theme: Theme): ProfileScreenStyles => ({
@@ -220,13 +243,24 @@ const themedStyles = (theme: Theme): ProfileScreenStyles => ({
     padding: theme.spacing.medium,
     alignItems: "center",
     marginTop: theme.spacing.large,
-    opacity: 0.6,
+    opacity: 0.9,
+  },
+  tmdbLogo: {
+    width: theme.responsive.scale(120),
+    height: theme.responsive.scale(50),
+    marginBottom: theme.spacing.small,
   },
   footerText: {
     ...theme.typography.caption,
     textAlign: "center",
-    marginBottom: theme.spacing.small,
+    marginBottom: theme.spacing.extraSmall,
     color: theme.colors.textSecondary,
+    maxWidth: "90%",
+  },
+  linkText: {
+    color: theme.colors.primary,
+    textDecorationLine: "underline",
+    fontFamily: "Arvo-Bold",
   },
 })
 
