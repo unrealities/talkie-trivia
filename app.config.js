@@ -27,7 +27,7 @@ module.exports = ({ config }) => ({
     updates: {
       fallbackToCacheTimeout: 0,
     },
-    assetBundlePatterns: ["**/*"],
+    assetBundlePatterns: ["assets/**/*"],
     plugins: [
       "@react-native-google-signin/google-signin",
       "expo-font",

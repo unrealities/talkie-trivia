@@ -4,6 +4,8 @@
       "data/**",
       "utils/fetchPopularMovies/popular_movies_raw.json",
       "utils/basicMovies/basicMovies.json",
+      "utils/populate-firestore/go.sum",
+      "functions/coverage/**",
       "android/**",
       "ios/**"
     ]

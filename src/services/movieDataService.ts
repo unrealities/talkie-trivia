@@ -1,8 +1,26 @@
 import { IGameDataService } from "./iGameDataService"
-import { GameMode, TriviaItem, BasicTriviaItem, Hint } from "../models/trivia"
-import Constants from "expo-constants"
+import { GameMode, TriviaItem, BasicTriviaItem } from "../models/trivia"
+import { db } from "./firebaseClient"
+import { doc, getDoc } from "firebase/firestore"
+import { FIRESTORE_COLLECTIONS } from "../config/constants"
 
-import popularMoviesData from "../../data/popularMovies.json"
+import basicMoviesData from "../../data/basicMovies.json"
+import moviesLiteData from "../../data/moviesLite.json"
+
+interface JsonBasicMovie {
+  id: number
+  title: string
+  release_date: string
+  poster_path: string
+}
+
+interface LiteMovie {
+  id: number
+  d: string // Director
+  g: string[] | null // Genres
+  c: string[] | null // Cast
+  y: string // Year
+}
 
 interface RawMovie {
   id: number
@@ -22,7 +40,17 @@ interface RawMovie {
 
 export class MovieDataService implements IGameDataService {
   public mode: GameMode = "movies"
-  private allMovies: readonly RawMovie[] = popularMoviesData as RawMovie[]
+
+  private basicMovies: readonly BasicTriviaItem[] = (
+    basicMoviesData as JsonBasicMovie[]
+  ).map((m) => ({
+    id: m.id,
+    title: m.title,
+    releaseDate: m.release_date,
+    posterPath: m.poster_path,
+  }))
+
+  private liteMovies: readonly LiteMovie[] = moviesLiteData as LiteMovie[]
 
   private _transformMovieToTriviaItem(movie: RawMovie): TriviaItem {
     const sanitizedActors = (movie.actors || []).map((actor) => ({
@@ -74,112 +102,101 @@ export class MovieDataService implements IGameDataService {
     }
   }
 
+  private _transformLiteToTriviaItem(
+    lite: LiteMovie,
+    basic: BasicTriviaItem,
+  ): TriviaItem {
+    // Handle potential nulls from JSON
+    const castList = lite.c || []
+    const genreList = lite.g || []
+    const directorName = lite.d || "N/A"
+
+    return {
+      id: lite.id,
+      title: basic.title,
+      description: "",
+      posterPath: basic.posterPath,
+      releaseDate: basic.releaseDate,
+      metadata: {},
+      hints: [
+        { type: "director", label: "Director", value: directorName },
+        { type: "genre", label: "Genre", value: genreList[0] || "N/A" },
+        {
+          type: "actors",
+          label: "Actors",
+          value: castList.map((name) => ({ id: 0, name })),
+        },
+        {
+          type: "decade",
+          label: "Decade",
+          value: lite.y ? `${lite.y.substring(0, 3)}0s` : "N/A",
+        },
+      ],
+    }
+  }
+
   public async getDailyTriviaItemAndLists(): Promise<{
     dailyItem: TriviaItem
     fullItems: readonly TriviaItem[]
     basicItems: readonly BasicTriviaItem[]
   }> {
-    const isE2E =
-      Constants.expoConfig?.extra?.isE2E === true ||
-      process.env.EXPO_PUBLIC_IS_E2E === "true"
+    const basicItems = this.basicMovies
 
-    if (isE2E) {
-      const inception = this.allMovies.find((m) => m.title === "Inception")
-      // Fallback if local JSON is missing Inception (should not happen in dev but safe for E2E)
-      const selectedMovie =
-        inception ||
-        this.allMovies[0] ||
-        ({
-          id: 27205,
-          title: "Inception",
-          overview: "Dream...",
-          poster_path: "",
-          release_date: "2010",
-          genres: [],
-          director: {},
-          actors: [],
-        } as any)
-
-      return {
-        dailyItem: this._transformMovieToTriviaItem(selectedMovie),
-        fullItems: this.allMovies.map((m) =>
-          this._transformMovieToTriviaItem(m)
-        ),
-        basicItems: this.allMovies.map((movie) => ({
-          id: movie.id,
-          title: movie.title,
-          releaseDate: movie.release_date,
-          posterPath: movie.poster_path,
-        })),
+    // Hydrate the Lite list on demand
+    // This allows the game logic to check guesses against "full" data (Implicit Feedback)
+    // without actually loading the massive strings/images for every movie.
+    const fullItems = this.liteMovies.map((lite) => {
+      const basic = this.basicMovies.find((b) => b.id === lite.id) || {
+        title: "",
+        releaseDate: "",
+        posterPath: "",
+        id: lite.id,
       }
+      return this._transformLiteToTriviaItem(lite, basic)
+    })
+
+    try {
+      const today = new Date().toISOString().split("T")[0]
+      const dailyGameRef = doc(db, FIRESTORE_COLLECTIONS.DAILY_GAMES, today)
+      const dailyGameSnap = await getDoc(dailyGameRef)
+
+      if (dailyGameSnap.exists()) {
+        const { movieId } = dailyGameSnap.data()
+
+        // Fetch the Rich Data for ONLY the winning movie
+        const movieRef = doc(db, FIRESTORE_COLLECTIONS.MOVIES, String(movieId))
+        const movieSnap = await getDoc(movieRef)
+
+        if (movieSnap.exists()) {
+          const cloudMovieData = movieSnap.data() as RawMovie
+          cloudMovieData.id = movieId
+
+          return {
+            dailyItem: this._transformMovieToTriviaItem(cloudMovieData),
+            fullItems,
+            basicItems,
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch daily game:", error)
     }
 
-    if (!this.allMovies || this.allMovies.length === 0) {
-      throw new Error("Local movie data is missing or empty.")
-    }
-
-    const today = new Date()
-    const startOfYear = new Date(today.getFullYear(), 0, 0)
-    const diff = today.getTime() - startOfYear.getTime()
-    const oneDay = 1000 * 60 * 60 * 24
-    const dayOfYear = Math.floor(diff / oneDay)
-
-    const movieIndex = dayOfYear % this.allMovies.length
-    const selectedMovie = this.allMovies[movieIndex]
-
-    const fullItems = this.allMovies.map((m) =>
-      this._transformMovieToTriviaItem(m)
-    )
-    const basicItems = this.allMovies.map((movie) => ({
-      id: movie.id,
-      title: movie.title,
-      releaseDate: movie.release_date,
-      posterPath: movie.poster_path,
-    }))
-
-    return {
-      dailyItem: this._transformMovieToTriviaItem(selectedMovie),
-      fullItems,
-      basicItems,
-    }
+    throw new Error("Could not load today's game.")
   }
 
   public async getItemById(id: number | string): Promise<TriviaItem | null> {
-    // --- E2E MOCK ---
-    const isE2E =
-      Constants.expoConfig?.extra?.isE2E === true ||
-      process.env.EXPO_PUBLIC_IS_E2E === "true"
-
-    if (isE2E && String(id) === "27205") {
-      return {
-        id: 27205,
-        title: "Inception",
-        description: "A thief who steals corporate secrets...",
-        posterPath: "/9gk7admal4zlDun9ncJ7sUCKRnl.jpg",
-        releaseDate: "2010-07-16",
-        metadata: {
-          imdb_id: "tt1375666",
-          tagline: "Your mind is the scene of the crime.",
-        },
-        hints: [
-          { type: "director", label: "Director", value: "Christopher Nolan" },
-          { type: "decade", label: "Decade", value: "2010s" },
-          { type: "genre", label: "Genre", value: "Sci-Fi" },
-          // Add Actors Hint
-          {
-            type: "actors",
-            label: "Actors",
-            value: [
-              { name: "Leonardo DiCaprio", imdb_id: "nm0000138" },
-              { name: "Joseph Gordon-Levitt", imdb_id: "nm0330687" },
-              { name: "Elliot Page", imdb_id: "nm0680983" },
-            ],
-          },
-        ],
+    try {
+      const movieRef = doc(db, FIRESTORE_COLLECTIONS.MOVIES, String(id))
+      const movieSnap = await getDoc(movieRef)
+      if (movieSnap.exists()) {
+        const data = movieSnap.data() as RawMovie
+        data.id = Number(id)
+        return this._transformMovieToTriviaItem(data)
       }
+    } catch (error) {
+      console.error("Error fetching item by ID:", error)
     }
-
-    const movie = this.allMovies.find((m) => m.id === Number(id))
-    return movie ? this._transformMovieToTriviaItem(movie) : null
+    return null
   }
 }

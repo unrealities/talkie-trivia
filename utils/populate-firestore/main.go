@@ -33,8 +33,8 @@ type Movie struct {
 
 const (
 	serviceAccountKeyPath = "../serviceAccountKey.json"
-	moviesJSONPath        = "../../src/data/popularMovies.json"
-	projectID             = "talkie-trivia"
+	moviesJSONPath        = "../../data/popularMovies.json"
+	projectID             = "talkie-trivia-app"
 )
 
 func main() {

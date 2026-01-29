@@ -15,7 +15,7 @@ import (
 // Configuration Constants
 const (
 	serviceAccountKeyPath = "../serviceAccountKey.json"
-	projectID             = "talkie-trivia"
+	projectID             = "talkie-trivia-app"
 	daysToSchedule        = 365 // Target: 1 year (6-12 months requested)
 	batchSize             = 400 // Firestore transaction limit is 500
 )

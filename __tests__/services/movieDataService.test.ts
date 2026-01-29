@@ -1,149 +1,140 @@
-import { MovieDataService } from "../../src/services/movieDataService"
-import Constants from "expo-constants"
-
-// Mock data matches the structure of popularMovies.json
-const mockMoviesData = [
+// --- MOCK DATA ---
+const mockBasicMovies = [
   {
     id: 101,
     title: "Movie A",
-    overview: "Plot A",
-    poster_path: "/a.jpg",
     release_date: "2020-01-01",
-    tagline: "Tag A",
-    imdb_id: "tt101",
-    popularity: 10,
-    vote_average: 8.0,
-    vote_count: 100,
-    genres: [{ id: 1, name: "Action" }],
-    director: { name: "Director A", imdb_id: "nm1" },
-    actors: [
-      { id: 1, name: "Actor 1", imdb_id: "nm10", order: 0 },
-      { id: 2, name: "Actor 2", imdb_id: "nm20", order: 1 },
-    ],
+    poster_path: "/a.jpg",
   },
   {
     id: 102,
     title: "Movie B",
     release_date: "2021-01-01",
-    overview: "Plot B",
     poster_path: "/b.jpg",
-    genres: [],
-    director: null,
-    actors: [],
-  },
-  {
-    id: 27205,
-    title: "Inception",
-    overview: "Dream within a dream",
-    poster_path: "/inception.jpg",
-    release_date: "2010-07-16",
-    genres: [{ id: 878, name: "Science Fiction" }],
-    director: { name: "Christopher Nolan" },
-    actors: [],
-    metadata: { imdb_id: "tt1375666" },
   },
 ]
 
-jest.mock("../../data/popularMovies.json", () => mockMoviesData)
+const mockLiteMovies = [
+  { id: 101, d: "Director A", g: ["Action"], c: ["Actor 1"], y: "2020" },
+  { id: 102, d: "Director B", g: ["Comedy"], c: ["Actor 2"], y: "2021" },
+]
+
+const mockCloudMovie = {
+  id: 101,
+  title: "Movie A",
+  overview: "Full Cloud Plot",
+  poster_path: "/a.jpg",
+  release_date: "2020-01-01",
+  tagline: "Cloud Tagline",
+  imdb_id: "tt101",
+  popularity: 10,
+  vote_average: 8.0,
+  vote_count: 100,
+  genres: [{ id: 1, name: "Action" }],
+  director: { name: "Director A", imdb_id: "nm1" },
+  actors: [{ name: "Actor 1", imdb_id: "nm10", order: 0 }],
+}
+
+// --- MOCKS ---
+// Mock the local JSON imports
+jest.mock("../../data/basicMovies.json", () => mockBasicMovies)
+jest.mock("../../data/moviesLite.json", () => mockLiteMovies)
+
+// Mock Firebase
+jest.mock("firebase/firestore", () => ({
+  getFirestore: jest.fn(),
+  doc: jest.fn(),
+  getDoc: jest.fn(),
+}))
+
+jest.mock("../../src/services/firebaseClient", () => ({
+  db: {},
+}))
 
 describe("Service: MovieDataService", () => {
-  let service: MovieDataService
+  let MovieDataServiceClass: any
+  let service: any
+  let getDocMock: jest.Mock
 
   beforeEach(() => {
     jest.clearAllMocks()
-    // Reset E2E flag
-    if (Constants.expoConfig && Constants.expoConfig.extra) {
-      Constants.expoConfig.extra.isE2E = false
-    }
+    jest.resetModules()
 
-    jest.isolateModules(() => {
-      const {
-        MovieDataService: ServiceClass,
-      } = require("../../src/services/movieDataService")
-      service = new ServiceClass()
+    // 1. Grab the fresh reference to the mock from the reset module registry
+    const firestore = require("firebase/firestore")
+    getDocMock = firestore.getDoc
+
+    // 2. Require the service (it will use the firestore module we just grabbed)
+    const mod = require("../../src/services/movieDataService")
+    MovieDataServiceClass = mod.MovieDataService
+    service = new MovieDataServiceClass()
+  })
+
+  describe("getDailyTriviaItemAndLists", () => {
+    it("should fetch the scheduled daily game from Firestore", async () => {
+      // Mock dailyGames document
+      const mockDailyGameSnap = {
+        exists: () => true,
+        data: () => ({ movieId: 101 }),
+      }
+
+      // Mock movies document (Full details)
+      const mockMovieSnap = {
+        exists: () => true,
+        data: () => mockCloudMovie,
+      }
+
+      // Configure the mock we captured in beforeEach
+      getDocMock
+        .mockResolvedValueOnce(mockDailyGameSnap)
+        .mockResolvedValueOnce(mockMovieSnap)
+
+      const result = await service.getDailyTriviaItemAndLists()
+
+      // Check Daily Item (Cloud Data)
+      expect(result.dailyItem.title).toBe("Movie A")
+      expect(result.dailyItem.description).toBe("Full Cloud Plot")
+      expect(result.dailyItem.hints[0].value).toBe("Director A")
+
+      // Check Lists (Local Data)
+      expect(result.basicItems).toHaveLength(2)
+      expect(result.basicItems[0].title).toBe("Movie A")
+
+      // Check Hydrated Full Items (Lite Data)
+      expect(result.fullItems).toHaveLength(2)
+      // Implicit feedback data should be present
+      expect(result.fullItems[0].hints[0].value).toBe("Director A")
+    })
+
+    it("should throw an error if Firestore fails", async () => {
+      getDocMock.mockRejectedValue(new Error("Network Error"))
+
+      await expect(service.getDailyTriviaItemAndLists()).rejects.toThrow(
+        "Could not load today's game",
+      )
     })
   })
 
   describe("getItemById", () => {
-    it("should return a fully populated TriviaItem", async () => {
+    it("should fetch full details from Firestore", async () => {
+      const mockSnap = {
+        exists: () => true,
+        data: () => mockCloudMovie,
+      }
+      getDocMock.mockResolvedValue(mockSnap)
+
       const item = await service.getItemById(101)
       expect(item).toBeDefined()
-      expect(item?.id).toBe(101)
       expect(item?.title).toBe("Movie A")
-
-      const directorHint = item?.hints.find((h) => h.type === "director")
-      expect(directorHint?.value).toBe("Director A")
+      expect(item?.description).toBe("Full Cloud Plot")
     })
 
-    it("should handle sparse data gracefully", async () => {
-      const item = await service.getItemById(102)
-      expect(item).toBeDefined()
-      expect(item?.title).toBe("Movie B")
-      const directorHint = item?.hints.find((h) => h.type === "director")
-      expect(directorHint?.value).toBe("N/A")
-    })
+    it("should return null if doc does not exist", async () => {
+      const mockSnap = { exists: () => false }
+      getDocMock.mockResolvedValue(mockSnap)
 
-    it("should return null if not found", async () => {
       const item = await service.getItemById(999)
       expect(item).toBeNull()
-    })
-
-    // E2E Test Cases
-    it("should return Inception mock in E2E mode for ID 27205", async () => {
-      if (Constants.expoConfig && Constants.expoConfig.extra) {
-        Constants.expoConfig.extra.isE2E = true
-      }
-
-      const result = await service.getItemById(27205)
-      expect(result).not.toBeNull()
-      expect(result?.title).toBe("Inception")
-      expect(result?.metadata.imdb_id).toBe("tt1375666")
-    })
-
-    it("should return Inception mock in E2E mode for ID '27205' (string input)", async () => {
-      if (Constants.expoConfig && Constants.expoConfig.extra) {
-        Constants.expoConfig.extra.isE2E = true
-      }
-
-      const result = await service.getItemById("27205")
-      expect(result?.title).toBe("Inception")
-    })
-  })
-
-  describe("getDailyTriviaItemAndLists", () => {
-    it("should return daily item based on day of year", async () => {
-      jest.useFakeTimers()
-      jest.setSystemTime(new Date("2023-01-01T12:00:00.000Z"))
-
-      const result = await service.getDailyTriviaItemAndLists()
-
-      expect(result.dailyItem).toBeDefined()
-      expect(result.fullItems).toHaveLength(3)
-      expect(result.basicItems).toHaveLength(3)
-
-      jest.useRealTimers()
-    })
-
-    it("should return Inception in E2E mode", async () => {
-      if (Constants.expoConfig && Constants.expoConfig.extra) {
-        Constants.expoConfig.extra.isE2E = true
-      }
-      const result = await service.getDailyTriviaItemAndLists()
-      expect(result.dailyItem.title).toBe("Inception")
-    })
-
-    it("should throw error if data source is empty", async () => {
-      jest.isolateModules(() => {
-        jest.doMock("../../data/popularMovies.json", () => [])
-        const {
-          MovieDataService: EmptyService,
-        } = require("../../src/services/movieDataService")
-        const emptyService = new EmptyService()
-
-        expect(emptyService.getDailyTriviaItemAndLists()).rejects.toThrow(
-          "Local movie data is missing"
-        )
-      })
     })
   })
 })
