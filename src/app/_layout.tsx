@@ -86,17 +86,13 @@ function RootLayoutNav() {
     return <LoadingIndicator message="Authenticating user session..." />
   }
 
-  if (gameLoading) {
-    return <LoadingIndicator message="Loading daily movie and user data..." />
-  }
-
   const criticalError = authError || gameError
   if (criticalError) {
-    let displayMessage = `Critical Setup Error: ${criticalError}. Please try restarting the app.`
+    let displayMessage = `Critical Setup Error: ${criticalError}.`
 
     if (authError?.includes("Missing or insufficient permissions")) {
       displayMessage =
-        "Critical Error: Cannot access user data (Firebase permissions failure). This usually indicates an issue with your account setup or backend configuration. Please restart the app or contact support."
+        "Access Denied: The app cannot write to the database. This usually means the Security Rules in the Firebase Console are too strict for a new user creation."
     }
 
     return (
@@ -104,6 +100,10 @@ function RootLayoutNav() {
         <ErrorMessage message={displayMessage} onRetry={handleRetry} />
       </View>
     )
+  }
+
+  if (gameLoading) {
+    return <LoadingIndicator message="Loading daily movie and user data..." />
   }
 
   return <Slot key={retryKey} />
