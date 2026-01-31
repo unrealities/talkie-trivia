@@ -5,18 +5,20 @@ import { Platform } from "react-native"
 
 let analytics: Analytics | undefined
 let perf: any
-
 ;(async () => {
+  if (__DEV__) return
+
   try {
     const supported = await isSupported()
     if (supported) {
       analytics = getAnalytics(app)
     }
   } catch (error) {
+    // Ignore
   }
 })()
 
-if (Platform.OS === "web") {
+if (Platform.OS === "web" && !__DEV__) {
   try {
     perf = getPerformance(app)
   } catch (e) {

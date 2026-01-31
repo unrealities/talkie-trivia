@@ -10,7 +10,7 @@ export const submitGameResult = onCall(async (request) => {
   if (!request.auth) {
     throw new HttpsError(
       "unauthenticated",
-      "The function must be called while authenticated."
+      "The function must be called while authenticated.",
     )
   }
 
@@ -28,11 +28,25 @@ export const submitGameResult = onCall(async (request) => {
   // 3. Transactional Update of Stats
   const playerStatsRef = db.collection("playerStats").doc(userId)
   const playerGameRef = db.collection("playerGames").doc(playerGame.id)
+
+  let dateId = new Date().toISOString().split("T")[0]
+  try {
+    const dateVal = playerGame.startDate
+    if (typeof dateVal === "string") {
+      dateId = dateVal.split("T")[0]
+    } else if (dateVal && typeof dateVal.toDate === "function") {
+      // Handle Firestore Timestamp if passed directly
+      dateId = dateVal.toDate().toISOString().split("T")[0]
+    }
+  } catch (e) {
+    console.warn("Could not parse start date for history ID, using today", e)
+  }
+
   const historyRef = db
     .collection("players")
     .doc(userId)
     .collection("gameHistory")
-    .doc(playerGame.startDate.split("T")[0])
+    .doc(dateId)
 
   try {
     await db.runTransaction(async (transaction) => {
@@ -70,17 +84,20 @@ export const submitGameResult = onCall(async (request) => {
         stats!.currentStreak = 0
       }
 
-      transaction.set(
-        playerGameRef,
-        { ...playerGame, statsProcessed: true, score },
-        { merge: true }
-      )
+      const gameUpdate = {
+        ...playerGame,
+        statsProcessed: true,
+        score,
+      }
+
+      transaction.set(playerGameRef, gameUpdate, { merge: true })
       transaction.set(playerStatsRef, stats!)
+
       transaction.set(historyRef, {
-        dateId: playerGame.startDate.split("T")[0],
+        dateId,
         itemId: playerGame.triviaItem.id,
-        itemTitle: playerGame.triviaItem.title,
-        posterPath: playerGame.triviaItem.posterPath,
+        itemTitle: playerGame.triviaItem.title || "Unknown",
+        posterPath: playerGame.triviaItem.posterPath || "",
         wasCorrect: isWin,
         gaveUp: playerGame.gaveUp,
         guessCount: playerGame.guesses.length,
@@ -95,6 +112,9 @@ export const submitGameResult = onCall(async (request) => {
     return { success: true, score }
   } catch (error: any) {
     console.error("Transaction failure:", error)
-    throw new HttpsError("internal", "Could not submit game result.")
+    throw new HttpsError(
+      "internal",
+      `Could not submit game result: ${error.message}`,
+    )
   }
 })

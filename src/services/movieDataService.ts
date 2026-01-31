@@ -4,7 +4,6 @@ import { db } from "./firebaseClient"
 import { doc, getDoc } from "firebase/firestore"
 import { FIRESTORE_COLLECTIONS } from "../config/constants"
 
-// 1. IMPORT LOCAL DATA
 import basicMoviesData from "../../data/basicMovies.json"
 import moviesLiteData from "../../data/moviesLite.json"
 
@@ -27,6 +26,8 @@ interface RawMovie {
   id: number
   title: string
   overview: string
+  manual_overview?: string
+
   poster_path: string
   release_date: string
   tagline: string
@@ -59,12 +60,17 @@ export class MovieDataService implements IGameDataService {
       imdb_id: actor.imdb_id || null,
     }))
 
+    const finalDescription =
+      movie.manual_overview && movie.manual_overview.trim().length > 0
+        ? movie.manual_overview
+        : movie.overview || "No description available."
+
     return {
       id: movie.id,
       title: movie.title,
-      description: movie.overview,
-      posterPath: movie.poster_path,
-      releaseDate: movie.release_date,
+      description: finalDescription,
+      posterPath: movie.poster_path || "",
+      releaseDate: movie.release_date || "",
       metadata: {
         imdb_id: movie.imdb_id || null,
         tagline: movie.tagline || null,
@@ -95,9 +101,10 @@ export class MovieDataService implements IGameDataService {
         {
           type: "decade",
           label: "Decade",
-          value: movie.release_date
-            ? `${movie.release_date.substring(0, 3)}0s`
-            : "N/A",
+          value:
+            movie.release_date.length >= 4
+              ? `${movie.release_date.substring(0, 3)}0s`
+              : "N/A",
         },
       ],
     }
@@ -135,58 +142,34 @@ export class MovieDataService implements IGameDataService {
     }
   }
 
-  // --- HELPER: Fetch a specific date's game from Firestore ---
   private async _fetchGameForDate(dateStr: string): Promise<RawMovie | null> {
     console.log(`[MovieDataService] 🔍 Checking Firestore for date: ${dateStr}`)
-
     try {
-      // 1. Get the Schedule Document
       const dailyGameRef = doc(db, FIRESTORE_COLLECTIONS.DAILY_GAMES, dateStr)
       const dailyGameSnap = await getDoc(dailyGameRef)
 
       if (!dailyGameSnap.exists()) {
-        console.log(
-          `[MovieDataService] ⚠️ No document found in 'dailyGames' for ID: ${dateStr}`,
-        )
+        console.log(`[MovieDataService] ⚠️ No schedule found for: ${dateStr}`)
         return null
       }
 
-      const data = dailyGameSnap.data()
-      console.log(`[MovieDataService] ✅ Found Schedule:`, data)
-      const { movieId } = data
+      const { movieId } = dailyGameSnap.data()
+      if (!movieId) return null
 
-      if (!movieId) {
-        console.error(
-          `[MovieDataService] ❌ Error: 'movieId' is missing from dailyGames document!`,
-        )
-        return null
-      }
-
-      // 2. Get the Actual Movie Data
-      console.log(
-        `[MovieDataService] 🎬 Fetching Movie details for ID: ${movieId}`,
-      )
+      console.log(`[MovieDataService] 🎬 Fetching Movie ID: ${movieId}`)
       const movieRef = doc(db, FIRESTORE_COLLECTIONS.MOVIES, String(movieId))
       const movieSnap = await getDoc(movieRef)
 
       if (movieSnap.exists()) {
         const cloudMovieData = movieSnap.data() as RawMovie
         cloudMovieData.id = movieId
-        console.log(
-          `[MovieDataService] ✨ Successfully loaded movie: ${cloudMovieData.title}`,
-        )
+        console.log(`[MovieDataService] ✨ Loaded: ${cloudMovieData.title}`)
         return cloudMovieData
       } else {
-        console.error(
-          `[MovieDataService] ❌ Movie ID ${movieId} is scheduled, but NOT found in 'movies' collection!`,
-        )
+        console.error(`[MovieDataService] ❌ Movie ID ${movieId} not found`)
       }
     } catch (error: any) {
-      console.error(
-        `[MovieDataService] 💥 CRITICAL ERROR fetching ${dateStr}:`,
-        error.message,
-        error,
-      )
+      console.error(`[MovieDataService] 💥 Error: ${error.message}`)
     }
     return null
   }
@@ -197,8 +180,6 @@ export class MovieDataService implements IGameDataService {
     basicItems: readonly BasicTriviaItem[]
   }> {
     const basicItems = this.basicMovies
-
-    // Hydrate lite list for Implicit Feedback logic
     const fullItems = this.liteMovies.map((lite) => {
       const basic = this.basicMovies.find((b) => b.id === lite.id) || {
         title: "",
@@ -209,28 +190,22 @@ export class MovieDataService implements IGameDataService {
       return this._transformLiteToTriviaItem(lite, basic)
     })
 
-    // 1. Try TODAY (Local Time)
     const today = new Date()
-    // Explicitly using the user's locale but forcing YYYY-MM-DD format manually to be safe
-    const year = today.getFullYear()
-    const month = String(today.getMonth() + 1).padStart(2, "0")
-    const day = String(today.getDate()).padStart(2, "0")
-    const todayStr = `${year}-${month}-${day}`
+    const y = today.getFullYear()
+    const m = String(today.getMonth() + 1).padStart(2, "0")
+    const d = String(today.getDate()).padStart(2, "0")
+    const todayStr = `${y}-${m}-${d}`
 
     let rawMovie = await this._fetchGameForDate(todayStr)
 
-    // 2. Fallback: Try YESTERDAY
     if (!rawMovie) {
-      console.log(
-        `[MovieDataService] Today's game (${todayStr}) unavailable. Trying yesterday...`,
-      )
+      console.log(`[MovieDataService] Today unavailable. Trying yesterday...`)
       const yesterday = new Date(today)
       yesterday.setDate(yesterday.getDate() - 1)
-
-      const yYear = yesterday.getFullYear()
-      const yMonth = String(yesterday.getMonth() + 1).padStart(2, "0")
-      const yDay = String(yesterday.getDate()).padStart(2, "0")
-      const yesterdayStr = `${yYear}-${yMonth}-${yDay}`
+      const yy = yesterday.getFullYear()
+      const ym = String(yesterday.getMonth() + 1).padStart(2, "0")
+      const yd = String(yesterday.getDate()).padStart(2, "0")
+      const yesterdayStr = `${yy}-${ym}-${yd}`
 
       rawMovie = await this._fetchGameForDate(yesterdayStr)
     }
@@ -243,7 +218,6 @@ export class MovieDataService implements IGameDataService {
       }
     }
 
-    // 3. Strict Failure
     const errorMsg = `Unable to load the daily challenge. Checked ${todayStr} and yesterday.`
     console.error(`[MovieDataService] 🛑 FATAL: ${errorMsg}`)
     throw new Error(errorMsg)

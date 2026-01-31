@@ -15,20 +15,21 @@ import (
 )
 
 type Movie struct {
-	Actors           interface{} `json:"actors"`
-	Director         interface{} `json:"director"`
-	Genres           interface{} `json:"genres"`
-	ID               int         `json:"id"`
-	ImdbID           string      `json:"imdb_id"`
-	OriginalOverview string      `json:"original_overview"`
-	Overview         string      `json:"overview"`
-	Popularity       float64     `json:"popularity"`
-	PosterPath       string      `json:"poster_path"`
-	ReleaseDate      string      `json:"release_date"`
-	Tagline          string      `json:"tagline"`
-	Title            string      `json:"title"`
-	VoteAverage      float64     `json:"vote_average"`
-	VoteCount        int         `json:"vote_count"`
+	Actors           interface{} `json:"actors" firestore:"actors"`
+	Director         interface{} `json:"director" firestore:"director"`
+	Genres           interface{} `json:"genres" firestore:"genres"`
+	ID               int         `json:"id" firestore:"id"`
+	ImdbID           string      `json:"imdb_id" firestore:"imdb_id"`
+	OriginalOverview string      `json:"original_overview" firestore:"original_overview"`
+	Overview         string      `json:"overview" firestore:"overview"`
+	ManualOverview   string      `json:"manual_overview,omitempty" firestore:"manual_overview,omitempty"`
+	Popularity       float64     `json:"popularity" firestore:"popularity"`
+	PosterPath       string      `json:"poster_path" firestore:"poster_path"`
+	ReleaseDate      string      `json:"release_date" firestore:"release_date"`
+	Tagline          string      `json:"tagline" firestore:"tagline"`
+	Title            string      `json:"title" firestore:"title"`
+	VoteAverage      float64     `json:"vote_average" firestore:"vote_average"`
+	VoteCount        int         `json:"vote_count" firestore:"vote_count"`
 }
 
 const (
@@ -40,7 +41,6 @@ const (
 func main() {
 	log.Println("Starting Firestore population script...")
 
-	// 1. Set up Firestore client
 	ctx := context.Background()
 	sa := option.WithCredentialsFile(serviceAccountKeyPath)
 	client, err := firestore.NewClient(ctx, projectID, sa)
@@ -51,7 +51,6 @@ func main() {
 
 	log.Printf("Successfully connected to Firestore project: %s", projectID)
 
-	// 2. Read the movies JSON file
 	absPath, _ := filepath.Abs(moviesJSONPath)
 	jsonFile, err := os.Open(absPath)
 	if err != nil {
@@ -65,18 +64,15 @@ func main() {
 
 	log.Printf("Read %d movies from %s", len(movies), moviesJSONPath)
 
-	// 3. Upload movies to Firestore
 	batch := client.Batch()
 	moviesCollection := client.Collection("movies")
 	commitCounter := 0
 
 	for i, movie := range movies {
-		// Use the movie's ID as the document ID for easy lookup
 		docID := strconv.Itoa(movie.ID)
 		docRef := moviesCollection.Doc(docID)
 		batch.Set(docRef, movie)
 
-		// Firestore batches are limited to 500 operations.
 		if (i+1)%400 == 0 || i == len(movies)-1 {
 			log.Printf("Committing batch %d...", commitCounter+1)
 			_, err := batch.Commit(ctx)
@@ -84,13 +80,11 @@ func main() {
 				log.Fatalf("Failed to commit batch: %v", err)
 			}
 			log.Printf("Successfully committed batch %d.", commitCounter+1)
-
-			// Start a new batch
 			batch = client.Batch()
 			commitCounter++
-			time.Sleep(1 * time.Second)
+			time.Sleep(500 * time.Millisecond)
 		}
 	}
 
-	log.Println("All movies have been successfully uploaded to Firestore!")
+	log.Println("Database successfully normalized to lowercase keys!")
 }

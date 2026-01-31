@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "talkie-trivia"
-  }
+    "default": "talkie-trivia-app",
+    "staging": "talkie-trivia-app"
+  },
+  "targets": {},
+  "etags": {}
 }

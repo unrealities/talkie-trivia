@@ -8,14 +8,12 @@ service cloud.firestore {
     }
 
     function hasValidPlayerFields() {
-      // A player can only create a document with their name and id.
-      // Name must be a string, not empty, and reasonably short.
-      return request.resource.data.keys().hasAll(['id', 'name'])
-        && request.resource.data.size() == 2
-        && request.resource.data.id == request.auth.uid
+      // Allow id and name to be required strings.
+      // Remove strict size check to allow for future expansion (e.g. email, avatar)
+      return request.resource.data.id == request.auth.uid
         && request.resource.data.name is string
-          && request.resource.data.name.size() > 0
-          && request.resource.data.name.size() < 50;
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() < 50;
     }
 
     function isCreatingPlayerGame() {
